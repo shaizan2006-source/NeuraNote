@@ -175,7 +175,7 @@ function AIMessage({ msg, isLast, onExport, isExporting }) {
 
 // ── Main component ───────────────────────────────────────────────
 
-export default function AskAISection({ fullPage = false }) {
+export default function AskAISection({ fullPage = false, conversationId = null }) {
   const {
     question, setQuestion,
     answer,
@@ -232,6 +232,24 @@ export default function AskAISection({ fullPage = false }) {
     setStagedFile(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  // Load conversation messages when conversationId changes
+  useEffect(() => {
+    if (!conversationId) return;
+    fetch(`/api/conversations/${conversationId}`)
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data.messages)) return;
+        const loaded = data.messages.map((m, i) => ({
+          id: i + 1,
+          role: m.role,
+          text: m.content,
+        }));
+        setMessages(loaded);
+        nextIdRef.current = loaded.length + 1;
+      })
+      .catch(() => {});
+  }, [conversationId]);
 
   // When upload completes, clear the staged file
   useEffect(() => {

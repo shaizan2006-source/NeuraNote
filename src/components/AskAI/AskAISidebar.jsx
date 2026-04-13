@@ -71,8 +71,17 @@ export default function AskAISidebar({
   const [pdfs, setPdfs] = useState([]);
   const [chatsOpen, setChatsOpen] = useState(true);
   const [pdfsOpen, setPdfsOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Tooltip delay (collapsed only)
+  useEffect(() => {
+    function check() { setIsMobile(window.innerWidth < 768); }
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Tooltip delay (collapsed, desktop only)
   useEffect(() => {
     if (!hoveredItem || !sidebarCollapsed) { setShowTooltipFor(null); return; }
     const t = setTimeout(() => setShowTooltipFor(hoveredItem), 200);
@@ -97,6 +106,142 @@ export default function AskAISidebar({
       .catch(() => {});
   }, [userId]);
 
+  if (isMobile) {
+    return (
+      <>
+        {/* Hamburger trigger */}
+        <button
+          onClick={() => setMobileOpen(true)}
+          style={{
+            position: "fixed", top: 14, left: 14, zIndex: 20,
+            background: "rgba(17,17,17,0.9)", border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 6, width: 36, height: 36, display: "flex",
+            alignItems: "center", justifyContent: "center",
+            color: "#a1a1aa", fontSize: 16, cursor: "pointer",
+          }}
+        >☰</button>
+
+        {/* Dark overlay */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileOpen(false)}
+              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 10 }}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Sidebar overlay */}
+        <motion.div
+          initial={{ x: "-100%" }}
+          animate={{ x: mobileOpen ? 0 : "-100%" }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          style={{
+            position: "fixed", top: 0, left: 0, height: "100vh",
+            width: "72%", maxWidth: 280, background: "#111111",
+            borderRight: "1px solid rgba(255,255,255,0.05)",
+            display: "flex", flexDirection: "column",
+            zIndex: 11, overflow: "hidden",
+          }}
+        >
+          {/* Header */}
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.05)", minHeight: 52, gap: 6,
+          }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#f4f4f5", flex: 1 }}>AskMyNotes</span>
+            <button
+              onClick={onNewChat}
+              style={{
+                display: "flex", alignItems: "center", gap: 3,
+                border: "1px solid rgba(255,255,255,0.1)", padding: "2px 8px", borderRadius: 5,
+                background: "transparent", color: "#a1a1aa",
+                fontSize: 9, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
+              }}
+            ><PlusIcon /> New Chat</button>
+            <button onClick={() => setMobileOpen(false)}
+              style={{ background: "transparent", border: "none", color: "#52525b", cursor: "pointer", fontSize: 18 }}>✕</button>
+          </div>
+
+          {/* Nav */}
+          <nav style={{ padding: "10px 0", display: "flex", flexDirection: "column", gap: 4 }}>
+            {NAV_ITEMS.map(({ icon: Icon, label, href }) => {
+              const isActive = pathname === href || pathname.startsWith(href + "/");
+              return (
+                <button key={href}
+                  onClick={() => { router.push(href); setMobileOpen(false); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 10,
+                    width: "calc(100% - 12px)", padding: "8px 10px", margin: "0 6px",
+                    justifyContent: "flex-start",
+                    background: isActive ? "rgba(139,92,246,0.12)" : "transparent",
+                    border: "none", borderRadius: 6, cursor: "pointer",
+                    color: isActive ? "#a78bfa" : "#52525b",
+                  }}
+                >
+                  <Icon size={16} color={isActive ? "#a78bfa" : "#52525b"} />
+                  <span style={{ fontSize: 12, fontWeight: isActive ? 600 : 400 }}>{label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Recent Chats */}
+          <div style={{ padding: "0 10px", marginTop: 4, flex: 1, overflowY: "auto" }}>
+            <p style={{ fontSize: 9, fontWeight: 700, color: "#3f3f46", textTransform: "uppercase", letterSpacing: "0.05em", padding: "4px 0", margin: 0 }}>Recent</p>
+            {conversations.length === 0 && <p style={{ fontSize: 9, color: "#27272a" }}>No conversations yet</p>}
+            {conversations.map(conv => {
+              const isActive = conv.id === activeConversationId;
+              return (
+                <button key={conv.id}
+                  onClick={() => { onSelectConversation?.(conv.id); setMobileOpen(false); }}
+                  style={{
+                    display: "block", width: "100%", textAlign: "left",
+                    padding: "4px 10px", borderRadius: 4, margin: "2px 4px",
+                    background: isActive ? "rgba(139,92,246,0.05)" : "transparent",
+                    borderLeft: isActive ? "2px solid #8B5CF6" : "2px solid transparent",
+                    border: "none", cursor: "pointer",
+                  }}
+                >
+                  <p style={{ margin: 0, fontSize: 9, color: isActive ? "#a1a1aa" : "#52525b",
+                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}>
+                    {conv.title || "Untitled"}
+                  </p>
+                  <p style={{ margin: 0, fontSize: 8, color: "#27272a" }}>{timeAgo(conv.updated_at)}</p>
+                </button>
+              );
+            })}
+
+            {/* PDFs */}
+            <p style={{ fontSize: 9, fontWeight: 700, color: "#3f3f46", textTransform: "uppercase", letterSpacing: "0.05em", padding: "4px 0", marginTop: 8 }}>Your PDFs</p>
+            {pdfs.length === 0 && <p style={{ fontSize: 9, color: "#27272a" }}>No PDFs uploaded</p>}
+            {pdfs.map(pdf => {
+              const isActivePdf = pdf.is_active;
+              return (
+                <button key={pdf.id}
+                  onClick={() => { onSelectPdf?.(pdf.id); setMobileOpen(false); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 6, width: "100%",
+                    padding: "4px 6px", borderRadius: 4, margin: "2px 0",
+                    background: isActivePdf ? "rgba(34,211,238,0.05)" : "transparent",
+                    border: "none", cursor: "pointer",
+                  }}
+                >
+                  <span style={{ fontSize: 10 }}>📄</span>
+                  <span style={{ fontSize: 9, color: isActivePdf ? "#22D3EE" : "#52525b", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pdf.name}</span>
+                  {isActivePdf && <span style={{ fontSize: 8, color: "#22D3EE", background: "rgba(34,211,238,0.08)", border: "1px solid rgba(34,211,238,0.2)", borderRadius: 3, padding: "1px 4px" }}>Active</span>}
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
+      </>
+    );
+  }
+
+  // ── Desktop sidebar ──────────────────────────────────────────────
   return (
     <motion.aside
       animate={{ width: sidebarCollapsed ? 56 : 220 }}

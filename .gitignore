@@ -46,6 +46,7 @@ next-env.d.ts
 
 # cloned repos / temp directories
 /temp_superpowers/
+.worktrees/
 
 # claude code local state
 .claude/

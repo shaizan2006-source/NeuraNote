@@ -25,7 +25,7 @@ export function useActivePDF(userId) {
       .then(async ({ data }) => {
         if (data?.active_pdf_id) {
           const { data: pdf } = await supabase
-            .from("pdfs_metadata")
+            .from("documents")
             .select("id, name")
             .eq("id", data.active_pdf_id)
             .single();
@@ -43,7 +43,7 @@ export function useActivePDF(userId) {
       .eq("id", userId);
     if (pdfId) {
       const { data: pdf } = await supabase
-        .from("pdfs_metadata")
+        .from("documents")
         .select("id, name")
         .eq("id", pdfId)
         .single();

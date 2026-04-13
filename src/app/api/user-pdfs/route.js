@@ -14,7 +14,7 @@ export async function GET(req) {
   // Get PDFs + active PDF id from profiles
   const [pdfsRes, profileRes] = await Promise.all([
     supabase
-      .from("pdfs_metadata")
+      .from("documents")
       .select("id, name, created_at")
       .eq("user_id", user_id)
       .order("created_at", { ascending: false }),

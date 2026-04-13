@@ -473,7 +473,7 @@ export default function AskAISidebar({
                 }}
                 title="Upload a PDF"
               >
-                {uploadStage === "uploading" || uploadStage === "processing" ? "Uploading…" : "+ Upload"}
+                {uploadStage === "uploading" || uploadStage === "processing" ? "Saving…" : "+ Save PDF"}
               </button>
             </div>
 

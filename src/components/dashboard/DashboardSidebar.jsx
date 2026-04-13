@@ -21,19 +21,11 @@ function ChatIcon({ size = 16, color = "currentColor" }) {
     </svg>
   );
 }
-function FileIcon({ size = 16, color = "currentColor" }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-      <polyline points="14 2 14 8 20 8"/>
-    </svg>
-  );
-}
+
 
 const NAV_ITEMS = [
   { icon: GridIcon,  label: "Dashboard", href: "/dashboard"  },
   { icon: ChatIcon,  label: "Ask AI",    href: "/ask-ai"     },
-  { icon: FileIcon,  label: "My PDFs",   href: "/my-pdfs"    },
 ];
 
 function Tooltip({ label }) {
@@ -64,12 +56,11 @@ function Tooltip({ label }) {
   );
 }
 
-function NavItems({ activePdfActive, pathname, router, sidebarCollapsed, hoveredItem, setHoveredItem, showTooltipFor, setShowTooltipFor, onItemClick }) {
+function NavItems({ pathname, router, sidebarCollapsed, setHoveredItem, showTooltipFor, setShowTooltipFor, onItemClick }) {
   return (
     <nav style={{ flex: 1, padding: "10px 0", display: "flex", flexDirection: "column", gap: 4 }}>
       {NAV_ITEMS.map(({ icon: Icon, label, href }) => {
         const isActive = pathname === href || pathname.startsWith(href + "/");
-        const hasCyanDot = href === "/my-pdfs" && activePdfActive;
         return (
           <div
             key={href}
@@ -95,9 +86,6 @@ function NavItems({ activePdfActive, pathname, router, sidebarCollapsed, hovered
                 {sidebarCollapsed && isActive && (
                   <span style={{ position: "absolute", bottom: 2, right: 2, width: 5, height: 5, borderRadius: "50%", background: "#8B5CF6" }} />
                 )}
-                {sidebarCollapsed && hasCyanDot && (
-                  <span style={{ position: "absolute", bottom: 2, right: 2, width: 5, height: 5, borderRadius: "50%", background: "#22D3EE" }} />
-                )}
               </span>
               <AnimatePresence>
                 {!sidebarCollapsed && (
@@ -117,7 +105,7 @@ function NavItems({ activePdfActive, pathname, router, sidebarCollapsed, hovered
   );
 }
 
-export default function DashboardSidebar({ activePdfActive = false }) {
+export default function DashboardSidebar() {
   const router   = useRouter();
   const pathname = usePathname();
   const { sidebarCollapsed, toggleSidebar, dashboardMode, toggleDashboardMode } = useDashboard();
@@ -196,8 +184,8 @@ export default function DashboardSidebar({ activePdfActive = false }) {
 
           {/* Nav (force-expanded on mobile) */}
           <NavItems
-            activePdfActive={activePdfActive} pathname={pathname} router={router}
-            sidebarCollapsed={false} hoveredItem={hoveredItem}
+            pathname={pathname} router={router}
+            sidebarCollapsed={false}
             setHoveredItem={setHoveredItem} showTooltipFor={showTooltipFor}
             setShowTooltipFor={setShowTooltipFor}
             onItemClick={() => setMobileOpen(false)}
@@ -262,8 +250,8 @@ export default function DashboardSidebar({ activePdfActive = false }) {
       </div>
 
       <NavItems
-        activePdfActive={activePdfActive} pathname={pathname} router={router}
-        sidebarCollapsed={sidebarCollapsed} hoveredItem={hoveredItem}
+        pathname={pathname} router={router}
+        sidebarCollapsed={sidebarCollapsed}
         setHoveredItem={setHoveredItem} showTooltipFor={showTooltipFor}
         setShowTooltipFor={setShowTooltipFor}
       />

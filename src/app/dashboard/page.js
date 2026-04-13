@@ -31,7 +31,7 @@ function DashboardInner() {
       <MilestoneToast />
 
       <ErrorBoundary label="Sidebar">
-        <DashboardSidebar activePdfActive={!!activePdf} />
+        <DashboardSidebar />
       </ErrorBoundary>
 
       {/* Main area */}

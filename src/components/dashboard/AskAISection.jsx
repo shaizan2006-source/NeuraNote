@@ -195,6 +195,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
   } = useDashboard();
 
   const [isFocused,   setIsFocused]   = useState(false);
+  const [isHovered,   setIsHovered]   = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [messages,    setMessages]    = useState([]);
   const [classification, setClassification] = useState(null);
@@ -503,7 +504,8 @@ export default function AskAISection({ fullPage = false, conversationId = null }
         })}
       </div>
 
-      {/* ── Input area (ChatGPT/Claude style) ─────────────── */}
+      {/* ── Input area ─────────────────────────────────────── */}
+      <div style={{ maxWidth: 580, margin: "0 auto", width: "100%" }}>
       <div
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
@@ -513,13 +515,30 @@ export default function AskAISection({ fullPage = false, conversationId = null }
           const f = e.dataTransfer.files[0];
           if (f) handleFileSelect(f);
         }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         style={{
-          position:     "relative",
-          border:       `1px solid ${isDragging ? "var(--brand)" : isFocused ? "var(--brand)" : "var(--border-strong)"}`,
-          borderRadius: 12,
-          background:   isDragging ? "rgba(99,102,241,0.06)" : "var(--surface-raised)",
-          transition:   "border-color 0.18s, box-shadow 0.18s, background 0.18s",
-          boxShadow:    isFocused ? "0 0 0 3px var(--brand-glow)" : "none",
+          position:           "relative",
+          borderRadius:       14,
+          background:         isDragging
+            ? "rgba(99,102,241,0.08)"
+            : "rgba(255,255,255,0.04)",
+          backdropFilter:     "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          border:             `1px solid ${
+            isDragging || isFocused
+              ? "rgba(34,211,238,0.5)"
+              : isHovered
+                ? "rgba(34,211,238,0.25)"
+                : "rgba(255,255,255,0.08)"
+          }`,
+          boxShadow:          isDragging || isFocused
+            ? "0 0 0 3px rgba(34,211,238,0.08), 0 8px 32px rgba(0,0,0,0.3)"
+            : isHovered
+              ? "0 4px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(34,211,238,0.08)"
+              : "0 2px 12px rgba(0,0,0,0.2)",
+          transform:          isHovered && !isFocused ? "translateY(-1px)" : "translateY(0)",
+          transition:         "border-color 0.2s, box-shadow 0.2s, background 0.2s, transform 0.2s",
         }}
       >
         {/* Hidden file input */}
@@ -715,7 +734,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
             }}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            rows={3}
+            rows={2}
             style={{
               flex:         1,
               padding:      "14px 52px 14px 4px",
@@ -765,9 +784,10 @@ export default function AskAISection({ fullPage = false, conversationId = null }
           </motion.button>
         </div>
       </div>
+      </div>
 
       {queue.length > 0 && (
-        <p style={{ fontSize: 11, color: "var(--text-muted)", margin: "6px 0 0" }}>
+        <p style={{ fontSize: 11, color: "var(--text-muted)", margin: "6px 0 0", textAlign: "center" }}>
           {queue.length} question{queue.length > 1 ? "s" : ""} queued
         </p>
       )}

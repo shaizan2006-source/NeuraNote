@@ -73,8 +73,10 @@ export default function AskAISidebar({
   const [pdfsOpen, setPdfsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
     function check() { setIsMobile(window.innerWidth < 768); }
     check();
     window.addEventListener("resize", check);
@@ -106,7 +108,7 @@ export default function AskAISidebar({
       .catch(() => {});
   }, [userId]);
 
-  if (isMobile) {
+  if (hydrated && isMobile) {
     return (
       <>
         {/* Hamburger trigger */}

@@ -52,9 +52,19 @@
 - **Main area:** Greeting row + 2-mode bento grid
 
 ### Greeting Row
-- **Left:** "Good evening, [Name]" (20px, 700, #f4f4f5) + mode-specific sub-text (10px, 400, #71717a)
-  - Study mode: "Ready to study?"
-  - Progress mode: "See your progress"
+- **Left:** Dynamic greeting based on user's local timezone hour (20px, 700, #f4f4f5) + mode-specific sub-text (10px, 400, #71717a)
+  - 5am–12pm: "Good morning, [Name]"
+  - 12pm–5pm: "Good afternoon, [Name]"
+  - 5pm–9pm: "Good evening, [Name]"
+  - 9pm–5am: "Good night, [Name]"
+- **Sub-text by mode + time:**
+
+| Mode | Morning / Afternoon / Evening | Night (9pm–5am) |
+|------|-------------------------------|-----------------|
+| Study | "Ready to study?" | "Studying late?" |
+| Progress | "See your progress" | "See your progress" |
+
+- **Logic:** `new Date().getHours()` in user's local timezone (browser time)
 - **Right:** Mode toggle pill (Study | Progress)
   - Active tab: `linear-gradient(135deg, #8B5CF6, #6D28D9)`, white text
   - Inactive tab: transparent, #71717a text
@@ -92,10 +102,10 @@ background: #111111;
 border: 1px solid rgba(255,255,255,0.06);
 gap between cards: 6px;
 
-/* Hero card (Study) */
+/* Hero card (Study) — declare border-left AFTER border to avoid override */
 background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(109,40,217,0.04));
 border: 1px solid rgba(139,92,246,0.22);
-border-left: 2px solid rgba(34,211,238,0.35);
+border-left: 2px solid rgba(34,211,238,0.35); /* must come after border shorthand */
 box-shadow: inset 0 0 30px rgba(34,211,238,0.04);
 
 /* AI response card (AI Coach) */
@@ -120,6 +130,8 @@ easing: ease-out;
   - Gray (#27272a): not studied
   - Amber tint: learning (`rgba(245,158,11,0.35-0.65)`)
   - Green (#22C55E): mastered
+- **No tooltips on dashboard card** — ambient visualization only, not detailed data. Grid is felt, not read.
+- **Click behaviour:** Clicking the Your Brain card navigates to a dedicated mastery page where all 16 topics are labeled and expandable.
 - **Progress bar below grid:** 6 dots, filled from left as mastery increases
 - **Spacing:** mastery grid 4px below title, progress bar 4px below grid
 
@@ -160,7 +172,11 @@ easing: ease-out;
 
 ### Drawer Data Behavior
 - **First message:** Create Supabase conversation row (`user_id`, `conversation_id`, `messages[]`)
-- **PDF context:** Active PDF from Ask AI page state (if no PDF active, show "No PDF" badge, do general AI)
+- **PDF context:** Active PDF from Ask AI page state
+  - **PDF active + answer found** (similarity score ≥ 0.75): RAG response with PDF citation
+  - **PDF active + answer not found** (similarity score < 0.75): General AI response with note prepended: "Not found in [PDF name], here's general knowledge:"
+  - **No PDF active:** Show "No PDF" badge in header, general AI response only (no RAG)
+  - **Threshold:** `0.75` cosine similarity on pgvector search. Configurable via `RAG_CONFIDENCE_THRESHOLD` env var.
 - **Multi-turn:** Drawer holds full thread in React local state during session
 - **On close:** `conversationId` persisted in React context
 - **Re-open drawer:** Resumes same conversation in local state
@@ -239,10 +255,11 @@ Inherits all Dashboard sidebar structure, with additions:
 **Below Header + Nav (10px padding)**
 
 **"+ New Chat" Button**
-- Compact outline style: `border: 1px solid rgba(255,255,255,0.1)`, `padding: 5px`, `border-radius: 6px`
-- Icon (+ in 10px svg) + "New Chat" text (10px font)
+- Compact pill, right-aligned in the sidebar header row (inline with logo, not below nav)
+- Style: `border: 1px solid rgba(255,255,255,0.1)`, `padding: 2px 8px`, `border-radius: 5px`
+- Icon (+ svg, 10px) + "New Chat" text (9px font)
 - Hover: `border-color: rgba(139,92,246,0.3)`
-- Full width inside sidebar
+- Does NOT take full width — sits flush right of logo text in the header row
 
 **Recent Chats Section (collapsible)**
 - Header: "Recent ▾" (9px uppercase, #3f3f46)
@@ -266,12 +283,18 @@ Same as Dashboard sidebar. "Recent Chats" and "Your PDFs" sections hidden entire
 - Tooltips on hover show icon names only ("Recent Chats" tooltip does not appear)
 
 #### Mobile State (Full-height Overlay)
-- Hamburger menu trigger (3-line icon, top-left)
+- Hamburger menu trigger (3-line icon, top-left of mobile top bar)
 - On tap: sidebar slides in as full-height overlay from left (72% width, z-index 10)
 - Dashboard fades behind with `rgba(0,0,0,0.5)` overlay
 - Content same as expanded desktop
 - Close: tap ✕ button (top-right inside sidebar) or swipe left
 - No icon rail on mobile
+
+**Mode toggle on mobile:**
+- Removed from top bar (no space alongside hamburger + title + PDF badge)
+- Moved inside the hamburger sidebar, below the main nav items
+- Renders as same pill (Study | Progress) with full-width stretch inside sidebar
+- Tap to switch mode, sidebar closes automatically after toggle
 
 ---
 
@@ -283,8 +306,10 @@ Same as Dashboard sidebar. "Recent Chats" and "Your PDFs" sections hidden entire
 ```css
 background: linear-gradient(135deg, #8B5CF6, #6D28D9);
 color: #fff;
+position: relative;
+overflow: hidden;
 
-/* Glass overlay */
+/* Glass overlay — no fallback needed, design is dark-only */
 ::before {
   content: '';
   position: absolute;
@@ -303,10 +328,13 @@ font-weight: 600;
 
 /* Hover */
 hover: translateY(-1px);
+/* Press */
+active: scale(0.97);
 transition: all 200ms ease-out;
 ```
 
-**Use:** Primary CTAs only (Ask AI CTA, submit buttons in modals, start study actions)
+**Use:** Primary CTAs only (Ask AI CTA, submit buttons in modals, start study actions)  
+**Note:** No light-background fallback needed — design system is exclusively dark surfaces.
 
 #### Secondary Button (Ghost)
 ```css
@@ -324,6 +352,9 @@ hover: {
   transform: translateY(-1px);
   transition: 200ms ease-out;
 }
+/* Press — opacity not scale (less visual mass than primary) */
+active: opacity(0.7);
+transition: 100ms ease-in;
 ```
 
 **Use:** Secondary actions (View Analytics, Cancel, Back)
@@ -342,6 +373,9 @@ hover: {
   border-color: rgba(255,255,255,0.2);
   color: #e4e4e7;
 }
+/* Press — opacity not scale (small button, scale looks janky) */
+active: opacity(0.7);
+transition: 100ms ease-in;
 ```
 
 **Use:** Inline actions (+ New Chat pill, toolbar buttons)
@@ -373,26 +407,21 @@ border-left: 2px solid rgba(34,211,238,0.35);
 border-radius: 12px;
 padding: 16px;
 
-/* Inner glow */
-::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-left: 2px solid rgba(34,211,238,0.35);
-  border-radius: 12px;
-  box-shadow: inset 0 0 30px rgba(34,211,238,0.04);
-  pointer-events: none;
-}
+/* Inset glow applied directly on card — no ::before needed */
+box-shadow: inset 0 0 30px rgba(34,211,238,0.04);
 
-/* Progress mode variant: warmer gradient */
+/* Progress mode variant: warmer gradient, no cyan signal */
 background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(20,10,40,0.4));
 border: 1px solid rgba(139,92,246,0.18);
+box-shadow: none;
 ```
 
-**Use:** 2×2 or 2×3 hero slots only (Ask AI in Study mode, Your Brain in Progress mode)
+**Use:** 2×2 hero slot only (Ask AI in Study mode, Your Brain in Progress mode)  
+**Note:** Inset glow applies to Study mode hero only (cyan = AI signal). Progress mode hero has no cyan.
 
 #### AI Response Card
 ```css
+/* AI Coach card (standalone bento card — 3px border, only AI signal it has) */
 background: #111111;
 border: 1px solid rgba(255,255,255,0.06);
 border-left: 3px solid rgba(34,211,238,0.3);
@@ -400,14 +429,19 @@ border-radius: 10px;
 padding: 16px;
 box-shadow: 0 0 16px rgba(34,211,238,0.08);
 
-/* For message bubbles in drawer */
+/* Drawer message bubble (inline — 2px border, tighter context) */
+border-left: 2px solid rgba(34,211,238,0.35);
 padding: 5px 8px;
 border-radius: 0 6px 6px 0;
 background: rgba(34,211,238,0.02);
+box-shadow: none;
 ```
 
-**Use:** AI Coach card, AI responses in drawer, any content generated by AI
+**Border hierarchy:**
+- **3px** = AI Coach bento card. No gradient/glow background — border is its only AI signal, needs emphasis.
+- **2px** = Drawer responses + Hero card. Already surrounded by gradient/glow context that amplifies the signal.
 
+**Use:** AI Coach card, AI responses in drawer  
 **Important:** Never use on user-generated content (user inputs, quiz answers, uploaded PDFs)
 
 ---
@@ -510,10 +544,15 @@ applies to: all interactive cards
 
 #### Button Press
 ```css
-transform: scale(0.97);
+/* Primary button — scale down (has visual mass to absorb it) */
+active: scale(0.97);
 duration: 100ms;
 easing: ease-in;
-applies to: all buttons
+
+/* Ghost + Compact — opacity drop (less visual mass, scale looks janky) */
+active: opacity(0.7);
+duration: 100ms;
+easing: ease-in;
 ```
 
 #### Mode Switch (Study ↔ Progress)

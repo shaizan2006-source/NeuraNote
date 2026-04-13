@@ -1,7 +1,7 @@
 // src/components/AskAI/AskAISidebar.jsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
@@ -60,7 +60,8 @@ export default function AskAISidebar({
 }) {
   const router   = useRouter();
   const pathname = usePathname();
-  const { sidebarCollapsed, toggleSidebar } = useDashboard();
+  const { sidebarCollapsed, toggleSidebar, handleUpload, uploadStage } = useDashboard();
+  const uploadInputRef = useRef(null);
 
   const [hoveredItem, setHoveredItem] = useState(null);
   const [showTooltipFor, setShowTooltipFor] = useState(null);
@@ -104,6 +105,15 @@ export default function AskAISidebar({
       .then(data => setPdfs(Array.isArray(data) ? data : []))
       .catch(() => {});
   }, [userId]);
+
+  // Re-fetch PDFs when upload completes
+  useEffect(() => {
+    if (uploadStage !== "done" || !userId) return;
+    fetch(`/api/user-pdfs?user_id=${userId}`)
+      .then(r => r.json())
+      .then(data => setPdfs(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, [uploadStage, userId]);
 
   if (hydrated && isMobile) {
     return (
@@ -413,17 +423,59 @@ export default function AskAISidebar({
             exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
             style={{ padding: "0 10px", marginTop: 8, flex: 1 }}
           >
-            <button
-              onClick={() => setPdfsOpen(o => !o)}
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                width: "100%", background: "transparent", border: "none",
-                padding: "4px 0", cursor: "pointer", color: "#3f3f46",
-                fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
+            {/* Hidden file input */}
+            <input
+              ref={uploadInputRef}
+              type="file"
+              accept="application/pdf"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const f = e.target.files[0];
+                if (f) { handleUpload(f); e.target.value = ""; }
               }}
-            >
-              Your PDFs <ChevronIcon open={pdfsOpen} />
-            </button>
+            />
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0" }}>
+              <button
+                onClick={() => setPdfsOpen(o => !o)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 4,
+                  background: "transparent", border: "none",
+                  cursor: "pointer", color: "#3f3f46",
+                  fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
+                }}
+              >
+                Your PDFs <ChevronIcon open={pdfsOpen} />
+              </button>
+
+              <button
+                onClick={() => uploadInputRef.current?.click()}
+                disabled={uploadStage === "uploading" || uploadStage === "processing"}
+                style={{
+                  display: "flex", alignItems: "center", gap: 3,
+                  background: "transparent",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 4, padding: "2px 6px",
+                  fontSize: 8, fontWeight: 600, color: "#52525b",
+                  cursor: uploadStage === "uploading" || uploadStage === "processing" ? "not-allowed" : "pointer",
+                  opacity: uploadStage === "uploading" || uploadStage === "processing" ? 0.4 : 1,
+                  transition: "border-color 0.15s, color 0.15s",
+                  whiteSpace: "nowrap",
+                }}
+                onMouseEnter={e => {
+                  if (uploadStage === "uploading" || uploadStage === "processing") return;
+                  e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)";
+                  e.currentTarget.style.color = "#a78bfa";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                  e.currentTarget.style.color = "#52525b";
+                }}
+                title="Upload a PDF"
+              >
+                {uploadStage === "uploading" || uploadStage === "processing" ? "Uploading…" : "+ Upload"}
+              </button>
+            </div>
 
             <AnimatePresence>
               {pdfsOpen && (

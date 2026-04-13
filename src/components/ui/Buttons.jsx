@@ -5,7 +5,7 @@
 export function PrimaryButton({ children, onClick, style = {}, ...props }) {
   return (
     <button
-      onClick={onClick}
+      onClick={e => !props.disabled && onClick?.(e)}
       {...props}
       style={{
         position:       "relative",
@@ -17,14 +17,15 @@ export function PrimaryButton({ children, onClick, style = {}, ...props }) {
         fontSize:       11,
         fontWeight:     600,
         border:         "none",
-        cursor:         "pointer",
+        opacity:        props.disabled ? 0.5 : 1,
+        cursor:         props.disabled ? "not-allowed" : "pointer",
         transition:     "transform 200ms ease-out",
         ...style,
       }}
-      onMouseEnter={e => e.currentTarget.style.transform = "translateY(-1px)"}
-      onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
-      onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
-      onMouseUp={e => e.currentTarget.style.transform = "translateY(-1px)"}
+      onMouseEnter={e => !props.disabled && (e.currentTarget.style.transform = "translateY(-1px)")}
+      onMouseLeave={e => !props.disabled && (e.currentTarget.style.transform = "translateY(0)")}
+      onMouseDown={e => !props.disabled && (e.currentTarget.style.transform = "scale(0.97)")}
+      onMouseUp={e => !props.disabled && (e.currentTarget.style.transform = "translateY(-1px)")}
     >
       {/* Glass overlay */}
       <span style={{
@@ -45,7 +46,7 @@ export function PrimaryButton({ children, onClick, style = {}, ...props }) {
 export function SecondaryButton({ children, onClick, style = {}, ...props }) {
   return (
     <button
-      onClick={onClick}
+      onClick={e => !props.disabled && onClick?.(e)}
       {...props}
       style={{
         background:   "transparent",
@@ -55,22 +56,23 @@ export function SecondaryButton({ children, onClick, style = {}, ...props }) {
         borderRadius: 8,
         fontSize:     11,
         fontWeight:   600,
-        cursor:       "pointer",
+        opacity:      props.disabled ? 0.5 : 1,
+        cursor:       props.disabled ? "not-allowed" : "pointer",
         transition:   "all 200ms ease-out",
         ...style,
       }}
-      onMouseEnter={e => {
+      onMouseEnter={e => !props.disabled && (() => {
         e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)";
         e.currentTarget.style.color = "#c4b5fd";
         e.currentTarget.style.transform = "translateY(-1px)";
-      }}
-      onMouseLeave={e => {
+      })()}
+      onMouseLeave={e => !props.disabled && (() => {
         e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
         e.currentTarget.style.color = "#a1a1aa";
         e.currentTarget.style.transform = "translateY(0)";
-      }}
-      onMouseDown={e => e.currentTarget.style.opacity = "0.7"}
-      onMouseUp={e => e.currentTarget.style.opacity = "1"}
+      })()}
+      onMouseDown={e => !props.disabled && (e.currentTarget.style.opacity = "0.7")}
+      onMouseUp={e => !props.disabled && (e.currentTarget.style.opacity = "1")}
     >
       {children}
     </button>
@@ -81,7 +83,7 @@ export function SecondaryButton({ children, onClick, style = {}, ...props }) {
 export function CompactButton({ children, onClick, style = {}, ...props }) {
   return (
     <button
-      onClick={onClick}
+      onClick={e => !props.disabled && onClick?.(e)}
       {...props}
       style={{
         background:   "transparent",
@@ -91,23 +93,24 @@ export function CompactButton({ children, onClick, style = {}, ...props }) {
         borderRadius: 6,
         fontSize:     10,
         fontWeight:   600,
-        cursor:       "pointer",
+        opacity:      props.disabled ? 0.5 : 1,
+        cursor:       props.disabled ? "not-allowed" : "pointer",
         transition:   "all 100ms ease-in",
         display:      "flex",
         alignItems:   "center",
         gap:          4,
         ...style,
       }}
-      onMouseEnter={e => {
+      onMouseEnter={e => !props.disabled && (() => {
         e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
         e.currentTarget.style.color = "#e4e4e7";
-      }}
-      onMouseLeave={e => {
+      })()}
+      onMouseLeave={e => !props.disabled && (() => {
         e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)";
         e.currentTarget.style.color = "#a1a1aa";
-      }}
-      onMouseDown={e => e.currentTarget.style.opacity = "0.7"}
-      onMouseUp={e => e.currentTarget.style.opacity = "1"}
+      })()}
+      onMouseDown={e => !props.disabled && (e.currentTarget.style.opacity = "0.7")}
+      onMouseUp={e => !props.disabled && (e.currentTarget.style.opacity = "1")}
     >
       {children}
     </button>

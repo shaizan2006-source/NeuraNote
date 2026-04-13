@@ -320,6 +320,38 @@ export function DashboardProvider({ children }) {
   // ── showHistory ───────────────────────────────────────────────
   const [showHistory, setShowHistory] = useState(false);
 
+  // ── Dashboard mode: "study" | "progress" ─────────────────────
+  const [dashboardMode, setDashboardMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("dashboard_mode") || "study";
+    }
+    return "study";
+  });
+
+  function toggleDashboardMode() {
+    const next = dashboardMode === "study" ? "progress" : "study";
+    setDashboardMode(next);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("dashboard_mode", next);
+    }
+  }
+
+  // ── Sidebar collapsed state ───────────────────────────────────
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("sidebar_collapsed") === "true";
+    }
+    return false;
+  });
+
+  function toggleSidebar() {
+    setSidebarCollapsed(prev => {
+      const next = !prev;
+      if (typeof window !== "undefined") localStorage.setItem("sidebar_collapsed", String(next));
+      return next;
+    });
+  }
+
   // ================================================================
   // PURE UTILITIES
   // ================================================================
@@ -1256,6 +1288,8 @@ export function DashboardProvider({ children }) {
       chartType, setChartType,
       messages, input, setInput,
       showHistory, setShowHistory,
+      dashboardMode, toggleDashboardMode,
+      sidebarCollapsed, toggleSidebar,
       difficultyData, score,
       // Functions
       normalizeSubject, normalizeTopic, getDaysLeft, formatTime,

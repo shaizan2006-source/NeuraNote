@@ -298,7 +298,7 @@ function AutoScrollButton({ onClick }) {
       transition={{ duration: 0.18, ease: "easeOut" }}
       style={{
         position:             "absolute",
-        bottom:               76,
+        bottom:               76, // approx. pill input height (~60px) + 16px gap
         left:                 "50%",
         transform:            `translateX(-50%) translateY(${hovered ? "-1px" : "0"})`,
         width:                36,
@@ -747,9 +747,9 @@ export default function AskAISection({ fullPage = false, conversationId = null }
         <div ref={bottomSentinelRef} style={{ height: 0, flexShrink: 0 }} />
       </div>
 
-      {/* ── Scroll-to-bottom button ────────────────────── */}
+      {/* ── Scroll-to-bottom button (fullPage only — embedded card is too compact) ── */}
       <AnimatePresence>
-        {showScrollBtn && (
+        {fullPage && showScrollBtn && (
           <AutoScrollButton
             onClick={() => {
               scrollToBottom();

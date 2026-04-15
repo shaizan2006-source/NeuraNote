@@ -580,21 +580,25 @@ export default function AskAISection({ fullPage = false, conversationId = null }
 
   // Additive effect — shows button when new message arrives while user is scrolled up.
   // Does NOT auto-scroll. Existing shouldScrollRef effect handles scroll-on-send.
+  // Deferred 120ms so isNearBottom() reads after the sibling effect's 100ms scrollIntoView settles.
   useEffect(() => {
     if (messages.length === 0) return;
-    if (!isNearBottom()) {
-      if (!showScrollBtnRef.current) {
-        showScrollBtnRef.current = true;
-        setShowScrollBtn(true);
+    const id = setTimeout(() => {
+      if (!isNearBottom()) {
+        if (!showScrollBtnRef.current) {
+          showScrollBtnRef.current = true;
+          setShowScrollBtn(true);
+        }
+      } else {
+        if (showScrollBtnRef.current) {
+          showScrollBtnRef.current = false;
+          setShowScrollBtn(false);
+        }
       }
-    } else {
-      if (showScrollBtnRef.current) {
-        showScrollBtnRef.current = false;
-        setShowScrollBtn(false);
-      }
-    }
+    }, 120);
+    return () => clearTimeout(id);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages]);
+  }, [messages]); // isNearBottom/showScrollBtnRef are stable refs/closures — intentional
 
   const submitQuestion = async (q) => {
     const hasText = q.trim().length > 0;

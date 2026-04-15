@@ -376,6 +376,8 @@ export default function AskAISection({ fullPage = false, conversationId = null }
 
   const nextId = () => { nextIdRef.current += 1; return nextIdRef.current; };
 
+  // 200px threshold for the scroll button — intentionally wider than the 100px
+  // used by the auto-scroll guard so the button appears before auto-scroll kicks in.
   const isNearBottom = () => {
     const el = chatContainerRef.current;
     if (!el) return true;

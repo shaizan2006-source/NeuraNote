@@ -578,6 +578,24 @@ export default function AskAISection({ fullPage = false, conversationId = null }
     }, 100);
   }, [messages]);
 
+  // Additive effect — shows button when new message arrives while user is scrolled up.
+  // Does NOT auto-scroll. Existing shouldScrollRef effect handles scroll-on-send.
+  useEffect(() => {
+    if (messages.length === 0) return;
+    if (!isNearBottom()) {
+      if (!showScrollBtnRef.current) {
+        showScrollBtnRef.current = true;
+        setShowScrollBtn(true);
+      }
+    } else {
+      if (showScrollBtnRef.current) {
+        showScrollBtnRef.current = false;
+        setShowScrollBtn(false);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
+
   const submitQuestion = async (q) => {
     const hasText = q.trim().length > 0;
     const pdfs    = stagedFiles.filter(sf => sf.fileType === "pdf");

@@ -16,7 +16,7 @@ describe("isNearBottom", () => {
   it("returns true when at threshold boundary (199px from bottom)", () =>
     assert.equal(isNearBottom(1000, 701, 100), true));
 
-  it("returns false when beyond threshold (200px from bottom)", () =>
+  it("returns false when at exact threshold boundary (200px from bottom)", () =>
     assert.equal(isNearBottom(1000, 700, 100), false));
 
   it("returns false when far from bottom (500px from bottom)", () =>

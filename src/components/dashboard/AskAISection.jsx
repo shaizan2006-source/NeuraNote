@@ -429,6 +429,30 @@ export default function AskAISection({ fullPage = false, conversationId = null }
     return () => document.removeEventListener("mousedown", onOutside);
   }, [menuOpen]);
 
+  // Throttled scroll listener — shows/hides scroll-to-bottom button
+  useEffect(() => {
+    const el = chatContainerRef.current;
+    if (!el) return;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const near = isNearBottom();
+        if (!near !== showScrollBtnRef.current) {
+          showScrollBtnRef.current = !near;
+          setShowScrollBtn(!near);
+        }
+        ticking = false;
+      });
+    };
+
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // chatContainerRef is assigned once on mount — stable ref
+
   // Load conversation messages when conversationId changes
   useEffect(() => {
     if (!conversationId) return;

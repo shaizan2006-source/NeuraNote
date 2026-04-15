@@ -665,8 +665,8 @@ export default function AskAISection({ fullPage = false, conversationId = null }
       id="section-ask"
       className={fullPage ? undefined : "section-card"}
       style={fullPage
-        ? { display: "flex", flexDirection: "column", height: "100%", padding: "20px 0 16px" }
-        : { marginTop: 0, padding: 24 }
+        ? { display: "flex", flexDirection: "column", height: "100%", padding: "20px 0 16px", position: "relative" }
+        : { marginTop: 0, padding: 24, position: "relative" }
       }
     >
 
@@ -743,7 +743,22 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 isExporting={isExporting}
               />;
         })}
+        {/* Scroll-to-bottom sentinel — zero-height, used as scrollIntoView target */}
+        <div ref={bottomSentinelRef} style={{ height: 0, flexShrink: 0 }} />
       </div>
+
+      {/* ── Scroll-to-bottom button ────────────────────── */}
+      <AnimatePresence>
+        {showScrollBtn && (
+          <AutoScrollButton
+            onClick={() => {
+              scrollToBottom();
+              showScrollBtnRef.current = false;
+              setShowScrollBtn(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* ── Input area ─────────────────────────────────────── */}
       {/*

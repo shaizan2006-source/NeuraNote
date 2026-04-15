@@ -367,11 +367,24 @@ export default function AskAISection({ fullPage = false, conversationId = null }
   const fileInputRef     = useRef(null);
   const imageInputRef    = useRef(null);
   const menuRef          = useRef(null);
+  const showScrollBtnRef  = useRef(false);   // mirror of showScrollBtn — avoids stale closure in scroll handler
+  const bottomSentinelRef = useRef(null);    // zero-height div at end of messages list — scroll target
 
   const [menuOpen,    setMenuOpen]    = useState(false);
   const [menuHovered, setMenuHovered] = useState(null);
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
 
   const nextId = () => { nextIdRef.current += 1; return nextIdRef.current; };
+
+  const isNearBottom = () => {
+    const el = chatContainerRef.current;
+    if (!el) return true;
+    return el.scrollHeight - el.scrollTop - el.clientHeight < 200;
+  };
+
+  const scrollToBottom = () => {
+    bottomSentinelRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  };
 
   // ── File handling ─────────────────────────────────────────────
   // autoResize — called via useLayoutEffect so it runs after React commits

@@ -568,8 +568,8 @@ export default function AskAISection({ fullPage = false, conversationId = null }
 
     const container = chatContainerRef.current;
     if (container) {
-      const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-      if (!isNearBottom) return; // user scrolled up — don't override
+      const withinScrollGuard = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+      if (!withinScrollGuard) return; // user scrolled up — don't override
     }
 
     const target = lastUserMsgRef.current;

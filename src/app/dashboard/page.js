@@ -1,162 +1,67 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { DashboardProvider, useDashboard } from "@/context/DashboardContext";
+import { DrawerProvider } from "@/context/DrawerContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import GreetingRow from "@/components/Dashboard/GreetingRow";
+import BentoGrid from "@/components/Dashboard/BentoGrid";
+import QuickChatDrawer from "@/components/QuickChat/QuickChatDrawer";
 import MilestoneToast, { checkMilestones } from "@/components/ui/MilestoneToast";
-import BrainSection from "@/components/dashboard/BrainSection";
-import StudyPlanSection from "@/components/dashboard/StudyPlanSection";
-import QuizSection from "@/components/dashboard/QuizSection";
-import ExamSection from "@/components/dashboard/ExamSection";
-import FocusModeSection from "@/components/dashboard/FocusModeSection";
-import AnalyticsSection from "@/components/dashboard/AnalyticsSection";
-import AICoachSection from "@/components/dashboard/AICoachSection";
-import VoiceCallSection from "@/components/dashboard/VoiceCallSection";
-import WeeklyRecapCard from "@/components/dashboard/WeeklyRecapCard";
+import { useEffect } from "react";
+import { useActivePDF } from "@/hooks/useActivePDF";
 
-// ── Tab definitions ───────────────────────────────────────────────
-const TABS = [
-  { id: "study",    label: "Study",    icon: "💬" },
-  { id: "practice", label: "Practice", icon: "⚡" },
-  { id: "analyze",  label: "Analyze",  icon: "📊" },
-];
-
-// ── Tab content ───────────────────────────────────────────────────
-function StudyTab() {
-  return (
-    <>
-      <WeeklyRecapCard />
-      <ErrorBoundary label="AI Coach">
-        <AICoachSection />
-      </ErrorBoundary>
-    </>
-  );
-}
-
-function PracticeTab() {
-  return (
-    <>
-      <ErrorBoundary label="Quiz">
-        <QuizSection />
-      </ErrorBoundary>
-      <ErrorBoundary label="Your Brain">
-        <BrainSection />
-      </ErrorBoundary>
-      <ErrorBoundary label="Study Plans">
-        <StudyPlanSection />
-      </ErrorBoundary>
-    </>
-  );
-}
-
-function AnalyzeTab() {
-  return (
-    <>
-      <ErrorBoundary label="Analytics">
-        <AnalyticsSection />
-      </ErrorBoundary>
-      <ErrorBoundary label="Exam Countdown">
-        <ExamSection />
-      </ErrorBoundary>
-      <ErrorBoundary label="Focus Mode">
-        <FocusModeSection />
-      </ErrorBoundary>
-      <ErrorBoundary label="Voice AI Tutor">
-        <VoiceCallSection />
-      </ErrorBoundary>
-    </>
-  );
-}
-
-// ── Inner dashboard (reads activeTab from context) ────────────────
 function DashboardInner() {
-  const { activeTab, setActiveTab, streak, progressQuestions, masteryTopics } = useDashboard();
-  const scrollRef = useRef(null);
+  const { streak, progressQuestions, masteryTopics, user } = useDashboard();
+  const userId = user?.id;
+  const { activePdf } = useActivePDF(userId);
+  const userName = user?.user_metadata?.full_name?.split(" ")[0] || "there";
 
-  // Fire milestone checks whenever key stats change
   useEffect(() => {
     checkMilestones({ streak, progressQuestions, masteryTopics: masteryTopics?.length ?? 0 });
   }, [streak, progressQuestions, masteryTopics]);
 
-  const handleTabChange = (id) => {
-    setActiveTab(id);
-    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
-    <div className="dashboard-layout">
+    <div style={{
+      display:    "flex",
+      height:     "100vh",
+      overflow:   "hidden",
+      background: "linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%)",
+    }}>
       <MilestoneToast />
+
       <ErrorBoundary label="Sidebar">
         <DashboardSidebar />
       </ErrorBoundary>
 
-      <div className="dashboard-main" ref={scrollRef}>
+      {/* Main area */}
+      <div style={{
+        flex:          1,
+        display:       "flex",
+        flexDirection: "column",
+        padding:       "24px",
+        overflow:      "hidden",
+        minWidth:      0,
+      }}>
+        <GreetingRow userName={userName} />
 
-        {/* ── Header ─────────────────────────────────────────────── */}
-        <div style={{ marginBottom: 24 }}>
-          <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "var(--text-primary)" }}>
-            Ask My Notes
-          </h1>
-          <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--text-muted)" }}>
-            Your AI-powered study companion
-          </p>
-        </div>
-
-        {/* ── Tab bar ────────────────────────────────────────────── */}
-        <div className="tab-bar" role="tablist">
-          {TABS.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                role="tab"
-                aria-selected={isActive}
-                className={`tab-btn${isActive ? " active" : ""}`}
-                onClick={() => handleTabChange(tab.id)}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="tab-indicator"
-                    className="tab-indicator"
-                    transition={{ type: "spring", stiffness: 420, damping: 30 }}
-                  />
-                )}
-                <span style={{ position: "relative", zIndex: 1 }}>{tab.icon}</span>
-                <span className="tab-label" style={{ position: "relative", zIndex: 1 }}>
-                  {tab.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* ── Tab content with animated transition ───────────────── */}
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-          >
-            {activeTab === "study"    && <StudyTab />}
-            {activeTab === "practice" && <PracticeTab />}
-            {activeTab === "analyze"  && <AnalyzeTab />}
-          </motion.div>
-        </AnimatePresence>
-
+        <ErrorBoundary label="BentoGrid">
+          <BentoGrid activePdf={activePdf} />
+        </ErrorBoundary>
       </div>
+
+      {/* QuickChat drawer (fixed overlay) */}
+      <QuickChatDrawer userId={userId} />
     </div>
   );
 }
 
-// ── Page root ─────────────────────────────────────────────────────
 export default function DashboardPage() {
   return (
     <DashboardProvider>
-      <DashboardInner />
+      <DrawerProvider>
+        <DashboardInner />
+      </DrawerProvider>
     </DashboardProvider>
   );
 }

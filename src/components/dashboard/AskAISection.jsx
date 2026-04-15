@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
 import ThinkingAnimation from "@/components/ThinkingAnimation";
@@ -173,9 +173,161 @@ function AIMessage({ msg, isLast, onExport, isExporting }) {
   );
 }
 
+// ── Upload menu icons ────────────────────────────────────────────
+function PaperclipIcon() {
+  return (
+    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+    </svg>
+  );
+}
+function ImageFileIcon({ size = 14 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <circle cx="8.5" cy="8.5" r="1.5"/>
+      <polyline points="21 15 16 10 5 21"/>
+    </svg>
+  );
+}
+function PDFFileIcon() {
+  return (
+    <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+    </svg>
+  );
+}
+function DocFileIcon() {
+  return (
+    <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="12" y1="18" x2="8" y2="18"/>
+      <line x1="16" y1="14" x2="8" y2="14"/>
+    </svg>
+  );
+}
+function SpinnerIcon({ size = 13 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ animation: "askmySpin 0.75s linear infinite", flexShrink: 0 }}>
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25"/>
+      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+function FileChip({ sf, onRemove, isUploading }) {
+  const isPdf   = sf.fileType === "pdf";
+  const isImage = sf.fileType === "image";
+  const iconColor = isPdf ? "#a78bfa" : isImage ? "#22D3EE" : "#71717a";
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.88, y: 3 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.88, y: 3 }}
+      transition={{ duration: 0.15 }}
+      style={{
+        display:      "flex",
+        alignItems:   "center",
+        gap:          6,
+        padding:      "5px 7px 5px 9px",
+        borderRadius: 8,
+        background:   "rgba(255,255,255,0.05)",
+        border:       "1px solid rgba(255,255,255,0.09)",
+        fontSize:     12,
+        color:        "#e4e4e7",
+        maxWidth:     220,
+        flexShrink:   0,
+      }}
+    >
+      <span style={{ color: iconColor, flexShrink: 0, display: "flex" }}>
+        {isUploading
+          ? <SpinnerIcon size={13} />
+          : isPdf ? <PDFFileIcon /> : isImage ? <ImageFileIcon size={13} /> : <DocFileIcon />
+        }
+      </span>
+      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0, color: "#d4d4d8" }}>
+        {sf.name}
+      </span>
+      <button
+        onClick={() => onRemove(sf.id)}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          background:  "transparent",
+          border:      "none",
+          cursor:      "pointer",
+          color:       hovered ? "#e4e4e7" : "#52525b",
+          padding:     "0 2px",
+          lineHeight:  1,
+          fontSize:    12,
+          display:     "flex",
+          alignItems:  "center",
+          flexShrink:  0,
+          transition:  "color 0.1s",
+        }}
+        title="Remove"
+      >✕</button>
+    </motion.div>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+
+function AutoScrollButton({ onClick }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8 }}
+      transition={{ duration: 0.18, ease: "easeOut" }}
+      style={{
+        position:             "absolute",
+        bottom:               76, // approx. pill input height (~60px) + 16px gap
+        left:                 "50%",
+        transform:            `translateX(-50%) translateY(${hovered ? "-1px" : "0"})`,
+        width:                36,
+        height:               36,
+        borderRadius:         "50%",
+        background:           "rgba(28,28,32,0.92)",
+        border:               `1px solid ${hovered ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.12)"}`,
+        boxShadow:            "0 4px 16px rgba(0,0,0,0.45)",
+        display:              "flex",
+        alignItems:           "center",
+        justifyContent:       "center",
+        cursor:               "pointer",
+        color:                "#a1a1aa",
+        zIndex:               20,
+        backdropFilter:       "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+        padding:              0,
+        transition:           "border-color 0.15s, transform 0.15s",
+      }}
+      aria-label="Scroll to bottom"
+    >
+      <ChevronDownIcon />
+    </motion.button>
+  );
+}
+
 // ── Main component ───────────────────────────────────────────────
 
-export default function AskAISection({ fullPage = false }) {
+export default function AskAISection({ fullPage = false, conversationId = null }) {
   const {
     question, setQuestion,
     answer,
@@ -187,20 +339,21 @@ export default function AskAISection({ fullPage = false }) {
     enqueue,
     queue,
     // Upload — reuse existing context logic
-    file: ctxFile, setFile: ctxSetFile,
+    setFile: ctxSetFile,
     uploadStage, setUploadStage,
-    uploadProgress, uploadedFileName,
     isDragging, setIsDragging,
-    handleUpload, cancelUpload,
+    handleUpload,
   } = useDashboard();
 
   const [isFocused,   setIsFocused]   = useState(false);
+  const [isHovered,   setIsHovered]   = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [messages,    setMessages]    = useState([]);
   const [classification, setClassification] = useState(null);
 
-  // Staged file — the PDF the user attached but hasn't sent yet
-  const [stagedFile, setStagedFile] = useState(null);
+  // Staged files — files the user attached but hasn't sent yet
+  const [stagedFiles, setStagedFiles] = useState([]);
+  const stagedFileIdRef = useRef(0);
 
   const nextIdRef      = useRef(0);
   const aiMsgIdRef     = useRef(null);
@@ -210,33 +363,121 @@ export default function AskAISection({ fullPage = false }) {
   const lastUserMsgRef   = useRef(null);
   const shouldScrollRef  = useRef(false);
   const chatContainerRef = useRef(null);
+  const textareaRef      = useRef(null);
   const fileInputRef     = useRef(null);
+  const imageInputRef    = useRef(null);
+  const menuRef          = useRef(null);
+  const showScrollBtnRef  = useRef(false);   // mirror of showScrollBtn — avoids stale closure in scroll handler
+  const bottomSentinelRef = useRef(null);    // zero-height div at end of messages list — scroll target
+
+  const [menuOpen,    setMenuOpen]    = useState(false);
+  const [menuHovered, setMenuHovered] = useState(null);
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
 
   const nextId = () => { nextIdRef.current += 1; return nextIdRef.current; };
 
+  // 200px threshold for the scroll button — intentionally wider than the 100px
+  // used by the auto-scroll guard so the button appears before auto-scroll kicks in.
+  const isNearBottom = () => {
+    const el = chatContainerRef.current;
+    if (!el) return true;
+    return el.scrollHeight - el.scrollTop - el.clientHeight < 200;
+  };
+
+  const scrollToBottom = () => {
+    bottomSentinelRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  };
+
   // ── File handling ─────────────────────────────────────────────
+  // autoResize — called via useLayoutEffect so it runs after React commits
+  // new DOM value to the textarea, before the browser paints. Using "auto"
+  // lets the UA restore its intrinsic height so scrollHeight is accurate.
+  const autoResize = () => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    ta.style.height    = "auto";
+    const h = ta.scrollHeight;
+    ta.style.height    = Math.min(h, 160) + "px";
+    ta.style.overflowY = h > 160 ? "auto" : "hidden";
+  };
+
   const handleFileSelect = (f) => {
     if (!f) return;
-    if (f.type !== "application/pdf") {
-      alert("Only PDF files are supported.");
-      return;
-    }
-    if (f.size > 20 * 1024 * 1024) {
-      alert("File too large. Max 20MB.");
-      return;
-    }
-    setStagedFile(f);
+    if (f.size > 20 * 1024 * 1024) { alert("File too large. Max 20MB."); return; }
+    if (stagedFiles.some(s => s.name === f.name)) return; // deduplicate
+    const fileType = f.type === "application/pdf" ? "pdf"
+      : f.type.startsWith("image/") ? "image" : "doc";
+    stagedFileIdRef.current += 1;
+    setStagedFiles(prev => [...prev, {
+      id: stagedFileIdRef.current,
+      file: f, name: f.name, size: f.size,
+      fileType, status: "staged",
+    }]);
   };
 
-  const removeStagedFile = () => {
-    setStagedFile(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+  const removeStagedFile = (id) => {
+    setStagedFiles(prev => prev.filter(s => s.id !== id));
   };
 
-  // When upload completes, clear the staged file
+  // Close menu on outside click
   useEffect(() => {
-    if (uploadStage === "done") setStagedFile(null);
+    if (!menuOpen) return;
+    function onOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", onOutside);
+    return () => document.removeEventListener("mousedown", onOutside);
+  }, [menuOpen]);
+
+  // Throttled scroll listener — shows/hides scroll-to-bottom button
+  useEffect(() => {
+    const el = chatContainerRef.current;
+    if (!el) return;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const near = isNearBottom();
+        if (!near !== showScrollBtnRef.current) {
+          showScrollBtnRef.current = !near;
+          setShowScrollBtn(!near);
+        }
+        ticking = false;
+      });
+    };
+
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // chatContainerRef is assigned once on mount — stable ref
+
+  // Load conversation messages when conversationId changes
+  useEffect(() => {
+    if (!conversationId) return;
+    fetch(`/api/conversations/${conversationId}`)
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data.messages)) return;
+        const loaded = data.messages.map((m, i) => ({
+          id: i + 1,
+          role: m.role,
+          text: m.content,
+        }));
+        setMessages(loaded);
+        nextIdRef.current = loaded.length + 1;
+      })
+      .catch(() => {});
+  }, [conversationId]);
+
+  // When upload completes, clear all staged files
+  useEffect(() => {
+    if (uploadStage === "done") setStagedFiles([]);
   }, [uploadStage]);
+
+  // useLayoutEffect fires after React commits but before paint — no height flash
+  useLayoutEffect(() => { autoResize(); }, [question]);
 
   // Safety net: if AI response finishes but upload UI is still stuck,
   // force-complete it. Only fires on true asking→false transitions, not on mount.
@@ -327,8 +568,8 @@ export default function AskAISection({ fullPage = false }) {
 
     const container = chatContainerRef.current;
     if (container) {
-      const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-      if (!isNearBottom) return; // user scrolled up — don't override
+      const withinScrollGuard = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+      if (!withinScrollGuard) return; // user scrolled up — don't override
     }
 
     const target = lastUserMsgRef.current;
@@ -337,44 +578,63 @@ export default function AskAISection({ fullPage = false }) {
     }, 100);
   }, [messages]);
 
+  // Additive effect — shows button when new message arrives while user is scrolled up.
+  // Does NOT auto-scroll. Existing shouldScrollRef effect handles scroll-on-send.
+  // Deferred 120ms so isNearBottom() reads after the sibling effect's 100ms scrollIntoView settles.
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const id = setTimeout(() => {
+      if (!isNearBottom()) {
+        if (!showScrollBtnRef.current) {
+          showScrollBtnRef.current = true;
+          setShowScrollBtn(true);
+        }
+      } else {
+        if (showScrollBtnRef.current) {
+          showScrollBtnRef.current = false;
+          setShowScrollBtn(false);
+        }
+      }
+    }, 120);
+    return () => clearTimeout(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]); // isNearBottom/showScrollBtnRef are stable refs/closures — intentional
+
   const submitQuestion = async (q) => {
     const hasText = q.trim().length > 0;
-    const hasFile = !!stagedFile;
-    if (!hasText && !hasFile) return;
+    const pdfs    = stagedFiles.filter(sf => sf.fileType === "pdf");
+    const hasPDF  = pdfs.length > 0;
+    if (!hasText && !hasPDF) return;
 
     if (messages.length > 0) shouldScrollRef.current = true;
 
-    // Show user message immediately (don't wait for upload)
     if (hasText) {
       currentQRef.current = q;
       setMessages(prev => [...prev, { id: nextId(), role: "user", text: q }]);
     }
 
-    // If a file is staged, upload it and wait for documentId before
-    // enqueueing the question — otherwise the AI answers without PDF context.
-    if (hasFile) {
-      const pendingFile = stagedFile;
-      ctxSetFile(pendingFile);
-      setStagedFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+    // Upload PDFs sequentially — last one's documentId is used for the query
+    if (hasPDF) {
+      for (const sf of pdfs) {
+        setStagedFiles(prev => prev.map(s => s.id === sf.id ? { ...s, status: "uploading" } : s));
+        ctxSetFile(sf.file);
+        if (fileInputRef.current) fileInputRef.current.value = "";
 
-      // Show a temporary "processing PDF" thinking bubble so UI never looks stuck
-      if (hasText) {
-        const uploadMsgId = nextId();
-        setMessages(prev => [...prev, {
-          id: uploadMsgId, role: "ai", text: "",
-          thinking: true, done: false, uploadPending: true,
-          classification: null, sources: [], downloadUrl: null,
-        }]);
-        await handleUpload(pendingFile);
-        // Remove the temporary thinking bubble — the real AI bubble will replace it
-        setMessages(prev => prev.filter(m => m.id !== uploadMsgId));
-      } else {
-        await handleUpload(pendingFile);
+        if (hasText) {
+          const uploadMsgId = nextId();
+          setMessages(prev => [...prev, {
+            id: uploadMsgId, role: "ai", text: "",
+            thinking: true, done: false, uploadPending: true,
+            classification: null, sources: [], downloadUrl: null,
+          }]);
+          await handleUpload(sf.file);
+          setMessages(prev => prev.filter(m => m.id !== uploadMsgId));
+        } else {
+          await handleUpload(sf.file);
+        }
       }
     }
 
-    // Enqueue after upload completes so documentId is available
     if (hasText) {
       enqueue(q);
     }
@@ -405,8 +665,8 @@ export default function AskAISection({ fullPage = false }) {
       id="section-ask"
       className={fullPage ? undefined : "section-card"}
       style={fullPage
-        ? { display: "flex", flexDirection: "column", height: "100%", padding: "20px 0 16px" }
-        : { marginTop: 0, padding: 24 }
+        ? { display: "flex", flexDirection: "column", height: "100%", padding: "20px 0 16px", position: "relative" }
+        : { marginTop: 0, padding: 24, position: "relative" }
       }
     >
 
@@ -483,273 +743,347 @@ export default function AskAISection({ fullPage = false }) {
                 isExporting={isExporting}
               />;
         })}
+        {/* Scroll-to-bottom sentinel — zero-height, used as scrollIntoView target */}
+        <div ref={bottomSentinelRef} style={{ height: 0, flexShrink: 0 }} />
       </div>
 
-      {/* ── Input area (ChatGPT/Claude style) ─────────────── */}
+      {/* ── Scroll-to-bottom button (fullPage only — embedded card is too compact) ── */}
+      <AnimatePresence>
+        {fullPage && showScrollBtn && (
+          <AutoScrollButton
+            onClick={() => {
+              scrollToBottom();
+              showScrollBtnRef.current = false;
+              setShowScrollBtn(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ── Input area ─────────────────────────────────────── */}
+      {/*
+        Architecture: outer wrapper (position:relative) holds the floating menu
+        as a sibling of the pill. The pill itself gets overflow:hidden so content
+        is always clipped to the rounded shape. The menu lives OUTSIDE the pill
+        so overflow:hidden doesn't clip it.
+      */}
       <div
-        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-        onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
-        onDrop={(e) => {
-          e.preventDefault();
-          setIsDragging(false);
-          const f = e.dataTransfer.files[0];
-          if (f) handleFileSelect(f);
-        }}
-        style={{
-          position:     "relative",
-          border:       `1px solid ${isDragging ? "var(--brand)" : isFocused ? "var(--brand)" : "var(--border-strong)"}`,
-          borderRadius: 12,
-          background:   isDragging ? "rgba(99,102,241,0.06)" : "var(--surface-raised)",
-          transition:   "border-color 0.18s, box-shadow 0.18s, background 0.18s",
-          boxShadow:    isFocused ? "0 0 0 3px var(--brand-glow)" : "none",
-        }}
+        ref={menuRef}
+        style={{ maxWidth: 580, margin: "0 auto", width: "100%", position: "relative" }}
       >
-        {/* Hidden file input */}
+        {/* Hidden file inputs — outside pill so they're never clipped */}
         <input
           ref={fileInputRef}
           type="file"
-          accept="application/pdf"
+          accept="application/pdf,.doc,.docx,.txt"
           style={{ display: "none" }}
-          onChange={(e) => {
-            const f = e.target.files[0];
-            if (f) handleFileSelect(f);
-          }}
+          onChange={(e) => { const f = e.target.files[0]; if (f) handleFileSelect(f); e.target.value = ""; }}
+        />
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={(e) => { const f = e.target.files[0]; if (f) handleFileSelect(f); e.target.value = ""; }}
         />
 
-        {/* Staged file chip — shows above textarea when a PDF is attached */}
+        {/* ── Floating attach menu — SIBLING of pill, not inside it ── */}
         <AnimatePresence>
-          {stagedFile && uploadStage !== "uploading" && uploadStage !== "processing" && (
+          {menuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.15 }}
-              style={{ overflow: "hidden" }}
+              initial={{ opacity: 0, scale: 0.94, y: 6 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 6 }}
+              transition={{ duration: 0.13, ease: "easeOut" }}
+              style={{
+                position:             "absolute",
+                bottom:               "calc(100% + 6px)",
+                left:                 10,
+                background:           "rgba(18,18,20,0.97)",
+                backdropFilter:       "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                border:               "1px solid rgba(255,255,255,0.08)",
+                borderRadius:         12,
+                boxShadow:            "0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.2)",
+                minWidth:             176,
+                overflow:             "hidden",
+                zIndex:               100,
+              }}
             >
-              <div style={{
-                display:      "flex",
-                alignItems:   "center",
-                gap:          8,
-                padding:      "8px 12px 0",
-              }}>
-                <div style={{
-                  display:      "flex",
-                  alignItems:   "center",
-                  gap:          8,
-                  padding:      "6px 10px",
-                  borderRadius: 8,
-                  background:   "rgba(124,58,237,0.1)",
-                  border:       "1px solid rgba(124,58,237,0.25)",
-                  fontSize:     12,
-                  color:        "#a78bfa",
-                  fontWeight:   600,
-                  maxWidth:     "80%",
-                }}>
-                  <span style={{ fontSize: 14, flexShrink: 0 }}>📄</span>
-                  <span style={{
-                    overflow:     "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace:   "nowrap",
-                  }}>
-                    {stagedFile.name}
-                  </span>
-                  <span style={{ color: "var(--text-muted)", fontWeight: 400, flexShrink: 0 }}>
-                    ({(stagedFile.size / 1024).toFixed(0)} KB)
-                  </span>
-                  <button
-                    onClick={removeStagedFile}
-                    style={{
-                      background:   "transparent",
-                      border:       "none",
-                      color:        "var(--text-muted)",
-                      cursor:       "pointer",
-                      fontSize:     13,
-                      padding:      "0 2px",
-                      lineHeight:   1,
-                      flexShrink:   0,
-                    }}
-                    title="Remove file"
-                  >
-                    ✕
-                  </button>
-                </div>
-              </div>
+              <button
+                onClick={() => { setMenuOpen(false); fileInputRef.current?.click(); }}
+                onMouseEnter={() => setMenuHovered("files")}
+                onMouseLeave={() => setMenuHovered(null)}
+                style={{
+                  display:    "flex",
+                  alignItems: "center",
+                  gap:        10,
+                  width:      "100%",
+                  padding:    "9px 14px",
+                  background: menuHovered === "files" ? "rgba(255,255,255,0.06)" : "transparent",
+                  border:     "none",
+                  cursor:     "pointer",
+                  color:      "#e4e4e7",
+                  fontSize:   13,
+                  textAlign:  "left",
+                  transition: "background 0.1s",
+                }}
+              >
+                <span style={{ color: "#71717a", flexShrink: 0, display: "flex" }}><PaperclipIcon /></span>
+                Add files
+              </button>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "0 8px" }} />
+              <button
+                onClick={() => { setMenuOpen(false); imageInputRef.current?.click(); }}
+                onMouseEnter={() => setMenuHovered("image")}
+                onMouseLeave={() => setMenuHovered(null)}
+                style={{
+                  display:    "flex",
+                  alignItems: "center",
+                  gap:        10,
+                  width:      "100%",
+                  padding:    "9px 14px",
+                  background: menuHovered === "image" ? "rgba(255,255,255,0.06)" : "transparent",
+                  border:     "none",
+                  cursor:     "pointer",
+                  color:      "#e4e4e7",
+                  fontSize:   13,
+                  textAlign:  "left",
+                  transition: "background 0.1s",
+                }}
+              >
+                <span style={{ color: "#71717a", flexShrink: 0, display: "flex" }}><ImageFileIcon /></span>
+                Add image
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Inline upload progress — replaces the chip while uploading */}
-        <AnimatePresence>
-          {(uploadStage === "uploading" || uploadStage === "processing") && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.15 }}
-              style={{ overflow: "hidden" }}
-            >
-              <div style={{ padding: "10px 14px 2px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                  <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600 }}>
-                    {uploadStage === "processing" ? "Processing PDF..." : "Uploading PDF..."}
-                  </span>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 12, color: "#a855f7", fontWeight: 700 }}>{uploadProgress}%</span>
-                    <button
-                      onClick={cancelUpload}
-                      style={{
-                        background: "transparent",
-                        border:     "none",
-                        color:      "var(--text-muted)",
-                        cursor:     "pointer",
-                        fontSize:   11,
-                        padding:    "2px 4px",
-                      }}
-                      title="Cancel upload"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </div>
-                <div style={{
-                  height:       4,
-                  borderRadius: 99,
-                  overflow:     "hidden",
-                  background:   "rgba(255,255,255,0.06)",
-                }}>
-                  <div style={{
-                    height:       "100%",
-                    borderRadius: 99,
-                    width:        `${uploadProgress}%`,
-                    transition:   "width 0.18s linear",
-                    background:   "linear-gradient(90deg, #4f46e5, #7c3aed, #a855f7)",
-                  }} />
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Drag overlay hint */}
-        {isDragging && (
-          <div style={{
-            position:       "absolute",
-            inset:          0,
-            borderRadius:   12,
-            display:        "flex",
-            alignItems:     "center",
-            justifyContent: "center",
-            background:     "rgba(99,102,241,0.08)",
-            zIndex:         2,
-            pointerEvents:  "none",
-          }}>
-            <span style={{ fontSize: 13, fontWeight: 600, color: "var(--brand)" }}>
-              Drop PDF here
-            </span>
-          </div>
-        )}
-
-        {/* Textarea row with attach button */}
-        <div style={{ display: "flex", alignItems: "flex-end" }}>
-          {/* Attach button */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadStage === "uploading" || uploadStage === "processing"}
-            style={{
-              background:     "transparent",
-              border:         "none",
-              cursor:         uploadStage === "uploading" || uploadStage === "processing" ? "not-allowed" : "pointer",
-              padding:        "10px 4px 10px 12px",
-              fontSize:       18,
-              color:          stagedFile ? "#a78bfa" : "var(--text-muted)",
-              flexShrink:     0,
-              display:        "flex",
-              alignItems:     "center",
-              transition:     "color 0.15s",
-              opacity:        uploadStage === "uploading" || uploadStage === "processing" ? 0.4 : 1,
-            }}
-            title="Attach PDF"
-          >
-            📎
-          </motion.button>
-
-          <textarea
-            placeholder={stagedFile ? "Add a message about this PDF…" : "Ask any academic question"}
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                if (question.trim() || stagedFile) { submitQuestion(question); setQuestion(""); }
-              }
-            }}
-            onPaste={(e) => {
-              const files = e.clipboardData?.files;
-              if (files && files.length > 0) {
-                const f = files[0];
-                if (f.type === "application/pdf") {
-                  e.preventDefault();
-                  handleFileSelect(f);
-                }
-              }
-            }}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            rows={3}
-            style={{
-              flex:         1,
-              padding:      "14px 52px 14px 4px",
-              background:   "transparent",
-              color:        "var(--text-primary)",
-              border:       "none",
-              fontSize:     14,
-              lineHeight:   1.6,
-              resize:       "none",
-              outline:      "none",
-              boxSizing:    "border-box",
-              fontFamily:   "inherit",
-            }}
-          />
-
-          {/* Send / Stop button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.93 }}
-            onClick={asking ? () => setAsking(false) : () => { submitQuestion(question); setQuestion(""); }}
-            disabled={!asking && !question.trim() && !stagedFile}
-            style={{
+        {/* ── Pill container — overflow:hidden clips everything to rounded shape ── */}
+        <div
+          onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+          onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
+          onDrop={(e) => {
+            e.preventDefault();
+            setIsDragging(false);
+            const f = e.dataTransfer.files[0];
+            if (f) handleFileSelect(f);
+          }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          style={{
+            position:             "relative",
+            borderRadius:         9999,
+            overflow:             "hidden",   // THE fix — clips content to pill shape
+            background:           isDragging
+              ? "rgba(99,102,241,0.08)"
+              : "rgba(255,255,255,0.04)",
+            backdropFilter:       "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            border:               `1px solid ${
+              isDragging || isFocused
+                ? "rgba(34,211,238,0.5)"
+                : isHovered
+                  ? "rgba(34,211,238,0.25)"
+                  : "rgba(255,255,255,0.08)"
+            }`,
+            boxShadow:            isDragging || isFocused
+              ? "0 0 0 3px rgba(34,211,238,0.08), 0 8px 32px rgba(0,0,0,0.3)"
+              : isHovered
+                ? "0 4px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(34,211,238,0.08)"
+                : "0 2px 12px rgba(0,0,0,0.2)",
+            transform:            isHovered && !isFocused ? "translateY(-1px)" : "translateY(0)",
+            transition:           "border-color 0.2s, box-shadow 0.2s, background 0.2s, transform 0.2s",
+          }}
+        >
+          {/* Drag-over overlay */}
+          {isDragging && (
+            <div style={{
               position:       "absolute",
-              right:          10,
-              bottom:         10,
-              width:          36,
-              height:         36,
-              borderRadius:   9,
-              border:         "none",
-              background:     asking
-                ? "linear-gradient(135deg, var(--red), var(--red-dark))"
-                : (!question.trim() && !stagedFile)
-                  ? "var(--border-default)"
-                  : "linear-gradient(135deg, var(--brand), #4f46e5)",
-              color:          !asking && !question.trim() && !stagedFile ? "var(--text-faint)" : "#fff",
-              fontSize:       15,
-              cursor:         !asking && !question.trim() && !stagedFile ? "not-allowed" : "pointer",
+              inset:          0,
               display:        "flex",
               alignItems:     "center",
               justifyContent: "center",
-              boxShadow:      asking || question.trim() || stagedFile ? "0 2px 10px var(--brand-glow)" : "none",
-              transition:     "background 0.18s, box-shadow 0.18s",
-            }}
-            title={asking ? "Stop" : "Send"}
-          >
-            {asking ? "⏹" : "➤"}
-          </motion.button>
+              background:     "rgba(99,102,241,0.10)",
+              zIndex:         2,
+              pointerEvents:  "none",
+            }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "var(--brand)" }}>
+                Drop PDF here
+              </span>
+            </div>
+          )}
+
+          {/* ── Attachment row (slides in when files are staged) ── */}
+          <AnimatePresence>
+            {stagedFiles.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.15 }}
+                style={{ overflow: "hidden" }}
+              >
+                <div style={{
+                  display:   "flex",
+                  flexWrap:  "wrap",
+                  gap:       6,
+                  padding:   "10px 14px 4px",
+                }}>
+                  <AnimatePresence mode="popLayout">
+                    {stagedFiles.map(sf => (
+                      <FileChip
+                        key={sf.id}
+                        sf={sf}
+                        onRemove={removeStagedFile}
+                        isUploading={
+                          sf.status === "uploading" ||
+                          uploadStage === "uploading" ||
+                          uploadStage === "processing"
+                        }
+                      />
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* ── Input row ── */}
+          <div style={{
+            display:    "flex",
+            alignItems: "flex-end",   // buttons pin to bottom as textarea grows
+          }}>
+            {/* + button */}
+            <motion.button
+              whileTap={{ scale: 0.88 }}
+              onClick={() => setMenuOpen(o => !o)}
+              style={{
+                flexShrink:  0,
+                background:  "transparent",
+                border:      "none",
+                cursor:      "pointer",
+                // Match textarea metrics exactly so the + sits on the same
+                // optical baseline as the first line of text.
+                // fontSize 15 → 1px over textarea (14) for slight visual weight.
+                // lineHeight 1.6 → identical to textarea, makes button height
+                // = padding-top(14) + 15*1.6(24) + padding-bottom(14) = 52px,
+                // centering the + at 14+12=26px from bottom.
+                // Textarea first-line center = padding-bottom(14)+half-line(11.2) = 25.2px.
+                // Delta = 0.8px — imperceptible optically.
+                // fontSize 20, lineHeight 1.6 → line = 32px, half = 16px
+                // paddingBottom = 25.2 (text center from floor) − 16 = 9.2 ≈ 9px
+                padding:     "14px 6px 9px 14px",
+                fontSize:    20,
+                lineHeight:  1.6,
+                fontWeight:  300,
+                color:       menuOpen || stagedFiles.length > 0 ? "#a78bfa" : "#71717a",
+                transition:  "color 0.15s",
+              }}
+              title="Attach file"
+            >
+              +
+            </motion.button>
+
+            {/*
+              Textarea
+              ─────────────────────────────────────────────────────────────────
+              flex:1 + minWidth:0 = fills remaining space without blowing out
+              overflow:hidden on pill clips any stray rendering at the corners
+              overflowY managed by autoResize (hidden → auto at max-height)
+              wordBreak + overflowWrap guarantee long strings wrap, never overflow
+            */}
+            <textarea
+              ref={textareaRef}
+              placeholder={stagedFiles.length > 0 ? "Add a message about these files…" : "Ask any academic question"}
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  if (question.trim() || stagedFiles.length > 0) {
+                    submitQuestion(question);
+                    setQuestion("");
+                  }
+                }
+              }}
+              onPaste={(e) => {
+                const files = e.clipboardData?.files;
+                if (files?.length > 0 && files[0].type === "application/pdf") {
+                  e.preventDefault();
+                  handleFileSelect(files[0]);
+                }
+              }}
+              onFocus={() => { setIsFocused(true); setMenuOpen(false); }}
+              onBlur={() => setIsFocused(false)}
+              rows={1}
+              style={{
+                flex:         1,
+                minWidth:     0,
+                padding:      "14px 8px",
+                background:   "transparent",
+                color:        "var(--text-primary)",
+                border:       "none",
+                fontSize:     14,
+                lineHeight:   1.6,
+                resize:       "none",
+                outline:      "none",
+                overflowY:    "hidden",
+                boxSizing:    "border-box",
+                fontFamily:   "inherit",
+                wordBreak:    "break-word",
+                overflowWrap: "break-word",
+                whiteSpace:   "pre-wrap",
+                display:      "block",
+              }}
+            />
+
+            {/* Send / Stop button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.93 }}
+              onClick={asking ? () => setAsking(false) : () => { submitQuestion(question); setQuestion(""); }}
+              disabled={!asking && !question.trim() && stagedFiles.length === 0}
+              style={{
+                flexShrink:     0,
+                alignSelf:      "flex-end",
+                // margin-bottom: 14 (textarea pad) + 11.2 (half text line) − 17 (half button) = 8.2 → 8px
+                // This centres the button on the same optical axis as the text.
+                margin:         "0 10px 8px 4px",
+                width:          34,
+                height:         34,
+                borderRadius:   "50%",
+                border:         "none",
+                background:     asking
+                  ? "linear-gradient(135deg, var(--red), var(--red-dark))"
+                  : (!question.trim() && stagedFiles.length === 0)
+                    ? "rgba(255,255,255,0.07)"
+                    : "linear-gradient(135deg, var(--brand), #4f46e5)",
+                color:          !asking && !question.trim() && stagedFiles.length === 0
+                  ? "#3f3f46"
+                  : "#fff",
+                fontSize:       14,
+                cursor:         !asking && !question.trim() && stagedFiles.length === 0
+                  ? "default"
+                  : "pointer",
+                display:        "flex",
+                alignItems:     "center",
+                justifyContent: "center",
+                boxShadow:      asking || question.trim() || stagedFiles.length > 0
+                  ? "0 2px 10px var(--brand-glow)"
+                  : "none",
+                transition:     "background 0.18s, box-shadow 0.18s",
+              }}
+              title={asking ? "Stop" : "Send"}
+            >
+              {asking ? "⏹" : "➤"}
+            </motion.button>
+          </div>
         </div>
       </div>
 
       {queue.length > 0 && (
-        <p style={{ fontSize: 11, color: "var(--text-muted)", margin: "6px 0 0" }}>
+        <p style={{ fontSize: 11, color: "var(--text-muted)", margin: "6px 0 0", textAlign: "center" }}>
           {queue.length} question{queue.length > 1 ? "s" : ""} queued
         </p>
       )}
@@ -758,6 +1092,10 @@ export default function AskAISection({ fullPage = false }) {
         @keyframes cursorBlink {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0; }
+        }
+        @keyframes askmySpin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
         }
       `}</style>
     </div>

@@ -37,10 +37,26 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cloned repos / temp directories
+/temp_superpowers/
+.worktrees/
+
+# claude code local state
+.claude/
+
+# editor / IDE
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+
+# logs
+*.log

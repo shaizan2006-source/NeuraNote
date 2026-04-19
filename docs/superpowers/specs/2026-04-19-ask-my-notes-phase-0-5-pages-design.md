@@ -400,7 +400,7 @@ State 3: Mode Selector (for chosen topic)
 - Only enabled if a mode is selected OR dashed card is selected
 - If dashed card selected, button text changes to "Pick a topic →"
 
-### State 2: Topic Picker
+### State 2: Topic Picker (Premium Organization)
 
 #### Layout Structure
 ```
@@ -411,27 +411,36 @@ State 3: Mode Selector (for chosen topic)
 │        ✦ (Avatar)                           │
 │                                               │
 │    What's on your mind today?                │
-│    Pick a topic from your documents,         │
-│    or search for something specific.         │
+│    Pick a topic from your documents.         │
 │                                               │
 │  ┌──────────────────────────────────────┐   │
-│  │ 🔍 Search topics...                  │   │ ← Search bar
+│  │ 🔍 Search topics or notes...         │   │ ← Search (sticky)
 │  └──────────────────────────────────────┘   │
 │                                               │
+│    ⏱ RECENTLY STUDIED (Last 3 weeks)       │
 │  ┌────────────┬────────────┐                │
 │  │   📄      │   📄      │                │
 │  │ Mechanics │Thermodynam│                │
+│  │ 2h ago    │ Yesterday  │                │
+│  │ 78% ready │ 62% ready  │                │
 │  └────────────┴────────────┘                │
 │                                               │
+│    📚 MECHANICS (2 documents)                │
 │  ┌────────────┬────────────┐                │
 │  │   📄      │   📄      │                │
-│  │  Optics   │  Waves    │                │
+│  │ Notes Ch1 │ Notes Ch2  │                │
+│  │ 5 topics  │ 8 topics   │                │
 │  └────────────┴────────────┘                │
 │                                               │
+│    🔥 THERMODYNAMICS (3 documents)         │
 │  ┌────────────┬────────────┐                │
-│  │   📄      │   ➕      │                │
-│  │ Modern...  │ Browse All │                │
+│  │   📄      │   📄      │                │
+│  │ Chapter 3 │ Problems   │                │
+│  │ 12 topics │ 6 topics   │                │
 │  └────────────┴────────────┘                │
+│                                               │
+│    🌀 OTHER SUBJECTS ▼                       │
+│  (Click to expand Optics, Waves, etc.)      │
 │                                               │
 └──────────────────────────────────────────────┘
 ```
@@ -444,25 +453,93 @@ State 3: Mode Selector (for chosen topic)
 
 **Greeting Section:**
 - Label: "What's on your mind today?"
-- Message: "Pick a topic from your documents, or search for something specific."
+- Message: "Pick a topic from your documents." (concise, warm)
 
-**Search Bar:**
+**Search Bar (Sticky):**
 - Icon: 🔍
-- Placeholder: "Search topics..."
-- On input: Filter topic grid in real-time
+- Placeholder: "Search topics or notes..."
+- Real-time filtering across all sections below
+- Subtle shadow on scroll (elevation feedback)
+- Focus state: border highlights purple
+- Clears when user navigates to next state
 
-**Topic Grid:**
-- 2-column layout (gap 6px)
-- Each card: 📄 icon + topic name (centered)
-- Padding: 12px 10px
-- Border: 1px solid `rgba(255,255,255,0.06)`
-- Hover: Border lightens, background tints purple
-- Click: Navigate to State 3 with selected topic
+**Recently Studied Section:**
+- **Section Header:** "⏱ RECENTLY STUDIED (Last 3 weeks)"
+  - Small icon (hourglass/clock), friendly label
+  - Positioned prominently for quick access
+  
+- **Cards:** 2-column grid with 8px gap
+- **Card Layout (Each Topic Card):**
+  - Icon: 📄 or category emoji (📚/🔥/🌀 etc.)
+  - Title: Bold, topic/document name
+  - Timestamp: "2h ago", "Yesterday", "3 days ago" (gray, small)
+  - Mastery Badge: "78% ready" or "62% ready" (purple tag, top-right corner)
+  - Padding: 12px 10px
+  - Border: 1px solid `rgba(255,255,255,0.08)`
+  - Background: `rgba(255,255,255,0.02)`
+  - Hover: Scale 1.02, border lightens to `rgba(139,92,246,0.3)`, background lifts to `rgba(255,255,255,0.04)`
+  - Click: Smoothly navigate → State 3 with selected topic
+  - Transition: All properties 150ms ease-out
 
-**Browse All Card:**
-- Icon: ➕
-- Text: "Browse All"
-- Click: Opens modal/page with full topic + document list
+**Subject Category Sections (Expandable):**
+- **Section Headers:** "[Category Icon] CATEGORY NAME (N documents)"
+  - Examples: 📚 MECHANICS (2), 🔥 THERMODYNAMICS (3), 🌀 OPTICS (1)
+  - Order: (1) Most recently studied, (2) Document count (desc), (3) Alphabetical
+  - Clickable to expand/collapse (arrow toggle ▼/▶)
+  - All categories expanded by default except "Other Subjects"
+  
+- **Within Each Category:**
+  - 2-column grid of document cards (6px gap)
+  - Each doc card: Icon + name + "N topics" label
+  - Padding: 10px 8px
+  - Border: 1px solid `rgba(255,255,255,0.05)`
+  - Background: `rgba(255,255,255,0.01)`
+  - Hover: Scale 1.01, border `rgba(139,92,246,0.2)`, background `rgba(139,92,246,0.05)`
+  - Click: → State 3 with selected topic
+  
+  - **Expandable Logic:**
+    - If > 4 docs in category: Show "Show more ▼" button at bottom
+    - Click expands full list
+    - "Show less ▲" toggle when expanded
+  
+- **"🌀 Other Subjects" Special Section:**
+  - Last section, collapsed by default (▶ arrow)
+  - Click header to expand and see all remaining subjects
+  - Reduces cognitive load on initial view
+  - Smooth expand/collapse animation (max-height transition)
+
+**Empty States (Conditional Rendering):**
+- **No Recently Studied:** Skip section entirely, show greeting + search + categories
+- **No Documents Uploaded:** 
+  - "📤 No documents yet"
+  - "Upload your notes to get started"
+  - Link: "→ Upload notes" (navigate to upload page)
+  - Friendly, encouraging tone
+- **Search Returns No Results:** 
+  - "🔍 No topics found"
+  - "Try a different search or browse all documents below"
+  - Button: "Clear search" (clears input, shows all sections again)
+
+**Search Behavior (When User Types):**
+- Filters all sections in real-time (no debounce—instant)
+- Matches against: document names, topic names, category names
+- Highlights matching sections (colors first match result)
+- Collapses non-matching categories (smooth transition)
+- Shows "N results found" count (subtle, top-right of search)
+- Keyboard: Enter confirms selection, Esc clears, arrow keys navigate cards (optional enhancement)
+
+**Scroll Behavior:**
+- Search bar remains sticky at top (position: sticky)
+- Recently studied section always visible without scroll if possible
+- Categories scroll smoothly below
+- Rubber band effect at bottom (iOS-style)
+
+**Micro-interactions:**
+- **Card Tap:** Scale 0.98 for 100ms (haptic feedback equivalent)
+- **Category Toggle:** Icon rotates 90° + smooth max-height animation
+- **Search Input:** Placeholder dims on focus, clears on X-click animation
+- **Section Enter:** Staggered fade-in for cards (50ms each) on page load
+- **Section Collapse:** Cards fade-out as height contracts
 
 ### State 3: Mode Selector
 

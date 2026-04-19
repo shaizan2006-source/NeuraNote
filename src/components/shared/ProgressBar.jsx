@@ -1,3 +1,4 @@
+'use client';
 import { COLORS, SPACING } from '@/lib/styles';
 
 export default function ProgressBar({ current, total, label = '', style = {} }) {

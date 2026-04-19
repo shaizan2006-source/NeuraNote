@@ -1,3 +1,4 @@
+'use client';
 import { COLORS } from '@/lib/styles';
 
 const SIZE_MAP = { sm: 40, md: 56, lg: 60, xl: 80 };

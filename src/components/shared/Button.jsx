@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS, SHADOWS } from '@/lib/styles';
 
 export default function Button({
@@ -9,6 +10,8 @@ export default function Button({
   fullWidth = false,
   style = {},
 }) {
+  const [pressed, setPressed] = useState(false);
+
   const base = {
     fontFamily: TYPOGRAPHY.fontFamily,
     fontSize: TYPOGRAPHY.sizes.label,
@@ -43,10 +46,10 @@ export default function Button({
     <button
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
-      style={{ ...base, ...variants[variant], ...style }}
-      onMouseDown={(e) => { if (!disabled) e.currentTarget.style.transform = 'scale(0.98)'; }}
-      onMouseUp={(e) => { if (!disabled) e.currentTarget.style.transform = 'scale(1)'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
+      style={{ ...base, ...variants[variant], transform: pressed ? 'scale(0.98)' : 'scale(1)', ...style }}
+      onMouseDown={() => { if (!disabled) setPressed(true); }}
+      onMouseUp={() => setPressed(false)}
+      onMouseLeave={() => setPressed(false)}
     >
       {label}
     </button>

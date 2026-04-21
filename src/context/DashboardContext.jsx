@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
@@ -305,6 +305,25 @@ export function DashboardProvider({ children }) {
   const [taskStartTime, setTaskStartTime] = useState(null);
   const [focusProgress, setFocusProgress] = useState([]);
   const [isFocusExpanded, setIsFocusExpanded] = useState(false);
+
+  // ── Focus Session (PDF-driven) ────────────────────────────
+  const [focusSessionTasks, setFocusSessionTasks] = useState([]);
+  const [focusSessionDuration, setFocusSessionDuration] = useState(1500);
+  const [focusSessionDocumentId, setFocusSessionDocumentId] = useState(null);
+  const [focusSessionDocumentName, setFocusSessionDocumentName] = useState(null);
+
+  const startFocusSession = useCallback((tasks, durationSeconds, docId, docName) => {
+    setFocusSessionTasks(
+      tasks.map((t, i) => ({
+        ...t,
+        id: t.id || `task-${i}`,
+        status: i === 0 ? "current" : "pending",
+      }))
+    );
+    setFocusSessionDuration(durationSeconds);
+    setFocusSessionDocumentId(docId);
+    setFocusSessionDocumentName(docName);
+  }, []);
 
   // ── Analytics ─────────────────────────────────────────────────
   const [analytics, setAnalytics] = useState({ totalCompleted: 0, easy: 0, medium: 0, hard: 0 });
@@ -1328,6 +1347,11 @@ export function DashboardProvider({ children }) {
       showAllTasks, setShowAllTasks,
       isFocusMode, timeLeft, isBreak, currentTaskIndex, completedTasks,
       focusProgress, isFocusExpanded, setIsFocusExpanded,
+      focusSessionTasks, setFocusSessionTasks,
+      focusSessionDuration,
+      focusSessionDocumentId,
+      focusSessionDocumentName,
+      startFocusSession,
       analytics, insights, readiness,
       isAnalyticsExpanded, setIsAnalyticsExpanded,
       isInsightsExpanded, setIsInsightsExpanded,

@@ -4,9 +4,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import TopBar from '@/components/shared/TopBar';
+import ContextualSidebar from '@/components/shared/ContextualSidebar';
 import Button from '@/components/shared/Button';
 import ProgressBar from '@/components/shared/ProgressBar';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
+import QuizSkeleton from '@/components/shared/QuizSkeleton';
 
 function QuizContent() {
   const router = useRouter();
@@ -85,16 +87,12 @@ function QuizContent() {
     fontFamily: TYPOGRAPHY.fontFamily,
   };
 
-  if (loading) {
-    return (
-      <div style={{ ...pageStyle, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ color: COLORS.text.secondary }}>Generating questions...</div>
-      </div>
-    );
-  }
+  if (loading) return <QuizSkeleton />;
 
   return (
-    <div style={pageStyle}>
+    <div style={{ ...pageStyle, display: 'flex' }}>
+      <ContextualSidebar />
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
       <TopBar title={`Question ${currentIndex + 1}/${questions.length}`} subtitle={formatTime(sessionSeconds)} />
 
       <div style={{ padding: `${SPACING.sm} ${SPACING.lg}` }}>
@@ -212,13 +210,14 @@ function QuizContent() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
 
 export default function QuizPage() {
   return (
-    <Suspense fallback={<div style={{ background: '#060910', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>Loading...</div>}>
+    <Suspense fallback={<QuizSkeleton />}>
       <QuizContent />
     </Suspense>
   );

@@ -1,58 +1,66 @@
-import Anthropic from '@anthropic-ai/sdk';
+// src/app/api/ai/evaluate-answer/route.js
+import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
 
-const anthropic = new Anthropic();
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function POST(request) {
+export async function POST(req) {
   try {
-    const { question, answer, hints = [], totalMarks } = await request.json();
+    const body = await req.json();
+    const { question, answer, hints = [], totalMarks = 10 } = body;
 
-    if (!question || !answer) {
-      return Response.json({ error: 'question and answer are required' }, { status: 400 });
+    if (!question || typeof question !== 'string') {
+      return NextResponse.json({ error: 'Missing question' }, { status: 400 });
+    }
+    if (!answer || typeof answer !== 'string' || answer.trim().length === 0) {
+      return NextResponse.json(
+        { marksEarned: 0, totalMarks, feedback: 'No answer provided.', explanation: '' },
+        { status: 200 }
+      );
     }
 
-    const prompt = `You are a strict but fair university physics exam evaluator.
+    const prompt = `You are a university exam evaluator. Grade this student answer strictly and fairly.
 
-Question (${totalMarks} marks total):
-"${question}"
+Question: ${question}
 
-Expected answer structure:
-${hints.map((h) => `- ${h}`).join('\n') || '(No structure hints provided)'}
+Expected answer structure (hints):
+${hints.map((h, i) => `${i + 1}. ${h}`).join('\n') || 'No hints provided.'}
+
+Total marks: ${totalMarks}
 
 Student answer:
-"${answer}"
+"""
+${answer.trim().slice(0, 3000)}
+"""
 
-Evaluate and return ONLY valid JSON (no markdown, no code fences):
-{
-  "marksEarned": <integer 0-${totalMarks}>,
-  "feedback": "<2-3 sentences: what was good, what was missing, how to improve>",
-  "keyMisses": ["<key point student missed 1>", "..."]
-}
+Evaluate the student answer and return ONLY a JSON object with:
+- marksEarned: integer (0 to ${totalMarks})
+- feedback: string (2–4 sentences: what was good, what was missed, how to improve)
+- explanation: string (1 sentence: the correct key concept they should know)
 
-Award marks for each hint point addressed. Be fair but rigorous.`;
+Return ONLY valid JSON. No markdown, no code fences.`;
 
-    const msg = await anthropic.messages.create({
-      model: 'claude-opus-4-1',
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
       max_tokens: 400,
+      temperature: 0.3,
       messages: [{ role: 'user', content: prompt }],
     });
 
-    const raw = msg.content[0]?.type === 'text' ? msg.content[0].text.trim() : '{}';
+    const raw = completion.choices[0]?.message?.content?.trim() ?? '{}';
     const result = JSON.parse(raw);
 
-    return Response.json({
-      marksEarned: Math.min(Math.max(0, result.marksEarned ?? 0), totalMarks),
+    return NextResponse.json({
+      marksEarned: Math.max(0, Math.min(totalMarks, Number(result.marksEarned) || 0)),
       totalMarks,
-      feedback: result.feedback || 'No feedback available.',
-      keyMisses: result.keyMisses || [],
+      feedback: String(result.feedback || 'Evaluation complete.').slice(0, 600),
+      explanation: String(result.explanation || '').slice(0, 300),
     });
-  } catch (error) {
-    console.error('[evaluate-answer]', error);
-    const { totalMarks = 10 } = await request.json().catch(() => ({}));
-    return Response.json({
-      marksEarned: 0,
-      totalMarks,
-      feedback: 'Evaluation service temporarily unavailable. Please try again.',
-      keyMisses: [],
-    });
+  } catch (err) {
+    console.error('[evaluate-answer]', err);
+    return NextResponse.json(
+      { marksEarned: 0, totalMarks: 10, feedback: 'Evaluation failed — please try again.', explanation: '' },
+      { status: 500 }
+    );
   }
 }

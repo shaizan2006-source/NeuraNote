@@ -10,9 +10,13 @@ import QuickChatDrawer from "@/components/QuickChat/QuickChatDrawer";
 import MilestoneToast, { checkMilestones } from "@/components/ui/MilestoneToast";
 import { useEffect } from "react";
 import { useActivePDF } from "@/hooks/useActivePDF";
+import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
+import { useSlowLoad } from "@/hooks/useSlowLoad";
 
 function DashboardInner() {
-  const { streak, progressQuestions, masteryTopics, user } = useDashboard();
+  const { streak, progressQuestions, masteryTopics, user, userReady } = useDashboard();
+  const showSkeleton = useSlowLoad(!userReady);
+  if (showSkeleton) return <DashboardSkeleton />;
   const userId = user?.id;
   const { activePdf } = useActivePDF(userId);
   const userName = user?.user_metadata?.full_name?.split(" ")[0] || "there";

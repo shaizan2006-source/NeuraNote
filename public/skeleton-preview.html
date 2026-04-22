@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skeleton Screens Preview — Ask My Notes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(160deg, #060910 0%, #0c1024 100%);
+      color: #f1f5f9;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: #f1f5f9;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 32px;
+      font-size: 14px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 16px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      color: #a78bfa;
+      border-bottom-color: #7c3aed;
+    }
+
+    .tab-btn:hover {
+      color: #cbd5e1;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* ========== SHIMMER & PULSE ANIMATIONS ========== */
+
+    @keyframes shimmer {
+      0% {
+        background-position: -1000px 0;
+      }
+      100% {
+        background-position: 1000px 0;
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.6;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes progressBuild {
+      0% {
+        width: 0%;
+      }
+      100% {
+        width: 35%;
+      }
+    }
+
+    @keyframes dotPulse {
+      0%, 20%, 50%, 80%, 100% {
+        opacity: 0.4;
+      }
+      40%, 60% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes ringShimmer {
+      0% {
+        stroke-dashoffset: 200;
+      }
+      100% {
+        stroke-dashoffset: -200;
+      }
+    }
+
+    /* ========== SKELETON BASE STYLES ========== */
+
+    .skeleton-block {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.06) 0%,
+        rgba(255, 255, 255, 0.12) 50%,
+        rgba(255, 255, 255, 0.06) 100%
+      );
+      background-size: 1000px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 10px;
+    }
+
+    .skeleton-pulsing {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* ========== QUIZ SKELETON ========== */
+
+    .quiz-container {
+      background: linear-gradient(160deg, #060910 0%, #0c1024 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar-skeleton {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .topbar-title {
+      width: 200px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.025);
+      border-radius: 10px;
+    }
+
+    .topbar-timer {
+      width: 80px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.025);
+      border-radius: 10px;
+    }
+
+    .progress-section {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .progress-bar-skeleton {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #22D3EE);
+      width: 35%;
+      animation: progressBuild 1.8s ease-in-out infinite;
+    }
+
+    .progress-label {
+      height: 12px;
+      width: 100px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+    }
+
+    .quiz-content {
+      flex: 1;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Left column */
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-skeleton {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
+      animation: pulse 1.5s ease-in-out infinite 0.15s both;
+    }
+
+    .card-label {
+      height: 12px;
+      width: 80px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+    }
+
+    .card-badge {
+      height: 20px;
+      width: 50px;
+      background: rgba(139, 92, 246, 0.1);
+      border-radius: 6px;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .question-title {
+      height: 18px;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 8px;
+    }
+
+    .question-title:last-child {
+      width: 60%;
+    }
+
+    .textarea-skeleton {
+      height: 180px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      animation: pulse 1.5s ease-in-out infinite 0.25s both;
+    }
+
+    .textarea-line {
+      height: 14px;
+      margin-bottom: 12px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 6px;
+    }
+
+    .textarea-line:nth-child(odd) {
+      width: 95%;
+    }
+
+    .textarea-line:nth-child(even) {
+      width: 85%;
+    }
+
+    .textarea-line:last-child {
+      width: 60%;
+      margin-bottom: 0;
+    }
+
+    .buttons-skeleton {
+      display: flex;
+      gap: 12px;
+      animation: pulse 1.5s ease-in-out infinite 0.35s both;
+    }
+
+    .button-skeleton {
+      height: 38px;
+      padding: 0 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex: 1;
+    }
+
+    /* Right sidebar */
+    .right-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar-card {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.025);
+      animation: pulse 1.5s ease-in-out infinite 0.2s both;
+    }
+
+    .sidebar-label {
+      height: 12px;
+      width: 120px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-line {
+      height: 12px;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 6px;
+    }
+
+    .sidebar-line:nth-child(odd) {
+      width: 95%;
+    }
+
+    .sidebar-line:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ========== FOCUS SKELETON ========== */
+
+    .focus-container {
+      background: linear-gradient(160deg, #060910 0%, #0c1024 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .timer-ring-container {
+      margin-bottom: 60px;
+      position: relative;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timer-ring {
+      position: relative;
+      width: 160px;
+      height: 160px;
+    }
+
+    .timer-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .timer-circle {
+      stroke: rgba(124, 58, 237, 0.3);
+      stroke-width: 3;
+      fill: none;
+      stroke-dasharray: 200;
+      stroke-dashoffset: 0;
+      animation: ringShimmer 1.8s linear infinite;
+    }
+
+    .timer-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .timer-number {
+      height: 24px;
+      width: 60px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      margin: 0 auto;
+    }
+
+    .timer-label {
+      height: 12px;
+      width: 40px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+      margin: 8px auto 0;
+    }
+
+    .tasks-list {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .task-skeleton {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.025);
+      animation: pulse 1.5s ease-in-out infinite 0.15s both;
+    }
+
+    .task-skeleton:nth-child(2) {
+      animation: pulse 1.5s ease-in-out infinite 0.3s both;
+    }
+
+    .task-line {
+      height: 14px;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 6px;
+    }
+
+    .task-line:last-child {
+      margin-bottom: 0;
+      width: 70%;
+    }
+
+    .focus-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .focus-btn-skeleton {
+      height: 40px;
+      width: 140px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      animation: pulse 1.5s ease-in-out infinite 0.2s both;
+    }
+
+    /* ========== ASK AI SKELETON ========== */
+
+    .chat-container {
+      background: linear-gradient(160deg, #060910 0%, #0c1024 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .chat-header {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
+    }
+
+    .chat-title {
+      height: 24px;
+      width: 150px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+    }
+
+    .messages {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 20px;
+      overflow-y: auto;
+    }
+
+    .message {
+      animation: pulse 1.5s ease-in-out infinite 0.1s both;
+    }
+
+    .message.ai {
+      animation: pulse 1.5s ease-in-out infinite 0.2s both;
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .message-line {
+      height: 14px;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 6px;
+    }
+
+    .message-line:last-child {
+      margin-bottom: 0;
+    }
+
+    .message.user .message-bubble {
+      background: rgba(124, 58, 237, 0.15);
+      border-color: rgba(124, 58, 237, 0.3);
+      margin-left: auto;
+    }
+
+    .thinking-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      height: 20px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #a78bfa;
+      border-radius: 50%;
+      animation: dotPulse 1.4s ease-in-out infinite;
+    }
+
+    .dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .input-section {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 16px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .input-field-skeleton {
+      flex: 1;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      animation: pulse 1.5s ease-in-out infinite 0.15s both;
+    }
+
+    .send-btn-skeleton {
+      height: 40px;
+      width: 80px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      animation: pulse 1.5s ease-in-out infinite 0.2s both;
+    }
+
+    /* ========== DASHBOARD SKELETON ========== */
+
+    .dashboard-container {
+      background: linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%);
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dashboard-header {
+      margin-bottom: 32px;
+    }
+
+    .dashboard-greeting {
+      height: 32px;
+      width: 300px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      animation: pulse 1.5s ease-in-out infinite 0.1s both;
+    }
+
+    .dashboard-subtext {
+      height: 16px;
+      width: 200px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+      animation: pulse 1.5s ease-in-out infinite 0.15s both;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 12px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .hero-card-skeleton {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.025);
+      animation: pulse 1.5s ease-in-out infinite 0.1s both;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .hero-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+    }
+
+    .hero-title {
+      flex: 1;
+      height: 20px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 6px;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .hero-line {
+      height: 12px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 6px;
+    }
+
+    .hero-button {
+      height: 36px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: auto;
+      animation: pulse 1.5s ease-in-out infinite 0.2s both;
+    }
+
+    .bento-cards {
+      display: contents;
+    }
+
+    .bento-card {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.025);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .bento-card:nth-child(2) {
+      animation: pulse 1.5s ease-in-out infinite 0.1s both;
+    }
+
+    .bento-card:nth-child(3) {
+      animation: pulse 1.5s ease-in-out infinite 0.2s both;
+    }
+
+    .bento-card:nth-child(4) {
+      animation: pulse 1.5s ease-in-out infinite 0.3s both;
+    }
+
+    .bento-card:nth-child(5) {
+      animation: pulse 1.5s ease-in-out infinite 0.15s both;
+    }
+
+    .card-label-skeleton {
+      height: 14px;
+      width: 120px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+    }
+
+    .card-value-skeleton {
+      height: 28px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 1.8s infinite;
+      border-radius: 6px;
+      width: 80%;
+    }
+
+    /* ========== RESPONSIVE ========== */
+
+    @media (max-width: 1024px) {
+      .quiz-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-skeleton {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .quiz-content {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .card-skeleton,
+      .textarea-skeleton {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Skeleton Screens Preview</h1>
+    <p class="subtitle">Interactive mockup — drag tab to switch between Quiz, Focus, and Ask AI skeletons</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="quiz">📝 Quiz Page</button>
+      <button class="tab-btn" data-tab="focus">⏱️ Focus Mode</button>
+      <button class="tab-btn" data-tab="chat">💬 Ask AI</button>
+      <button class="tab-btn" data-tab="dashboard">📊 Dashboard</button>
+    </div>
+
+    <!-- QUIZ SKELETON -->
+    <div id="quiz" class="tab-content active">
+      <div class="quiz-container">
+        <div class="topbar-skeleton">
+          <div class="topbar-title"></div>
+          <div class="topbar-timer"></div>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-bar-skeleton">
+            <div class="progress-fill"></div>
+          </div>
+          <div class="progress-label"></div>
+        </div>
+
+        <div class="quiz-content">
+          <!-- LEFT COLUMN -->
+          <div class="left-column">
+            <!-- Question Card -->
+            <div class="card-skeleton">
+              <div class="card-header">
+                <div class="card-label"></div>
+                <div class="card-badge"></div>
+              </div>
+              <div class="question-title"></div>
+              <div class="question-title"></div>
+              <div class="question-title"></div>
+            </div>
+
+            <!-- Answer Textarea -->
+            <div class="textarea-skeleton">
+              <div class="textarea-line"></div>
+              <div class="textarea-line"></div>
+              <div class="textarea-line"></div>
+              <div class="textarea-line"></div>
+              <div class="textarea-line"></div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="buttons-skeleton">
+              <div class="button-skeleton"></div>
+              <div class="button-skeleton"></div>
+              <div class="button-skeleton"></div>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDEBAR -->
+          <div class="right-sidebar">
+            <div class="sidebar-card">
+              <div class="sidebar-label"></div>
+              <div class="sidebar-line"></div>
+              <div class="sidebar-line"></div>
+              <div class="sidebar-line"></div>
+            </div>
+
+            <div class="sidebar-card">
+              <div class="sidebar-label"></div>
+              <div class="sidebar-line"></div>
+              <div class="sidebar-line"></div>
+              <div class="sidebar-line"></div>
+            </div>
+
+            <div class="sidebar-card">
+              <div class="sidebar-label"></div>
+              <div class="sidebar-line"></div>
+              <div class="sidebar-line"></div>
+              <div class="sidebar-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOCUS SKELETON -->
+    <div id="focus" class="tab-content">
+      <div class="focus-container">
+        <div class="timer-ring-container">
+          <div class="timer-ring">
+            <svg class="timer-svg" viewBox="0 0 160 160">
+              <circle class="timer-circle" cx="80" cy="80" r="64"></circle>
+            </svg>
+            <div class="timer-text">
+              <div class="timer-number"></div>
+              <div class="timer-label"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tasks-list">
+          <div class="task-skeleton">
+            <div class="task-line"></div>
+            <div class="task-line"></div>
+          </div>
+
+          <div class="task-skeleton">
+            <div class="task-line"></div>
+            <div class="task-line"></div>
+          </div>
+        </div>
+
+        <div class="focus-buttons">
+          <div class="focus-btn-skeleton"></div>
+          <div class="focus-btn-skeleton"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD SKELETON -->
+    <div id="dashboard" class="tab-content">
+      <div class="dashboard-container">
+        <div class="dashboard-header">
+          <div class="dashboard-greeting"></div>
+          <div class="dashboard-subtext"></div>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Hero Card (left, spans 2 rows) -->
+          <div class="hero-card-skeleton">
+            <div class="hero-header">
+              <div class="hero-icon"></div>
+              <div class="hero-title"></div>
+            </div>
+            <div class="hero-content">
+              <div class="hero-line"></div>
+              <div class="hero-line" style="width: 85%;"></div>
+              <div class="hero-line" style="width: 70%;"></div>
+            </div>
+            <div class="hero-button"></div>
+          </div>
+
+          <!-- Bento Cards (right, 2x2) -->
+          <div class="bento-card">
+            <div class="card-label-skeleton"></div>
+            <div class="card-value-skeleton"></div>
+          </div>
+
+          <div class="bento-card">
+            <div class="card-label-skeleton"></div>
+            <div class="card-value-skeleton"></div>
+          </div>
+
+          <div class="bento-card">
+            <div class="card-label-skeleton"></div>
+            <div class="card-value-skeleton"></div>
+          </div>
+
+          <div class="bento-card">
+            <div class="card-label-skeleton"></div>
+            <div class="card-value-skeleton"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASK AI SKELETON -->
+    <div id="chat" class="tab-content">
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="chat-title"></div>
+        </div>
+
+        <div class="messages">
+          <!-- User message -->
+          <div class="message user">
+            <div class="message-bubble">
+              <div class="message-line" style="width: 85%;"></div>
+              <div class="message-line" style="width: 70%;"></div>
+            </div>
+          </div>
+
+          <!-- AI response loading -->
+          <div class="message ai">
+            <div class="message-bubble">
+              <div class="message-line"></div>
+              <div class="message-line"></div>
+              <div class="message-line" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <!-- Thinking indicator -->
+          <div class="message ai">
+            <div class="thinking-dots">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-field-skeleton"></div>
+          <div class="send-btn-skeleton"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const tabName = e.target.dataset.tab;
+
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+          tab.classList.remove('active');
+        });
+
+        // Remove active from all buttons
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('active');
+        });
+
+        // Show selected tab
+        document.getElementById(tabName).classList.add('active');
+        e.target.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
@@ -252,6 +252,7 @@ export function DashboardProvider({ children }) {
 
   // ── Auth ───────────────────────────────────────────────────────
   const [user, setUser] = useState(null);
+  const [userReady, setUserReady] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -304,6 +305,25 @@ export function DashboardProvider({ children }) {
   const [taskStartTime, setTaskStartTime] = useState(null);
   const [focusProgress, setFocusProgress] = useState([]);
   const [isFocusExpanded, setIsFocusExpanded] = useState(false);
+
+  // ── Focus Session (PDF-driven) ────────────────────────────
+  const [focusSessionTasks, setFocusSessionTasks] = useState([]);
+  const [focusSessionDuration, setFocusSessionDuration] = useState(1500);
+  const [focusSessionDocumentId, setFocusSessionDocumentId] = useState(null);
+  const [focusSessionDocumentName, setFocusSessionDocumentName] = useState(null);
+
+  const startFocusSession = useCallback((tasks, durationSeconds, docId, docName) => {
+    setFocusSessionTasks(
+      tasks.map((t, i) => ({
+        ...t,
+        id: t.id || `task-${i}`,
+        status: i === 0 ? "current" : "pending",
+      }))
+    );
+    setFocusSessionDuration(durationSeconds);
+    setFocusSessionDocumentId(docId);
+    setFocusSessionDocumentName(docName);
+  }, []);
 
   // ── Analytics ─────────────────────────────────────────────────
   const [analytics, setAnalytics] = useState({ totalCompleted: 0, easy: 0, medium: 0, hard: 0 });
@@ -630,8 +650,8 @@ export function DashboardProvider({ children }) {
     if (!session?.user) return;
     await fetch("/api/focus-progress", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: session.user.id, task, task_index: currentTaskIndex, difficulty }),
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ task, task_index: currentTaskIndex, difficulty }),
     });
     setCompletedTasks((prev) => [...prev, currentTaskIndex]);
     setCurrentTaskIndex((prev) => (prev + 1 >= dailyPlan.length ? prev : prev + 1));
@@ -813,7 +833,9 @@ export function DashboardProvider({ children }) {
   const fetchFocusProgress = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return;
-    const res = await fetch(`/api/focus-progress?user_id=${session.user.id}`);
+    const res = await fetch(`/api/focus-progress`, {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
     const data = await res.json();
     setFocusProgress(data);
     setCompletedTasks(data.map((item) => item.task));
@@ -915,6 +937,14 @@ export function DashboardProvider({ children }) {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        clearInterval(progressInterval);
+        uploadIntervalRef.current = null;
+        setUploadStage("error");
+        setUploadProgress(0);
+        router.push("/login");
+        return;
+      }
       const formData = new FormData();
       formData.append("file", targetFile);
       formData.append("subject", examName || "general");
@@ -922,7 +952,7 @@ export function DashboardProvider({ children }) {
       setUploadProgress(90);
       const res = await fetch("/api/process-pdf", {
         method: "POST",
-        headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {},
+        headers: { Authorization: `Bearer ${session.access_token}` },
         body: formData,
         signal: controller.signal,
       });
@@ -974,7 +1004,9 @@ export function DashboardProvider({ children }) {
   // ================================================================
   // handleAsk
   // ================================================================
-  const handleAsk = async (questionText) => {
+  // opts.conversationId  — ID of an existing conversation to continue (from QuickChat)
+  // opts.priorMessages   — [{role:"user"|"assistant", content:string}] conversation history
+  const handleAsk = async (questionText, opts = {}) => {
     if (!questionText.trim()) return;
 
     const matchedPDFs = detectMultiplePDFs();
@@ -1025,9 +1057,12 @@ export function DashboardProvider({ children }) {
         method: "POST",
         headers: { "Content-Type": "application/json", ...askAuthHeader },
         body: JSON.stringify({
-          question: questionText,
-          documentId:  documentIds[0] || null,
-          documentIds: documentIds.length > 0 ? documentIds : undefined,
+          question:        questionText,
+          documentId:      documentIds[0] || null,
+          documentIds:     documentIds.length > 0 ? documentIds : undefined,
+          // Continuation context — only set when coming from QuickChat / a saved conversation
+          conversationId:  opts.conversationId  || undefined,
+          priorMessages:   opts.priorMessages?.length ? opts.priorMessages : undefined,
         }),
       });
 
@@ -1086,6 +1121,26 @@ export function DashboardProvider({ children }) {
           }
           continue;
         }
+        // ── Parse __CONV__ marker (new conversation created server-side) ──
+        const convIdx = rawChunk.indexOf("\n__CONV__");
+        if (convIdx !== -1) {
+          const textPart = rawChunk.slice(0, convIdx);
+          const metaPart = rawChunk.slice(convIdx + 9); // "\n__CONV__".length === 9
+          if (textPart) { accumulated += textPart; setAnswer(accumulated); }
+          try {
+            const convMeta = JSON.parse(metaPart);
+            if (convMeta.conversation_id) {
+              window.dispatchEvent(new CustomEvent("askmynotes:new-conversation", {
+                detail: {
+                  id:    convMeta.conversation_id,
+                  title: questionText.trim().slice(0, 60) || "New Chat",
+                },
+              }));
+            }
+          } catch {}
+          continue;
+        }
+
         accumulated += rawChunk;
         setAnswer(accumulated);
       }
@@ -1106,16 +1161,18 @@ export function DashboardProvider({ children }) {
     while (queueRef.current.length > 0) {
       const next = queueRef.current[0];
       queueRef.current = queueRef.current.slice(1);
-      setQueue([...queueRef.current]);
-      await handleAsk(next);
+      // Keep queue state as plain strings so existing UI consumers aren't broken
+      setQueue(queueRef.current.map(item => (typeof item === "string" ? item : item.q)));
+      await handleAsk(next.q ?? next, next.opts);
     }
     isProcessingRef.current = false;
   };
 
-  const enqueue = (q) => {
+  // opts: { conversationId?: string, priorMessages?: {role,content}[] }
+  const enqueue = (q, opts = {}) => {
     if (!q.trim()) return;
-    queueRef.current = [...queueRef.current, q];
-    setQueue([...queueRef.current]);
+    queueRef.current = [...queueRef.current, { q, opts }];
+    setQueue(queueRef.current.map(item => (typeof item === "string" ? item : item.q)));
     processQueue();
   };
 
@@ -1141,15 +1198,22 @@ export function DashboardProvider({ children }) {
     const getUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user || null);
+      setUserReady(true);
       return session;
     };
 
     getUser().then(async (session) => {
       const userId = session?.user?.id;
 
+      // No session → send to login immediately. Prevents all the 401 noise.
+      if (!userId) {
+        router.push("/login");
+        return;
+      }
+
       // Redirect new users to onboarding if not completed
       const onboardingDone = session?.user?.user_metadata?.onboarding_completed;
-      if (userId && !onboardingDone) {
+      if (!onboardingDone) {
         router.push("/onboarding");
         return;
       }
@@ -1194,6 +1258,9 @@ export function DashboardProvider({ children }) {
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
+      if (_event === "SIGNED_OUT") {
+        router.push("/login");
+      }
     });
 
     if ("Notification" in window) Notification.requestPermission();
@@ -1264,7 +1331,7 @@ export function DashboardProvider({ children }) {
       uploadStage, setUploadStage,
       uploadProgress, uploadedFileName, uploadedFileSize,
       isDragging, setIsDragging, uploading,
-      user, email, setEmail, password, setPassword,
+      user, userReady, email, setEmail, password, setPassword,
       examName, setExamName, examDate, setExamDate,
       exams, activeExams, historyExams, selectedExam, setSelectedExam,
       isExamExpanded, setIsExamExpanded,
@@ -1282,6 +1349,11 @@ export function DashboardProvider({ children }) {
       showAllTasks, setShowAllTasks,
       isFocusMode, timeLeft, isBreak, currentTaskIndex, completedTasks,
       focusProgress, isFocusExpanded, setIsFocusExpanded,
+      focusSessionTasks, setFocusSessionTasks,
+      focusSessionDuration,
+      focusSessionDocumentId,
+      focusSessionDocumentName,
+      startFocusSession,
       analytics, insights, readiness,
       isAnalyticsExpanded, setIsAnalyticsExpanded,
       isInsightsExpanded, setIsInsightsExpanded,

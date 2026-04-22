@@ -650,8 +650,8 @@ export function DashboardProvider({ children }) {
     if (!session?.user) return;
     await fetch("/api/focus-progress", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: session.user.id, task, task_index: currentTaskIndex, difficulty }),
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ task, task_index: currentTaskIndex, difficulty }),
     });
     setCompletedTasks((prev) => [...prev, currentTaskIndex]);
     setCurrentTaskIndex((prev) => (prev + 1 >= dailyPlan.length ? prev : prev + 1));
@@ -833,7 +833,9 @@ export function DashboardProvider({ children }) {
   const fetchFocusProgress = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return;
-    const res = await fetch(`/api/focus-progress?user_id=${session.user.id}`);
+    const res = await fetch(`/api/focus-progress`, {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
     const data = await res.json();
     setFocusProgress(data);
     setCompletedTasks(data.map((item) => item.task));

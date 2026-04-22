@@ -56,17 +56,21 @@ export default function FocusSessionActive({
   const allDone = !currentTask && pendingTasks.length === 0;
 
   const handleMarkDone = useCallback(async () => {
-    if (!currentTask) return;
-    const nextPending = pendingTasks[0];
-    setTasks((prev) =>
-      prev.map((t) => {
-        if (t.id === currentTask.id) return { ...t, status: 'done' };
+    setTasks((prev) => {
+      const current = prev.find((t) => t.status === 'current');
+      const nextPending = prev.find((t) => t.status === 'pending');
+      if (!current) return prev;
+      return prev.map((t) => {
+        if (t.id === current.id) return { ...t, status: 'done' };
         if (nextPending && t.id === nextPending.id) return { ...t, status: 'current' };
         return t;
-      })
-    );
+      });
+    });
 
     // Log to focus_progress (non-critical)
+    const current = tasks.find((t) => t.status === 'current');
+    const doneCount = tasks.filter((t) => t.status === 'done').length;
+    if (!current) return;
     try {
       const { data: { session } } = await supabase.auth.getSession();
       await fetch('/api/focus-progress', {
@@ -77,8 +81,8 @@ export default function FocusSessionActive({
         },
         body: JSON.stringify({
           user_id: userId,
-          task: currentTask.name,
-          task_index: doneTasks.length,
+          task: current.name,
+          task_index: doneCount,
           difficulty: 'medium',
           completed: true,
           document_id: documentId || null,
@@ -88,7 +92,7 @@ export default function FocusSessionActive({
     } catch {
       // Non-critical: logging failure does not break the session
     }
-  }, [currentTask, pendingTasks, doneTasks.length, userId, documentId, documentName, setTasks]);
+  }, [tasks, userId, documentId, documentName, setTasks]);
 
   const handleStop = () => {
     if (window.confirm('End session? Your task progress will be saved.')) {

@@ -1,52 +1,287 @@
-import Anthropic from '@anthropic-ai/sdk';
+// src/app/api/ai/generate-questions/route.js
+import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
 import { createClient } from '@supabase/supabase-js';
 
-const anthropic = new Anthropic();
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const MOCK_QUESTIONS = [
-  { id: 'q1', text: 'Explain the Carnot Cycle and why no real engine can achieve 100% efficiency.', marks: 10, hints: ['Define Carnot Cycle (3M)', 'Explain max efficiency (4M)', 'Compare to real engines (3M)'], sourceSnippet: 'The Carnot Cycle is the most efficient theoretical heat engine — Ch.3, p.42' },
-  { id: 'q2', text: 'What is entropy and how does it relate to the second law of thermodynamics?', marks: 10, hints: ['Define entropy (3M)', 'State second law (2M)', 'Provide example (5M)'], sourceSnippet: 'Entropy measures disorder in a system — Ch.4, p.51' },
-  { id: 'q3', text: 'Describe the differences between isothermal and adiabatic processes.', marks: 5, hints: ['Define isothermal (2M)', 'Define adiabatic (3M)'], sourceSnippet: 'In an isothermal process, temperature remains constant — Ch.2, p.28' },
-];
+// ── helpers ────────────────────────────────────────────────────────────────
+function sanitizeQuestion(q, index) {
+  return {
+    id: `q-${Date.now()}-${index}`,
+    text: String(q.text || '').replace(/<[^>]*>/g, '').trim().slice(0, 1000),
+    marks: Math.max(1, Math.min(100, Number(q.marks) || 5)),
+    hints: Array.isArray(q.hints)
+      ? q.hints.map((h) => String(h).slice(0, 200)).slice(0, 6)
+      : [],
+    sourceSnippet: String(q.sourceSnippet || '').slice(0, 300),
+    documentReference: String(q.documentReference || '').slice(0, 50),
+  };
+}
 
+function cosineSimilarity(a, b) {
+  const dot = a.reduce((sum, v, i) => sum + v * b[i], 0);
+  const magA = Math.sqrt(a.reduce((sum, v) => sum + v * v, 0));
+  const magB = Math.sqrt(b.reduce((sum, v) => sum + v * v, 0));
+  return magA && magB ? dot / (magA * magB) : 0;
+}
+
+// ── main handler ───────────────────────────────────────────────────────────
 export async function POST(request) {
   try {
-    const { topicId, count = 12, marks = [5, 10, 20] } = await request.json();
+    // ── Layer 1: Input Validation ─────────────────────────────────────────
+    const body = await request.json();
+    const { documentId, userId, count = 12, marks = [5, 10, 20] } = body;
 
-    let topicName = 'Physics';
-    if (topicId) {
-      const { data: doc } = await supabase.from('documents').select('name').eq('id', topicId).single();
-      if (doc?.name) topicName = doc.name;
+    if (!documentId || typeof documentId !== 'string') {
+      return NextResponse.json({ error: 'Missing documentId' }, { status: 400 });
+    }
+    if (!userId || typeof userId !== 'string') {
+      return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
+    }
+    if (!Number.isInteger(count) || count < 5 || count > 50) {
+      return NextResponse.json({ error: 'count must be 5–50' }, { status: 400 });
+    }
+    if (!Array.isArray(marks) || marks.some((m) => !Number.isInteger(m) || m < 1)) {
+      return NextResponse.json({ error: 'Invalid marks array' }, { status: 400 });
     }
 
-    const prompt = `Generate ${count} university exam-style long-answer physics questions on: "${topicName}".
+    // ── Layer 2: Authorization ─────────────────────────────────────────────
+    const { data: doc, error: docError } = await supabase
+      .from('documents')
+      .select('id, name, user_id')
+      .eq('id', documentId)
+      .single();
 
-Mark distribution to use: ${marks.join(', ')} marks. Vary the distribution across questions.
+    if (docError || !doc) {
+      return NextResponse.json({ error: 'PDF not found' }, { status: 404 });
+    }
+    if (doc.user_id !== userId) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
 
-For each question return:
-- text: clear, specific question
-- marks: integer (one of ${marks.join(', ')})
-- hints: array of 2-5 strings showing answer SHAPE not content (e.g. "Define X (2M)", "Explain mechanism (4M)")
-- sourceSnippet: short excerpt (max 120 chars) simulating a student note, with "— Ch.N, p.N" attribution
+    // ── Layer 3: Fetch Chunks (lazy parse if missing) ──────────────────────
+    let { data: chunkRows, error: chunkError } = await supabase
+      .from('document_chunks')
+      .select('content, page_number, embedding')
+      .eq('document_id', documentId)
+      .limit(120);
 
-Return ONLY a JSON array. No markdown, no explanation, no code fences.`;
+    if (chunkError || !chunkRows || chunkRows.length === 0) {
+      // Lazy parse
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+      const parseRes = await fetch(`${appUrl}/api/parse-pdf`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ documentId, userId }),
+      });
+      if (!parseRes.ok) {
+        return NextResponse.json(
+          { error: 'PDF could not be processed. Please try again or upload a different file.' },
+          { status: 422 }
+        );
+      }
 
-    const msg = await anthropic.messages.create({
-      model: 'claude-opus-4-1',
-      max_tokens: 2500,
-      messages: [{ role: 'user', content: prompt }],
+      const refetch = await supabase
+        .from('document_chunks')
+        .select('content, page_number, embedding')
+        .eq('document_id', documentId)
+        .limit(120);
+
+      if (!refetch.data || refetch.data.length === 0) {
+        return NextResponse.json(
+          { error: 'PDF has no readable content. Please upload a different file.' },
+          { status: 422 }
+        );
+      }
+      chunkRows = refetch.data;
+    }
+
+    // ── Layer 4: Concept Extraction ────────────────────────────────────────
+    const sampleText = chunkRows
+      .slice(0, 20)
+      .map((c) => c.content)
+      .join('\n\n')
+      .slice(0, 5000);
+
+    const conceptRes = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 300,
+      messages: [
+        {
+          role: 'system',
+          content:
+            'Extract 10-15 key academic topics or concepts from this text as a JSON array of strings. Return ONLY the JSON array.',
+        },
+        { role: 'user', content: sampleText },
+      ],
     });
+    let concepts = [];
+    try {
+      concepts = JSON.parse(conceptRes.choices[0].message.content.trim());
+      if (!Array.isArray(concepts)) concepts = [];
+    } catch (_) {
+      concepts = [];
+    }
+    concepts = concepts.slice(0, 15).map((c) => String(c).trim());
 
-    const raw = msg.content[0]?.type === 'text' ? msg.content[0].text.trim() : '[]';
-    const questions = JSON.parse(raw);
-    const withIds = questions.map((q, i) => ({ ...q, id: `q-${Date.now()}-${i}` }));
-    return Response.json({ questions: withIds });
-  } catch (error) {
-    console.error('[generate-questions]', error);
-    return Response.json({ questions: MOCK_QUESTIONS });
+    // ── Layer 5: Build Document Context for Prompt ─────────────────────────
+    const docContext = chunkRows
+      .slice(0, 40)
+      .map((c) => `[Page ${c.page_number || '?'}] ${c.content.slice(0, 600)}`)
+      .join('\n\n');
+
+    const systemPrompt = `You are a university exam question setter. Generate ${count} long-answer exam questions.
+
+CRITICAL RULES — Non-negotiable:
+1. Generate questions ONLY from the provided document content below.
+2. Every question MUST be directly and fully answerable using ONLY the document.
+3. Do NOT use general knowledge outside the document.
+4. Every sourceSnippet must be an EXACT quote (verbatim) from the document text.
+
+Key concepts in document: ${concepts.join(', ')}
+
+For each question return a JSON object with:
+- text: the question (must reference document-specific concepts)
+- marks: integer chosen from [${marks.join(', ')}]
+- hints: array of 3-4 answer structure hints like "Define X (2M)" or "Explain Y (4M)"
+- sourceSnippet: EXACT verbatim quote from the document (20–100 words) that contains the answer
+- documentReference: page number string like "Page 5"
+
+Return ONLY a JSON array. No markdown, no code fences.
+
+DOCUMENT CONTENT:
+${docContext}`;
+
+    // ── Layers 6–10: Two-Pass Generation + Validation + Retry ─────────────
+    const TARGET = Math.ceil(count * 1.3);
+    const QUALITY_THRESHOLD = 0.9;
+
+    let finalQuestions = [];
+    let lastError = null;
+
+    for (let attempt = 0; attempt <= 2; attempt++) {
+      try {
+        const stricter = attempt > 0
+          ? '\n\nSTRICT WARNING: Previous attempt failed quality checks. Every question MUST have an exact sourceSnippet found verbatim in the document.'
+          : '';
+
+        // ── Layer 6: Generate ──────────────────────────────────────────────
+        const gen = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          max_tokens: 4000,
+          temperature: 0.7 - attempt * 0.1,
+          messages: [{ role: 'user', content: systemPrompt + stricter }],
+        });
+
+        const raw = gen.choices[0]?.message?.content?.trim() ?? '[]';
+        let generated = JSON.parse(raw);
+        if (!Array.isArray(generated)) throw new Error('LLM returned non-array');
+
+        generated = generated
+          .filter((q) => q && typeof q.text === 'string' && q.text.trim().length > 10)
+          .map((q, i) => sanitizeQuestion(q, i));
+
+        // ── Layer 7: Two-Pass Verification ────────────────────────────────
+        const verifyPrompt = `For each question below, reply ONLY with a JSON array where each element is { "index": N, "valid": true/false }.
+A question is valid ONLY if its sourceSnippet appears verbatim (or near-verbatim) in the document AND the question is fully answerable from the document.
+
+Document excerpt:
+${docContext.slice(0, 4000)}
+
+Questions to verify:
+${JSON.stringify(generated.map((q, i) => ({ index: i, text: q.text, sourceSnippet: q.sourceSnippet })))}`;
+
+        const verify = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          max_tokens: 800,
+          temperature: 0,
+          messages: [{ role: 'user', content: verifyPrompt }],
+        });
+
+        let verifications = [];
+        try {
+          verifications = JSON.parse(verify.choices[0].message.content.trim());
+        } catch (_) {
+          verifications = generated.map((_, i) => ({ index: i, valid: true }));
+        }
+
+        const validIndices = new Set(
+          verifications.filter((v) => v.valid).map((v) => v.index)
+        );
+
+        // ── Layer 8: Semantic Similarity Validation ────────────────────────
+        const chunkTexts = chunkRows.slice(0, 60).map((c) => c.content);
+        const questionTexts = generated.map((q) => q.text);
+
+        const [chunkEmbRes, qEmbRes] = await Promise.all([
+          openai.embeddings.create({ model: 'text-embedding-3-small', input: chunkTexts }),
+          openai.embeddings.create({ model: 'text-embedding-3-small', input: questionTexts }),
+        ]);
+
+        const chunkEmbs = chunkEmbRes.data.map((d) => d.embedding);
+        const qEmbs = qEmbRes.data.map((d) => d.embedding);
+
+        const semanticValid = qEmbs.map((qEmb) =>
+          Math.max(...chunkEmbs.map((cEmb) => cosineSimilarity(qEmb, cEmb))) >= 0.60
+        );
+
+        // ── Layer 9: Source Snippet Verification ──────────────────────────
+        const allChunkText = chunkRows.map((c) => c.content.toLowerCase()).join(' ');
+
+        const snippetValid = generated.map((q) => {
+          if (!q.sourceSnippet || q.sourceSnippet.length < 10) return false;
+          const words = q.sourceSnippet.toLowerCase().split(/\s+/).filter((w) => w.length > 3);
+          if (words.length === 0) return false;
+          const matched = words.filter((w) => allChunkText.includes(w));
+          return matched.length / words.length >= 0.75;
+        });
+
+        // ── Combine all checks ─────────────────────────────────────────────
+        const valid = generated.filter((_, i) =>
+          validIndices.has(i) && semanticValid[i] && snippetValid[i]
+        );
+
+        // ── Layer 10: 90% Quality Threshold ───────────────────────────────
+        if (valid.length < count * QUALITY_THRESHOLD) {
+          lastError = new Error(
+            `Quality threshold not met: ${valid.length}/${count} questions passed (need ${Math.ceil(count * QUALITY_THRESHOLD)})`
+          );
+          continue;
+        }
+
+        finalQuestions = valid.slice(0, count);
+        break;
+      } catch (err) {
+        lastError = err;
+      }
+    }
+
+    if (finalQuestions.length === 0) {
+      return NextResponse.json(
+        {
+          error:
+            'Could not generate valid questions from this PDF after multiple attempts. ' +
+            'Try uploading a different file or ensure the document contains sufficient academic content.',
+          detail: lastError?.message,
+        },
+        { status: 422 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      questions: finalQuestions,
+      sourceDocument: { id: documentId, name: doc.name },
+      usedConcepts: concepts,
+      generatedAt: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.error('[generate-questions]', err);
+    return NextResponse.json({ error: 'Question generation failed', detail: err.message }, { status: 500 });
   }
 }

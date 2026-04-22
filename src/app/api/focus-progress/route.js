@@ -9,19 +9,22 @@ const supabase = createClient(
 // ✅ SAVE TASK
 export async function POST(req) {
   const body = await req.json();
-  const { user_id, task, task_index, difficulty } = body;
+  const { user_id, task, task_index, difficulty, document_id, document_name } = body;
 
   const { data, error } = await supabase.from("focus_progress").insert([
-  {
-    user_id,
-    task,
-    task_index,
-    difficulty,
-    completed: true,
-  },
-]);
+    {
+      user_id,
+      task,
+      task_index,
+      difficulty,
+      completed: true,
+      document_id:   document_id   || null,
+      document_name: document_name || null,
+    },
+  ]);
 
   if (error) {
+    console.error('[focus-progress POST]', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -39,8 +42,9 @@ export async function GET(req) {
     .eq("user_id", user_id);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[focus-progress GET]', error);
+    return NextResponse.json([]);
   }
 
-  return NextResponse.json(data);
+  return NextResponse.json(data ?? []);
 }

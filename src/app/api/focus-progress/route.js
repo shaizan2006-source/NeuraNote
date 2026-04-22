@@ -6,14 +6,26 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+async function getAuthUser(req) {
+  const token = req.headers.get("authorization")?.replace("Bearer ", "");
+  if (!token) return null;
+  const { data: { user } } = await supabase.auth.getUser(token);
+  return user || null;
+}
+
 // ✅ SAVE TASK
 export async function POST(req) {
+  const user = await getAuthUser(req);
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
-  const { user_id, task, task_index, difficulty, document_id, document_name } = body;
+  const { task, task_index, difficulty, document_id, document_name } = body;
 
   const { data, error } = await supabase.from("focus_progress").insert([
     {
-      user_id,
+      user_id: user.id,
       task,
       task_index,
       difficulty,
@@ -33,13 +45,15 @@ export async function POST(req) {
 
 // ✅ GET TASKS
 export async function GET(req) {
-  const { searchParams } = new URL(req.url);
-  const user_id = searchParams.get("user_id");
+  const user = await getAuthUser(req);
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { data, error } = await supabase
     .from("focus_progress")
     .select("*")
-    .eq("user_id", user_id);
+    .eq("user_id", user.id);
 
   if (error) {
     console.error('[focus-progress GET]', error);

@@ -158,7 +158,6 @@ DOCUMENT CONTENT:
 ${docContext}`;
 
     // ── Layers 6–10: Two-Pass Generation + Validation + Retry ─────────────
-    const TARGET = Math.ceil(count * 1.3);
     const QUALITY_THRESHOLD = 0.9;
 
     let finalQuestions = [];

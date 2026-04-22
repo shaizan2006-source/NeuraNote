@@ -47,31 +47,51 @@ export function loadQuizSession() {
       return null;
     }
 
+    // Build filtered questions first (Fix 1)
+    const questions = parsed.questions.map((q) => ({
+      id: sanitizeString(q.id),
+      text: sanitizeString(q.text),
+      marks: Math.max(1, Math.min(100, Number(q.marks) || 5)),
+      hints: Array.isArray(q.hints) ? q.hints.map(sanitizeString) : [],
+      sourceSnippet: sanitizeString(q.sourceSnippet),
+    })).filter((q) => q.id && q.text);
+
+    // Second guard: if all questions stripped by filter (Fix 1)
+    if (questions.length === 0) {
+      clearQuizSession();
+      return null;
+    }
+
+    // Clamp currentIndex to filtered questions length (Fix 1)
+    const currentIndex = Math.max(0, Math.min(
+      Number(parsed.currentIndex) || 0,
+      questions.length - 1
+    ));
+
     // Sanitize and clamp fields
     return {
-      selectedDocument: parsed.selectedDocument || null,
-      questions: parsed.questions.map((q) => ({
-        id: sanitizeString(q.id),
-        text: sanitizeString(q.text),
-        marks: Math.max(1, Math.min(100, Number(q.marks) || 5)),
-        hints: Array.isArray(q.hints) ? q.hints.map(sanitizeString) : [],
-        sourceSnippet: sanitizeString(q.sourceSnippet),
-      })).filter((q) => q.id && q.text),
-      currentIndex: Math.max(0, Math.min(
-        Number(parsed.currentIndex) || 0,
-        (parsed.questions || []).length - 1
-      )),
+      selectedDocument: parsed.selectedDocument ?? null, // Fix 2: ?? instead of ||
+      questions,
+      currentIndex,
       answers: Object.fromEntries(
-        Object.entries(parsed.answers || {}).map(([k, v]) => [k, sanitizeString(v)])
+        Object.entries(parsed.answers || {})
+          .filter(([k]) => typeof k === 'string' && k.length <= 200) // Fix 5: keys sanitization
+          .map(([k, v]) => [k, sanitizeString(v)])
       ),
-      evaluations: parsed.evaluations || {},
-      sessionSeconds: Math.max(0, Number(parsed.sessionSeconds) || 0),
-      performanceSignals: parsed.performanceSignals || {
-        questionTimes: {},
-        wrongAnswers: [],
-        skippedQuestions: [],
-        weakConcepts: {},
-      },
+      evaluations: (parsed.evaluations && typeof parsed.evaluations === 'object' && !Array.isArray(parsed.evaluations)) // Fix 3: type guard
+        ? parsed.evaluations
+        : {},
+      sessionSeconds: Math.max(0, Math.min(86400, Number(parsed.sessionSeconds) || 0)), // Fix 6: upper bound 86400
+      performanceSignals: (() => { // Fix 4: sub-field validation
+        const ps = parsed.performanceSignals;
+        if (!ps || typeof ps !== 'object') return { questionTimes: {}, wrongAnswers: [], skippedQuestions: [], weakConcepts: {} };
+        return {
+          questionTimes: (ps.questionTimes && typeof ps.questionTimes === 'object' && !Array.isArray(ps.questionTimes)) ? ps.questionTimes : {},
+          wrongAnswers: Array.isArray(ps.wrongAnswers) ? ps.wrongAnswers : [],
+          skippedQuestions: Array.isArray(ps.skippedQuestions) ? ps.skippedQuestions : [],
+          weakConcepts: (ps.weakConcepts && typeof ps.weakConcepts === 'object' && !Array.isArray(ps.weakConcepts)) ? ps.weakConcepts : {},
+        };
+      })(),
       timestamp: parsed.timestamp,
     };
   } catch (err) {

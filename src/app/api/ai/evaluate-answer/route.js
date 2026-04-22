@@ -5,6 +5,7 @@ import OpenAI from 'openai';
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req) {
+  let safeMarks = 10;
   try {
     const body = await req.json();
     const { question, answer, hints = [], totalMarks = 10 } = body;
@@ -20,7 +21,7 @@ export async function POST(req) {
     }
 
     // Fix 3: Validate totalMarks range
-    const safeMarks = Math.max(1, Math.min(100, Number(totalMarks) || 10));
+    safeMarks = Math.max(1, Math.min(100, Number(totalMarks) || 10));
 
     // Fix 2: Cap question length and sanitize hints before prompt
     const safeQuestion = question.slice(0, 1000);

@@ -37,7 +37,7 @@ export async function POST(req) {
       .join('\n');
 
     const skippedSummary = skippedQuestions.length > 0
-      ? skippedQuestions.map((s) => `- "${s.topic || 'Unknown'}""`).join('\n')
+      ? skippedQuestions.map((s) => `- "${s.topic || 'Unknown'}"`).join('\n')
       : 'None';
 
     const systemPrompt = `You are an adaptive AI Study Coach observing a student taking a quiz on ${documentName}.

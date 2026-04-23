@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import ContextualSidebar from '@/components/shared/ContextualSidebar';
 import { COLORS, TYPOGRAPHY } from '@/lib/styles';
-import { useDashboard } from '@/context/DashboardContext';
+import { DashboardProvider, useDashboard } from '@/context/DashboardContext';
 import { useActivePDF } from '@/hooks/useActivePDF';
 import FocusSessionSetup from '@/components/focus/FocusSessionSetup';
 import FocusModeLoader from '@/components/focus/FocusModeLoader';
@@ -15,7 +15,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-export default function FocusPage() {
+function FocusPageInner() {
   const {
     documents,
     user,
@@ -63,7 +63,7 @@ export default function FocusPage() {
         body: JSON.stringify({ documentId }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'generation_failed');
+      if (!res.ok) throw new Error(data.error || data.message || 'generation_failed');
 
       startFocusSession(
         data.tasks,
@@ -76,9 +76,13 @@ export default function FocusPage() {
       setSessionState('active');
     } catch (err) {
       setSessionState('setup');
-      setGeneratingError(err.message === 'pdf_not_found'
-        ? 'PDF not found. Please select another.'
-        : 'Failed to generate tasks. Please try again.');
+      const msg = err.message;
+      setGeneratingError(
+        msg === 'pdf_not_found'   ? 'PDF not found. Please select another.' :
+        msg === 'pdf_parse_failed' ? 'Could not read this PDF. Please try re-uploading it.' :
+        msg === 'pdf_empty'        ? 'This PDF has no readable text. Please upload a different file.' :
+        'Failed to generate tasks. Please try again.'
+      );
     }
   };
 
@@ -119,5 +123,13 @@ export default function FocusPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function FocusPage() {
+  return (
+    <DashboardProvider>
+      <FocusPageInner />
+    </DashboardProvider>
   );
 }

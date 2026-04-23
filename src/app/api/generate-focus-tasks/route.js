@@ -62,41 +62,35 @@ export async function POST(req) {
       .limit(8);
 
     if (chunkErr || !chunks || chunks.length === 0) {
-      // Trigger PDF parsing on first use
+      // PDF not yet parsed — trigger parsing now
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-      try {
-        const parseRes = await fetch(`${appUrl}/api/parse-pdf`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ documentId, userId: user.id }),
-        });
-        if (parseRes.ok) {
-          const refetch = await supabase
-            .from("document_chunks")
-            .select("content")
-            .eq("document_id", documentId)
-            .limit(8);
-          chunks = refetch.data;
-        }
-      } catch {
-        // Parse failed — fall through to fallback tasks below
-      }
-    }
-
-    // If still no chunks after lazy parse, return fallback tasks so the session can start
-    if (!chunks || chunks.length === 0) {
-      const fallbackTasks = FALLBACK_TASKS.map((t, i) => ({
-        ...t,
-        id: `t${i + 1}`,
-        status: i === 0 ? "current" : "pending",
-      }));
-      return NextResponse.json({
-        success: true,
-        tasks: fallbackTasks,
-        totalMinutes: fallbackTasks.reduce((s, t) => s + t.estimatedMinutes, 0),
-        documentId: doc.id,
-        documentName: doc.name,
+      const parseRes = await fetch(`${appUrl}/api/parse-pdf`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ documentId, userId: user.id }),
       });
+
+      if (!parseRes.ok) {
+        return NextResponse.json(
+          { error: "pdf_parse_failed", message: "Could not read this PDF. Please try re-uploading it." },
+          { status: 422 }
+        );
+      }
+
+      const refetch = await supabase
+        .from("document_chunks")
+        .select("content")
+        .eq("document_id", documentId)
+        .limit(8);
+
+      chunks = refetch.data;
+
+      if (!chunks || chunks.length === 0) {
+        return NextResponse.json(
+          { error: "pdf_empty", message: "This PDF has no readable text. Please upload a different file." },
+          { status: 422 }
+        );
+      }
     }
 
     const material = chunks.map((c) => c.content).join("\n\n---\n\n");

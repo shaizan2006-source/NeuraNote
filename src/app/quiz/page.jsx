@@ -13,6 +13,7 @@ import QuizSkeleton from '@/components/shared/QuizSkeleton';
 import QuizPDFSelector from '@/components/quiz/QuizPDFSelector';
 import { useActivePDF } from '@/hooks/useActivePDF';
 import { saveQuizSession, loadQuizSession, clearQuizSession } from '@/utils/quizSession';
+import { retryWithBackoff } from '@/utils/quizResilience';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
 
 const supabase = createClient(
@@ -170,15 +171,18 @@ function QuizContent() {
     setQuizState('generating');
 
     try {
-      const res = await fetch('/api/ai/generate-questions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ documentId, userId, count: 12, marks: [5, 10, 20] }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
+      const requestBody = JSON.stringify({ documentId, userId, count: 12, marks: [5, 10, 20] });
+      const data = await retryWithBackoff(
+        () => fetch('/api/ai/generate-questions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: requestBody,
+        }).then((r) => r.json()),
+        2,
+        2000,
+        60000
+      );
+      if (!data.success) {
         setGenerationError(data.error || 'Could not generate questions from this PDF. Please try a different file.');
         setQuizState('selectingPdf');
         return;

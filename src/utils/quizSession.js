@@ -85,11 +85,20 @@ export function loadQuizSession() {
       performanceSignals: (() => { // Fix 4: sub-field validation
         const ps = parsed.performanceSignals;
         if (!ps || typeof ps !== 'object') return { questionTimes: {}, wrongAnswers: [], skippedQuestions: [], weakConcepts: {} };
+        const tpq = ps.timePerQuestion;
         return {
           questionTimes: (ps.questionTimes && typeof ps.questionTimes === 'object' && !Array.isArray(ps.questionTimes)) ? ps.questionTimes : {},
           wrongAnswers: Array.isArray(ps.wrongAnswers) ? ps.wrongAnswers : [],
           skippedQuestions: Array.isArray(ps.skippedQuestions) ? ps.skippedQuestions : [],
           weakConcepts: (ps.weakConcepts && typeof ps.weakConcepts === 'object' && !Array.isArray(ps.weakConcepts)) ? ps.weakConcepts : {},
+          timePerQuestion: (tpq && typeof tpq === 'object')
+            ? {
+                avg: Math.max(0, Number(tpq.avg) || 0),
+                slowest: (tpq.slowest && typeof tpq.slowest === 'object')
+                  ? { topic: String(tpq.slowest.topic || ''), seconds: Math.max(0, Number(tpq.slowest.seconds) || 0) }
+                  : null,
+              }
+            : { avg: 0, slowest: null },
         };
       })(),
       timestamp: parsed.timestamp,

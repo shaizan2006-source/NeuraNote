@@ -1,6 +1,6 @@
 // src/components/quiz/QuizPDFSelector.jsx
 'use client';
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Button from '@/components/shared/Button';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
@@ -32,6 +32,8 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
   const [showOtherDocs, setShowOtherDocs] = useState(false);
   const fileInputRef = useRef(null);
 
+  useEffect(() => { setShowOtherDocs(false); }, [activePdf?.id]);
+
   const sortedDocuments = useMemo(() =>
     [...(documents || [])].sort((a, b) => {
       if (a.id === activePdf?.id) return -1;
@@ -52,7 +54,12 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
       formData.append('file', file);
       formData.append('userId', session?.user?.id || userId || '');
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error('Server error. Please try again.');
+      }
       if (!res.ok || !data.document) throw new Error(data.error || 'Upload failed');
       onSelectPDF(data.document.id, data.document.name);
     } catch (err) {

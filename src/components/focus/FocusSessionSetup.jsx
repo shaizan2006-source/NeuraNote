@@ -156,7 +156,20 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
             </div>
           ))}
 
-          {error && <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: '#f87171' }}>{error}</div>}
+          {error && (
+            <div style={{
+              fontSize: TYPOGRAPHY.sizes.body,
+              fontWeight: 700,
+              color: '#dc2626',
+              background: 'rgba(220, 38, 38, 0.1)',
+              border: '2px solid #dc2626',
+              borderRadius: RADIUS.md,
+              padding: SPACING.lg,
+              marginTop: SPACING.md,
+            }}>
+              {error}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -204,7 +217,16 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
           </div>
 
           {(error || uploadError) && (
-            <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: '#f87171' }}>
+            <div style={{
+              fontSize: TYPOGRAPHY.sizes.body,
+              fontWeight: 700,
+              color: '#dc2626',
+              background: 'rgba(220, 38, 38, 0.1)',
+              border: '2px solid #dc2626',
+              borderRadius: RADIUS.md,
+              padding: SPACING.lg,
+              marginTop: SPACING.md,
+            }}>
               {error || uploadError}
             </div>
           )}
@@ -240,7 +262,18 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
         </div>
 
         {uploadError && (
-          <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: '#f87171' }}>{uploadError}</div>
+          <div style={{
+            fontSize: TYPOGRAPHY.sizes.body,
+            fontWeight: 700,
+            color: '#dc2626',
+            background: 'rgba(220, 38, 38, 0.1)',
+            border: '2px solid #dc2626',
+            borderRadius: RADIUS.md,
+            padding: SPACING.lg,
+            marginTop: SPACING.md,
+          }}>
+            {uploadError}
+          </div>
         )}
       </div>
     </div>

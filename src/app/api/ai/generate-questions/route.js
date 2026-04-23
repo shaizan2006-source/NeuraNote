@@ -76,33 +76,50 @@ export async function POST(request) {
       .limit(120);
 
     if (chunkError || !chunkRows || chunkRows.length === 0) {
-      // Lazy parse
+      // Lazy parse with timeout
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-      const parseRes = await fetch(`${appUrl}/api/parse-pdf`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ documentId, userId }),
-      });
-      if (!parseRes.ok) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+      try {
+        const parseRes = await fetch(`${appUrl}/api/parse-pdf`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ documentId, userId }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+
+        if (!parseRes.ok) {
+          console.error('[generate-questions] PDF parsing failed:', parseRes.status);
+          return NextResponse.json(
+            { error: 'PDF could not be processed. Please try again or upload a different file.' },
+            { status: 422 }
+          );
+        }
+
+        const refetch = await supabase
+          .from('document_chunks')
+          .select('content, page_number')
+          .eq('document_id', documentId)
+          .limit(120);
+
+        if (!refetch.data || refetch.data.length === 0) {
+          console.error('[generate-questions] PDF parsed but has no readable content');
+          return NextResponse.json(
+            { error: 'PDF has no readable content. Please upload a different file.' },
+            { status: 422 }
+          );
+        }
+        chunkRows = refetch.data;
+      } catch (err) {
+        clearTimeout(timeout);
+        console.error('[generate-questions] PDF parsing timeout or error:', err.message);
         return NextResponse.json(
-          { error: 'PDF could not be processed. Please try again or upload a different file.' },
+          { error: 'PDF processing took too long. Please try a smaller file or try again.' },
           { status: 422 }
         );
       }
-
-      const refetch = await supabase
-        .from('document_chunks')
-        .select('content, page_number')
-        .eq('document_id', documentId)
-        .limit(120);
-
-      if (!refetch.data || refetch.data.length === 0) {
-        return NextResponse.json(
-          { error: 'PDF has no readable content. Please upload a different file.' },
-          { status: 422 }
-        );
-      }
-      chunkRows = refetch.data;
     }
 
     // ── Layer 4: Concept Extraction ────────────────────────────────────────
@@ -254,10 +271,14 @@ ${JSON.stringify(generated.map((q, i) => ({ index: i, text: q.text, sourceSnippe
         );
 
         // ── Layer 10: 90% Quality Threshold ───────────────────────────────
-        if (valid.length < count * QUALITY_THRESHOLD) {
-          lastError = new Error(
-            `Quality threshold not met: ${valid.length}/${count} questions passed (need ${Math.ceil(count * QUALITY_THRESHOLD)})`
-          );
+        const minRequired = Math.ceil(count * QUALITY_THRESHOLD);
+        if (valid.length < minRequired) {
+          lastError = {
+            valid: valid.length,
+            required: minRequired,
+            message: `Quality check: ${valid.length}/${count} questions passed (need ${minRequired})`
+          };
+          console.log(`[generate-questions] Attempt ${attempt + 1}/3 quality threshold failed:`, lastError);
           continue;
         }
 
@@ -265,15 +286,19 @@ ${JSON.stringify(generated.map((q, i) => ({ index: i, text: q.text, sourceSnippe
         break;
       } catch (err) {
         lastError = err;
+        console.error(`[generate-questions] Attempt ${attempt + 1}/3 error:`, err.message);
       }
     }
 
     if (finalQuestions.length === 0) {
+      const failureDetail = lastError?.message || 'Unknown error';
+      console.error('[generate-questions] Final failure:', failureDetail);
       return NextResponse.json(
         {
-          error:
-            'Could not generate valid questions from this PDF after multiple attempts. ' +
-            'Try uploading a different file or ensure the document contains sufficient academic content.',
+          error: 'Could not generate valid questions from this PDF.',
+          reason: failureDetail.includes('Quality check')
+            ? 'PDF content quality too low. Try a document with more text or academic content.'
+            : 'PDF parsing or validation failed. Please try a different file.',
         },
         { status: 422 }
       );

@@ -18,11 +18,13 @@ export function computeStudyTimeMins(focusRows) {
   }, 0) / 60;
 }
 
-export function computePeakHour(focusRows) {
+export function computePeakHour(focusRows, tzOffsetHours = 0) {
   const counts = {};
+  const offsetMs = tzOffsetHours * 3600 * 1000;
   focusRows.forEach(row => {
     if (!row.created_at) return;
-    const h = new Date(row.created_at).getUTCHours();
+    const localMs = new Date(row.created_at).getTime() + offsetMs;
+    const h = Math.floor(localMs / (3600 * 1000)) % 24;
     counts[h] = (counts[h] || 0) + 1;
   });
   const entries = Object.entries(counts);

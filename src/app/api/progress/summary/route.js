@@ -74,7 +74,7 @@ export async function GET(req) {
 
   const focusScore       = computeFocusScore({ streak, totalStudyTimeMins, topicsMastered, totalTopics });
   const peerPercentile   = computePeerPercentile({ focusScore, streak, topicsMastered, totalTopics });
-  const peakStudyHour    = computePeakHour(focusRows);
+  const peakStudyHour    = computePeakHour(focusRows, 5.5); // IST = UTC+5:30
   const strongestSubject = computeStrongestSubject(masteryTopics);
 
   const avgSessionDepthMins = focusRows.length > 0

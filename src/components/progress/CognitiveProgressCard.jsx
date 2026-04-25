@@ -13,7 +13,7 @@ export default function CognitiveProgressCard({
   peerPercentile = 0, masteryTopics = [],
 }) {
   const cells = Array.from({ length: 16 }, (_, i) => ({
-    score: masteryTopics[i]?.mastery_score ?? 0,
+    score: masteryTopics[i]?.accuracy ?? 0,
   }));
 
   return (

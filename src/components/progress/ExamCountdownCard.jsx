@@ -17,7 +17,7 @@ export default function ExamCountdownCard({ examName = null, examDaysLeft = null
     );
   }
 
-  const daysColor = examDaysLeft > 30 ? "#22C55E" : examDaysLeft > 7 ? "#F59E0B" : "#EF4444";
+  const daysColor = examDaysLeft == null ? "#71717a" : examDaysLeft > 30 ? "#22C55E" : examDaysLeft > 7 ? "#F59E0B" : "#EF4444";
 
   return (
     <div id="exam" style={{
@@ -30,7 +30,7 @@ export default function ExamCountdownCard({ examName = null, examDaysLeft = null
         <span style={{ fontSize: 52, fontWeight: 900, color: daysColor, lineHeight: 1 }}>{examDaysLeft ?? "—"}</span>
         <div>
           <p style={{ margin: 0, fontSize: 14, color: "#71717a" }}>days left</p>
-          {examDaysLeft <= 7 && <p style={{ margin: "2px 0 0", fontSize: 10, color: "#EF4444", fontWeight: 600 }}>Final sprint!</p>}
+          {examDaysLeft != null && examDaysLeft <= 7 && <p style={{ margin: "2px 0 0", fontSize: 10, color: "#EF4444", fontWeight: 600 }}>Final sprint!</p>}
         </div>
       </div>
 

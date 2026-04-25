@@ -69,14 +69,24 @@ describe("computeStudyTimeMins", () => {
 });
 
 describe("computePeakHour", () => {
-  it("returns UTC hour with most sessions", () => {
+  it("returns UTC hour with most sessions (no offset)", () => {
     const rows = [
       { created_at: "2026-04-25T20:00:00.000Z" },
       { created_at: "2026-04-25T20:30:00.000Z" },
       { created_at: "2026-04-25T14:00:00.000Z" },
     ];
-    // Two rows at UTC hour 20, one at UTC hour 14 → peak is 20
-    assert.equal(computePeakHour(rows), 20);
+    // Two rows at UTC hour 20, one at UTC hour 14 → peak is UTC 20
+    assert.equal(computePeakHour(rows, 0), 20);
+  });
+
+  it("converts to IST (+5.5) correctly", () => {
+    const rows = [
+      { created_at: "2026-04-25T14:30:00.000Z" }, // 20:00 IST
+      { created_at: "2026-04-25T15:00:00.000Z" }, // 20:30 IST
+      { created_at: "2026-04-25T08:30:00.000Z" }, // 14:00 IST
+    ];
+    // Two rows at IST hour 20, one at IST hour 14 → peak IST hour is 20
+    assert.equal(computePeakHour(rows, 5.5), 20);
   });
 
   it("returns 20 as default when no rows", () => {

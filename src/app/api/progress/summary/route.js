@@ -24,6 +24,7 @@ async function getUser(req) {
 }
 
 export async function GET(req) {
+  try {
   const user = await getUser(req);
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -47,6 +48,9 @@ export async function GET(req) {
       .order("exam_date", { ascending: true })
       .limit(1),
   ]);
+
+  if (focusRes.error)   console.error("[progress/summary] focus_progress:", focusRes.error.message);
+  if (masteryRes.error) console.error("[progress/summary] mastery_topics:", masteryRes.error.message);
 
   const streak         = streakRes.data?.streak_count  || 0;
   const lastActiveDate = streakRes.data?.last_active_date || null;
@@ -121,4 +125,8 @@ export async function GET(req) {
     examName, examDaysLeft, examReadiness, syllabusPct,
     studyPlanProgress,
   });
+  } catch (err) {
+    console.error("[progress/summary]", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }

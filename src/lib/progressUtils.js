@@ -2,7 +2,7 @@ export function computeFocusScore({ streak, totalStudyTimeMins, topicsMastered, 
   const consistency = Math.min(streak / 7, 1) * 40;
   const depth = Math.min(totalStudyTimeMins / 180, 1) * 40;
   const mastery = totalTopics > 0 ? (topicsMastered / totalTopics) * 20 : 0;
-  return Math.round(consistency + depth + mastery);
+  return Math.min(100, Math.round(consistency + depth + mastery));
 }
 
 export function computePeerPercentile({ focusScore, streak, topicsMastered, totalTopics }) {
@@ -22,7 +22,7 @@ export function computePeakHour(focusRows) {
   const counts = {};
   focusRows.forEach(row => {
     if (!row.created_at) return;
-    const h = new Date(row.created_at).getHours();
+    const h = new Date(row.created_at).getUTCHours();
     counts[h] = (counts[h] || 0) + 1;
   });
   const entries = Object.entries(counts);
@@ -30,8 +30,7 @@ export function computePeakHour(focusRows) {
   return parseInt(entries.sort((a, b) => b[1] - a[1])[0][0]);
 }
 
-export function computeDailyStudyTime(focusRows, days = 14) {
-  const now = new Date();
+export function computeDailyStudyTime(focusRows, days = 14, now = new Date()) {
   return Array.from({ length: days }, (_, i) => {
     const d = new Date(now);
     d.setDate(d.getDate() - (days - 1 - i));
@@ -42,6 +41,7 @@ export function computeDailyStudyTime(focusRows, days = 14) {
 }
 
 export function computeWeeklyChange(dailyStudyTime) {
+  if (dailyStudyTime.length < 14) return 0;
   const thisWeek = dailyStudyTime.slice(-7).reduce((s, d) => s + d.minutes, 0);
   const lastWeek = dailyStudyTime.slice(-14, -7).reduce((s, d) => s + d.minutes, 0);
   if (lastWeek === 0) return thisWeek > 0 ? 100 : 0;

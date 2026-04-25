@@ -69,14 +69,14 @@ describe("computeStudyTimeMins", () => {
 });
 
 describe("computePeakHour", () => {
-  it("returns hour with most sessions", () => {
+  it("returns UTC hour with most sessions", () => {
     const rows = [
       { created_at: "2026-04-25T20:00:00.000Z" },
       { created_at: "2026-04-25T20:30:00.000Z" },
       { created_at: "2026-04-25T14:00:00.000Z" },
     ];
-    const hour = computePeakHour(rows);
-    assert.ok(hour >= 0 && hour <= 23);
+    // Two rows at UTC hour 20, one at UTC hour 14 → peak is 20
+    assert.equal(computePeakHour(rows), 20);
   });
 
   it("returns 20 as default when no rows", () => {
@@ -107,6 +107,11 @@ describe("computeWeeklyChange", () => {
       ...Array(7).fill({ minutes: 90 }),
     ];
     assert.equal(computeWeeklyChange(data), 50);
+  });
+
+  it("returns 0 when fewer than 14 days of data", () => {
+    // New user — only 7 days available
+    assert.equal(computeWeeklyChange(Array(7).fill({ minutes: 60 })), 0);
   });
 });
 

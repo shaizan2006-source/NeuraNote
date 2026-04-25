@@ -1,6 +1,6 @@
 "use client";
-
 import { useRouter } from "next/navigation";
+import { useDashboard } from "@/context/DashboardContext";
 
 const BASE_CARD = {
   background:   "#111111",
@@ -28,13 +28,26 @@ function BentoCard({ title, subtitle, icon, onClick, subtitleColor }) {
 
 export default function ProgressModeCards() {
   const router = useRouter();
+  const { analytics, streak, selectedExam, getDaysLeft } = useDashboard();
+
+  const daysLeft = selectedExam ? getDaysLeft(selectedExam.exam_date) : null;
+  const sessions = analytics?.totalCompleted || 0;
 
   return (
     <>
-      <BentoCard icon="📊" title="Analytics"      subtitle="6h studied this week" onClick={() => router.push("/dashboard#section-analytics")} />
-      <BentoCard icon="📋" title="Study Plans"    subtitle="Day 12 of 30"          onClick={() => router.push("/dashboard#section-plan")} />
-      <BentoCard icon="📅" title="Exam Countdown" subtitle="48 days left"          subtitleColor="#F59E0B" onClick={() => router.push("/dashboard#section-exam")} />
-      <BentoCard icon="📈" title="Weekly Recap"   subtitle="+18% vs last week"     onClick={() => router.push("/dashboard#section-analytics")} />
+      <BentoCard icon="📊" title="Analytics"
+        subtitle={sessions > 0 ? `${sessions} sessions done` : "View breakdown"}
+        onClick={() => router.push("/progress#analytics")} />
+      <BentoCard icon="📋" title="Study Plan"
+        subtitle="View your progress"
+        onClick={() => router.push("/progress#study-plan")} />
+      <BentoCard icon="📅" title="Exam Countdown"
+        subtitle={daysLeft !== null ? `${daysLeft} days left` : "No exam set"}
+        subtitleColor="#F59E0B"
+        onClick={() => router.push("/progress#exam")} />
+      <BentoCard icon="📈" title="Weekly Recap"
+        subtitle={streak > 0 ? `${streak}-day streak 🔥` : "See insights"}
+        onClick={() => router.push("/progress#insights")} />
     </>
   );
 }

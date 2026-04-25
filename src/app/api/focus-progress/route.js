@@ -21,7 +21,7 @@ export async function POST(req) {
   }
 
   const body = await req.json();
-  const { task, task_index, difficulty, document_id, document_name } = body;
+  const { task, task_index, difficulty, document_id, document_name, active_time_seconds } = body;
 
   const { data, error } = await supabase.from("focus_progress").insert([
     {
@@ -30,8 +30,9 @@ export async function POST(req) {
       task_index,
       difficulty,
       completed: true,
-      document_id:   document_id   || null,
-      document_name: document_name || null,
+      document_id:         document_id   || null,
+      document_name:       document_name || null,
+      active_time_seconds: active_time_seconds || 0,
     },
   ]);
 
@@ -52,7 +53,7 @@ export async function GET(req) {
 
   const { data, error } = await supabase
     .from("focus_progress")
-    .select("*")
+    .select("id, task, task_index, difficulty, completed, document_id, document_name, active_time_seconds, created_at")
     .eq("user_id", user.id);
 
   if (error) {

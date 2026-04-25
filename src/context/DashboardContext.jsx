@@ -311,8 +311,11 @@ export function DashboardProvider({ children }) {
   const [focusSessionDuration, setFocusSessionDuration] = useState(1500);
   const [focusSessionDocumentId, setFocusSessionDocumentId] = useState(null);
   const [focusSessionDocumentName, setFocusSessionDocumentName] = useState(null);
+  const [focusSessionId, setFocusSessionId] = useState(null);
 
   const startFocusSession = useCallback((tasks, durationSeconds, docId, docName) => {
+    const sessionId = `fs_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+    setFocusSessionId(sessionId);
     setFocusSessionTasks(
       tasks.map((t, i) => ({
         ...t,
@@ -642,16 +645,16 @@ export function DashboardProvider({ children }) {
   const markTaskDone = async () => {
     const task = dailyPlan[currentTaskIndex];
     const endTime = Date.now();
-    const duration = taskStartTime ? (endTime - taskStartTime) / 1000 : 0;
+    const durationSeconds = taskStartTime ? Math.round((endTime - taskStartTime) / 1000) : 0;
     let difficulty = "medium";
-    if (duration > 1500) difficulty = "hard";
-    else if (duration < 600) difficulty = "easy";
+    if (durationSeconds > 1500) difficulty = "hard";
+    else if (durationSeconds < 600) difficulty = "easy";
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return;
     await fetch("/api/focus-progress", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-      body: JSON.stringify({ task, task_index: currentTaskIndex, difficulty }),
+      body: JSON.stringify({ task, task_index: currentTaskIndex, difficulty, active_time_seconds: durationSeconds }),
     });
     setCompletedTasks((prev) => [...prev, currentTaskIndex]);
     setCurrentTaskIndex((prev) => (prev + 1 >= dailyPlan.length ? prev : prev + 1));
@@ -1353,6 +1356,7 @@ export function DashboardProvider({ children }) {
       focusSessionDuration,
       focusSessionDocumentId,
       focusSessionDocumentName,
+      focusSessionId,
       startFocusSession,
       analytics, insights, readiness,
       isAnalyticsExpanded, setIsAnalyticsExpanded,

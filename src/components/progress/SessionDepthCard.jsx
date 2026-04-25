@@ -6,7 +6,6 @@ export default function SessionDepthCard({
   difficultyBreakdown = { easy: 0, medium: 0, hard: 0 },
 }) {
   const isDeepWork = avgSessionDepthMins >= 25;
-  const total = Object.values(difficultyBreakdown).reduce((s, v) => s + v, 0) || 1;
 
   const DIFF = [
     { label: "Easy", count: difficultyBreakdown.easy,   color: "#22C55E" },

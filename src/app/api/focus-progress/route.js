@@ -58,7 +58,7 @@ export async function GET(req) {
 
   if (error) {
     console.error('[focus-progress GET]', error);
-    return NextResponse.json([]);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   return NextResponse.json(data ?? []);

@@ -31,14 +31,21 @@ export default function ModeSwitcher() {
   const [open, setOpen]           = useState(false);
   const ref                       = useRef(null);
 
-  // Close on outside click
+  // Close on outside click or Escape key
   useEffect(() => {
     const handleOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
     };
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setOpen(false);
+    };
     document.addEventListener("mousedown", handleOutside);
-    return () => document.removeEventListener("mousedown", handleOutside);
-  }, []);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []); // [] intentional — setOpen is a stable React setter
 
   const current = MODES.find(m => m.id === chatMode) ?? MODES[0];
 
@@ -47,6 +54,9 @@ export default function ModeSwitcher() {
       {/* Pill trigger */}
       <motion.button
         whileTap={{ scale: 0.92 }}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={`Chat mode: ${current.label}. Click to switch`}
         onClick={() => setOpen(o => !o)}
         style={{
           display:      "flex",
@@ -84,7 +94,7 @@ export default function ModeSwitcher() {
           <motion.div
             initial={{ opacity: 0, y: -6, scale: 0.96 }}
             animate={{ opacity: 1, y: 0,  scale: 1    }}
-            exit={{    opacity: 0, y: -6, scale: 0.96 }}
+            exit={{    opacity: 0, y:  6, scale: 0.96 }}
             transition={{ duration: 0.14, ease: "easeOut" }}
             style={{
               position:       "absolute",
@@ -113,7 +123,7 @@ export default function ModeSwitcher() {
                     gap:          10,
                     width:        "100%",
                     padding:      "8px 10px",
-                    background:   active ? "rgba(255,255,255,0.04)" : "transparent",
+                    background:   active ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0)",
                     border:       "none",
                     borderRadius: 8,
                     cursor:       "pointer",

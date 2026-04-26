@@ -1343,7 +1343,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
             </motion.button>
 
             {/* Mode switcher */}
-            <div style={{ alignSelf: "flex-end", paddingBottom: 10, paddingRight: 4 }}>
+            <div style={{ alignSelf: "flex-end", paddingBottom: 10, paddingRight: 4, flexShrink: 0 }}>
               <ModeSwitcher />
             </div>
 
@@ -1451,15 +1451,20 @@ export default function AskAISection({ fullPage = false, conversationId = null }
 
       {/* Coach mode indicator */}
       {chatMode === "coach" && (
-        <div style={{
-          display:    "flex",
-          alignItems: "center",
-          gap:        5,
-          padding:    "5px 16px 0",
-          fontSize:   11,
-          color:      "rgba(251,191,36,0.7)",
-          userSelect: "none",
-        }}>
+        <div
+          role="status"
+          aria-live="polite"
+          aria-label="Coach mode active"
+          style={{
+            display:    "flex",
+            alignItems: "center",
+            gap:        5,
+            padding:    "5px 16px 0",
+            fontSize:   11,
+            color:      "rgba(251,191,36,0.7)",
+            userSelect: "none",
+          }}
+        >
           <span style={{ fontSize: 10 }}>🎯</span>
           <span>Coach Mode — I&apos;ll ask questions to guide you</span>
         </div>

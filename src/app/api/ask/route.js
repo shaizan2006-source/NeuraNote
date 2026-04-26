@@ -108,7 +108,8 @@ export async function POST(req) {
       userId   = user?.id || null;
       authUser = user || null;
     }
-    if (userId) {
+    // Coach mode bypasses the Q&A rate-limit (conversational turns, not factual answers)
+    if (userId && mode !== "coach") {
       const qaCheck = await canAskQuestion(userId, authUser);
       if (!qaCheck.allowed) {
         return NextResponse.json(
@@ -121,7 +122,7 @@ export async function POST(req) {
 
     // ── Coach mode: Socratic guidance, no RAG pipeline ────────
     if (mode === "coach") {
-      const sanitisedPrior = Array.isArray(priorMessages)
+      const coachPrior = Array.isArray(priorMessages)
         ? priorMessages
             .filter(m => (m.role === "user" || m.role === "assistant") && m.content?.trim())
             .slice(-8)
@@ -129,7 +130,7 @@ export async function POST(req) {
 
       const coachMessages = [
         { role: "system", content: COACH_SYSTEM_PROMPT },
-        ...sanitisedPrior,
+        ...coachPrior,
         { role: "user", content: question },
       ];
 

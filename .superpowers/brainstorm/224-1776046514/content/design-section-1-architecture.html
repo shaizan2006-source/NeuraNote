@@ -1,0 +1,206 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0A0A0A; font-family: -apple-system, 'Inter', sans-serif; color: #e4e4e7; }
+  .page { padding: 24px; max-width: 900px; margin: 0 auto; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #f4f4f5; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 28px; }
+
+  /* Section title */
+  .section-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);
+    border-radius: 20px; padding: 3px 10px;
+    font-size: 10px; font-weight: 700; color: #c4b5fd;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  /* Page map */
+  .page-map { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .page-node {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 14px 16px;
+    position: relative;
+  }
+  .page-node.highlight { border-color: rgba(139,92,246,0.25); background: rgba(139,92,246,0.05); }
+  .page-node-title { font-size: 12px; font-weight: 700; color: #f4f4f5; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .page-node-title .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot-purple { background: #8B5CF6; box-shadow: 0 0 6px rgba(139,92,246,0.5); }
+  .dot-cyan { background: #22D3EE; box-shadow: 0 0 6px rgba(34,211,238,0.5); }
+  .dot-gray { background: #52525b; }
+  .page-node ul { padding-left: 14px; }
+  .page-node ul li { font-size: 10px; color: #71717a; margin-bottom: 3px; line-height: 1.5; }
+  .page-node ul li span { color: #a1a1aa; }
+  .scope-tag {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 8px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 8px;
+  }
+  .scope-now { background: rgba(34,197,94,0.12); color: #86efac; border: 1px solid rgba(34,197,94,0.2); }
+  .scope-next { background: rgba(245,158,11,0.08); color: #fcd34d; border: 1px solid rgba(245,158,11,0.15); }
+
+  /* State architecture */
+  .state-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  .state-card {
+    background: #111111; border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 9px; padding: 12px;
+  }
+  .state-card-title { font-size: 10px; font-weight: 700; color: #a1a1aa; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .state-card-title svg { width: 10px; height: 10px; stroke: #71717a; stroke-width: 2; fill: none; }
+  .state-item { font-size: 9px; color: #52525b; margin-bottom: 4px; display: flex; align-items: flex-start; gap: 5px; line-height: 1.5; }
+  .state-item::before { content: '·'; color: #3f3f46; flex-shrink: 0; margin-top: 0px; }
+  .state-item .key { color: #71717a; }
+
+  /* Flow diagram */
+  .flow { display: flex; align-items: center; gap: 0; margin-bottom: 28px; flex-wrap: wrap; gap: 4px; }
+  .flow-node {
+    background: #18181B; border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 10px; color: #a1a1aa; text-align: center; white-space: nowrap;
+  }
+  .flow-node.highlight { border-color: rgba(34,211,238,0.25); color: #67e8f9; background: rgba(34,211,238,0.04); }
+  .flow-node.purple { border-color: rgba(139,92,246,0.25); color: #c4b5fd; background: rgba(139,92,246,0.04); }
+  .flow-arrow { color: #3f3f46; font-size: 14px; padding: 0 2px; }
+  .flow-label { font-size: 8px; color: #3f3f46; display: block; margin-top: 2px; }
+
+  /* Separator */
+  .divider { height: 1px; background: rgba(255,255,255,0.05); margin: 20px 0; }
+
+  /* Key decisions */
+  .decisions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .decision {
+    background: #0F0F14; border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px; padding: 10px 12px;
+    font-size: 10px; color: #71717a; line-height: 1.6;
+  }
+  .decision strong { color: #a1a1aa; display: block; margin-bottom: 3px; font-size: 10px; }
+
+  .approval-box {
+    margin-top: 24px;
+    padding: 14px 16px;
+    background: rgba(139,92,246,0.06);
+    border: 1px solid rgba(139,92,246,0.18);
+    border-radius: 10px;
+    font-size: 11px; color: #a1a1aa; line-height: 1.7;
+  }
+  .approval-box strong { color: #c4b5fd; }
+</style>
+
+<div class="page">
+  <div class="section-badge">Section 1 of 4 · Architecture</div>
+  <h2>Overall Architecture</h2>
+  <p class="subtitle">Page structure, shared state, and how the drawer connects dashboard to Ask AI page.</p>
+
+  <!-- Page map -->
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#52525b;margin-bottom:10px;">Pages in scope</div>
+  <div class="page-map">
+    <div class="page-node highlight">
+      <span class="scope-tag scope-now">This spec</span>
+      <div class="page-node-title"><span class="dot dot-purple"></span>Dashboard</div>
+      <ul>
+        <li><span>DashboardSidebar</span> — collapsible, 56px rail</li>
+        <li><span>Study Mode</span> — Ask AI hero + 4 cards</li>
+        <li><span>Progress Mode</span> — Your Brain hero + 4 cards</li>
+        <li><span>QuickChatDrawer</span> — slide-over, syncs to Ask AI</li>
+        <li><span>Mode toggle</span> — in greeting row, pill style</li>
+      </ul>
+    </div>
+    <div class="page-node highlight">
+      <span class="scope-tag scope-now">This spec</span>
+      <div class="page-node-title"><span class="dot dot-cyan"></span>Ask AI Page</div>
+      <ul>
+        <li><span>AskAISidebar</span> — New Chat + Recent Chats + Your PDFs</li>
+        <li><span>Chat interface</span> — full conversation thread</li>
+        <li><span>Drawer handoff</span> — loads conversationId from URL param</li>
+      </ul>
+    </div>
+    <div class="page-node">
+      <span class="scope-tag scope-next">Next spec</span>
+      <div class="page-node-title"><span class="dot dot-gray"></span>My PDFs Page</div>
+      <ul><li>Upload, manage, tag PDFs</li></ul>
+    </div>
+    <div class="page-node">
+      <span class="scope-tag scope-next">Next spec</span>
+      <div class="page-node-title"><span class="dot dot-gray"></span>Landing + Auth</div>
+      <ul><li>Landing, signup, login, pricing</li></ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Drawer flow -->
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#52525b;margin-bottom:12px;">QuickChat drawer — data flow</div>
+  <div class="flow">
+    <div class="flow-node">User types in<br><span class="flow-label">Dashboard hero card</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node highlight">Drawer opens<br><span class="flow-label">Slide from right</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node highlight">API call<br><span class="flow-label">Same endpoint as Ask AI</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node highlight">Supabase row<br><span class="flow-label">Conversation created</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node purple">"Open full chat →"<br><span class="flow-label">/ask-ai?cid=xxx</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node purple">Ask AI page<br><span class="flow-label">Loads full thread from Supabase</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Shared state -->
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#52525b;margin-bottom:12px;">Shared state across surfaces</div>
+  <div class="state-grid">
+    <div class="state-card">
+      <div class="state-card-title">
+        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        Supabase (persistent)
+      </div>
+      <div class="state-item"><span class="key">conversations</span> — id, title, messages[]</div>
+      <div class="state-item"><span class="key">active_pdf_id</span> — per user</div>
+      <div class="state-item"><span class="key">dashboard_mode</span> — study | progress</div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-title">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        localStorage (session)
+      </div>
+      <div class="state-item"><span class="key">sidebar_collapsed</span> — boolean</div>
+      <div class="state-item"><span class="key">dashboard_mode</span> — mirrors Supabase, fast read</div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-title">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        React context (runtime)
+      </div>
+      <div class="state-item"><span class="key">drawerConversationId</span> — current drawer session</div>
+      <div class="state-item"><span class="key">activePdf</span> — name + id for drawer badge</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Key architectural decisions -->
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#52525b;margin-bottom:12px;">Key decisions</div>
+  <div class="decisions">
+    <div class="decision">
+      <strong>Drawer is not a new feature</strong>
+      It's a lightweight shell around the existing Ask AI API. No separate endpoint, no separate data model.
+    </div>
+    <div class="decision">
+      <strong>Conversation continuity via URL param</strong>
+      "Open full chat →" navigates to <code style="font-size:9px;color:#c4b5fd;">/ask-ai?cid={id}</code>. Ask AI page reads param on mount and loads the thread.
+    </div>
+    <div class="decision">
+      <strong>dashboard_mode persists</strong>
+      Stored in both localStorage (instant read) and Supabase (cross-device). localStorage wins on page load, syncs on mount.
+    </div>
+    <div class="decision">
+      <strong>Sidebar state is local-only</strong>
+      Collapse preference stays in localStorage — not worth a Supabase round trip for a UI toggle.
+    </div>
+  </div>
+
+  <div class="approval-box">
+    <strong>Section 1 check:</strong> Does this architecture look right to you? Specifically — are you comfortable with the drawer sharing the same Supabase conversation table as Ask AI, and using <code style="color:#c4b5fd;">/ask-ai?cid=xxx</code> for handoff? Once this is confirmed we move to Section 2: Dashboard layout spec.
+  </div>
+</div>

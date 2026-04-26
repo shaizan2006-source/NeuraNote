@@ -1,42 +1,60 @@
 "use client";
-import { useRouter } from "next/navigation";
 
 export default function WeeklyRecapCard({ thisWeekMins = 0, weeklyChange = 0, strongestSubject = null }) {
-  const router = useRouter();
-  const hrs  = Math.floor(thisWeekMins / 60);
-  const mins = thisWeekMins % 60;
-  const up   = weeklyChange >= 0;
+  const hrs    = Math.floor(thisWeekMins / 60);
+  const mins   = thisWeekMins % 60;
+  const up     = weeklyChange >= 0;
+  const timeLabel = hrs > 0 ? `${hrs}h${mins > 0 ? ` ${mins}m` : ""}` : `${mins}m`;
 
   return (
     <div
       id="insights"
       style={{
-        background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, padding: "16px 18px",
-        cursor: "pointer", transition: "transform 200ms ease-out",
+        background: "linear-gradient(135deg, rgba(34,211,238,0.06), rgba(10,10,30,0.5))",
+        border: "1px solid rgba(34,211,238,0.14)",
+        borderRadius: 14,
+        padding: "18px 24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 24,
+        flexWrap: "wrap",
       }}
-      onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-      onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
-      onClick={() => router.push("/dashboard")}
     >
-      <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>Weekly Recap</p>
-      <p style={{ margin: "4px 0 0", fontSize: 17, fontWeight: 700, color: "#f4f4f5" }}>
-        {hrs > 0 ? `${hrs}h ${mins > 0 ? `${mins}m` : ""}` : `${mins}m`} studied
-      </p>
-
-      <div style={{ marginTop: 5, display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontSize: 14, color: up ? "#22C55E" : "#EF4444", fontWeight: 700 }}>
-          {up ? "↑" : "↓"} {Math.abs(weeklyChange)}%
-        </span>
-        <span style={{ fontSize: 10, color: "#52525b" }}>vs last week</span>
+      {/* Title + time */}
+      <div>
+        <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          Weekly Recap
+        </p>
+        <p style={{ margin: "4px 0 0", fontSize: 22, fontWeight: 800, color: "#f4f4f5", lineHeight: 1 }}>
+          {timeLabel} studied
+        </p>
       </div>
 
-      {strongestSubject && (
-        <p style={{ margin: "8px 0 0", fontSize: 10, color: "#a1a1aa" }}>
-          Strongest: <span style={{ color: "#8B5CF6", fontWeight: 600 }}>{strongestSubject}</span>
-        </p>
-      )}
+      {/* % change indicator */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 20, fontWeight: 700, color: up ? "#22C55E" : "#EF4444" }}>
+          {up ? "↑" : "↓"} {Math.abs(weeklyChange)}%
+        </span>
+        <span style={{ fontSize: 11, color: "#52525b" }}>vs last week</span>
+      </div>
 
-      <p style={{ margin: "6px 0 0", fontSize: 10, color: up ? "#22C55E" : "#71717a" }}>
+      {/* Strongest subject badge */}
+      {strongestSubject ? (
+        <div style={{
+          background: "rgba(139,92,246,0.09)",
+          border: "1px solid rgba(139,92,246,0.18)",
+          borderRadius: 10,
+          padding: "8px 16px",
+          flexShrink: 0,
+        }}>
+          <p style={{ margin: 0, fontSize: 9, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Strongest subject</p>
+          <p style={{ margin: "2px 0 0", fontSize: 14, fontWeight: 700, color: "#8B5CF6" }}>{strongestSubject}</p>
+        </div>
+      ) : null}
+
+      {/* Motivational message */}
+      <p style={{ margin: 0, fontSize: 11, color: up ? "#22C55E" : "#71717a", flexShrink: 0 }}>
         {weeklyChange === 0 ? "Same as last week" : up ? "You're improving — keep going!" : "Let's pick it up this week"}
       </p>
     </div>

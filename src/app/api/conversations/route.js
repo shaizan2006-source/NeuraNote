@@ -18,6 +18,9 @@ export async function GET(req) {
     .order("updated_at", { ascending: false })
     .limit(10);
 
-  if (error) return NextResponse.json([], { status: 500 });
+  if (error) {
+    console.error("[/api/conversations] Supabase error:", error.message, error.details, error.hint);
+    return NextResponse.json([], { status: 200 }); // degrade gracefully — sidebar shows empty list
+  }
   return NextResponse.json(data || []);
 }

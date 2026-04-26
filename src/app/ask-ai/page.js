@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { DashboardProvider, useDashboard } from "@/context/DashboardContext";
 import { DrawerProvider } from "@/context/DrawerContext";
@@ -9,6 +9,8 @@ import AskAISidebar from "@/components/AskAI/AskAISidebar";
 import AskAISection from "@/components/dashboard/AskAISection";
 import MilestoneToast, { checkMilestones } from "@/components/ui/MilestoneToast";
 import { useActivePDF } from "@/hooks/useActivePDF";
+import UserProfileButton from "@/components/ui/UserProfile";
+import { loadSavedChatId } from "@/lib/chatStorage";
 
 function AskAIInner() {
   const searchParams = useSearchParams();
@@ -16,14 +18,43 @@ function AskAIInner() {
   const userId = user?.id;
   const { activePdf, setActivePdfId } = useActivePDF(userId);
 
-  // Active conversation (from URL ?cid= or sidebar selection)
-  const [activeConversationId, setActiveConversationId] = useState(
-    () => searchParams.get("cid") || null
-  );
+  // Active conversation — priority: URL ?cid= → localStorage → null
+  const [activeConversationId, setActiveConversationId] = useState(() => {
+    const fromUrl = searchParams.get("cid");
+    if (fromUrl) return fromUrl;
+    return loadSavedChatId(); // restore last session on refresh without ?cid=
+  });
+
+  // If conversation was restored from localStorage (no ?cid= in URL), sync the URL
+  useEffect(() => {
+    if (!activeConversationId) return;
+    const url = new URL(window.location.href);
+    if (!url.searchParams.get("cid")) {
+      url.searchParams.set("cid", activeConversationId);
+      window.history.replaceState({}, "", url.toString());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount — activeConversationId is stable from useState init
 
   useEffect(() => {
     checkMilestones({ streak, progressQuestions, masteryTopics: masteryTopics?.length ?? 0 });
   }, [streak, progressQuestions, masteryTopics]);
+
+  // When Ask AI creates a new conversation (first question in a fresh chat),
+  // update the active ID and URL so follow-up questions use the saved thread.
+  useEffect(() => {
+    function onNewConv(e) {
+      const { id } = e.detail;
+      setActiveConversationId(prev => prev === null ? id : prev);
+      const url = new URL(window.location.href);
+      if (!url.searchParams.get("cid")) {
+        url.searchParams.set("cid", id);
+        window.history.replaceState({}, "", url.toString());
+      }
+    }
+    window.addEventListener("askmynotes:new-conversation", onNewConv);
+    return () => window.removeEventListener("askmynotes:new-conversation", onNewConv);
+  }, []);
 
   // Sync active PDF into DashboardContext documentId
   useEffect(() => {
@@ -94,6 +125,7 @@ function AskAIInner() {
               </p>
             </div>
           </div>
+          <UserProfileButton user={user} />
         </div>
 
         {/* Chat area */}
@@ -114,7 +146,9 @@ export default function AskAIPage() {
   return (
     <DashboardProvider>
       <DrawerProvider>
-        <AskAIInner />
+        <Suspense fallback={null}>
+          <AskAIInner />
+        </Suspense>
       </DrawerProvider>
     </DashboardProvider>
   );

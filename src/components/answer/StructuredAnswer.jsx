@@ -52,6 +52,7 @@ export default function StructuredAnswer({ answer, isStreaming = false, marks = 
           content={section.content}
           index={i}
           isStreaming={isStreaming && i === rest.length - 1}
+          isLast={i === rest.length - 1}
         />
       ))}
     </div>

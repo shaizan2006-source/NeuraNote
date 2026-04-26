@@ -164,7 +164,7 @@ export async function GET(req) {
 
     return NextResponse.json({ plan, daysLeft });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Failed to generate plan" }, { status: 500 });
+    console.error('[daily-plan GET]', err);
+    return NextResponse.json({ plan: ["🧪 Take a quiz", "📝 Review mistakes"], daysLeft: null });
   }
 }

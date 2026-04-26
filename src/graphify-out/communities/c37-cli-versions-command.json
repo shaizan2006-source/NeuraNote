@@ -1,0 +1,36 @@
+{
+  "community": 37,
+  "name": "cli-versions-command",
+  "nodes": [
+    {
+      "label": "versions.ts",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\versions.ts",
+      "source_location": "L1",
+      "id": "versions",
+      "community": 37
+    },
+    {
+      "label": "versionsCommand()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\versions.ts",
+      "source_location": "L6",
+      "id": "versions_versionscommand",
+      "community": 37
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\versions.ts",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "versions",
+      "_tgt": "versions_versionscommand",
+      "source": "versions",
+      "target": "versions_versionscommand",
+      "confidence_score": 1
+    }
+  ]
+}

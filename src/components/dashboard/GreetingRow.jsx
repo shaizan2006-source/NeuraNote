@@ -1,74 +1,101 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useDashboard } from "@/context/DashboardContext";
 
 function getGreeting(hour) {
-  if (hour >= 5  && hour < 12) return "Good morning";
-  if (hour >= 12 && hour < 17) return "Good afternoon";
-  if (hour >= 17 && hour < 21) return "Good evening";
-  return "Good night";
+  if (hour >= 21 || hour < 5)  return { heading: "Studying late?",    subtext: "Stay consistent. You’re closer than you think." };
+  if (hour >= 5  && hour < 12) return { heading: "Good morning",       subtext: "Ready to study?" };
+  if (hour >= 12 && hour < 17) return { heading: "Good afternoon",     subtext: "Ready to study?" };
+  return                               { heading: "Good evening",       subtext: "Ready to study?" };
 }
 
-function getSubtext(mode, hour) {
-  const isNight = hour >= 21 || hour < 5;
-  if (mode === "progress") return "See your progress";
-  return isNight ? "Studying late?" : "Ready to study?";
-}
+const SSR_DEFAULT = { heading: "Good morning", subtext: "Ready to study?" };
 
-export default function GreetingRow({ userName = "there" }) {
+export default function GreetingRow() {
+  const [greeting, setGreeting] = useState(SSR_DEFAULT);
+  const [hydrated, setHydrated] = useState(false);
   const { dashboardMode, toggleDashboardMode } = useDashboard();
-  const hour    = new Date().getHours();
-  const greeting = getGreeting(hour);
-  const subtext  = getSubtext(dashboardMode, hour);
+
+  useEffect(() => {
+    setHydrated(true);
+    setGreeting(getGreeting(new Date().getHours()));
+  }, []);
+
+  const { heading, subtext } = greeting;
 
   return (
     <div style={{
-      display:        "flex",
-      alignItems:     "center",
+      display: "flex",
       justifyContent: "space-between",
-      marginBottom:   20,
+      alignItems: "flex-start",
+      marginBottom: 20,
     }}>
-      {/* Left: greeting */}
       <div>
         <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#f4f4f5", lineHeight: 1.2 }}>
-          {greeting}, {userName}
+          {heading}
         </h1>
         <p style={{ margin: 0, fontSize: 10, fontWeight: 400, color: "#71717a", marginTop: 2 }}>
           {subtext}
         </p>
       </div>
 
-      {/* Right: mode toggle pill */}
-      <div style={{
-        display:       "flex",
-        alignItems:    "center",
-        background:    "rgba(255,255,255,0.04)",
-        borderRadius:  20,
-        padding:       2,
-        border:        "1px solid rgba(255,255,255,0.08)",
-      }}>
-        {["study", "progress"].map(mode => (
-          <button
-            key={mode}
-            onClick={() => toggleDashboardMode()}
+      {/* Toggle button — Study | Progress pill */}
+      {hydrated && (
+        <button
+          onClick={toggleDashboardMode}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0,
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(139,92,246,0.3)",
+            borderRadius: 20,
+            padding: 2,
+            cursor: "pointer",
+            transition: "all 200ms ease",
+            height: 32,
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+            e.currentTarget.style.borderColor = "rgba(139,92,246,0.5)";
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+            e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)";
+          }}
+        >
+          {/* Study label */}
+          <div
             style={{
-              padding:      "6px 12px",
+              padding: "6px 12px",
+              fontSize: 11,
+              fontWeight: 600,
+              color: dashboardMode === "study" ? "#f4f4f5" : "#71717a",
+              background: dashboardMode === "study" ? "rgba(139,92,246,0.2)" : "transparent",
               borderRadius: 18,
-              fontSize:     10,
-              fontWeight:   600,
-              border:       "none",
-              cursor:       "pointer",
-              transition:   "all 200ms ease-in-out",
-              background:   dashboardMode === mode
-                ? "linear-gradient(135deg, #8B5CF6, #6D28D9)"
-                : "transparent",
-              color:        dashboardMode === mode ? "#fff" : "#71717a",
+              transition: "all 150ms ease",
             }}
           >
-            {mode === "study" ? "Study" : "Progress"}
-          </button>
-        ))}
-      </div>
+            Study
+          </div>
+
+          {/* Progress label */}
+          <div
+            style={{
+              padding: "6px 12px",
+              fontSize: 11,
+              fontWeight: 600,
+              color: dashboardMode === "progress" ? "#f4f4f5" : "#71717a",
+              background: dashboardMode === "progress" ? "rgba(139,92,246,0.2)" : "transparent",
+              borderRadius: 18,
+              transition: "all 150ms ease",
+            }}
+          >
+            Progress
+          </div>
+        </button>
+      )}
     </div>
   );
 }

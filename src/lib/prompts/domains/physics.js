@@ -43,7 +43,7 @@ THEORY:
 - State limitations and conditions of applicability (e.g., "valid only for ideal gases")
 - For 15M+: include historical context (who, when, how it was discovered)
 
-JEE/NEET STYLE NUMERICALS:
+UNIVERSITY LEVEL NUMERICALS:
 - Show substitution clearly
 - Highlight answer with **bold**
 - Include dimensional analysis check for complex problems

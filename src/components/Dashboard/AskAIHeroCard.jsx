@@ -36,8 +36,8 @@ export default function AskAIHeroCard({ activePdf = null }) {
       <div
         style={{
           background:   "linear-gradient(135deg, rgba(139,92,246,0.1), rgba(109,40,217,0.04))",
-          border:       "1px solid rgba(139,92,246,0.22)",
-          borderLeft:   "2px solid rgba(34,211,238,0.35)",
+          borderWidth: "1px 1px 1px 2px", borderStyle: "solid",
+          borderColor: "rgba(139,92,246,0.22) rgba(139,92,246,0.22) rgba(139,92,246,0.22) rgba(34,211,238,0.35)",
           borderRadius: 12,
           padding:      16,
           display:      "flex",

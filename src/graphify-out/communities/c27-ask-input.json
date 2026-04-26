@@ -1,0 +1,36 @@
+{
+  "community": 27,
+  "name": "ask-input",
+  "nodes": [
+    {
+      "label": "AskInput.jsx",
+      "file_type": "code",
+      "source_file": "components\\AskInput.jsx",
+      "source_location": "L1",
+      "id": "askinput",
+      "community": 27
+    },
+    {
+      "label": "AskInput()",
+      "file_type": "code",
+      "source_file": "components\\AskInput.jsx",
+      "source_location": "L1",
+      "id": "askinput_askinput",
+      "community": 27
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AskInput.jsx",
+      "source_location": "L1",
+      "weight": 1,
+      "_src": "askinput",
+      "_tgt": "askinput_askinput",
+      "source": "askinput",
+      "target": "askinput_askinput",
+      "confidence_score": 1
+    }
+  ]
+}

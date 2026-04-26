@@ -1,0 +1,15 @@
+{
+  "community": 45,
+  "name": "electrical-domain",
+  "nodes": [
+    {
+      "label": "electrical.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\electrical.js",
+      "source_location": "L1",
+      "id": "electrical",
+      "community": 45
+    }
+  ],
+  "edges": []
+}

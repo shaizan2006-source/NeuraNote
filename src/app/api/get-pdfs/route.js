@@ -14,7 +14,8 @@ export async function GET() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      return NextResponse.json([], { status: 500 });
+      console.error('[get-pdfs]', error);
+      return NextResponse.json([]);
     }
 
     return NextResponse.json(data || []);

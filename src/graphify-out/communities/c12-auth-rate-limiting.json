@@ -1,0 +1,168 @@
+{
+  "community": 12,
+  "name": "auth-rate-limiting",
+  "nodes": [
+    {
+      "label": "auth.js",
+      "file_type": "code",
+      "source_file": "lib\\auth.js",
+      "source_location": "L1",
+      "id": "auth",
+      "community": 12
+    },
+    {
+      "label": "validateEmail()",
+      "file_type": "code",
+      "source_file": "lib\\auth.js",
+      "source_location": "L9",
+      "id": "auth_validateemail",
+      "community": 12
+    },
+    {
+      "label": "validatePassword()",
+      "file_type": "code",
+      "source_file": "lib\\auth.js",
+      "source_location": "L16",
+      "id": "auth_validatepassword",
+      "community": 12
+    },
+    {
+      "label": "getPasswordStrength()",
+      "file_type": "code",
+      "source_file": "lib\\auth.js",
+      "source_location": "L26",
+      "id": "auth_getpasswordstrength",
+      "community": 12
+    },
+    {
+      "label": "checkRateLimit()",
+      "file_type": "code",
+      "source_file": "lib\\auth.js",
+      "source_location": "L51",
+      "id": "auth_checkratelimit",
+      "community": 12
+    },
+    {
+      "label": "recordFailedAttempt()",
+      "file_type": "code",
+      "source_file": "lib\\auth.js",
+      "source_location": "L70",
+      "id": "auth_recordfailedattempt",
+      "community": 12
+    },
+    {
+      "label": "clearRateLimit()",
+      "file_type": "code",
+      "source_file": "lib\\auth.js",
+      "source_location": "L80",
+      "id": "auth_clearratelimit",
+      "community": 12
+    },
+    {
+      "label": "safeAuthError()",
+      "file_type": "code",
+      "source_file": "lib\\auth.js",
+      "source_location": "L85",
+      "id": "auth_safeautherror",
+      "community": 12
+    }
+  ],
+  "edges": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "auth",
+      "source": "page",
+      "target": "auth",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\auth.js",
+      "source_location": "L9",
+      "weight": 1,
+      "_src": "auth",
+      "_tgt": "auth_validateemail",
+      "source": "auth",
+      "target": "auth_validateemail",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\auth.js",
+      "source_location": "L16",
+      "weight": 1,
+      "_src": "auth",
+      "_tgt": "auth_validatepassword",
+      "source": "auth",
+      "target": "auth_validatepassword",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\auth.js",
+      "source_location": "L26",
+      "weight": 1,
+      "_src": "auth",
+      "_tgt": "auth_getpasswordstrength",
+      "source": "auth",
+      "target": "auth_getpasswordstrength",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\auth.js",
+      "source_location": "L51",
+      "weight": 1,
+      "_src": "auth",
+      "_tgt": "auth_checkratelimit",
+      "source": "auth",
+      "target": "auth_checkratelimit",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\auth.js",
+      "source_location": "L70",
+      "weight": 1,
+      "_src": "auth",
+      "_tgt": "auth_recordfailedattempt",
+      "source": "auth",
+      "target": "auth_recordfailedattempt",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\auth.js",
+      "source_location": "L80",
+      "weight": 1,
+      "_src": "auth",
+      "_tgt": "auth_clearratelimit",
+      "source": "auth",
+      "target": "auth_clearratelimit",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\auth.js",
+      "source_location": "L85",
+      "weight": 1,
+      "_src": "auth",
+      "_tgt": "auth_safeautherror",
+      "source": "auth",
+      "target": "auth_safeautherror",
+      "confidence_score": 1
+    }
+  ]
+}

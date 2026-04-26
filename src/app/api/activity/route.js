@@ -7,21 +7,24 @@ const supabase = createClient(
 );
 
 export async function POST(req) {
-  const token = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const token = req.headers.get("authorization")?.replace("Bearer ", "");
+    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
-  if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { data, error: authErr } = await supabase.auth.getUser(token);
+    const user = data?.user;
+    if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  await supabase
-    .from("user_activity")
-    .upsert(
-      {
-        user_id: user.id,
-        last_active: new Date().toISOString(),
-      },
-      { onConflict: "user_id" }
-    );
+    await supabase
+      .from("user_activity")
+      .upsert(
+        { user_id: user.id, last_active: new Date().toISOString() },
+        { onConflict: "user_id" }
+      );
 
-  return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error('[activity POST]', err);
+    return NextResponse.json({ success: false }, { status: 500 });
+  }
 }

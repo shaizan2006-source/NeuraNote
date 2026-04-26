@@ -1,34 +1,57 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
 
-const BASE_CARD = {
-  background:   "#111111",
-  border:       "1px solid rgba(255,255,255,0.06)",
+const CARD_BASE = {
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.06)",
   borderRadius: 10,
-  padding:      16,
-  cursor:       "pointer",
-  transition:   "transform 200ms ease-out",
+  padding: 16,
+  display: "block",
+  textDecoration: "none",
+  outline: "none",
+  userSelect: "none",
 };
 
-function BentoCard({ title, subtitle, icon, onClick, style = {} }) {
+const HOVER_VARIANTS = {
+  rest: { scale: 1, y: 0 },
+  hover: { scale: 1.04, y: -3, transition: { duration: 0.18, ease: "easeOut" } },
+  tap:   { scale: 0.97, y: 0,  transition: { duration: 0.1 } },
+};
+
+function BentoCard({ title, subtitle, icon, href, glowColor = "rgba(124,58,237,0.25)", style = {} }) {
   return (
-    <div
-      onClick={onClick}
-      style={{ ...BASE_CARD, ...style }}
-      onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-      onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
+    <Link
+      href={href}
+      aria-label={`Open ${title}`}
+      style={{ display: "block", textDecoration: "none", outline: "none", borderRadius: 10 }}
     >
-      <div style={{ fontSize: 18, marginBottom: 6 }}>{icon}</div>
-      <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: "#e4e4e7" }}>{title}</p>
-      <p style={{ margin: "3px 0 0", fontSize: 11, color: "#a1a1aa" }}>{subtitle}</p>
-    </div>
+      <motion.div
+        variants={HOVER_VARIANTS}
+        initial="rest"
+        whileHover="hover"
+        whileTap="tap"
+        style={{ ...CARD_BASE, ...style }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = glowColor.replace(/[\d.]+\)$/, "0.5)");
+          e.currentTarget.style.boxShadow   = `0 8px 28px ${glowColor}`;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+          e.currentTarget.style.boxShadow   = "none";
+        }}
+      >
+        <div style={{ fontSize: 18, marginBottom: 6 }}>{icon}</div>
+        <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: "#e4e4e7" }}>{title}</p>
+        <p style={{ margin: "3px 0 0", fontSize: 11, color: "#a1a1aa" }}>{subtitle}</p>
+      </motion.div>
+    </Link>
   );
 }
 
 export default function StudyModeCards() {
-  const router = useRouter();
   const { progressQuestions } = useDashboard();
 
   return (
@@ -37,30 +60,33 @@ export default function StudyModeCards() {
         icon="⏱"
         title="Focus Mode"
         subtitle="Pomodoro 25m"
-        onClick={() => router.push("/dashboard#section-focus")}
+        href="/focus"
+        glowColor="rgba(124,58,237,0.25)"
       />
       <BentoCard
         icon="✓"
         title="Quiz"
         subtitle={`${progressQuestions ?? 0} cards ready`}
-        onClick={() => router.push("/dashboard#section-quiz")}
+        href="/quiz"
+        glowColor="rgba(34,211,238,0.25)"
       />
-      {/* AI Coach — cyan left border = AI signal */}
       <BentoCard
         icon="💬"
         title="AI Coach"
-        subtitle="3 suggestions"
-        onClick={() => router.push("/dashboard#section-coach")}
+        subtitle="Switch to Coach mode"
+        href="/ask-ai"
+        glowColor="rgba(34,211,238,0.25)"
         style={{
-          borderLeft:  "3px solid rgba(34,211,238,0.3)",
-          boxShadow:   "0 0 16px rgba(34,211,238,0.08)",
+          borderLeft: "3px solid rgba(34,211,238,0.3)",
+          boxShadow:  "0 0 16px rgba(34,211,238,0.08)",
         }}
       />
       <BentoCard
         icon="🎤"
         title="Voice Tutor"
         subtitle="Speak to learn"
-        onClick={() => router.push("/call-tutor")}
+        href="/call-tutor"
+        glowColor="rgba(245,158,11,0.25)"
       />
     </>
   );

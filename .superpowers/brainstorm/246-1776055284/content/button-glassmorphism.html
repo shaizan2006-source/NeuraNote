@@ -1,0 +1,223 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0A0A0A; font-family: -apple-system, 'Inter', sans-serif; color: #e4e4e7; }
+  .page { padding: 24px; max-width: 760px; margin: 0 auto; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #f4f4f5; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 28px; }
+
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  .col-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+
+  /* Background for context */
+  .context-bg { background: linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%); border-radius: 10px; padding: 24px; border: 1px solid rgba(255,255,255,0.08); }
+
+  .btn-showcase { display: flex; flex-direction: column; gap: 12px; }
+
+  /* Button styles */
+  .btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; padding: 10px 20px; transition: all 200ms ease-out; width: fit-content; }
+  .btn svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 2; fill: none; }
+
+  /* Simple gradient (current approach) */
+  .btn-gradient { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #fff; }
+  .btn-gradient:hover { transform: translateY(-1px); }
+
+  /* Glassmorphism version */
+  .btn-glass {
+    background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+  }
+  .btn-glass span {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-glass svg {
+    position: relative;
+    z-index: 1;
+  }
+  .btn-glass:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  }
+
+  /* Liquid glass variant (more subtle) */
+  .btn-liquid {
+    background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-liquid::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+  }
+  .btn-liquid span {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-liquid svg {
+    position: relative;
+    z-index: 1;
+  }
+  .btn-liquid:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-label { font-size: 9px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #3f3f46; margin-bottom: 8px; }
+
+  /* Spec card */
+  .spec { background: #111; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; margin-top: 10px; }
+  .spec-title { font-size: 10px; font-weight: 700; color: #a1a1aa; margin-bottom: 6px; }
+  .spec-row { display: flex; justify-content: space-between; font-size: 9px; margin-bottom: 3px; }
+  .spec-k { color: #52525b; }
+  .spec-v { color: #71717a; font-family: monospace; }
+  .chip { display: inline-block; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: 3px; padding: 1px 5px; font-size: 8px; color: #c4b5fd; }
+
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .comp-card { background: #111; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; }
+  .comp-title { font-size: 10px; font-weight: 700; color: #a1a1aa; margin-bottom: 6px; }
+  .comp-text { font-size: 10px; color: #71717a; line-height: 1.6; }
+  .pro { color: #86efac; }
+  .con { color: #fca5a5; }
+
+  .verdict { background: #111; border: 1px solid rgba(139,92,246,0.2); border-radius: 8px; padding: 14px; margin-top: 24px; }
+  .verdict-title { font-size: 11px; font-weight: 700; color: #c4b5fd; margin-bottom: 6px; }
+  .verdict-text { font-size: 10px; color: #a1a1aa; line-height: 1.6; }
+
+  .approval-box { margin-top: 24px; padding: 14px 16px; background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.18); border-radius: 10px; font-size: 11px; color: #a1a1aa; line-height: 1.7; }
+  .approval-box strong { color: #c4b5fd; }
+</style>
+
+<div class="page">
+  <h2>Primary Button — Glassmorphism</h2>
+  <p class="subtitle">Glass + gradient: premium, elegant, fits the design system.</p>
+
+  <div class="three-col">
+
+    <!-- GRADIENT ONLY -->
+    <div>
+      <div class="col-label" style="color:#71717a;">Gradient only</div>
+      <div class="context-bg">
+        <div class="btn-showcase">
+          <div class="btn-label">Simple gradient</div>
+          <button class="btn btn-gradient">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Ask AI
+          </button>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-title">Spec</div>
+        <div class="spec-row"><span class="spec-k">Background</span><span class="spec-v">#8B5CF6 → #6D28D9</span></div>
+        <div class="spec-row"><span class="spec-k">Shadow</span><span class="spec-v">none</span></div>
+        <div class="spec-row"><span class="spec-k">Glass</span><span class="spec-v">none</span></div>
+      </div>
+    </div>
+
+    <!-- GLASSMORPHISM (standard) -->
+    <div>
+      <div class="col-label" style="color:#67e8f9;">Glassmorphism ★</div>
+      <div class="context-bg">
+        <div class="btn-showcase">
+          <div class="btn-label">Glass overlay</div>
+          <button class="btn btn-glass">
+            <span>
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Ask AI
+            </span>
+          </button>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-title">Spec</div>
+        <div class="spec-row"><span class="spec-k">Background</span><span class="spec-v">#8B5CF6 → #6D28D9</span></div>
+        <div class="spec-row"><span class="spec-k">Glass overlay</span><span class="spec-v">rgba(255,255,255,0.15)</span></div>
+        <div class="spec-row"><span class="spec-k">Blur</span><span class="spec-v"><span class="chip">blur(20px)</span></span></div>
+        <div class="spec-row"><span class="spec-k">Border</span><span class="spec-v">1px rgba(255,255,255,0.2)</span></div>
+      </div>
+    </div>
+
+    <!-- LIQUID GLASS (subtle) -->
+    <div>
+      <div class="col-label" style="color:#c4b5fd;">Liquid glass (subtle)</div>
+      <div class="context-bg">
+        <div class="btn-showcase">
+          <div class="btn-label">Subtle glass</div>
+          <button class="btn btn-liquid">
+            <span>
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Ask AI
+            </span>
+          </button>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-title">Spec</div>
+        <div class="spec-row"><span class="spec-k">Background</span><span class="spec-v">#8B5CF6 → #6D28D9</span></div>
+        <div class="spec-row"><span class="spec-k">Glass overlay</span><span class="spec-v">rgba(255,255,255,0.08)</span></div>
+        <div class="spec-row"><span class="spec-k">Blur</span><span class="spec-v"><span class="chip">blur(12px)</span></span></div>
+        <div class="spec-row"><span class="spec-k">Border</span><span class="spec-v">1px rgba(255,255,255,0.15)</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Comparison -->
+  <div style="font-size:10px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#52525b;margin-bottom:12px;">Tradeoffs</div>
+  <div class="comparison">
+    <div class="comp-card">
+      <div class="comp-title">Gradient only</div>
+      <div class="comp-text">
+        <span class="pro">✓ Simplest spec</span><br>
+        <span class="pro">✓ Clean, minimal</span><br>
+        <span class="con">✗ Lacks depth</span><br>
+        <span class="con">✗ Doesn't match design system's glass philosophy</span>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-title">Glassmorphism</div>
+      <div class="comp-text">
+        <span class="pro">✓ Premium + modern</span><br>
+        <span class="pro">✓ Consistent with design system</span><br>
+        <span class="pro">✓ Depth without aggression</span><br>
+        <span class="con">✗ Slightly more complex CSS</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-title">My take</div>
+    <div class="verdict-text">
+      <strong>Use glassmorphism (the middle option).</strong> It's elegant, it fits the design system (which already commits to glassmorphism for depth), and it gives the button a premium feel without glow or aggression. The glass effect says "this is premium" through translucency, not light.
+      <br><br>
+      The "liquid glass" variant (subtler) works if you want less frosted effect, but the standard glassmorphism is the sweet spot — it's noticeable and premium without feeling overdone.
+    </div>
+  </div>
+
+  <div class="approval-box">
+    <strong>Which version?</strong> Glassmorphism (standard blur 20px), liquid glass (subtle blur 12px), or stick with gradient only?
+  </div>
+</div>

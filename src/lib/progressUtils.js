@@ -28,7 +28,7 @@ export function computePeakHour(focusRows, tzOffsetHours = 0) {
     counts[h] = (counts[h] || 0) + 1;
   });
   const entries = Object.entries(counts);
-  if (!entries.length) return 20;
+  if (!entries.length) return null;
   return parseInt(entries.sort((a, b) => b[1] - a[1])[0][0]);
 }
 

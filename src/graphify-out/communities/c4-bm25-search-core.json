@@ -1,0 +1,788 @@
+{
+  "community": 4,
+  "name": "bm25-search-core",
+  "nodes": [
+    {
+      "label": "math.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\math.js",
+      "source_location": "L1",
+      "id": "math",
+      "community": 4
+    },
+    {
+      "label": "core.py",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L1",
+      "id": "core",
+      "community": 4
+    },
+    {
+      "label": "BM25",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L104",
+      "id": "core_bm25",
+      "community": 4
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L107",
+      "id": "core_bm25_init",
+      "community": 4
+    },
+    {
+      "label": ".tokenize()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L117",
+      "id": "core_bm25_tokenize",
+      "community": 4
+    },
+    {
+      "label": ".fit()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L122",
+      "id": "core_bm25_fit",
+      "community": 4
+    },
+    {
+      "label": ".score()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L141",
+      "id": "core_bm25_score",
+      "community": 4
+    },
+    {
+      "label": "_load_csv()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L167",
+      "id": "core_load_csv",
+      "community": 4
+    },
+    {
+      "label": "_search_csv()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L173",
+      "id": "core_search_csv",
+      "community": 4
+    },
+    {
+      "label": "detect_domain()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L198",
+      "id": "core_detect_domain",
+      "community": 4
+    },
+    {
+      "label": "search()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L221",
+      "id": "core_search",
+      "community": 4
+    },
+    {
+      "label": "search_stack()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L243",
+      "id": "core_search_stack",
+      "community": 4
+    },
+    {
+      "label": "BM25 ranking algorithm for text search",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L85",
+      "id": "core_rationale_85",
+      "community": 4
+    },
+    {
+      "label": "Lowercase, split, remove punctuation, filter short words",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L98",
+      "id": "core_rationale_98",
+      "community": 4
+    },
+    {
+      "label": "Build BM25 index from documents",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L103",
+      "id": "core_rationale_103",
+      "community": 4
+    },
+    {
+      "label": "Score all documents against query",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L122",
+      "id": "core_rationale_122",
+      "community": 4
+    },
+    {
+      "label": "Load CSV and return list of dicts",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L148",
+      "id": "core_rationale_148",
+      "community": 4
+    },
+    {
+      "label": "Core search function using BM25",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L154",
+      "id": "core_rationale_154",
+      "community": 4
+    },
+    {
+      "label": "Auto-detect the most relevant domain from query",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L179",
+      "id": "core_rationale_179",
+      "community": 4
+    },
+    {
+      "label": "Main search function with auto-domain detection",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L201",
+      "id": "core_rationale_201",
+      "community": 4
+    },
+    {
+      "label": "Search stack-specific guidelines",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L223",
+      "id": "core_rationale_223",
+      "community": 4
+    },
+    {
+      "label": "search.py",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\search.py",
+      "source_location": "L1",
+      "id": "search",
+      "community": 4
+    },
+    {
+      "label": "format_output()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\search.py",
+      "source_location": "L30",
+      "id": "search_format_output",
+      "community": 4
+    },
+    {
+      "label": "Format results for Claude consumption (token-optimized)",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\search.py",
+      "source_location": "L31",
+      "id": "search_rationale_31",
+      "community": 4
+    },
+    {
+      "label": "BM25 ranking algorithm for text search",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L105",
+      "id": "core_rationale_105",
+      "community": 4
+    },
+    {
+      "label": "Lowercase, split, remove punctuation, filter short words",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L118",
+      "id": "core_rationale_118",
+      "community": 4
+    },
+    {
+      "label": "Build BM25 index from documents",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L123",
+      "id": "core_rationale_123",
+      "community": 4
+    },
+    {
+      "label": "Score all documents against query",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L142",
+      "id": "core_rationale_142",
+      "community": 4
+    },
+    {
+      "label": "Load CSV and return list of dicts",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L168",
+      "id": "core_rationale_168",
+      "community": 4
+    },
+    {
+      "label": "Core search function using BM25",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L174",
+      "id": "core_rationale_174",
+      "community": 4
+    },
+    {
+      "label": "Auto-detect the most relevant domain from query",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L199",
+      "id": "core_rationale_199",
+      "community": 4
+    },
+    {
+      "label": "Main search function with auto-domain detection",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L222",
+      "id": "core_rationale_222",
+      "community": 4
+    },
+    {
+      "label": "Search stack-specific guidelines",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L244",
+      "id": "core_rationale_244",
+      "community": 4
+    }
+  ],
+  "edges": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L10",
+      "weight": 1,
+      "_src": "core",
+      "_tgt": "math",
+      "source": "math",
+      "target": "core",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L104",
+      "weight": 1,
+      "_src": "core",
+      "_tgt": "core_bm25",
+      "source": "core",
+      "target": "core_bm25",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L167",
+      "weight": 1,
+      "_src": "core",
+      "_tgt": "core_load_csv",
+      "source": "core",
+      "target": "core_load_csv",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L173",
+      "weight": 1,
+      "_src": "core",
+      "_tgt": "core_search_csv",
+      "source": "core",
+      "target": "core_search_csv",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L198",
+      "weight": 1,
+      "_src": "core",
+      "_tgt": "core_detect_domain",
+      "source": "core",
+      "target": "core_detect_domain",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L221",
+      "weight": 1,
+      "_src": "core",
+      "_tgt": "core_search",
+      "source": "core",
+      "target": "core_search",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L243",
+      "weight": 1,
+      "_src": "core",
+      "_tgt": "core_search_stack",
+      "source": "core",
+      "target": "core_search_stack",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L21",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "core",
+      "source": "core",
+      "target": "design_system",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\search.py",
+      "source_location": "L20",
+      "weight": 1,
+      "_src": "search",
+      "_tgt": "core",
+      "source": "core",
+      "target": "search",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L107",
+      "weight": 1,
+      "_src": "core_bm25",
+      "_tgt": "core_bm25_init",
+      "source": "core_bm25",
+      "target": "core_bm25_init",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L117",
+      "weight": 1,
+      "_src": "core_bm25",
+      "_tgt": "core_bm25_tokenize",
+      "source": "core_bm25",
+      "target": "core_bm25_tokenize",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L122",
+      "weight": 1,
+      "_src": "core_bm25",
+      "_tgt": "core_bm25_fit",
+      "source": "core_bm25",
+      "target": "core_bm25_fit",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L141",
+      "weight": 1,
+      "_src": "core_bm25",
+      "_tgt": "core_bm25_score",
+      "source": "core_bm25",
+      "target": "core_bm25_score",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L184",
+      "weight": 1,
+      "_src": "core_search_csv",
+      "_tgt": "core_bm25",
+      "source": "core_bm25",
+      "target": "core_search_csv",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L85",
+      "weight": 1,
+      "_src": "core_rationale_85",
+      "_tgt": "core_bm25",
+      "source": "core_bm25",
+      "target": "core_rationale_85",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L105",
+      "weight": 1,
+      "_src": "core_rationale_105",
+      "_tgt": "core_bm25",
+      "source": "core_bm25",
+      "target": "core_rationale_105",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L124",
+      "weight": 1,
+      "_src": "core_bm25_fit",
+      "_tgt": "core_bm25_tokenize",
+      "source": "core_bm25_tokenize",
+      "target": "core_bm25_fit",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L143",
+      "weight": 1,
+      "_src": "core_bm25_score",
+      "_tgt": "core_bm25_tokenize",
+      "source": "core_bm25_tokenize",
+      "target": "core_bm25_score",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L98",
+      "weight": 1,
+      "_src": "core_rationale_98",
+      "_tgt": "core_bm25_tokenize",
+      "source": "core_bm25_tokenize",
+      "target": "core_rationale_98",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L118",
+      "weight": 1,
+      "_src": "core_rationale_118",
+      "_tgt": "core_bm25_tokenize",
+      "source": "core_bm25_tokenize",
+      "target": "core_rationale_118",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L185",
+      "weight": 1,
+      "_src": "core_search_csv",
+      "_tgt": "core_bm25_fit",
+      "source": "core_bm25_fit",
+      "target": "core_search_csv",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L103",
+      "weight": 1,
+      "_src": "core_rationale_103",
+      "_tgt": "core_bm25_fit",
+      "source": "core_bm25_fit",
+      "target": "core_rationale_103",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L123",
+      "weight": 1,
+      "_src": "core_rationale_123",
+      "_tgt": "core_bm25_fit",
+      "source": "core_bm25_fit",
+      "target": "core_rationale_123",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L186",
+      "weight": 1,
+      "_src": "core_search_csv",
+      "_tgt": "core_bm25_score",
+      "source": "core_bm25_score",
+      "target": "core_search_csv",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L122",
+      "weight": 1,
+      "_src": "core_rationale_122",
+      "_tgt": "core_bm25_score",
+      "source": "core_bm25_score",
+      "target": "core_rationale_122",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L142",
+      "weight": 1,
+      "_src": "core_rationale_142",
+      "_tgt": "core_bm25_score",
+      "source": "core_bm25_score",
+      "target": "core_rationale_142",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L178",
+      "weight": 1,
+      "_src": "core_search_csv",
+      "_tgt": "core_load_csv",
+      "source": "core_load_csv",
+      "target": "core_search_csv",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L148",
+      "weight": 1,
+      "_src": "core_rationale_148",
+      "_tgt": "core_load_csv",
+      "source": "core_load_csv",
+      "target": "core_rationale_148",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L168",
+      "weight": 1,
+      "_src": "core_rationale_168",
+      "_tgt": "core_load_csv",
+      "source": "core_load_csv",
+      "target": "core_rationale_168",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L232",
+      "weight": 1,
+      "_src": "core_search",
+      "_tgt": "core_search_csv",
+      "source": "core_search_csv",
+      "target": "core_search",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L253",
+      "weight": 1,
+      "_src": "core_search_stack",
+      "_tgt": "core_search_csv",
+      "source": "core_search_csv",
+      "target": "core_search_stack",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L154",
+      "weight": 1,
+      "_src": "core_rationale_154",
+      "_tgt": "core_search_csv",
+      "source": "core_search_csv",
+      "target": "core_rationale_154",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L174",
+      "weight": 1,
+      "_src": "core_rationale_174",
+      "_tgt": "core_search_csv",
+      "source": "core_search_csv",
+      "target": "core_rationale_174",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L224",
+      "weight": 1,
+      "_src": "core_search",
+      "_tgt": "core_detect_domain",
+      "source": "core_detect_domain",
+      "target": "core_search",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L179",
+      "weight": 1,
+      "_src": "core_rationale_179",
+      "_tgt": "core_detect_domain",
+      "source": "core_detect_domain",
+      "target": "core_rationale_179",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L199",
+      "weight": 1,
+      "_src": "core_rationale_199",
+      "_tgt": "core_detect_domain",
+      "source": "core_detect_domain",
+      "target": "core_rationale_199",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L201",
+      "weight": 1,
+      "_src": "core_rationale_201",
+      "_tgt": "core_search",
+      "source": "core_search",
+      "target": "core_rationale_201",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L222",
+      "weight": 1,
+      "_src": "core_rationale_222",
+      "_tgt": "core_search",
+      "source": "core_search",
+      "target": "core_rationale_222",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\assets\\scripts\\core.py",
+      "source_location": "L223",
+      "weight": 1,
+      "_src": "core_rationale_223",
+      "_tgt": "core_search_stack",
+      "source": "core_search_stack",
+      "target": "core_rationale_223",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\core.py",
+      "source_location": "L244",
+      "weight": 1,
+      "_src": "core_rationale_244",
+      "_tgt": "core_search_stack",
+      "source": "core_search_stack",
+      "target": "core_rationale_244",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\search.py",
+      "source_location": "L21",
+      "weight": 1,
+      "_src": "search",
+      "_tgt": "design_system",
+      "source": "design_system",
+      "target": "search",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\search.py",
+      "source_location": "L30",
+      "weight": 1,
+      "_src": "search",
+      "_tgt": "search_format_output",
+      "source": "search",
+      "target": "search_format_output",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\search.py",
+      "source_location": "L31",
+      "weight": 1,
+      "_src": "search_rationale_31",
+      "_tgt": "search_format_output",
+      "source": "search_format_output",
+      "target": "search_rationale_31",
+      "confidence_score": 1
+    }
+  ]
+}

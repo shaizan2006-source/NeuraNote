@@ -17,7 +17,8 @@ export default function ExamCountdownCard({ examName = null, examDaysLeft = null
     );
   }
 
-  const daysColor = examDaysLeft == null ? "#71717a" : examDaysLeft > 30 ? "#22C55E" : examDaysLeft > 7 ? "#F59E0B" : "#EF4444";
+  const isPast = examDaysLeft != null && examDaysLeft <= 0;
+  const daysColor = examDaysLeft == null ? "#71717a" : isPast ? "#52525b" : examDaysLeft > 30 ? "#22C55E" : examDaysLeft > 7 ? "#F59E0B" : "#EF4444";
 
   return (
     <div id="exam" style={{
@@ -26,13 +27,17 @@ export default function ExamCountdownCard({ examName = null, examDaysLeft = null
       <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>Exam Countdown</p>
       <p style={{ margin: "2px 0 6px", fontSize: 12, color: "#a1a1aa" }}>{examName}</p>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 52, fontWeight: 900, color: daysColor, lineHeight: 1 }}>{examDaysLeft ?? "—"}</span>
-        <div>
-          <p style={{ margin: 0, fontSize: 14, color: "#71717a" }}>days left</p>
-          {examDaysLeft != null && examDaysLeft <= 7 && <p style={{ margin: "2px 0 0", fontSize: 10, color: "#EF4444", fontWeight: 600 }}>Final sprint!</p>}
+      {isPast ? (
+        <p style={{ margin: "10px 0", fontSize: 13, color: "#52525b" }}>This exam has passed</p>
+      ) : (
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 52, fontWeight: 900, color: daysColor, lineHeight: 1 }}>{examDaysLeft ?? "—"}</span>
+          <div>
+            <p style={{ margin: 0, fontSize: 14, color: "#71717a" }}>days left</p>
+            {examDaysLeft != null && examDaysLeft <= 7 && <p style={{ margin: "2px 0 0", fontSize: 10, color: "#EF4444", fontWeight: 600 }}>Final sprint!</p>}
+          </div>
         </div>
-      </div>
+      )}
 
       <div style={{ marginTop: 12, display: "flex", gap: 18 }}>
         <div>

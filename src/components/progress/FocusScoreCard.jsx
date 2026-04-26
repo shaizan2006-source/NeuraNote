@@ -6,21 +6,25 @@ export default function FocusScoreCard({
   focusScore = 0, focusTrend = "up",
   streak = 0, totalStudyTimeMins = 0,
   topicsMastered = 0, totalTopics = 0,
+  // Optional: pre-computed breakdown from useFocusScore analytics hook.
+  // If absent, falls back to inline computation so existing callers keep working.
+  breakdown = null,
 }) {
-  const consistency = Math.round(Math.min(streak / 7, 1) * 40);
-  const depth       = Math.round(Math.min(totalStudyTimeMins / 180, 1) * 40);
-  const mastery     = totalTopics > 0 ? Math.round((topicsMastered / totalTopics) * 20) : 0;
+  const consistency = breakdown?.consistency ?? Math.round(Math.min(streak / 7, 1) * 40);
+  const volume      = breakdown?.volume      ?? Math.round(Math.min(totalStudyTimeMins / 180, 1) * 40);
+  const mastery     = breakdown?.mastery     ?? (totalTopics > 0 ? Math.round((topicsMastered / totalTopics) * 20) : 0);
 
   const BARS = [
-    { label: "Consistency", val: consistency, max: 40, color: "#8B5CF6" },
-    { label: "Study Depth", val: depth,       max: 40, color: "#22D3EE" },
-    { label: "Mastery Gain", val: mastery,    max: 20, color: "#22C55E" },
+    { label: "Consistency",   val: consistency, max: 40, color: "#8B5CF6" },
+    { label: "Study Volume",  val: volume,      max: 40, color: "#22D3EE" },
+    { label: "Mastery Gain",  val: mastery,     max: 20, color: "#22C55E" },
   ];
 
   return (
     <div style={{
-      background: "#111111", border: "1px solid rgba(255,255,255,0.06)",
-      borderRadius: 12, padding: "18px 20px", display: "flex", flexDirection: "column",
+      background: "#111111", border: "1px solid rgba(255,255,255,0.07)",
+      borderRadius: 14, padding: "18px 20px", display: "flex", flexDirection: "column",
+      boxShadow: "0 0 24px rgba(139,92,246,0.06)",
     }}>
       <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>
         Focus Score
@@ -51,7 +55,7 @@ export default function FocusScoreCard({
           <div key={label}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
               <span style={{ fontSize: 9, color: "#52525b" }}>{label}</span>
-              <span style={{ fontSize: 9, color: "#71717a" }}>{val}</span>
+              <span style={{ fontSize: 9, color: "#71717a" }}>{val}<span style={{ color: "#3f3f46" }}>/{max}</span></span>
             </div>
             <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 2 }}>
               <div style={{ height: 3, width: `${(val / max) * 100}%`, background: color, borderRadius: 2, transition: "width 1s ease-out" }} />

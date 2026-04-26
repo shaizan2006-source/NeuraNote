@@ -8,6 +8,7 @@ import { createClient } from '@supabase/supabase-js';
 import TopBar from '@/components/shared/TopBar';
 import ContextualSidebar from '@/components/shared/ContextualSidebar';
 import Button from '@/components/shared/Button';
+import { segmentText } from '@/lib/wordSegmenter';
 import ProgressBar from '@/components/shared/ProgressBar';
 import QuizSkeleton from '@/components/shared/QuizSkeleton';
 import QuizPDFSelector from '@/components/quiz/QuizPDFSelector';
@@ -526,9 +527,13 @@ function QuizContent() {
             {/* Right: Source + Hints + AI Coach */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.lg }}>
               <div>
-                <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>📚 From your notes:</div>
-                <div style={{ padding: SPACING.md, border: `1px solid rgba(34,211,238,0.2)`, borderRadius: RADIUS.md, background: 'rgba(34,211,238,0.04)', fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, lineHeight: 1.6, fontStyle: 'italic' }}>
-                  {currentQ.sourceSnippet || 'No excerpt available for this question.'}
+                <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.muted ?? COLORS.text.secondary, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: SPACING.sm, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ opacity: 0.7 }}>📄</span> Source excerpt
+                </div>
+                <div style={{ padding: SPACING.md, border: `1px solid rgba(34,211,238,0.15)`, borderRadius: RADIUS.md, background: 'rgba(34,211,238,0.03)', fontSize: '0.78rem', color: COLORS.text.secondary, lineHeight: 1.75, wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>
+                  {currentQ.sourceSnippet
+                    ? segmentText(currentQ.sourceSnippet)
+                    : 'No excerpt available for this question.'}
                 </div>
               </div>
 

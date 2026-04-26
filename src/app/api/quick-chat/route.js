@@ -39,7 +39,6 @@ export async function POST(req) {
           ragText = goodChunks.map(c => c.content).join("\n\n");
           usedRag = true;
         } else {
-          // Fetch PDF name for the "not found" note
           const { data: pdf } = await supabase
             .from("pdfs_metadata")
             .select("name")
@@ -74,40 +73,74 @@ export async function POST(req) {
       { role: "user", content: question },
     ];
 
-    // 3. Call OpenAI
-    const completion = await openai.chat.completions.create({
+    // 3. Stream from OpenAI
+    const openaiStream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: messagesForAI,
       max_tokens: 600,
+      stream: true,
     });
-    const aiAnswer = completion.choices[0].message.content;
 
-    // 4. Persist conversation
-    const newUserMsg = { role: "user", content: question, ts: new Date().toISOString() };
-    const newAiMsg   = { role: "assistant", content: aiAnswer, ts: new Date().toISOString(), used_rag: usedRag };
+    const encoder = new TextEncoder();
+    let accumulated = "";
 
-    const updatedMessages = [...priorMessages, newUserMsg, newAiMsg];
-    let convId = conversation_id;
+    const readable = new ReadableStream({
+      async start(controller) {
+        try {
+          // Prepend RAG source note if applicable
+          if (ragSourceNote) {
+            const prefix = `${ragSourceNote}\n\n`;
+            accumulated += prefix;
+            controller.enqueue(encoder.encode(prefix));
+          }
 
-    if (!convId) {
-      convId = uuidv4();
-      await supabase.from("conversations").insert({
-        id:       convId,
-        user_id,
-        title:    question.slice(0, 60),
-        messages: updatedMessages,
-      });
-    } else {
-      await supabase.from("conversations")
-        .update({ messages: updatedMessages, updated_at: new Date().toISOString() })
-        .eq("id", convId)
-        .eq("user_id", user_id);
-    }
+          for await (const chunk of openaiStream) {
+            const text = chunk.choices[0]?.delta?.content || "";
+            if (text) {
+              accumulated += text;
+              controller.enqueue(encoder.encode(text));
+            }
+          }
 
-    return NextResponse.json({
-      answer:          ragSourceNote ? `${ragSourceNote}\n\n${aiAnswer}` : aiAnswer,
-      conversation_id: convId,
-      used_rag:        usedRag,
+          // Persist conversation to Supabase after stream completes
+          const newUserMsg = { role: "user", content: question, ts: new Date().toISOString() };
+          const newAiMsg   = { role: "assistant", content: accumulated, ts: new Date().toISOString(), used_rag: usedRag };
+          const updatedMessages = [...priorMessages, newUserMsg, newAiMsg];
+
+          let convId = conversation_id;
+          if (!convId) {
+            convId = uuidv4();
+            await supabase.from("conversations").insert({
+              id:       convId,
+              user_id,
+              title:    question.slice(0, 60),
+              messages: updatedMessages,
+            });
+          } else {
+            await supabase.from("conversations")
+              .update({ messages: updatedMessages, updated_at: new Date().toISOString() })
+              .eq("id", convId)
+              .eq("user_id", user_id);
+          }
+
+          // Send conversation metadata to client — parsed by QuickChatDrawer
+          controller.enqueue(encoder.encode(
+            `\n__CONV__${JSON.stringify({ conversation_id: convId, used_rag: usedRag })}`
+          ));
+        } catch (err) {
+          console.error("quick-chat stream error:", err);
+        } finally {
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(readable, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache",
+        "X-Accel-Buffering": "no",
+      },
     });
   } catch (err) {
     console.error("quick-chat error:", err);

@@ -1,0 +1,15 @@
+{
+  "community": 50,
+  "name": "medical-domain",
+  "nodes": [
+    {
+      "label": "medical.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\medical.js",
+      "source_location": "L1",
+      "id": "medical",
+      "community": 50
+    }
+  ],
+  "edges": []
+}

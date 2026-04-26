@@ -1,0 +1,880 @@
+{
+  "community": 3,
+  "name": "design-system-generator",
+  "nodes": [
+    {
+      "label": "design_system.py",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L1",
+      "id": "design_system",
+      "community": 3
+    },
+    {
+      "label": "DesignSystemGenerator",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L37",
+      "id": "design_system_designsystemgenerator",
+      "community": 3
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L40",
+      "id": "design_system_designsystemgenerator_init",
+      "community": 3
+    },
+    {
+      "label": "._load_reasoning()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L43",
+      "id": "design_system_designsystemgenerator_load_reasoning",
+      "community": 3
+    },
+    {
+      "label": "._multi_domain_search()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L51",
+      "id": "design_system_designsystemgenerator_multi_domain_search",
+      "community": 3
+    },
+    {
+      "label": "._find_reasoning_rule()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L64",
+      "id": "design_system_designsystemgenerator_find_reasoning_rule",
+      "community": 3
+    },
+    {
+      "label": "._apply_reasoning()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L88",
+      "id": "design_system_designsystemgenerator_apply_reasoning",
+      "community": 3
+    },
+    {
+      "label": "._select_best_match()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L122",
+      "id": "design_system_designsystemgenerator_select_best_match",
+      "community": 3
+    },
+    {
+      "label": "._extract_results()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L159",
+      "id": "design_system_designsystemgenerator_extract_results",
+      "community": 3
+    },
+    {
+      "label": ".generate()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L163",
+      "id": "design_system_designsystemgenerator_generate",
+      "community": 3
+    },
+    {
+      "label": "format_ascii_box()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L242",
+      "id": "design_system_format_ascii_box",
+      "community": 3
+    },
+    {
+      "label": "format_markdown()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L367",
+      "id": "design_system_format_markdown",
+      "community": 3
+    },
+    {
+      "label": "generate_design_system()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L462",
+      "id": "design_system_generate_design_system",
+      "community": 3
+    },
+    {
+      "label": "persist_design_system()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L491",
+      "id": "design_system_persist_design_system",
+      "community": 3
+    },
+    {
+      "label": "format_master_md()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L542",
+      "id": "design_system_format_master_md",
+      "community": 3
+    },
+    {
+      "label": "format_page_override_md()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L805",
+      "id": "design_system_format_page_override_md",
+      "community": 3
+    },
+    {
+      "label": "_generate_intelligent_overrides()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L914",
+      "id": "design_system_generate_intelligent_overrides",
+      "community": 3
+    },
+    {
+      "label": "_detect_page_type()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L1020",
+      "id": "design_system_detect_page_type",
+      "community": 3
+    },
+    {
+      "label": "Generates design system recommendations from aggregated searches.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L38",
+      "id": "design_system_rationale_38",
+      "community": 3
+    },
+    {
+      "label": "Load reasoning rules from CSV.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L44",
+      "id": "design_system_rationale_44",
+      "community": 3
+    },
+    {
+      "label": "Execute searches across multiple domains.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L52",
+      "id": "design_system_rationale_52",
+      "community": 3
+    },
+    {
+      "label": "Find matching reasoning rule for a category.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L65",
+      "id": "design_system_rationale_65",
+      "community": 3
+    },
+    {
+      "label": "Apply reasoning rules to search results.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L89",
+      "id": "design_system_rationale_89",
+      "community": 3
+    },
+    {
+      "label": "Select best matching result based on priority keywords.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L123",
+      "id": "design_system_rationale_123",
+      "community": 3
+    },
+    {
+      "label": "Extract results list from search result dict.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L160",
+      "id": "design_system_rationale_160",
+      "community": 3
+    },
+    {
+      "label": "Generate complete design system recommendation.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L164",
+      "id": "design_system_rationale_164",
+      "community": 3
+    },
+    {
+      "label": "Format design system as ASCII box with emojis (MCP-style).",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L243",
+      "id": "design_system_rationale_243",
+      "community": 3
+    },
+    {
+      "label": "Format design system as markdown.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L368",
+      "id": "design_system_rationale_368",
+      "community": 3
+    },
+    {
+      "label": "Main entry point for design system generation.      Args:         query: Sear",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L464",
+      "id": "design_system_rationale_464",
+      "community": 3
+    },
+    {
+      "label": "Persist design system to design-system/<project>/ folder using Master + Override",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L492",
+      "id": "design_system_rationale_492",
+      "community": 3
+    },
+    {
+      "label": "Format design system as MASTER.md with hierarchical override logic.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L543",
+      "id": "design_system_rationale_543",
+      "community": 3
+    },
+    {
+      "label": "Format a page-specific override file with intelligent AI-generated content.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L806",
+      "id": "design_system_rationale_806",
+      "community": 3
+    },
+    {
+      "label": "Generate intelligent overrides based on page type using layered search.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L915",
+      "id": "design_system_rationale_915",
+      "community": 3
+    },
+    {
+      "label": "Detect page type from context and search results.",
+      "file_type": "rationale",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L1021",
+      "id": "design_system_rationale_1021",
+      "community": 3
+    }
+  ],
+  "edges": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L21",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "core",
+      "source": "core",
+      "target": "design_system",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L37",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "design_system_designsystemgenerator",
+      "source": "design_system",
+      "target": "design_system_designsystemgenerator",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L242",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "design_system_format_ascii_box",
+      "source": "design_system",
+      "target": "design_system_format_ascii_box",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L367",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "design_system_format_markdown",
+      "source": "design_system",
+      "target": "design_system_format_markdown",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L462",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "design_system_generate_design_system",
+      "source": "design_system",
+      "target": "design_system_generate_design_system",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L491",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "design_system_persist_design_system",
+      "source": "design_system",
+      "target": "design_system_persist_design_system",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L542",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "design_system_format_master_md",
+      "source": "design_system",
+      "target": "design_system_format_master_md",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L805",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "design_system_format_page_override_md",
+      "source": "design_system",
+      "target": "design_system_format_page_override_md",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L914",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "design_system_generate_intelligent_overrides",
+      "source": "design_system",
+      "target": "design_system_generate_intelligent_overrides",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L1020",
+      "weight": 1,
+      "_src": "design_system",
+      "_tgt": "design_system_detect_page_type",
+      "source": "design_system",
+      "target": "design_system_detect_page_type",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\search.py",
+      "source_location": "L21",
+      "weight": 1,
+      "_src": "search",
+      "_tgt": "design_system",
+      "source": "design_system",
+      "target": "search",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L40",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator",
+      "_tgt": "design_system_designsystemgenerator_init",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_designsystemgenerator_init",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L43",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator",
+      "_tgt": "design_system_designsystemgenerator_load_reasoning",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_designsystemgenerator_load_reasoning",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L51",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator",
+      "_tgt": "design_system_designsystemgenerator_multi_domain_search",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_designsystemgenerator_multi_domain_search",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L64",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator",
+      "_tgt": "design_system_designsystemgenerator_find_reasoning_rule",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_designsystemgenerator_find_reasoning_rule",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L88",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator",
+      "_tgt": "design_system_designsystemgenerator_apply_reasoning",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_designsystemgenerator_apply_reasoning",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L122",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator",
+      "_tgt": "design_system_designsystemgenerator_select_best_match",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_designsystemgenerator_select_best_match",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L159",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator",
+      "_tgt": "design_system_designsystemgenerator_extract_results",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_designsystemgenerator_extract_results",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L163",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator",
+      "_tgt": "design_system_designsystemgenerator_generate",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_designsystemgenerator_generate",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L478",
+      "weight": 1,
+      "_src": "design_system_generate_design_system",
+      "_tgt": "design_system_designsystemgenerator",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_generate_design_system",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L38",
+      "weight": 1,
+      "_src": "design_system_rationale_38",
+      "_tgt": "design_system_designsystemgenerator",
+      "source": "design_system_designsystemgenerator",
+      "target": "design_system_rationale_38",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L41",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator_init",
+      "_tgt": "design_system_designsystemgenerator_load_reasoning",
+      "source": "design_system_designsystemgenerator_init",
+      "target": "design_system_designsystemgenerator_load_reasoning",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L44",
+      "weight": 1,
+      "_src": "design_system_rationale_44",
+      "_tgt": "design_system_designsystemgenerator_load_reasoning",
+      "source": "design_system_designsystemgenerator_load_reasoning",
+      "target": "design_system_rationale_44",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L177",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator_generate",
+      "_tgt": "design_system_designsystemgenerator_multi_domain_search",
+      "source": "design_system_designsystemgenerator_multi_domain_search",
+      "target": "design_system_designsystemgenerator_generate",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L52",
+      "weight": 1,
+      "_src": "design_system_rationale_52",
+      "_tgt": "design_system_designsystemgenerator_multi_domain_search",
+      "source": "design_system_designsystemgenerator_multi_domain_search",
+      "target": "design_system_rationale_52",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L90",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator_apply_reasoning",
+      "_tgt": "design_system_designsystemgenerator_find_reasoning_rule",
+      "source": "design_system_designsystemgenerator_find_reasoning_rule",
+      "target": "design_system_designsystemgenerator_apply_reasoning",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L65",
+      "weight": 1,
+      "_src": "design_system_rationale_65",
+      "_tgt": "design_system_designsystemgenerator_find_reasoning_rule",
+      "source": "design_system_designsystemgenerator_find_reasoning_rule",
+      "target": "design_system_rationale_65",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L173",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator_generate",
+      "_tgt": "design_system_designsystemgenerator_apply_reasoning",
+      "source": "design_system_designsystemgenerator_apply_reasoning",
+      "target": "design_system_designsystemgenerator_generate",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L89",
+      "weight": 1,
+      "_src": "design_system_rationale_89",
+      "_tgt": "design_system_designsystemgenerator_apply_reasoning",
+      "source": "design_system_designsystemgenerator_apply_reasoning",
+      "target": "design_system_rationale_89",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L186",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator_generate",
+      "_tgt": "design_system_designsystemgenerator_select_best_match",
+      "source": "design_system_designsystemgenerator_select_best_match",
+      "target": "design_system_designsystemgenerator_generate",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L123",
+      "weight": 1,
+      "_src": "design_system_rationale_123",
+      "_tgt": "design_system_designsystemgenerator_select_best_match",
+      "source": "design_system_designsystemgenerator_select_best_match",
+      "target": "design_system_rationale_123",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L181",
+      "weight": 1,
+      "_src": "design_system_designsystemgenerator_generate",
+      "_tgt": "design_system_designsystemgenerator_extract_results",
+      "source": "design_system_designsystemgenerator_extract_results",
+      "target": "design_system_designsystemgenerator_generate",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L160",
+      "weight": 1,
+      "_src": "design_system_rationale_160",
+      "_tgt": "design_system_designsystemgenerator_extract_results",
+      "source": "design_system_designsystemgenerator_extract_results",
+      "target": "design_system_rationale_160",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L479",
+      "weight": 1,
+      "_src": "design_system_generate_design_system",
+      "_tgt": "design_system_designsystemgenerator_generate",
+      "source": "design_system_designsystemgenerator_generate",
+      "target": "design_system_generate_design_system",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L164",
+      "weight": 1,
+      "_src": "design_system_rationale_164",
+      "_tgt": "design_system_designsystemgenerator_generate",
+      "source": "design_system_designsystemgenerator_generate",
+      "target": "design_system_rationale_164",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L487",
+      "weight": 1,
+      "_src": "design_system_generate_design_system",
+      "_tgt": "design_system_format_ascii_box",
+      "source": "design_system_format_ascii_box",
+      "target": "design_system_generate_design_system",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L243",
+      "weight": 1,
+      "_src": "design_system_rationale_243",
+      "_tgt": "design_system_format_ascii_box",
+      "source": "design_system_format_ascii_box",
+      "target": "design_system_rationale_243",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L486",
+      "weight": 1,
+      "_src": "design_system_generate_design_system",
+      "_tgt": "design_system_format_markdown",
+      "source": "design_system_format_markdown",
+      "target": "design_system_generate_design_system",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L368",
+      "weight": 1,
+      "_src": "design_system_rationale_368",
+      "_tgt": "design_system_format_markdown",
+      "source": "design_system_format_markdown",
+      "target": "design_system_rationale_368",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L483",
+      "weight": 1,
+      "_src": "design_system_generate_design_system",
+      "_tgt": "design_system_persist_design_system",
+      "source": "design_system_generate_design_system",
+      "target": "design_system_persist_design_system",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L464",
+      "weight": 1,
+      "_src": "design_system_rationale_464",
+      "_tgt": "design_system_generate_design_system",
+      "source": "design_system_generate_design_system",
+      "target": "design_system_rationale_464",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L522",
+      "weight": 1,
+      "_src": "design_system_persist_design_system",
+      "_tgt": "design_system_format_master_md",
+      "source": "design_system_persist_design_system",
+      "target": "design_system_format_master_md",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L530",
+      "weight": 1,
+      "_src": "design_system_persist_design_system",
+      "_tgt": "design_system_format_page_override_md",
+      "source": "design_system_persist_design_system",
+      "target": "design_system_format_page_override_md",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L492",
+      "weight": 1,
+      "_src": "design_system_rationale_492",
+      "_tgt": "design_system_persist_design_system",
+      "source": "design_system_persist_design_system",
+      "target": "design_system_rationale_492",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L543",
+      "weight": 1,
+      "_src": "design_system_rationale_543",
+      "_tgt": "design_system_format_master_md",
+      "source": "design_system_format_master_md",
+      "target": "design_system_rationale_543",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L812",
+      "weight": 1,
+      "_src": "design_system_format_page_override_md",
+      "_tgt": "design_system_generate_intelligent_overrides",
+      "source": "design_system_format_page_override_md",
+      "target": "design_system_generate_intelligent_overrides",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L806",
+      "weight": 1,
+      "_src": "design_system_rationale_806",
+      "_tgt": "design_system_format_page_override_md",
+      "source": "design_system_format_page_override_md",
+      "target": "design_system_rationale_806",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L938",
+      "weight": 1,
+      "_src": "design_system_generate_intelligent_overrides",
+      "_tgt": "design_system_detect_page_type",
+      "source": "design_system_generate_intelligent_overrides",
+      "target": "design_system_detect_page_type",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L915",
+      "weight": 1,
+      "_src": "design_system_rationale_915",
+      "_tgt": "design_system_generate_intelligent_overrides",
+      "source": "design_system_generate_intelligent_overrides",
+      "target": "design_system_rationale_915",
+      "confidence_score": 1
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\src\\ui-ux-pro-max\\scripts\\design_system.py",
+      "source_location": "L1021",
+      "weight": 1,
+      "_src": "design_system_rationale_1021",
+      "_tgt": "design_system_detect_page_type",
+      "source": "design_system_detect_page_type",
+      "target": "design_system_rationale_1021",
+      "confidence_score": 1
+    }
+  ]
+}

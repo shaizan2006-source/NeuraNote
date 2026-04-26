@@ -1,0 +1,68 @@
+{
+  "community": 22,
+  "name": "ask-with-download",
+  "nodes": [
+    {
+      "label": "askWithDownload.js",
+      "file_type": "code",
+      "source_file": "lib\\askWithDownload.js",
+      "source_location": "L1",
+      "id": "askwithdownload",
+      "community": 22
+    },
+    {
+      "label": "askQuestion()",
+      "file_type": "code",
+      "source_file": "lib\\askWithDownload.js",
+      "source_location": "L17",
+      "id": "askwithdownload_askquestion",
+      "community": 22
+    },
+    {
+      "label": "extractFilename()",
+      "file_type": "code",
+      "source_file": "lib\\askWithDownload.js",
+      "source_location": "L72",
+      "id": "askwithdownload_extractfilename",
+      "community": 22
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\askWithDownload.js",
+      "source_location": "L17",
+      "weight": 1,
+      "_src": "askwithdownload",
+      "_tgt": "askwithdownload_askquestion",
+      "source": "askwithdownload",
+      "target": "askwithdownload_askquestion",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\askWithDownload.js",
+      "source_location": "L72",
+      "weight": 1,
+      "_src": "askwithdownload",
+      "_tgt": "askwithdownload_extractfilename",
+      "source": "askwithdownload",
+      "target": "askwithdownload_extractfilename",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\askWithDownload.js",
+      "source_location": "L37",
+      "weight": 1,
+      "_src": "askwithdownload_askquestion",
+      "_tgt": "askwithdownload_extractfilename",
+      "source": "askwithdownload_askquestion",
+      "target": "askwithdownload_extractfilename",
+      "confidence_score": 1
+    }
+  ]
+}

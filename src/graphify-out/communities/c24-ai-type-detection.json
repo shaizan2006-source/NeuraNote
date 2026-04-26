@@ -1,0 +1,56 @@
+{
+  "community": 24,
+  "name": "ai-type-detection",
+  "nodes": [
+    {
+      "label": "detect.ts",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\detect.ts",
+      "source_location": "L1",
+      "id": "detect",
+      "community": 24
+    },
+    {
+      "label": "detectAIType()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\detect.ts",
+      "source_location": "L10",
+      "id": "detect_detectaitype",
+      "community": 24
+    },
+    {
+      "label": "getAITypeDescription()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\detect.ts",
+      "source_location": "L79",
+      "id": "detect_getaitypedescription",
+      "community": 24
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\detect.ts",
+      "source_location": "L10",
+      "weight": 1,
+      "_src": "detect",
+      "_tgt": "detect_detectaitype",
+      "source": "detect",
+      "target": "detect_detectaitype",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\detect.ts",
+      "source_location": "L79",
+      "weight": 1,
+      "_src": "detect",
+      "_tgt": "detect_getaitypedescription",
+      "source": "detect",
+      "target": "detect_getaitypedescription",
+      "confidence_score": 1
+    }
+  ]
+}

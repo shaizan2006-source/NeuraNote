@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#060910; font-family:Inter,sans-serif; color:#fff; padding:28px 24px; }
+
+  h2 { font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:4px; }
+  .sub { font-size:12px; color:#334155; margin-bottom:24px; }
+
+  .screens { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+  .screen-wrap { border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.06); cursor:pointer; transition:border-color .25s, box-shadow .25s; }
+  .screen-wrap:hover { border-color:rgba(139,92,246,0.4); box-shadow:0 0 40px rgba(139,92,246,0.1); }
+  .screen-wrap.sel { border-color:#7c3aed; box-shadow:0 0 40px rgba(139,92,246,0.2); }
+
+  .screen-footer { padding:12px 16px; background:rgba(255,255,255,0.02); border-top:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:space-between; }
+  .screen-footer h3 { font-size:12px; font-weight:700; color:#e2e8f0; }
+  .screen-footer p { font-size:10px; color:#334155; margin-top:2px; }
+  .sel-btn { padding:5px 14px; border:1px solid rgba(139,92,246,0.35); border-radius:20px; font-size:10px; color:#a78bfa; font-weight:700; background:rgba(139,92,246,0.1); white-space:nowrap; }
+
+  /* shared page shell */
+  .page { background:linear-gradient(160deg,#060910 0%,#0c1024 100%); min-height:520px; display:flex; flex-direction:column; position:relative; overflow:hidden; }
+  .glow { position:absolute; width:320px; height:280px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%); top:40px; left:50%; transform:translateX(-50%); pointer-events:none; }
+
+  .topbar { padding:14px 18px; display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
+  .back { font-size:10px; color:#1e293b; }
+  .dot-row { display:flex; align-items:center; gap:5px; }
+  .dot { width:6px; height:6px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px rgba(34,197,94,0.7); }
+  .dot-lbl { font-size:9px; color:#1e3a2a; font-weight:600; }
+
+  .center { flex:1; display:flex; flex-direction:column; align-items:center; padding:0 26px 22px; gap:18px; position:relative; z-index:1; justify-content:center; }
+
+  .avatar { width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#6d28d9,#22D3EE); display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 0 0 8px rgba(109,40,217,0.1), 0 0 36px rgba(109,40,217,0.22); }
+
+  .greeting { text-align:center; }
+  .greeting .hi { font-size:11px; color:#334155; font-weight:600; letter-spacing:0.5px; margin-bottom:6px; }
+  .greeting .msg { font-size:17px; font-weight:700; color:#f1f5f9; line-height:1.55; max-width:280px; }
+  .greeting .msg .hl { color:#a78bfa; }
+  .greeting .msg .warn { color:#fbbf24; }
+
+  .q { font-size:11px; color:#334155; text-align:center; font-weight:500; }
+
+  /* Session cards */
+  .cards { display:flex; flex-direction:column; gap:7px; width:100%; }
+  .sc { display:flex; align-items:center; gap:13px; padding:12px 14px; border-radius:13px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.025); cursor:pointer; }
+  .sc.active { background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.32); }
+  .sc-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; background:rgba(255,255,255,0.04); }
+  .sc.active .sc-icon { background:rgba(139,92,246,0.18); }
+  .sc-text h4 { font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:1px; }
+  .sc.active .sc-text h4 { color:#c4b5fd; }
+  .sc-text p { font-size:10px; color:#1e293b; line-height:1.4; }
+
+  /* CTA button */
+  .start { width:100%; padding:12px; background:linear-gradient(135deg,#7c3aed,#4f46e5); border-radius:12px; font-size:13px; font-weight:700; color:#fff; text-align:center; cursor:pointer; box-shadow:0 4px 22px rgba(124,58,237,0.32); }
+
+  /* Divider */
+  .divider { display:flex; align-items:center; gap:10px; width:100%; }
+  .divider-line { flex:1; height:1px; background:rgba(255,255,255,0.05); }
+  .divider-txt { font-size:10px; color:#1e293b; font-weight:600; white-space:nowrap; }
+
+  /* ── OPTION A: "Study own topic" as 4th card ── */
+  .sc-own { display:flex; align-items:center; gap:13px; padding:12px 14px; border-radius:13px; border:1px dashed rgba(255,255,255,0.1); background:rgba(255,255,255,0.015); cursor:pointer; width:100%; }
+  .sc-own .sc-icon { background:rgba(255,255,255,0.04); }
+  .sc-own .sc-text h4 { font-size:12px; font-weight:600; color:#475569; }
+  .sc-own .sc-text p { font-size:10px; color:#1e293b; }
+
+  /* ── OPTION B: search/pick below CTA ── */
+  .own-search { width:100%; display:flex; flex-direction:column; gap:6px; }
+  .own-label { font-size:10px; color:#334155; font-weight:600; text-align:center; }
+  .own-input-wrap { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:11px; padding:9px 12px; width:100%; }
+  .own-input-icon { font-size:12px; flex-shrink:0; }
+  .own-input-ph { flex:1; font-size:11px; color:#1e293b; }
+  .own-arrow { font-size:12px; color:#334155; flex-shrink:0; }
+  /* doc chips below search */
+  .doc-chips { display:flex; gap:5px; flex-wrap:wrap; justify-content:center; }
+  .doc-chip { padding:4px 10px; border-radius:20px; border:1px solid rgba(34,211,238,0.15); background:rgba(34,211,238,0.05); font-size:9px; color:#22D3EE; font-weight:600; cursor:pointer; }
+</style>
+<script>
+function pick(id) {
+  document.querySelectorAll('.screen-wrap').forEach(b => b.classList.remove('sel'));
+  document.getElementById(id).classList.add('sel');
+  if (window.recordChoice) recordChoice(id, id === 'sa' ? 'A – 4th card (dashed)' : 'B – search below CTA');
+}
+</script>
+</head>
+<body>
+
+<h2>Adding Student Free Will — Two Placements</h2>
+<p class="sub">Same minimal welcome state. Two ways to surface "study what I want" without breaking the clean flow.</p>
+
+<div class="screens">
+
+  <!-- OPTION A: Dashed 4th card -->
+  <div class="screen-wrap" id="sa" onclick="pick('sa')">
+    <div class="page">
+      <div class="glow"></div>
+      <div class="topbar">
+        <span class="back">← Dashboard</span>
+        <div class="dot-row"><div class="dot"></div><span class="dot-lbl">Aria · ready</span></div>
+      </div>
+      <div class="center">
+        <div class="avatar">✦</div>
+        <div class="greeting">
+          <div class="hi">Good morning, Shafi ☀</div>
+          <div class="msg">You're <span class="hl">close on Mechanics</span> — but <span class="warn">Thermodynamics</span> needs a session today.</div>
+        </div>
+        <div class="q">How do you want to study?</div>
+        <div class="cards">
+          <div class="sc active">
+            <div class="sc-icon">🧠</div>
+            <div class="sc-text"><h4>Explain it to me</h4><p>Coach walks you through step by step</p></div>
+          </div>
+          <div class="sc">
+            <div class="sc-icon">⚡</div>
+            <div class="sc-text"><h4>Quiz me</h4><p>Socratic questions on your weak topics</p></div>
+          </div>
+          <div class="sc">
+            <div class="sc-icon">🎯</div>
+            <div class="sc-text"><h4>Exam prep</h4><p>Past-paper style practice questions</p></div>
+          </div>
+
+          <!-- Divider before free-choice card -->
+          <div class="divider" style="margin:2px 0;">
+            <div class="divider-line"></div>
+            <div class="divider-txt">or study your own topic</div>
+            <div class="divider-line"></div>
+          </div>
+
+          <!-- 4th dashed card — free choice -->
+          <div class="sc-own">
+            <div class="sc-icon">✏️</div>
+            <div class="sc-text">
+              <h4>I want to study something else</h4>
+              <p>Pick a topic or document from your notes</p>
+            </div>
+          </div>
+        </div>
+        <div class="start">Start Session →</div>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <div>
+        <h3>A — Dashed 4th Card</h3>
+        <p>Visually distinct from coach options. Dashed border signals "different kind of choice". Clean, scannable.</p>
+      </div>
+      <div class="sel-btn" onclick="event.stopPropagation();pick('sa')">Pick A</div>
+    </div>
+  </div>
+
+  <!-- OPTION B: Search/doc picker below Start -->
+  <div class="screen-wrap" id="sb" onclick="pick('sb')">
+    <div class="page">
+      <div class="glow"></div>
+      <div class="topbar">
+        <span class="back">← Dashboard</span>
+        <div class="dot-row"><div class="dot"></div><span class="dot-lbl">Aria · ready</span></div>
+      </div>
+      <div class="center">
+        <div class="avatar">✦</div>
+        <div class="greeting">
+          <div class="hi">Good morning, Shafi ☀</div>
+          <div class="msg">You're <span class="hl">close on Mechanics</span> — but <span class="warn">Thermodynamics</span> needs a session today.</div>
+        </div>
+        <div class="q">How do you want to study?</div>
+        <div class="cards">
+          <div class="sc active">
+            <div class="sc-icon">🧠</div>
+            <div class="sc-text"><h4>Explain it to me</h4><p>Coach walks you through step by step</p></div>
+          </div>
+          <div class="sc">
+            <div class="sc-icon">⚡</div>
+            <div class="sc-text"><h4>Quiz me</h4><p>Socratic questions on your weak topics</p></div>
+          </div>
+          <div class="sc">
+            <div class="sc-icon">🎯</div>
+            <div class="sc-text"><h4>Exam prep</h4><p>Past-paper style practice questions</p></div>
+          </div>
+        </div>
+
+        <div class="start">Start Session →</div>
+
+        <!-- Divider -->
+        <div class="divider">
+          <div class="divider-line"></div>
+          <div class="divider-txt">or study something specific</div>
+          <div class="divider-line"></div>
+        </div>
+
+        <!-- Topic search + doc quick-picks -->
+        <div class="own-search">
+          <div class="own-input-wrap">
+            <span class="own-input-icon">🔍</span>
+            <span class="own-input-ph">Search a topic or pick a document...</span>
+            <span class="own-arrow">→</span>
+          </div>
+          <div class="doc-chips">
+            <div class="doc-chip">📄 Mechanics Notes</div>
+            <div class="doc-chip">📄 Thermodynamics Ch.3</div>
+            <div class="doc-chip">📄 Optics</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <div>
+        <h3>B — Search + Doc Quick-picks</h3>
+        <p>Coach flow on top, open search below the CTA. Students can jump straight to any topic or uploaded doc.</p>
+      </div>
+      <div class="sel-btn" onclick="event.stopPropagation();pick('sb')">Pick B</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

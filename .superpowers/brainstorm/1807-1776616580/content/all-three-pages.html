@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a14; font-family: Inter, sans-serif; padding: 20px; }
+
+  h1 { color: #f1f5f9; margin-bottom: 8px; font-size: 20px; }
+  .intro { color: #334155; margin-bottom: 24px; font-size: 12px; }
+
+  .container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  .page-wrap { border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; background: #0a0a14; }
+  .page-label { padding: 10px 14px; background: rgba(139,92,246,0.08); border-bottom: 1px solid rgba(139,92,246,0.15); font-size: 11px; font-weight: 700; color: #a78bfa; }
+  .phone { height: 600px; overflow-y: auto; background: linear-gradient(160deg, #060910 0%, #0c1024 100%); }
+
+  /* ═════════════ FOCUS MODE PAGE ═════════════ */
+  .focus { }
+  .f-topbar { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: space-between; font-size: 10px; }
+  .f-back { color: #334155; }
+  .f-live { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.6); }
+  .f-live-txt { font-size: 9px; color: #1e3a2a; font-weight: 600; }
+
+  .f-stats { padding: 12px 14px; display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .f-stat { flex: 1; padding: 8px; background: rgba(139,92,246,0.07); border: 1px solid rgba(139,92,246,0.12); border-radius: 8px; font-size: 9px; }
+  .f-stat-num { font-size: 12px; font-weight: 800; color: #a78bfa; }
+  .f-stat-lbl { color: #334155; margin-top: 2px; }
+
+  .f-content { padding: 14px; display: flex; gap: 10px; height: 380px; }
+  .f-timer { flex: 1; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; position: relative; }
+  .f-timer::before { content: ''; position: absolute; width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle, rgba(139,92,246,0.15), transparent); }
+  .f-ring { width: 80px; height: 80px; border-radius: 50%; border: 6px solid #8B5CF6; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #8B5CF6; position: relative; z-index: 1; box-shadow: 0 0 16px rgba(139,92,246,0.3); }
+  .f-btns { display: flex; gap: 6px; z-index: 1; }
+  .f-btn { padding: 5px 10px; font-size: 8px; border-radius: 6px; border: 1px solid; cursor: pointer; }
+  .f-btn-pause { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); color: #a78bfa; }
+  .f-btn-stop { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); color: #334155; }
+  .f-tip { font-size: 8px; color: #475569; text-align: center; z-index: 1; }
+
+  .f-tasks { flex: 1.1; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 7px; }
+  .f-task-hdr { font-size: 8px; color: #334155; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .f-task { padding: 7px; border-radius: 8px; font-size: 9px; }
+  .f-task-active { background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.25); color: #c4b5fd; border-left: 3px solid #8B5CF6; }
+  .f-task-done { background: rgba(255,255,255,0.03); color: #334155; text-decoration: line-through; opacity: 0.5; }
+  .f-task-pending { background: rgba(255,255,255,0.03); color: #334155; }
+  .f-task-btn { margin-top: 5px; padding: 4px 10px; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); border-radius: 5px; font-size: 8px; color: #22c55e; font-weight: 700; cursor: pointer; }
+  .f-progress { margin-top: auto; }
+  .f-progress-bar { background: rgba(255,255,255,0.06); border-radius: 99px; height: 3px; margin-bottom: 4px; overflow: hidden; }
+  .f-progress-fill { width: 33%; height: 100%; background: linear-gradient(90deg, #8B5CF6, #22D3EE); border-radius: 99px; }
+  .f-progress-txt { font-size: 8px; color: #334155; }
+
+  /* ═════════════ QUIZ PAGE ═════════════ */
+  .quiz { }
+  .q-topbar { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: space-between; font-size: 9px; }
+  .q-back { color: #334155; }
+  .q-header { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .q-header-title { font-size: 10px; color: #a78bfa; font-weight: 700; margin-bottom: 6px; }
+  .q-progress-bar { background: rgba(255,255,255,0.06); border-radius: 99px; height: 2px; overflow: hidden; }
+  .q-progress-fill { width: 40%; height: 100%; background: linear-gradient(90deg, #8B5CF6, #22D3EE); }
+
+  .q-content { padding: 12px 14px; display: flex; gap: 10px; height: 400px; }
+  .q-left { flex: 1.4; display: flex; flex-direction: column; gap: 10px; }
+  .q-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 11px; }
+  .q-marks { display: inline-block; padding: 2px 8px; background: rgba(245,158,11,0.2); border: 1px solid rgba(245,158,11,0.4); border-radius: 20px; font-size: 9px; color: #f59e0b; font-weight: 800; margin-bottom: 6px; }
+  .q-question { font-size: 11px; color: #e2e8f0; line-height: 1.5; margin-bottom: 8px; }
+  .q-answer-area { flex: 1; }
+  .q-answer-label { font-size: 9px; color: #334155; font-weight: 700; margin-bottom: 6px; }
+  .q-answer-box { flex: 1; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px; font-size: 10px; color: #94a3b8; resize: none; }
+  .q-nav-btns { display: flex; gap: 6px; justify-content: space-between; margin-top: 8px; }
+  .q-nav-btn { padding: 6px 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 7px; font-size: 9px; color: #334155; cursor: pointer; }
+  .q-nav-btn.primary { background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; color: #fff; font-weight: 700; }
+
+  .q-right { flex: 0.85; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; }
+  .q-ctx { background: rgba(34,211,238,0.05); border: 1px solid rgba(34,211,238,0.12); border-radius: 9px; padding: 9px; font-size: 9px; }
+  .q-ctx-title { color: #22D3EE; font-weight: 700; margin-bottom: 6px; font-size: 8px; }
+  .q-ctx-text { color: #475569; line-height: 1.5; font-style: italic; border-left: 2px solid rgba(34,211,238,0.2); padding-left: 7px; }
+  .q-hint { background: rgba(139,92,246,0.05); border: 1px solid rgba(139,92,246,0.12); border-radius: 9px; padding: 9px; font-size: 9px; flex: 1; }
+  .q-hint-title { color: #a78bfa; font-weight: 700; margin-bottom: 6px; font-size: 8px; }
+  .q-hint-list { display: flex; flex-direction: column; gap: 4px; }
+  .q-hint-item { display: flex; gap: 5px; font-size: 8px; color: #334155; line-height: 1.3; }
+
+  /* ═════════════ AI COACH PAGE ═════════════ */
+  .coach { }
+  .c-topbar { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: space-between; }
+  .c-back { font-size: 10px; color: #334155; }
+  .c-status { display: flex; align-items: center; gap: 5px; font-size: 9px; color: #1e3a2a; }
+  .c-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.6); }
+
+  .c-body { padding: 16px 14px; height: 520px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .c-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #6d28d9, #22D3EE); display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 0 0 6px rgba(109,40,217,0.1), 0 0 28px rgba(109,40,217,0.2); }
+
+  .c-greeting { text-align: center; }
+  .c-hi { font-size: 10px; color: #334155; font-weight: 600; margin-bottom: 4px; }
+  .c-msg { font-size: 14px; font-weight: 700; color: #f1f5f9; line-height: 1.4; max-width: 240px; }
+  .c-msg .hl { color: #a78bfa; }
+  .c-msg .warn { color: #fbbf24; }
+
+  .c-q { font-size: 10px; color: #334155; font-weight: 500; margin: 6px 0; }
+  .c-cards { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .c-card { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.025); cursor: pointer; font-size: 10px; }
+  .c-card.active { background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.3); }
+  .c-card-icon { font-size: 14px; flex-shrink: 0; }
+  .c-card-text { flex: 1; }
+  .c-card-title { font-weight: 700; color: #cbd5e1; margin-bottom: 1px; }
+  .c-card.active .c-card-title { color: #c4b5fd; }
+  .c-card-desc { font-size: 8px; color: #334155; }
+
+  .c-div { display: flex; align-items: center; gap: 8px; width: 100%; margin: 4px 0; }
+  .c-div-line { flex: 1; height: 0.5px; background: rgba(255,255,255,0.05); }
+  .c-div-txt { font-size: 8px; color: #1e293b; white-space: nowrap; }
+
+  .c-card-own { border: 1px dashed rgba(255,255,255,0.1); background: rgba(255,255,255,0.015); }
+  .c-card-own .c-card-icon { font-size: 13px; }
+  .c-card-own .c-card-title { color: #475569; font-weight: 600; }
+
+  .c-start { width: 100%; padding: 10px; background: linear-gradient(135deg, #7c3aed, #4f46e5); border-radius: 10px; font-size: 11px; font-weight: 700; color: #fff; text-align: center; cursor: pointer; box-shadow: 0 4px 16px rgba(124,58,237,0.3); margin-top: auto; }
+</style>
+</head>
+<body>
+
+<h1>Three Premium Pages — Live Preview</h1>
+<p class="intro">Focus Mode (left), Quiz (center), AI Coach (right). All three complete flows rendered side-by-side for comparison.</p>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════════════════════════════════ FOCUS MODE ═════════════════════════════════════════════════════════ -->
+  <div class="page-wrap">
+    <div class="page-label">FOCUS MODE</div>
+    <div class="phone focus">
+
+      <div class="f-topbar">
+        <span class="f-back">← Dashboard</span>
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <div class="f-live"></div>
+          <span class="f-live-txt">Live</span>
+        </div>
+      </div>
+
+      <div class="f-stats">
+        <div class="f-stat">
+          <div class="f-stat-num">3</div>
+          <div class="f-stat-lbl">Sessions</div>
+        </div>
+        <div class="f-stat">
+          <div class="f-stat-num">75m</div>
+          <div class="f-stat-lbl">Focused</div>
+        </div>
+        <div class="f-stat">
+          <div class="f-stat-num">1/3</div>
+          <div class="f-stat-lbl">Tasks Done</div>
+        </div>
+      </div>
+
+      <div class="f-content">
+        <div class="f-timer">
+          <div class="f-ring">18:45</div>
+          <div class="f-btns">
+            <div class="f-btn f-btn-pause">⏸ Pause</div>
+            <div class="f-btn f-btn-stop">⏹</div>
+          </div>
+          <div class="f-tip">💡 You focus best between 9–11 AM</div>
+        </div>
+
+        <div class="f-tasks">
+          <div class="f-task-hdr">Today's Tasks</div>
+          <div class="f-task f-task-active">
+            📖 Chapter 12 — Mechanics
+            <div class="f-task-btn">✓ Mark Done</div>
+          </div>
+          <div class="f-task f-task-done">✓ Thermo Laws revision</div>
+          <div class="f-task f-task-pending">Practice 20 MCQs</div>
+          <div class="f-task f-task-pending">Solve PYQ Set 3</div>
+          <div class="f-progress">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span style="font-size: 8px; color: #334155;">Session progress</span>
+              <span style="font-size: 8px; color: #334155; font-weight: 600;">1 / 4</span>
+            </div>
+            <div class="f-progress-bar">
+              <div class="f-progress-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ QUIZ ═════════════════════════════════════════════════════════ -->
+  <div class="page-wrap">
+    <div class="page-label">QUIZ PAGE</div>
+    <div class="phone quiz">
+
+      <div class="q-topbar">
+        <span class="q-back">← Dashboard</span>
+        <span style="color: #a78bfa; font-weight: 700;">Q 2 / 5</span>
+        <span style="color: #334155;">⏱ 12:34</span>
+      </div>
+
+      <div class="q-header">
+        <div class="q-header-title">Smart Quiz</div>
+        <div class="q-progress-bar">
+          <div class="q-progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="q-content">
+        <div class="q-left">
+          <div class="q-card">
+            <div class="q-marks">10 MARKS</div>
+            <div class="q-question">Explain the Work-Energy Theorem. Derive the expression for kinetic energy.</div>
+          </div>
+
+          <div class="q-answer-area">
+            <div class="q-answer-label">Your Answer</div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px; font-size: 10px; color: #94a3b8; height: 100%; line-height: 1.6;">
+              The Work-Energy Theorem states that the net work done on an object equals the change in its kinetic energy...
+            </div>
+            <div class="q-nav-btns">
+              <div class="q-nav-btn">← Prev</div>
+              <div class="q-nav-btn">Skip →</div>
+              <div class="q-nav-btn primary">Save & Next →</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-right">
+          <div class="q-ctx">
+            <div class="q-ctx-title">📄 From your notes</div>
+            <div class="q-ctx-text">"Work done by net force = ΔKE. This is the Work-Energy theorem..."</div>
+          </div>
+
+          <div class="q-hint">
+            <div class="q-hint-title">✦ 10-mark structure</div>
+            <div class="q-hint-list">
+              <div class="q-hint-item"><span style="color: #8B5CF6; font-weight: 700;">1</span> State the theorem (2M)</div>
+              <div class="q-hint-item"><span style="color: #8B5CF6; font-weight: 700;">2</span> Derive from Newton's 2nd Law (4M)</div>
+              <div class="q-hint-item"><span style="color: #8B5CF6; font-weight: 700;">3</span> Show KE = ½mv² (2M)</div>
+              <div class="q-hint-item"><span style="color: #8B5CF6; font-weight: 700;">4</span> Example / application (2M)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ AI COACH ═════════════════════════════════════════════════════════ -->
+  <div class="page-wrap">
+    <div class="page-label">AI COACH — WELCOME STATE</div>
+    <div class="phone coach">
+
+      <div class="c-topbar">
+        <span class="c-back">← Dashboard</span>
+        <div class="c-status">
+          <div class="c-dot"></div>
+          <span>Aria · ready</span>
+        </div>
+      </div>
+
+      <div class="c-body">
+        <div class="c-avatar">✦</div>
+
+        <div class="c-greeting">
+          <div class="c-hi">Good morning, Shafi ☀</div>
+          <div class="c-msg">You're <span class="hl">close on Mechanics</span> — but <span class="warn">Thermodynamics</span> needs work.</div>
+        </div>
+
+        <div class="c-q">How do you want to study?</div>
+
+        <div class="c-cards">
+          <div class="c-card active">
+            <div class="c-card-icon">🧠</div>
+            <div class="c-card-text">
+              <div class="c-card-title">Explain it to me</div>
+              <div class="c-card-desc">Coach walks you through step by step</div>
+            </div>
+          </div>
+          <div class="c-card">
+            <div class="c-card-icon">⚡</div>
+            <div class="c-card-text">
+              <div class="c-card-title">Quiz me</div>
+              <div class="c-card-desc">Socratic questions on weak topics</div>
+            </div>
+          </div>
+          <div class="c-card">
+            <div class="c-card-icon">🎯</div>
+            <div class="c-card-text">
+              <div class="c-card-title">Exam prep</div>
+              <div class="c-card-desc">Past-paper style practice questions</div>
+            </div>
+          </div>
+
+          <div class="c-div">
+            <div class="c-div-line"></div>
+            <div class="c-div-txt">or study your own topic</div>
+            <div class="c-div-line"></div>
+          </div>
+
+          <div class="c-card c-card-own">
+            <div class="c-card-icon">✏️</div>
+            <div class="c-card-text">
+              <div class="c-card-title">I want to study something else</div>
+              <div class="c-card-desc">Pick a topic or document from your notes</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="c-start">Start Session →</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

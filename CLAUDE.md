@@ -24,7 +24,7 @@ FINAL RULE: If a response can be shorter without harming understanding, it MUST 
 
 ## PROJECT OVERVIEW
 
-**Ask My Notes** — AI study assistant SaaS for Indian students (JEE/NEET/University exams).
+**Ask My Notes** — AI study assistant SaaS for university level students (B.Tech, BCA, BSc, Medical, Law, Finance, BBA, MBA, MBBS, etc.).
 
 ---
 

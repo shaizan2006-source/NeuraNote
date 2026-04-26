@@ -1,0 +1,15 @@
+{
+  "community": 46,
+  "name": "finance-domain",
+  "nodes": [
+    {
+      "label": "finance.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\finance.js",
+      "source_location": "L1",
+      "id": "finance",
+      "community": 46
+    }
+  ],
+  "edges": []
+}

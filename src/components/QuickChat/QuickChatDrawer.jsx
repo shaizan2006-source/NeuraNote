@@ -1,12 +1,22 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useDrawer } from "@/context/DrawerContext";
 import { useDashboard } from "@/context/DashboardContext";
 
-const CURSOR_CSS = `@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }`;
+const CURSOR_CSS = `
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes dotPulse {
+  0%, 80%, 100% { opacity: 0.25; transform: scale(0.85); }
+  40%           { opacity: 1;    transform: scale(1);    }
+}
+/* Code blocks inside the drawer scroll horizontally instead of overflowing */
+.qcd-messages pre  { overflow-x: auto; max-width: 100%; white-space: pre; }
+.qcd-messages code { white-space: pre-wrap; word-break: break-word; }
+.qcd-messages pre code { white-space: pre; word-break: normal; }
+`;
 
 function BlinkingCursor() {
   return (
@@ -18,13 +28,36 @@ function BlinkingCursor() {
   );
 }
 
+function ThinkingDots() {
+  return (
+    <span style={{ display: "inline-flex", gap: 4, alignItems: "center", padding: "2px 0" }}>
+      {[0, 1, 2].map(i => (
+        <span key={i} style={{
+          width: 5, height: 5, borderRadius: "50%",
+          background: "#52525b",
+          display: "inline-block",
+          animation: `dotPulse 1.4s ease-in-out ${i * 0.22}s infinite`,
+        }} />
+      ))}
+    </span>
+  );
+}
+
 function UserBubble({ text }) {
   return (
-    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+    <div style={{ display: "flex", justifyContent: "flex-end", minWidth: 0 }}>
       <div style={{
-        background: "rgba(139,92,246,0.12)", color: "#c4b5fd",
-        borderRadius: 6, padding: "5px 8px", maxWidth: "80%",
-        fontSize: 9, lineHeight: 1.5, wordBreak: "break-word",
+        background:     "rgba(139,92,246,0.12)",
+        color:          "#c4b5fd",
+        borderRadius:   6,
+        padding:        "5px 8px",
+        maxWidth:       "80%",
+        fontSize:       9,
+        lineHeight:     1.5,
+        wordBreak:      "break-word",
+        overflowWrap:   "anywhere",
+        whiteSpace:     "pre-wrap",
+        overflowX:      "hidden",
       }}>{text}</div>
     </div>
   );
@@ -33,12 +66,25 @@ function UserBubble({ text }) {
 function AIBubble({ text, isStreaming = false }) {
   return (
     <div style={{
-      borderLeft: "2px solid rgba(34,211,238,0.35)",
-      padding: "5px 8px", borderRadius: "0 6px 6px 0",
-      background: "rgba(34,211,238,0.02)",
-      fontSize: 9, color: "#a1a1aa", lineHeight: 1.5,
+      borderLeft:   "2px solid rgba(34,211,238,0.35)",
+      padding:      "5px 8px",
+      borderRadius: "0 6px 6px 0",
+      background:   "rgba(34,211,238,0.02)",
+      fontSize:     9,
+      color:        "#a1a1aa",
+      lineHeight:   1.5,
+      minHeight:    20,
+      // overflow containment
+      minWidth:     0,
+      overflowX:    "hidden",
+      wordBreak:    "break-word",
+      overflowWrap: "anywhere",
+      whiteSpace:   "pre-wrap",
     }}>
-      {text}{isStreaming && <BlinkingCursor />}
+      {!text && isStreaming
+        ? <ThinkingDots />
+        : <>{text}{isStreaming && <BlinkingCursor />}</>
+      }
     </div>
   );
 }
@@ -49,9 +95,34 @@ export default function QuickChatDrawer({ userId }) {
   const { documentId } = useDashboard();
 
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const bottomRef = useRef(null);
+  const [input, setInput]       = useState("");
+  const [loading, setLoading]   = useState(false);
+
+  const bottomRef      = useRef(null);
+  const drawerInputRef = useRef(null);
+  const loadingRef     = useRef(false);   // mirror of loading — stable inside timeouts
+
+  // Keep loadingRef in sync
+  useEffect(() => { loadingRef.current = loading; }, [loading]);
+
+  // Auto-resize the textarea as the user types
+  const resizeInput = () => {
+    const el = drawerInputRef.current;
+    if (!el) return;
+    el.style.height    = "auto";
+    const h = el.scrollHeight;
+    el.style.height    = Math.min(h, 80) + "px";
+    el.style.overflowY = h > 80 ? "auto" : "hidden";
+  };
+  useLayoutEffect(() => { resizeInput(); }, [input]);
+
+  // Focus input once drawer is open and not loading.
+  // Fires on open (no initial question) and on every loading→false transition.
+  useEffect(() => {
+    if (!isOpen || loading) return;
+    const id = setTimeout(() => drawerInputRef.current?.focus(), 60);
+    return () => clearTimeout(id);
+  }, [isOpen, loading]);
 
   // Pick up initial question placed in sessionStorage by AskAIHeroCard
   useEffect(() => {
@@ -61,9 +132,10 @@ export default function QuickChatDrawer({ userId }) {
       sessionStorage.removeItem("drawer_initial_question");
       sendMessage(initial);
     }
-  }, [isOpen]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]); // sendMessage is stable — intentional
 
-  // Auto-scroll on new messages
+  // Auto-scroll on new messages / content updates
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -72,31 +144,78 @@ export default function QuickChatDrawer({ userId }) {
     const q = (text || input).trim();
     if (!q || loading) return;
     setInput("");
-    setMessages(prev => [...prev, { role: "user", content: q }]);
     setLoading(true);
+
+    // Append user bubble + empty AI placeholder immediately
+    setMessages(prev => [
+      ...prev,
+      { role: "user",      content: q },
+      { role: "assistant", content: "", streaming: true },
+    ]);
 
     try {
       const res = await fetch("/api/quick-chat", {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body:    JSON.stringify({
           question:        q,
           user_id:         userId,
           document_id:     activePdf?.id || documentId || null,
           conversation_id: conversationId,
         }),
       });
-      const data = await res.json();
-      if (data.conversation_id) setConversationId(data.conversation_id);
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: data.answer || "Sorry, I couldn't answer that.",
-      }]);
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Request failed");
+      }
+
+      const reader  = res.body.getReader();
+      const decoder = new TextDecoder();
+      let raw = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        raw += decoder.decode(value, { stream: true });
+
+        // Visible text is everything before the __CONV__ marker (if it arrived yet)
+        const sep = raw.indexOf("\n__CONV__");
+        const visible = sep !== -1 ? raw.slice(0, sep) : raw;
+
+        setMessages(prev => {
+          const msgs = [...prev];
+          msgs[msgs.length - 1] = { role: "assistant", content: visible, streaming: true };
+          return msgs;
+        });
+      }
+
+      // Parse conversation metadata appended at end of stream
+      const sep = raw.indexOf("\n__CONV__");
+      if (sep !== -1) {
+        try {
+          const meta = JSON.parse(raw.slice(sep + 9)); // 9 === "\n__CONV__".length
+          if (meta.conversation_id) setConversationId(meta.conversation_id);
+        } catch {}
+      }
+
+      // Mark last message as done (remove streaming cursor)
+      setMessages(prev => {
+        const msgs = [...prev];
+        msgs[msgs.length - 1] = { ...msgs[msgs.length - 1], streaming: false };
+        return msgs;
+      });
+
     } catch {
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: "Something went wrong. Please try again.",
-      }]);
+      setMessages(prev => {
+        const msgs = [...prev];
+        msgs[msgs.length - 1] = {
+          role:      "assistant",
+          content:   "Something went wrong. Please try again.",
+          streaming: false,
+        };
+        return msgs;
+      });
     } finally {
       setLoading(false);
     }
@@ -182,10 +301,14 @@ export default function QuickChatDrawer({ userId }) {
             </div>
 
             {/* Message thread */}
-            <div style={{
-              flex: 1, overflowY: "auto",
-              padding: "10px 12px",
-              display: "flex", flexDirection: "column", gap: 8,
+            <div className="qcd-messages" style={{
+              flex:      1,
+              overflowY: "auto",
+              overflowX: "hidden",   // prevent any child from blowing out width
+              padding:   "10px 12px",
+              display:   "flex", flexDirection: "column", gap: 8,
+              minWidth:  0,          // flex child must shrink below content size
+              minHeight: 0,          // CRITICAL: allows overflow: auto to work in flex container
             }}>
               {messages.length === 0 && (
                 <p style={{ color: "#3f3f46", fontSize: 9, textAlign: "center", marginTop: 20 }}>
@@ -195,12 +318,8 @@ export default function QuickChatDrawer({ userId }) {
               {messages.map((m, i) => (
                 m.role === "user"
                   ? <UserBubble key={i} text={m.content} />
-                  : <AIBubble  key={i} text={m.content}
-                      isStreaming={loading && i === messages.length - 1} />
+                  : <AIBubble  key={i} text={m.content} isStreaming={!!m.streaming} />
               ))}
-              {loading && messages[messages.length - 1]?.role === "user" && (
-                <AIBubble text="" isStreaming />
-              )}
               <div ref={bottomRef} />
             </div>
 
@@ -213,15 +332,17 @@ export default function QuickChatDrawer({ userId }) {
               gap:           4,
               flexShrink:    0,
             }}>
-              <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                <input
+              <div style={{ display: "flex", gap: 6, alignItems: "flex-end" }}>
+                <textarea
+                  ref={drawerInputRef}
                   value={input}
-                  onChange={e => setInput(e.target.value)}
+                  onChange={e => { setInput(e.target.value); resizeInput(); }}
                   onKeyDown={e => {
                     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
                   }}
-                  placeholder="Follow up…"
+                  placeholder="Follow up… (Shift+Enter for new line)"
                   disabled={loading}
+                  rows={1}
                   style={{
                     flex:         1,
                     background:   "rgba(255,255,255,0.04)",
@@ -231,6 +352,10 @@ export default function QuickChatDrawer({ userId }) {
                     fontSize:     9,
                     color:        "#e4e4e7",
                     outline:      "none",
+                    resize:       "none",
+                    overflowY:    "hidden",
+                    lineHeight:   1.5,
+                    fontFamily:   "inherit",
                   }}
                 />
                 <button
@@ -246,12 +371,29 @@ export default function QuickChatDrawer({ userId }) {
                     cursor:       loading ? "not-allowed" : "pointer",
                     display:      "flex", alignItems: "center", justifyContent: "center",
                     opacity:      loading ? 0.5 : 1,
+                    marginBottom: 1,   // optical alignment with single-line textarea
                   }}
                 >↑</button>
               </div>
               {conversationId && (
                 <button
-                  onClick={() => { closeDrawer(); router.push(`/ask-ai?cid=${conversationId}`); }}
+                  onClick={() => {
+                    // Snapshot all completed messages so the Ask-AI page can hydrate
+                    // instantly without waiting for a Supabase round-trip.
+                    const snapshot = messages
+                      .filter(m => !m.streaming)
+                      .map(m => ({ role: m.role, content: m.content }));
+                    if (snapshot.length > 0) {
+                      try {
+                        sessionStorage.setItem("amn_qc_handoff", JSON.stringify({
+                          cid:      conversationId,
+                          messages: snapshot,
+                        }));
+                      } catch {} // sessionStorage unavailable (private mode / quota)
+                    }
+                    closeDrawer();
+                    router.push(`/ask-ai?cid=${conversationId}`);
+                  }}
                   style={{
                     background: "transparent", border: "none",
                     color: "#22D3EE", fontSize: 8,

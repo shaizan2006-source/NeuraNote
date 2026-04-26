@@ -1,0 +1,277 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0A0A0A; font-family: -apple-system, 'Inter', sans-serif; color: #e4e4e7; }
+  .page { padding: 24px; max-width: 980px; margin: 0 auto; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #f4f4f5; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 24px; }
+  .section-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 700; color: #c4b5fd; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 20px; }
+  .divider { height: 1px; background: rgba(255,255,255,0.05); margin: 24px 0; }
+  .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #52525b; margin-bottom: 12px; }
+
+  /* ── FOUR COLUMN SIDEBAR STATES ── */
+  .four-col { display: grid; grid-template-columns: 1fr 56px 1fr 120px; gap: 16px; align-items: start; margin-bottom: 28px; }
+  .col-label { font-size: 10px; font-weight: 600; margin-bottom: 8px; }
+
+  /* Sidebar expanded — dashboard */
+  .sb {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  .sb-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 10px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .logo-row { display: flex; align-items: center; gap: 7px; }
+  .logo-mk { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #8B5CF6, #6D28D9); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .logo-mk svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 2; fill: none; }
+  .logo-name { font-size: 11px; font-weight: 700; color: #f4f4f5; }
+  .collapse-btn { width: 18px; height: 18px; border-radius: 4px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 9px; color: #3f3f46; cursor: pointer; }
+
+  .nav-section { padding: 8px 6px; display: flex; flex-direction: column; gap: 2px; }
+  .nav-item { display: flex; align-items: center; gap: 7px; padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+  .nav-item.act { background: rgba(139,92,246,0.12); }
+  .nav-item svg { width: 12px; height: 12px; stroke: #71717a; stroke-width: 2; fill: none; }
+  .nav-item.act svg { stroke: #8B5CF6; }
+  .nav-item span { font-size: 10px; color: #71717a; }
+  .nav-item.act span { color: #c4b5fd; }
+
+  /* New chat button */
+  .new-chat { margin: 0 8px 6px; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 5px; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 10px; color: #a1a1aa; cursor: pointer; }
+  .new-chat svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+  /* Section headers */
+  .sec-hdr { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px 3px; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #3f3f46; }
+
+  /* Chat items */
+  .chat-item { padding: 4px 10px; font-size: 9px; color: #52525b; cursor: pointer; border-radius: 4px; margin: 0 4px; overflow: hidden; }
+  .chat-item.cur { color: #a1a1aa; border-left: 2px solid rgba(139,92,246,0.4); padding-left: 8px; background: rgba(139,92,246,0.05); }
+  .chat-time { font-size: 8px; color: #27272a; display: block; }
+
+  /* PDF items */
+  .pdf-item { display: flex; align-items: center; gap: 5px; padding: 4px 10px; margin: 0 4px; font-size: 9px; color: #52525b; cursor: pointer; border-radius: 4px; }
+  .pdf-item svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 2; fill: none; flex-shrink: 0; }
+  .pdf-item.act-pdf { color: #22D3EE; background: rgba(34,211,238,0.05); }
+  .pdf-badge { font-size: 7px; color: #22D3EE; border: 1px solid rgba(34,211,238,0.3); border-radius: 8px; padding: 1px 4px; background: rgba(34,211,238,0.08); margin-left: auto; }
+
+  /* ── COLLAPSED ICON RAIL ── */
+  .rail {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 10px 0; gap: 8px;
+    width: 56px;
+  }
+  .r-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+  .r-icon svg { width: 13px; height: 13px; stroke: #52525b; stroke-width: 2; fill: none; }
+  .r-icon.act { background: rgba(139,92,246,0.15); }
+  .r-icon.act svg { stroke: #8B5CF6; }
+  .r-icon.new-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+  .dot { width: 5px; height: 5px; border-radius: 50%; position: absolute; top: 3px; right: 3px; }
+  .dot-c { background: #22D3EE; box-shadow: 0 0 4px rgba(34,211,238,0.6); }
+  .dot-p { background: #8B5CF6; box-shadow: 0 0 4px rgba(139,92,246,0.5); }
+  .rail-divider { width: 28px; height: 1px; background: rgba(255,255,255,0.05); }
+  .expand-btn { margin-top: auto; width: 22px; height: 22px; border-radius: 5px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 10px; color: #3f3f46; }
+
+  /* Tooltip callout */
+  .tooltip-demo {
+    background: #1F1F23; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 6px 10px;
+    font-size: 9px; color: #e4e4e7;
+    position: relative; margin-bottom: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .tooltip-demo::before {
+    content: ''; position: absolute; left: -5px; top: 50%; transform: translateY(-50%) rotate(45deg);
+    width: 7px; height: 7px; background: #1F1F23;
+    border-left: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .tip-label { font-size: 8px; color: #52525b; margin-bottom: 2px; display: block; }
+
+  /* Mobile sidebar */
+  .mobile-sb {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; overflow: hidden;
+    width: 120px;
+    display: flex; flex-direction: column;
+  }
+
+  /* ── SPEC TABLE ── */
+  .spec-table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+  .spec-table th { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #3f3f46; padding: 5px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .spec-table td { font-size: 10px; color: #71717a; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; line-height: 1.5; }
+  .spec-table td:first-child { color: #a1a1aa; font-weight: 600; white-space: nowrap; }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .chip { display: inline-block; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: 4px; padding: 1px 6px; font-size: 9px; color: #c4b5fd; font-family: monospace; }
+  .chip.c { background: rgba(34,211,238,0.08); border-color: rgba(34,211,238,0.2); color: #67e8f9; }
+
+  /* Two col spec layout */
+  .spec-two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .spec-card { background: #111; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 14px; }
+  .spec-card-title { font-size: 10px; font-weight: 700; color: #a1a1aa; margin-bottom: 10px; }
+
+  .approval-box { margin-top: 24px; padding: 14px 16px; background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.18); border-radius: 10px; font-size: 11px; color: #a1a1aa; line-height: 1.7; }
+  .approval-box strong { color: #c4b5fd; }
+</style>
+
+<div class="page">
+  <div class="section-badge">Section 3 of 4 · Sidebar</div>
+  <h2>Sidebar Spec</h2>
+  <p class="subtitle">Dashboard sidebar, Ask AI sidebar, collapsed icon rail, and mobile behaviour.</p>
+
+  <!-- FOUR STATES -->
+  <div class="lbl">All sidebar states</div>
+  <div class="four-col">
+
+    <!-- 1. Dashboard sidebar (expanded) -->
+    <div>
+      <div class="col-label" style="color:#8B5CF6;">Dashboard sidebar</div>
+      <div class="sb">
+        <div class="sb-header">
+          <div class="logo-row">
+            <div class="logo-mk"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <span class="logo-name">AskMyNotes</span>
+          </div>
+          <div class="collapse-btn">‹</div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-item act"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Dashboard</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Ask AI</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>My PDFs</span></div>
+        </div>
+        <div style="padding:8px 10px;margin-top:auto;border-top:1px solid rgba(255,255,255,0.05);">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:20px;height:20px;border-radius:50%;background:rgba(139,92,246,0.2);display:flex;align-items:center;justify-content:center;font-size:9px;color:#8B5CF6;">S</div>
+            <div style="font-size:9px;color:#71717a;">Shafi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Collapsed icon rail -->
+    <div>
+      <div class="col-label" style="color:#22D3EE;">Collapsed rail</div>
+      <div class="rail">
+        <div class="logo-mk" style="margin-bottom:4px;"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <div class="rail-divider"></div>
+        <div class="r-icon act"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><div class="dot dot-p"></div></div>
+        <div class="r-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="r-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="expand-btn">›</div>
+      </div>
+    </div>
+
+    <!-- 3. Ask AI sidebar (expanded) -->
+    <div>
+      <div class="col-label" style="color:#22D3EE;">Ask AI sidebar</div>
+      <div class="sb">
+        <div class="sb-header">
+          <div class="logo-row">
+            <div class="logo-mk"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <span class="logo-name">AskMyNotes</span>
+          </div>
+          <div class="collapse-btn">‹</div>
+        </div>
+        <div class="new-chat"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Chat</div>
+        <div class="nav-section">
+          <div class="nav-item"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Dashboard</span></div>
+          <div class="nav-item act"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Ask AI</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>My PDFs</span></div>
+        </div>
+        <div class="sec-hdr">Recent <span style="font-size:9px;">▾</span></div>
+        <div class="chat-item cur">Newton's 3rd law<span class="chat-time">2h ago</span></div>
+        <div class="chat-item">Photosynthesis steps<span class="chat-time">Yesterday</span></div>
+        <div class="chat-item">Acid-base reactions<span class="chat-time">2d ago</span></div>
+        <div class="sec-hdr" style="margin-top:4px;">Your PDFs <span style="font-size:9px;">▾</span></div>
+        <div class="pdf-item act-pdf"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>Physics.pdf<span class="pdf-badge">active</span></div>
+        <div class="pdf-item"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>Chemistry.pdf</div>
+        <div style="padding:8px 10px;margin-top:auto;border-top:1px solid rgba(255,255,255,0.05);">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:20px;height:20px;border-radius:50%;background:rgba(139,92,246,0.2);display:flex;align-items:center;justify-content:center;font-size:9px;color:#8B5CF6;">S</div>
+            <div style="font-size:9px;color:#71717a;">Shafi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Mobile -->
+    <div>
+      <div class="col-label" style="color:#F59E0B;">Mobile overlay</div>
+      <div class="mobile-sb">
+        <div class="sb-header" style="padding:8px;">
+          <div class="logo-row">
+            <div class="logo-mk"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+          </div>
+          <div style="font-size:11px;color:#3f3f46;cursor:pointer;">✕</div>
+        </div>
+        <div style="padding:5px 6px;">
+          <div class="nav-item act" style="padding:5px 7px;"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Dashboard</span></div>
+          <div class="nav-item" style="padding:5px 7px;"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Ask AI</span></div>
+          <div class="nav-item" style="padding:5px 7px;"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>My PDFs</span></div>
+        </div>
+        <div style="padding:0 6px;font-size:8px;color:#3f3f46;padding-bottom:6px;">Full overlay on tap<br>Swipe left to close</div>
+      </div>
+
+      <!-- Tooltip demo -->
+      <div style="margin-top:14px;">
+        <div style="font-size:9px;color:#52525b;margin-bottom:6px;font-weight:600;">Collapsed tooltip on hover</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="r-icon" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);width:28px;height:28px;border-radius:7px;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#52525b;stroke-width:2;fill:none;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="tooltip-demo">
+            <span class="tip-label">on hover</span>
+            Ask AI
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SPEC TABLES -->
+  <div class="spec-two">
+    <div>
+      <div class="lbl">Dashboard sidebar spec</div>
+      <table class="spec-table">
+        <tr><th>Property</th><th>Value</th></tr>
+        <tr><td>Width (expanded)</td><td><span class="chip">220px</span></td></tr>
+        <tr><td>Width (collapsed)</td><td><span class="chip">56px</span> icon rail</td></tr>
+        <tr><td>Toggle control</td><td>‹ › chevron button, top right of header</td></tr>
+        <tr><td>Toggle animation</td><td>width transition <span class="chip">250ms ease-in-out</span>, labels fade out</td></tr>
+        <tr><td>State persists</td><td>localStorage <span class="chip">sidebar_collapsed</span></td></tr>
+        <tr><td>Nav items</td><td>Dashboard · Ask AI · My PDFs</td></tr>
+        <tr><td>Icons</td><td>Lucide SVG — Grid, MessageSquare, FileText</td></tr>
+        <tr><td>Active state</td><td>Purple bg <span class="chip">rgba(139,92,246,0.12)</span> + purple icon + label</td></tr>
+        <tr><td>Collapsed dots</td><td>Purple dot = current page · Cyan dot = active PDF</td></tr>
+        <tr><td>Collapsed tooltip</td><td>Page name on hover, <span class="chip">200ms delay</span></td></tr>
+        <tr><td>User avatar</td><td>Bottom of sidebar, initials + name</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="lbl">Ask AI sidebar additions</div>
+      <table class="spec-table">
+        <tr><th>Property</th><th>Value</th></tr>
+        <tr><td>New Chat button</td><td>Outline style, below logo, full width. Starts fresh conversation.</td></tr>
+        <tr><td>Recent Chats</td><td>Collapsible section, last 10 chats + timestamps</td></tr>
+        <tr><td>Active chat</td><td>Purple left border <span class="chip">rgba(139,92,246,0.4)</span> + subtle bg</td></tr>
+        <tr><td>Chat on click</td><td>Load conversation by ID into chat interface</td></tr>
+        <tr><td>Your PDFs</td><td>Collapsible section, click to set active PDF</td></tr>
+        <tr><td>Active PDF</td><td><span class="chip c">Cyan text</span> + cyan bg + "active" badge</td></tr>
+        <tr><td>Inactive PDF</td><td>Gray, click to switch active PDF</td></tr>
+        <tr><td>Collapsed state</td><td>Same 56px icon rail — sections hidden, tooltip only</td></tr>
+        <tr><td>Mobile</td><td>Full-height overlay, swipe left or ✕ to close</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="approval-box">
+    <strong>Section 3 check:</strong> Does the sidebar spec look right across all four states — Dashboard expanded, collapsed rail, Ask AI with its extra sections, and mobile? Any changes before Section 4: Component system?
+  </div>
+</div>

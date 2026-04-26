@@ -6,14 +6,6 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// ── helpers ──────────────────────────────────────────────
-function getDaysLeft(dateStr) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const exam = new Date(dateStr + "T00:00:00");
-  return Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
-}
-
 // ── GET: fetch all exams, auto-mark expired ones ─────────
 export async function GET() {
   try {
@@ -45,7 +37,7 @@ export async function GET() {
 
   } catch (err) {
     console.error("GET /exam error:", err);
-    return NextResponse.json({ active: [], history: [] }, { status: 500 });
+    return NextResponse.json({ active: [], history: [] });
   }
 }
 

@@ -1,0 +1,15 @@
+{
+  "community": 43,
+  "name": "chemistry-domain",
+  "nodes": [
+    {
+      "label": "chemistry.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\chemistry.js",
+      "source_location": "L1",
+      "id": "chemistry",
+      "community": 43
+    }
+  ],
+  "edges": []
+}

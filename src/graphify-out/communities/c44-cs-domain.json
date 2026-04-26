@@ -1,0 +1,15 @@
+{
+  "community": 44,
+  "name": "cs-domain",
+  "nodes": [
+    {
+      "label": "cs.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\cs.js",
+      "source_location": "L1",
+      "id": "cs",
+      "community": 44
+    }
+  ],
+  "edges": []
+}

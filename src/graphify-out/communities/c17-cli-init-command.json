@@ -1,0 +1,100 @@
+{
+  "community": 17,
+  "name": "cli-init-command",
+  "nodes": [
+    {
+      "label": "init.ts",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\init.ts",
+      "source_location": "L1",
+      "id": "init",
+      "community": 17
+    },
+    {
+      "label": "tryGitHubInstall()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\init.ts",
+      "source_location": "L36",
+      "id": "init_trygithubinstall",
+      "community": 17
+    },
+    {
+      "label": "templateInstall()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\init.ts",
+      "source_location": "L100",
+      "id": "init_templateinstall",
+      "community": 17
+    },
+    {
+      "label": "initCommand()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\init.ts",
+      "source_location": "L117",
+      "id": "init_initcommand",
+      "community": 17
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\init.ts",
+      "source_location": "L36",
+      "weight": 1,
+      "_src": "init",
+      "_tgt": "init_trygithubinstall",
+      "source": "init",
+      "target": "init_trygithubinstall",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\init.ts",
+      "source_location": "L100",
+      "weight": 1,
+      "_src": "init",
+      "_tgt": "init_templateinstall",
+      "source": "init",
+      "target": "init_templateinstall",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\init.ts",
+      "source_location": "L117",
+      "weight": 1,
+      "_src": "init",
+      "_tgt": "init_initcommand",
+      "source": "init",
+      "target": "init_initcommand",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\init.ts",
+      "source_location": "L166",
+      "weight": 1,
+      "_src": "init_initcommand",
+      "_tgt": "init_trygithubinstall",
+      "source": "init_trygithubinstall",
+      "target": "init_initcommand",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\commands\\init.ts",
+      "source_location": "L181",
+      "weight": 1,
+      "_src": "init_initcommand",
+      "_tgt": "init_templateinstall",
+      "source": "init_templateinstall",
+      "target": "init_initcommand",
+      "confidence_score": 1
+    }
+  ]
+}

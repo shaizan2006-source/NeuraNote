@@ -4,9 +4,14 @@
  * Student : 10 PDFs, unlimited Q&A
  * Pro     : unlimited PDFs, unlimited Q&A
  * School  : unlimited everything (managed separately)
+ *
+ * Internal developer accounts bypass all limits — see internalAccess.js.
+ * Pass the `user` object (from supabase.auth.getUser) to any check function
+ * to enable the bypass path without an extra DB query.
  */
 
 import { createClient } from "@supabase/supabase-js";
+import { isInternalDev, DEV_ALLOWED, DEV_PLAN } from "@/lib/internalAccess";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -20,9 +25,15 @@ export const PLANS = {
   school:  { name: "School",  pdfLimit: null,       qaLimit: null, price: 50000 },
 };
 
-/** Get user's active plan tier. Falls back to "free". */
-export async function getUserPlan(userId) {
+/**
+ * Get user's active plan tier. Falls back to "free".
+ * Pass `user` (from supabase.auth.getUser) to short-circuit for dev accounts.
+ */
+export async function getUserPlan(userId, user = null) {
   if (!userId) return "free";
+  // Internal dev accounts always get the highest-tier plan.
+  if (isInternalDev(user)) return DEV_PLAN;
+
   const { data } = await supabase
     .from("user_plans")
     .select("plan, expires_at")
@@ -66,8 +77,12 @@ export async function recordQAUsage(userId) {
 /**
  * Check if user can upload another PDF.
  * Returns { allowed: true } or { allowed: false, reason, limit, current }
+ * Pass `user` (from supabase.auth.getUser) to enable dev override.
  */
-export async function canUploadPDF(userId) {
+export async function canUploadPDF(userId, user = null) {
+  // Internal developer accounts: unlimited uploads, no checks.
+  if (isInternalDev(user)) return DEV_ALLOWED;
+
   const plan = await getUserPlan(userId);
   const limits = PLANS[plan];
   if (!limits.pdfLimit) return { allowed: true };          // unlimited
@@ -88,8 +103,12 @@ export async function canUploadPDF(userId) {
 /**
  * Check if user can make another Q&A request today.
  * Returns { allowed: true } or { allowed: false, reason, limit, current }
+ * Pass `user` (from supabase.auth.getUser) to enable dev override.
  */
-export async function canAskQuestion(userId) {
+export async function canAskQuestion(userId, user = null) {
+  // Internal developer accounts: unlimited Q&A, no daily cap.
+  if (isInternalDev(user)) return DEV_ALLOWED;
+
   const plan = await getUserPlan(userId);
   const limits = PLANS[plan];
   if (!limits.qaLimit) return { allowed: true };           // unlimited

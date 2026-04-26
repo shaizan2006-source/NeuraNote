@@ -1,0 +1,164 @@
+{
+  "community": 16,
+  "name": "brain-mastery-section",
+  "nodes": [
+    {
+      "label": "BrainSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L1",
+      "id": "brainsection",
+      "community": 16
+    },
+    {
+      "label": "LEVEL()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L6",
+      "id": "brainsection_level",
+      "community": 16
+    },
+    {
+      "label": "MasteryBar()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L12",
+      "id": "brainsection_masterybar",
+      "community": 16
+    },
+    {
+      "label": "TopicCard()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L26",
+      "id": "brainsection_topiccard",
+      "community": 16
+    },
+    {
+      "label": "TopicRow()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L128",
+      "id": "brainsection_topicrow",
+      "community": 16
+    },
+    {
+      "label": "BrainSection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L162",
+      "id": "brainsection_brainsection",
+      "community": 16
+    }
+  ],
+  "edges": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L9",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "brainsection",
+      "source": "page",
+      "target": "brainsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L3",
+      "weight": 1,
+      "_src": "brainsection",
+      "_tgt": "dashboardcontext",
+      "source": "brainsection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "brainsection",
+      "_tgt": "brainsection_level",
+      "source": "brainsection",
+      "target": "brainsection_level",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L12",
+      "weight": 1,
+      "_src": "brainsection",
+      "_tgt": "brainsection_masterybar",
+      "source": "brainsection",
+      "target": "brainsection_masterybar",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L26",
+      "weight": 1,
+      "_src": "brainsection",
+      "_tgt": "brainsection_topiccard",
+      "source": "brainsection",
+      "target": "brainsection_topiccard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L128",
+      "weight": 1,
+      "_src": "brainsection",
+      "_tgt": "brainsection_topicrow",
+      "source": "brainsection",
+      "target": "brainsection_topicrow",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L162",
+      "weight": 1,
+      "_src": "brainsection",
+      "_tgt": "brainsection_brainsection",
+      "source": "brainsection",
+      "target": "brainsection_brainsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L28",
+      "weight": 1,
+      "_src": "brainsection_topiccard",
+      "_tgt": "brainsection_level",
+      "source": "brainsection_level",
+      "target": "brainsection_topiccard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L130",
+      "weight": 1,
+      "_src": "brainsection_topicrow",
+      "_tgt": "brainsection_level",
+      "source": "brainsection_level",
+      "target": "brainsection_topicrow",
+      "confidence_score": 1
+    }
+  ]
+}

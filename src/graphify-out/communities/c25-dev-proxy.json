@@ -1,0 +1,36 @@
+{
+  "community": 25,
+  "name": "dev-proxy",
+  "nodes": [
+    {
+      "label": "proxy.js",
+      "file_type": "code",
+      "source_file": "proxy.js",
+      "source_location": "L1",
+      "id": "proxy",
+      "community": 25
+    },
+    {
+      "label": "proxy()",
+      "file_type": "code",
+      "source_file": "proxy.js",
+      "source_location": "L6",
+      "id": "proxy_proxy",
+      "community": 25
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "proxy.js",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "proxy",
+      "_tgt": "proxy_proxy",
+      "source": "proxy",
+      "target": "proxy_proxy",
+      "confidence_score": 1
+    }
+  ]
+}

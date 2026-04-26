@@ -11,13 +11,13 @@ const supabase = createClient(
 );
 
 const EXAM_OPTIONS = [
-  { value: "JEE", label: "JEE (Joint Entrance Exam)", icon: "⚙️" },
-  { value: "NEET", label: "NEET (Medical Entrance)", icon: "🩺" },
-  { value: "GATE", label: "GATE (Graduation Exam)", icon: "🎓" },
-  { value: "UPSC", label: "UPSC (Civil Services)", icon: "🏛️" },
-  { value: "CA", label: "CA (Chartered Accountancy)", icon: "📊" },
-  { value: "College", label: "College / University Exams", icon: "📚" },
-  { value: "Other", label: "Other Competitive Exam", icon: "🎯" },
+  { value: "BTech", label: "B.Tech (Engineering)", icon: "⚙️" },
+  { value: "BCA", label: "BCA (Computer App)", icon: "💻" },
+  { value: "Medical", label: "MBBS / Medical", icon: "🩺" },
+  { value: "Law", label: "BA LLB / Law", icon: "⚖️" },
+  { value: "Finance", label: "BBA / MBA / Finance", icon: "📊" },
+  { value: "Science", label: "BSc / Science", icon: "🔬" },
+  { value: "Other", label: "Other Course", icon: "🎯" },
 ];
 
 const TOTAL_STEPS = 4;
@@ -292,7 +292,7 @@ export default function OnboardingPage() {
                 type="text"
                 value={examName}
                 onChange={(e) => setExamName(e.target.value)}
-                placeholder={`e.g. JEE Advanced 2025`}
+                placeholder={`e.g. B.Tech 4th Semester`}
                 className="input-field"
               />
             </div>

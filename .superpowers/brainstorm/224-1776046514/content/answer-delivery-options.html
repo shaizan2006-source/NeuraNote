@@ -1,0 +1,321 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0A0A0A; font-family: -apple-system, 'Inter', sans-serif; color: #e4e4e7; }
+  .page { padding: 24px; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #f4f4f5; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 24px; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .option-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  .opt2 { color: #22D3EE; }
+  .opt3 { color: #8B5CF6; }
+
+  /* ── SHARED APP SHELL ── */
+  .app-shell {
+    background: #0F0F14;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .shell-inner { display: flex; }
+
+  /* Sidebar */
+  .mini-sidebar {
+    display: flex; flex-direction: column; align-items: center;
+    width: 40px; padding: 10px 0; gap: 14px;
+    background: #111111;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+  }
+  .logo-dot {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-dot svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 2; fill: none; }
+  .sidebar-icon { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .sidebar-icon.active { background: rgba(139,92,246,0.2); }
+  .sidebar-icon svg { width: 13px; height: 13px; stroke: #71717a; stroke-width: 2; fill: none; }
+  .sidebar-icon.active svg { stroke: #8B5CF6; }
+
+  /* Greeting */
+  .greeting-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .greeting-text .name { font-size: 12px; font-weight: 600; color: #f4f4f5; }
+  .greeting-text .sub { font-size: 10px; color: #71717a; }
+  .mode-toggle { display: flex; gap: 3px; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 2px; }
+  .mode-toggle span { font-size: 9px; padding: 2px 7px; border-radius: 14px; color: #71717a; font-weight: 500; }
+  .mode-toggle span.active { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #fff; }
+
+  /* Main content */
+  .main-area { flex: 1; padding: 8px; min-width: 0; }
+
+  /* Bento grid */
+  .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .bento-card {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 9px; padding: 9px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .card-title { font-size: 10px; font-weight: 600; color: #e4e4e7; }
+  .card-sub { font-size: 9px; color: #52525b; }
+  .card-icon svg { width: 10px; height: 10px; stroke: #52525b; stroke-width: 2; fill: none; }
+  .card-icon.purple svg { stroke: #8B5CF6; }
+  .card-icon.amber svg { stroke: #F59E0B; }
+
+  /* ── OPTION 2 SPECIFIC ── */
+  .hero-2 {
+    grid-row: span 2;
+    background: linear-gradient(135deg, rgba(34,211,238,0.07), rgba(0,0,0,0.2));
+    border-color: rgba(34,211,238,0.2);
+    box-shadow: 0 0 16px rgba(34,211,238,0.05);
+    position: relative;
+  }
+  .hero-input-2 {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(34,211,238,0.25);
+    border-radius: 6px; padding: 5px 8px;
+    font-size: 9px; color: #a1a1aa;
+    box-shadow: 0 0 8px rgba(34,211,238,0.07);
+    margin-top: auto;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hero-input-2 .typed { flex: 1; color: #e4e4e7; }
+  .send { width: 16px; height: 16px; border-radius: 4px; background: linear-gradient(135deg, #8B5CF6, #6D28D9); display: flex; align-items: center; justify-content: center; font-size: 8px; color: #fff; flex-shrink: 0; }
+
+  /* Slide-over drawer */
+  .drawer-overlay {
+    position: absolute; top: 0; right: 0; bottom: 0;
+    width: 52%;
+    background: #18181B;
+    border-left: 1px solid rgba(34,211,238,0.15);
+    box-shadow: -8px 0 24px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column;
+    z-index: 10;
+  }
+  .drawer-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .drawer-title { font-size: 10px; font-weight: 600; color: #f4f4f5; }
+  .drawer-close { font-size: 11px; color: #52525b; cursor: pointer; }
+  .drawer-q {
+    margin: 8px 10px 0;
+    background: rgba(139,92,246,0.08);
+    border-radius: 6px; padding: 6px 8px;
+    font-size: 9px; color: #c4b5fd;
+  }
+  .drawer-a {
+    margin: 6px 10px 0;
+    border-left: 2px solid rgba(34,211,238,0.35);
+    padding: 6px 8px;
+    font-size: 9px; color: #a1a1aa; line-height: 1.6;
+    flex: 1;
+  }
+  .cursor { display: inline-block; width: 1px; height: 10px; background: #22D3EE; animation: blink 1s infinite; vertical-align: middle; margin-left: 1px; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+  .drawer-footer {
+    padding: 8px 10px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex; gap: 5px;
+  }
+  .drawer-input {
+    flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 5px; padding: 4px 8px; font-size: 9px; color: #71717a;
+  }
+  .full-chat-link { font-size: 8px; color: #22D3EE; white-space: nowrap; align-self: center; padding-left: 4px; cursor: pointer; }
+
+  /* ── OPTION 3 SPECIFIC ── */
+  .bento-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .hero-3 {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(34,211,238,0.06), rgba(139,92,246,0.06));
+    border: 1px solid rgba(34,211,238,0.2);
+    border-radius: 9px; padding: 10px;
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .hero-3-top { display: flex; align-items: center; justify-content: space-between; }
+  .hero-3-title { font-size: 11px; font-weight: 700; color: #f4f4f5; }
+  .hero-3-badge { font-size: 8px; color: #22D3EE; background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.2); border-radius: 10px; padding: 2px 7px; }
+
+  .q-bubble {
+    background: rgba(139,92,246,0.1);
+    border-radius: 6px; padding: 5px 8px;
+    font-size: 9px; color: #c4b5fd; align-self: flex-end;
+    max-width: 80%;
+  }
+  .a-bubble {
+    border-left: 2px solid rgba(34,211,238,0.4);
+    padding: 6px 8px;
+    font-size: 9px; color: #a1a1aa; line-height: 1.6;
+    background: rgba(34,211,238,0.03);
+    border-radius: 0 6px 6px 0;
+  }
+  .hero-3-input {
+    display: flex; gap: 5px; align-items: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(34,211,238,0.2);
+    border-radius: 6px; padding: 4px 8px;
+    box-shadow: 0 0 8px rgba(34,211,238,0.06);
+  }
+  .hero-3-input .ph { flex: 1; font-size: 9px; color: #52525b; }
+  .close-card { font-size: 8px; color: #3f3f46; cursor: pointer; }
+  .close-card:hover { color: #71717a; }
+
+  /* Small cards in option 3 */
+  .small-3 { background: #111111; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 8px; }
+
+  /* Notes */
+  .notes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+  .note { padding: 10px 12px; border-radius: 8px; font-size: 11px; line-height: 1.6; }
+  .note.opt2 { background: rgba(34,211,238,0.05); border: 1px solid rgba(34,211,238,0.12); color: #71717a; }
+  .note.opt3 { background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.14); color: #71717a; }
+  .note strong { display: block; margin-bottom: 4px; font-size: 11px; }
+  .note.opt2 strong { color: #67e8f9; }
+  .note.opt3 strong { color: #c4b5fd; }
+  .pro { color: #86efac; }
+  .con { color: #fca5a5; }
+</style>
+
+<div class="page">
+  <h2>Answer Delivery — Option 2 vs Option 3</h2>
+  <p class="subtitle">Both show the "after typing" state — what the user sees once they've submitted a question from the dashboard.</p>
+
+  <div class="split">
+
+    <!-- ── OPTION 2: SLIDE-OVER DRAWER ── -->
+    <div>
+      <div class="option-label opt2">Option 2 — Slide-over drawer</div>
+      <div class="app-shell" style="height:260px;">
+        <div class="shell-inner" style="height:100%;">
+
+          <div class="mini-sidebar">
+            <div class="logo-dot"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <div class="sidebar-icon active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+            <div class="sidebar-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="sidebar-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          </div>
+
+          <div class="main-area" style="display:flex;flex-direction:column;">
+            <div class="greeting-row">
+              <div class="greeting-text"><div class="name">Good evening, Shafi</div><div class="sub">Ready to study?</div></div>
+              <div class="mode-toggle"><span class="active">Study</span><span>Progress</span></div>
+            </div>
+            <div style="padding:6px;flex:1;">
+              <div class="bento" style="height:100%;">
+                <!-- Hero card (dimmed behind drawer) -->
+                <div class="bento-card hero-2" style="opacity:0.5;">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div style="width:18px;height:18px;border-radius:5px;background:rgba(34,211,238,0.12);border:1px solid rgba(34,211,238,0.25);display:flex;align-items:center;justify-content:center;font-size:9px;">◈</div>
+                    <div class="card-title">Ask AI</div>
+                  </div>
+                  <div class="hero-input-2" style="margin-top:auto;">
+                    <div class="typed">What is Newton's 3rd law?</div>
+                    <div class="send">↑</div>
+                  </div>
+                </div>
+                <!-- 4 small cards (dimmed) -->
+                <div class="bento-card" style="opacity:0.35;"><div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="card-title">Focus Mode</div></div>
+                <div class="bento-card" style="opacity:0.35;"><div class="card-icon purple"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/></svg></div><div class="card-title">Quiz</div></div>
+                <div class="bento-card" style="opacity:0.35;"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="card-title">AI Coach</div></div>
+                <div class="bento-card" style="opacity:0.35;"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/></svg></div><div class="card-title">Voice Tutor</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide-over drawer (overlays from right) -->
+          <div class="drawer-overlay">
+            <div class="drawer-header">
+              <div class="drawer-title">◈ Ask AI</div>
+              <div class="drawer-close">✕</div>
+            </div>
+            <div class="drawer-q">"What is Newton's 3rd law?"</div>
+            <div class="drawer-a">
+              Every action has an equal and opposite reaction. When object A exerts a force on object B, object B exerts an equal force in the opposite direction on A.<span class="cursor"></span>
+            </div>
+            <div class="drawer-footer">
+              <div class="drawer-input">Follow-up question…</div>
+              <div class="full-chat-link">Open full chat →</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OPTION 3: CARD EXPANSION ── -->
+    <div>
+      <div class="option-label opt3">Option 3 — Card expansion</div>
+      <div class="app-shell">
+        <div class="shell-inner">
+
+          <div class="mini-sidebar">
+            <div class="logo-dot"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <div class="sidebar-icon active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+            <div class="sidebar-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="sidebar-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          </div>
+
+          <div class="main-area">
+            <div class="greeting-row">
+              <div class="greeting-text"><div class="name">Good evening, Shafi</div><div class="sub">Ready to study?</div></div>
+              <div class="mode-toggle"><span class="active">Study</span><span>Progress</span></div>
+            </div>
+            <div style="padding:6px;">
+              <div class="bento-3">
+
+                <!-- Expanded hero — spans full width -->
+                <div class="hero-3">
+                  <div class="hero-3-top">
+                    <div class="hero-3-title">◈ Ask AI</div>
+                    <div class="hero-3-badge">● Streaming</div>
+                  </div>
+                  <div class="q-bubble">"What is Newton's 3rd law?"</div>
+                  <div class="a-bubble">
+                    Every action has an equal and opposite reaction. When object A exerts a force on B, object B exerts an equal force in the opposite direction.<span class="cursor"></span>
+                  </div>
+                  <div class="hero-3-input">
+                    <div class="ph">Follow-up…</div>
+                    <div class="send" style="width:14px;height:14px;font-size:7px;">↑</div>
+                    <div class="close-card" style="margin-left:4px;">✕ collapse</div>
+                  </div>
+                </div>
+
+                <!-- 4 small cards (below, reflowed) -->
+                <div class="small-3"><div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="card-title" style="font-size:9px;margin-top:3px;">Focus Mode</div></div>
+                <div class="small-3"><div class="card-icon purple"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/></svg></div><div class="card-title" style="font-size:9px;margin-top:3px;">Quiz</div></div>
+                <div class="small-3"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="card-title" style="font-size:9px;margin-top:3px;">AI Coach</div></div>
+                <div class="small-3"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/></svg></div><div class="card-title" style="font-size:9px;margin-top:3px;">Voice Tutor</div></div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="notes">
+    <div class="note opt2">
+      <strong>Option 2 — Slide-over</strong>
+      <span class="pro">✓ Dashboard stays fully intact behind drawer</span><br>
+      <span class="pro">✓ Can follow up without losing context</span><br>
+      <span class="con">✗ Drawer obscures the right side cards</span><br>
+      <span class="con">✗ Feels like a modal — breaks spatial layout</span>
+    </div>
+    <div class="note opt3">
+      <strong>Option 3 — Card expansion</strong>
+      <span class="pro">✓ Everything in-place — no overlay, no navigation</span><br>
+      <span class="pro">✓ Feels truly ambient — AI lives in the grid</span><br>
+      <span class="con">✗ Small cards shrink/reflow on expansion</span><br>
+      <span class="con">✗ Multi-turn chat gets cramped fast</span>
+    </div>
+  </div>
+</div>

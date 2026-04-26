@@ -1,0 +1,15 @@
+{
+  "community": 39,
+  "name": "supabase-server",
+  "nodes": [
+    {
+      "label": "supabaseServer.js",
+      "file_type": "code",
+      "source_file": "lib\\supabaseServer.js",
+      "source_location": "L1",
+      "id": "supabaseserver",
+      "community": 39
+    }
+  ],
+  "edges": []
+}

@@ -1,0 +1,208 @@
+{
+  "community": 15,
+  "name": "query-classifier",
+  "nodes": [
+    {
+      "label": "queryClassifier.js",
+      "file_type": "code",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L1",
+      "id": "queryclassifier",
+      "community": 15
+    },
+    {
+      "label": "detectQuestionType()",
+      "file_type": "code",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L716",
+      "id": "queryclassifier_detectquestiontype",
+      "community": 15
+    },
+    {
+      "label": "detectMarks()",
+      "file_type": "code",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L738",
+      "id": "queryclassifier_detectmarks",
+      "community": 15
+    },
+    {
+      "label": "inferDifficulty()",
+      "file_type": "code",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L772",
+      "id": "queryclassifier_inferdifficulty",
+      "community": 15
+    },
+    {
+      "label": "detectLanguage()",
+      "file_type": "code",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L785",
+      "id": "queryclassifier_detectlanguage",
+      "community": 15
+    },
+    {
+      "label": "scoreDomains()",
+      "file_type": "code",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L796",
+      "id": "queryclassifier_scoredomains",
+      "community": 15
+    },
+    {
+      "label": "classifyQuery()",
+      "file_type": "code",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L818",
+      "id": "queryclassifier_classifyquery",
+      "community": 15
+    }
+  ],
+  "edges": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\ask\\route.js",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "route",
+      "_tgt": "queryclassifier",
+      "source": "route",
+      "target": "queryclassifier",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L716",
+      "weight": 1,
+      "_src": "queryclassifier",
+      "_tgt": "queryclassifier_detectquestiontype",
+      "source": "queryclassifier",
+      "target": "queryclassifier_detectquestiontype",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L738",
+      "weight": 1,
+      "_src": "queryclassifier",
+      "_tgt": "queryclassifier_detectmarks",
+      "source": "queryclassifier",
+      "target": "queryclassifier_detectmarks",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L772",
+      "weight": 1,
+      "_src": "queryclassifier",
+      "_tgt": "queryclassifier_inferdifficulty",
+      "source": "queryclassifier",
+      "target": "queryclassifier_inferdifficulty",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L785",
+      "weight": 1,
+      "_src": "queryclassifier",
+      "_tgt": "queryclassifier_detectlanguage",
+      "source": "queryclassifier",
+      "target": "queryclassifier_detectlanguage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L796",
+      "weight": 1,
+      "_src": "queryclassifier",
+      "_tgt": "queryclassifier_scoredomains",
+      "source": "queryclassifier",
+      "target": "queryclassifier_scoredomains",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L818",
+      "weight": 1,
+      "_src": "queryclassifier",
+      "_tgt": "queryclassifier_classifyquery",
+      "source": "queryclassifier",
+      "target": "queryclassifier_classifyquery",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L825",
+      "weight": 1,
+      "_src": "queryclassifier_classifyquery",
+      "_tgt": "queryclassifier_detectquestiontype",
+      "source": "queryclassifier_detectquestiontype",
+      "target": "queryclassifier_classifyquery",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L834",
+      "weight": 1,
+      "_src": "queryclassifier_classifyquery",
+      "_tgt": "queryclassifier_detectmarks",
+      "source": "queryclassifier_detectmarks",
+      "target": "queryclassifier_classifyquery",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L827",
+      "weight": 1,
+      "_src": "queryclassifier_classifyquery",
+      "_tgt": "queryclassifier_inferdifficulty",
+      "source": "queryclassifier_inferdifficulty",
+      "target": "queryclassifier_classifyquery",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L828",
+      "weight": 1,
+      "_src": "queryclassifier_classifyquery",
+      "_tgt": "queryclassifier_detectlanguage",
+      "source": "queryclassifier_detectlanguage",
+      "target": "queryclassifier_classifyquery",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\queryClassifier.js",
+      "source_location": "L839",
+      "weight": 1,
+      "_src": "queryclassifier_classifyquery",
+      "_tgt": "queryclassifier_scoredomains",
+      "source": "queryclassifier_scoredomains",
+      "target": "queryclassifier_classifyquery",
+      "confidence_score": 1
+    }
+  ]
+}

@@ -1,0 +1,331 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0A0A0A; font-family: -apple-system, 'Inter', sans-serif; color: #e4e4e7; }
+  .page { padding: 24px; max-width: 960px; margin: 0 auto; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #f4f4f5; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 24px; }
+  .section-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 700; color: #c4b5fd; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 20px; }
+  .divider { height: 1px; background: rgba(255,255,255,0.05); margin: 24px 0; }
+  .label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #52525b; margin-bottom: 12px; }
+  .label.purple { color: #8B5CF6; }
+  .label.cyan { color: #22D3EE; }
+  .label.green { color: #22C55E; }
+
+  /* ── TWO MODE PREVIEW ── */
+  .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+
+  .app-shell {
+    background: #0F0F14;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; overflow: hidden;
+  }
+
+  /* Sidebar strip */
+  .mini-sb {
+    width: 40px; background: #111; border-right: 1px solid rgba(255,255,255,0.05);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 10px 0; gap: 12px; flex-shrink: 0;
+  }
+  .logo-mk { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #8B5CF6, #6D28D9); display: flex; align-items: center; justify-content: center; }
+  .logo-mk svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 2; fill: none; }
+  .sb-icon { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .sb-icon.act { background: rgba(139,92,246,0.2); }
+  .sb-icon svg { width: 12px; height: 12px; stroke: #71717a; stroke-width: 2; fill: none; }
+  .sb-icon.act svg { stroke: #8B5CF6; }
+
+  /* Greeting */
+  .greet {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .greet-text .g-name { font-size: 12px; font-weight: 600; color: #f4f4f5; }
+  .greet-text .g-sub { font-size: 10px; color: #71717a; }
+  .toggle { display: flex; gap: 3px; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 2px; }
+  .toggle span { font-size: 9px; padding: 2px 8px; border-radius: 14px; color: #71717a; font-weight: 500; }
+  .toggle span.on { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #fff; }
+
+  /* Bento */
+  .main { flex: 1; padding: 8px; }
+
+  /* STUDY MODE BENTO */
+  .bento-study {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 68px 68px;
+    gap: 6px;
+  }
+  /* PROGRESS MODE BENTO */
+  .bento-progress {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 68px 68px;
+    gap: 6px;
+  }
+
+  .card {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 10px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative; overflow: hidden;
+  }
+  .card.hero { grid-row: span 2; }
+
+  /* Study hero */
+  .card.hero.study {
+    background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(109,40,217,0.04));
+    border-color: rgba(139,92,246,0.22);
+  }
+  .card.hero.study::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    border-left: 2px solid rgba(34,211,238,0.35);
+    border-radius: 10px;
+    box-shadow: inset 0 0 30px rgba(34,211,238,0.04);
+    pointer-events: none;
+  }
+
+  /* Progress hero */
+  .card.hero.progress {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(20,10,40,0.4));
+    border-color: rgba(139,92,246,0.18);
+  }
+
+  .card-title { font-size: 10px; font-weight: 700; color: #e4e4e7; }
+  .card-sub { font-size: 9px; color: #52525b; }
+  .c-icon svg { width: 10px; height: 10px; stroke: #52525b; stroke-width: 2; fill: none; }
+  .c-icon.p svg { stroke: #8B5CF6; }
+  .c-icon.c svg { stroke: #22D3EE; }
+  .c-icon.a svg { stroke: #F59E0B; }
+
+  /* AI badge */
+  .ai-dot { width: 16px; height: 16px; border-radius: 50%; background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.3); display: flex; align-items: center; justify-content: center; font-size: 8px; color: #22D3EE; }
+
+  /* Fake input */
+  .fake-input {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(34,211,238,0.2);
+    border-radius: 6px; padding: 4px 8px; font-size: 9px; color: #52525b;
+    box-shadow: 0 0 8px rgba(34,211,238,0.06);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .fake-input .fi-text { flex: 1; }
+  .send { width: 14px; height: 14px; border-radius: 4px; background: linear-gradient(135deg, #8B5CF6, #6D28D9); display: flex; align-items: center; justify-content: center; font-size: 7px; color: #fff; }
+
+  /* Brain cells */
+  .brain { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-top: 4px; }
+  .bc { height: 7px; border-radius: 2px; }
+  .bc0 { background: #1f1f23; }
+  .bc1 { background: rgba(245,158,11,0.35); }
+  .bc2 { background: rgba(245,158,11,0.65); }
+  .bc3 { background: rgba(34,197,94,0.75); }
+
+  /* Mastery bar */
+  .m-bar { display: flex; gap: 2px; margin-top: 4px; }
+  .m-dot { width: 5px; height: 5px; border-radius: 1px; }
+
+  /* ── SPEC TABLE ── */
+  .spec-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  .spec-table th { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #3f3f46; padding: 6px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .spec-table td { font-size: 10px; color: #71717a; padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; line-height: 1.5; }
+  .spec-table td:first-child { color: #a1a1aa; font-weight: 600; white-space: nowrap; }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .chip { display: inline-block; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: 4px; padding: 1px 6px; font-size: 9px; color: #c4b5fd; font-family: monospace; }
+  .chip.cyan { background: rgba(34,211,238,0.08); border-color: rgba(34,211,238,0.2); color: #67e8f9; }
+  .chip.green { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); color: #86efac; }
+
+  /* ── DRAWER SPEC ── */
+  .drawer-spec { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .spec-block { background: #111; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 14px; }
+  .spec-block-title { font-size: 10px; font-weight: 700; color: #a1a1aa; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+  .spec-block-title svg { width: 10px; height: 10px; stroke: #71717a; stroke-width: 2; fill: none; }
+  .spec-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
+  .spec-row .sk { font-size: 9px; color: #52525b; }
+  .spec-row .sv { font-size: 9px; color: #a1a1aa; text-align: right; }
+
+  /* Drawer mockup */
+  .drawer-mockup {
+    border: 1px solid rgba(34,211,238,0.15);
+    border-radius: 9px; overflow: hidden; background: #18181B;
+  }
+  .dm-header { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; }
+  .dm-title { font-size: 10px; font-weight: 600; color: #f4f4f5; display: flex; align-items: center; gap: 5px; }
+  .dm-close { font-size: 10px; color: #3f3f46; }
+  .dm-pdf-badge { font-size: 8px; color: #22D3EE; background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.2); border-radius: 8px; padding: 1px 6px; }
+  .dm-q { margin: 8px 10px; background: rgba(139,92,246,0.1); border-radius: 6px; padding: 5px 8px; font-size: 9px; color: #c4b5fd; }
+  .dm-a { margin: 0 10px 8px; border-left: 2px solid rgba(34,211,238,0.35); padding: 5px 8px; font-size: 9px; color: #a1a1aa; line-height: 1.5; background: rgba(34,211,238,0.02); border-radius: 0 6px 6px 0; }
+  .cursor { display: inline-block; width: 1px; height: 9px; background: #22D3EE; animation: blink 1s infinite; vertical-align: middle; margin-left: 1px; }
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+  .dm-footer { padding: 7px 10px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 5px; align-items: center; }
+  .dm-input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 5px; padding: 4px 8px; font-size: 9px; color: #71717a; }
+  .dm-link { font-size: 8px; color: #22D3EE; white-space: nowrap; cursor: pointer; }
+
+  /* Approval */
+  .approval-box { margin-top: 24px; padding: 14px 16px; background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.18); border-radius: 10px; font-size: 11px; color: #a1a1aa; line-height: 1.7; }
+  .approval-box strong { color: #c4b5fd; }
+</style>
+
+<div class="page">
+  <div class="section-badge">Section 2 of 4 · Dashboard Layout</div>
+  <h2>Dashboard — Layout Spec</h2>
+  <p class="subtitle">Study mode, Progress mode, greeting row, and QuickChat drawer anatomy.</p>
+
+  <!-- TWO MODE PREVIEWS -->
+  <div class="label purple">Both modes — bento preview</div>
+  <div class="modes-grid">
+
+    <!-- STUDY -->
+    <div>
+      <div style="font-size:10px;color:#8B5CF6;font-weight:600;margin-bottom:6px;">Study Mode (default)</div>
+      <div class="app-shell">
+        <div style="display:flex;">
+          <div class="mini-sb">
+            <div class="logo-mk"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <div class="sb-icon act"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+            <div class="sb-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="sb-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          </div>
+          <div class="main">
+            <div class="greet">
+              <div class="greet-text"><div class="g-name">Good evening, Shafi</div><div class="g-sub">Ready to study?</div></div>
+              <div class="toggle"><span class="on">Study</span><span>Progress</span></div>
+            </div>
+            <div style="padding:6px 0 0;">
+              <div class="bento-study">
+                <div class="card hero study">
+                  <div><div class="ai-dot">◈</div><div class="card-title" style="margin-top:4px;">Ask AI</div><div class="card-sub" style="color:rgba(34,211,238,0.6);font-size:8px;">Physics.pdf · active</div></div>
+                  <div class="fake-input"><div class="fi-text">Ask anything…</div><div class="send">↑</div></div>
+                </div>
+                <div class="card"><div class="c-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="card-title">Focus Mode</div><div class="card-sub">Pomodoro 25m</div></div>
+                <div class="card"><div class="c-icon p"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div class="card-title">Quiz</div><div class="card-sub">12 cards ready</div></div>
+                <div class="card" style="border-left:2px solid rgba(34,211,238,0.3);"><div class="c-icon c"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="card-title">AI Coach</div><div class="card-sub">3 suggestions</div></div>
+                <div class="card"><div class="c-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div><div class="card-title">Voice Tutor</div><div class="card-sub">Speak to learn</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div>
+      <div style="font-size:10px;color:#22C55E;font-weight:600;margin-bottom:6px;">Progress Mode</div>
+      <div class="app-shell">
+        <div style="display:flex;">
+          <div class="mini-sb">
+            <div class="logo-mk"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <div class="sb-icon act"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+            <div class="sb-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="sb-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          </div>
+          <div class="main">
+            <div class="greet">
+              <div class="greet-text"><div class="g-name">Good evening, Shafi</div><div class="g-sub">See your progress</div></div>
+              <div class="toggle"><span>Study</span><span class="on">Progress</span></div>
+            </div>
+            <div style="padding:6px 0 0;">
+              <div class="bento-progress">
+                <div class="card hero progress">
+                  <div><div class="c-icon a"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="card-title" style="margin-top:4px;">Your Brain</div><div class="card-sub">Mastery map</div></div>
+                  <div>
+                    <div class="brain">
+                      <div class="bc bc3"></div><div class="bc bc2"></div><div class="bc bc1"></div><div class="bc bc0"></div>
+                      <div class="bc bc2"></div><div class="bc bc3"></div><div class="bc bc2"></div><div class="bc bc1"></div>
+                      <div class="bc bc0"></div><div class="bc bc1"></div><div class="bc bc3"></div><div class="bc bc2"></div>
+                      <div class="bc bc1"></div><div class="bc bc0"></div><div class="bc bc2"></div><div class="bc bc3"></div>
+                    </div>
+                    <div class="m-bar">
+                      <div class="m-dot" style="background:#27272a"></div><div class="m-dot" style="background:#27272a"></div>
+                      <div class="m-dot" style="background:rgba(245,158,11,0.6)"></div><div class="m-dot" style="background:rgba(245,158,11,0.6)"></div>
+                      <div class="m-dot" style="background:rgba(34,197,94,0.75)"></div><div class="m-dot" style="background:rgba(34,197,94,0.75)"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card"><div class="c-icon a"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="card-title">Analytics</div><div class="card-sub">6h this week</div></div>
+                <div class="card"><div class="c-icon p"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><div class="card-title">Study Plans</div><div class="card-sub">Day 12 of 30</div></div>
+                <div class="card"><div class="c-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="card-title">Exam Countdown</div><div class="card-sub" style="color:#F59E0B;">48 days</div></div>
+                <div class="card"><div class="c-icon p"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="card-title">Weekly Recap</div><div class="card-sub">+18% vs last wk</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEC TABLE -->
+  <div class="label">Layout spec — exact values</div>
+  <table class="spec-table">
+    <tr><th>Property</th><th>Study Mode</th><th>Progress Mode</th></tr>
+    <tr><td>Grid</td><td>2 columns, 2 rows</td><td>2 columns, 2 rows</td></tr>
+    <tr><td>Hero card</td><td><span class="chip">col 1, row span 2</span> — Ask AI</td><td><span class="chip">col 1, row span 2</span> — Your Brain</td></tr>
+    <tr><td>Hero bg</td><td>Purple gradient + cyan left border + glow</td><td>Purple gradient, warmer tint</td></tr>
+    <tr><td>Supporting cards</td><td>Focus Mode, Quiz, AI Coach, Voice Tutor</td><td>Analytics, Study Plans, Exam Countdown, Weekly Recap</td></tr>
+    <tr><td>Card gap</td><td colspan="2"><span class="chip">6px</span></td></tr>
+    <tr><td>Card radius</td><td colspan="2"><span class="chip">10px</span> (rounded-xl)</td></tr>
+    <tr><td>Card padding</td><td colspan="2"><span class="chip">10px</span></td></tr>
+    <tr><td>AI Coach card</td><td><span class="chip cyan">cyan left border 2px</span> — ambient signal</td><td>—</td></tr>
+    <tr><td>Mode toggle</td><td colspan="2">Pill in greeting row, far right. Gradient bg on active tab.</td></tr>
+    <tr><td>Greeting sub-text</td><td>"Ready to study?"</td><td>"See your progress"</td></tr>
+    <tr><td>Mode switch animation</td><td colspan="2">Cards fade out (150ms) → cards fade in (200ms). No slide.</td></tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- DRAWER SPEC -->
+  <div class="label cyan">QuickChat drawer — anatomy</div>
+  <div class="drawer-spec">
+    <div>
+      <div class="spec-block" style="margin-bottom:12px;">
+        <div class="spec-block-title"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Drawer — dimensions & animation</div>
+        <div class="spec-row"><span class="sk">Width</span><span class="sv"><span class="chip">40% of viewport</span> min 320px</span></div>
+        <div class="spec-row"><span class="sk">Height</span><span class="sv">Full viewport height</span></div>
+        <div class="spec-row"><span class="sk">Position</span><span class="sv">Fixed, right edge</span></div>
+        <div class="spec-row"><span class="sk">Slide animation</span><span class="sv">translateX(100%) → 0, <span class="chip">250ms ease-out</span></span></div>
+        <div class="spec-row"><span class="sk">Dashboard behind</span><span class="sv">Overlay <span class="chip">rgba(0,0,0,0.4)</span>, no blur</span></div>
+        <div class="spec-row"><span class="sk">Close on</span><span class="sv">✕ button or click overlay</span></div>
+      </div>
+      <div class="spec-block">
+        <div class="spec-block-title"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Drawer — data behaviour</div>
+        <div class="spec-row"><span class="sk">On first message</span><span class="sv">Create Supabase conversation row</span></div>
+        <div class="spec-row"><span class="sk">PDF context</span><span class="sv">Active PDF from Ask AI page state</span></div>
+        <div class="spec-row"><span class="sk">If no active PDF</span><span class="sv">General AI (no RAG), badge shows "No PDF"</span></div>
+        <div class="spec-row"><span class="sk">"Open full chat →"</span><span class="sv">Navigate to <span class="chip cyan">/ask-ai?cid={id}</span></span></div>
+        <div class="spec-row"><span class="sk">On drawer close</span><span class="sv">conversationId persisted in context</span></div>
+        <div class="spec-row"><span class="sk">Re-open drawer</span><span class="sv">Resumes same conversation</span></div>
+      </div>
+    </div>
+
+    <!-- Drawer mockup -->
+    <div>
+      <div style="font-size:10px;color:#52525b;margin-bottom:8px;font-weight:600;">Drawer — visual anatomy</div>
+      <div class="drawer-mockup">
+        <div class="dm-header">
+          <div class="dm-title">◈ Quick Ask <span class="dm-pdf-badge">Physics.pdf</span></div>
+          <div class="dm-close">✕</div>
+        </div>
+        <div style="padding:4px 0;">
+          <div class="dm-q">"What is Newton's 3rd law?"</div>
+          <div class="dm-a">Every action has an equal and opposite reaction. When A exerts force on B, B exerts equal force back on A.<span class="cursor"></span></div>
+        </div>
+        <div style="padding: 0 10px 6px;">
+          <div style="font-size:8px;color:#22D3EE;text-align:right;cursor:pointer;">Open full chat →</div>
+        </div>
+        <div class="dm-footer">
+          <div class="dm-input">Follow-up…</div>
+          <div class="send" style="width:20px;height:20px;font-size:9px;">↑</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:9px;color:#3f3f46;line-height:1.7;">
+        <div>① Header — title + active PDF badge + close</div>
+        <div>② Message thread — user bubble (purple) + AI response (cyan border)</div>
+        <div>③ "Open full chat →" — top right of response area</div>
+        <div>④ Footer input — follow-up field + send button</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="approval-box">
+    <strong>Section 2 check:</strong> Does the bento layout, card assignments, and drawer spec all look right? Any cards you'd swap between modes, or changes to the drawer anatomy before we move to Section 3: Sidebar spec?
+  </div>
+</div>

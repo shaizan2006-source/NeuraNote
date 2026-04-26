@@ -1,0 +1,36 @@
+{
+  "community": 30,
+  "name": "right-panel",
+  "nodes": [
+    {
+      "label": "RightPanel.jsx",
+      "file_type": "code",
+      "source_file": "components\\layout\\RightPanel.jsx",
+      "source_location": "L1",
+      "id": "rightpanel",
+      "community": 30
+    },
+    {
+      "label": "RightPanel()",
+      "file_type": "code",
+      "source_file": "components\\layout\\RightPanel.jsx",
+      "source_location": "L1",
+      "id": "rightpanel_rightpanel",
+      "community": 30
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout\\RightPanel.jsx",
+      "source_location": "L1",
+      "weight": 1,
+      "_src": "rightpanel",
+      "_tgt": "rightpanel_rightpanel",
+      "source": "rightpanel",
+      "target": "rightpanel_rightpanel",
+      "confidence_score": 1
+    }
+  ]
+}

@@ -1,0 +1,320 @@
+{
+  "community": 8,
+  "name": "plan-limits-quotas",
+  "nodes": [
+    {
+      "label": "planLimits.js",
+      "file_type": "code",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L1",
+      "id": "planlimits",
+      "community": 8
+    },
+    {
+      "label": "getUserPlan()",
+      "file_type": "code",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L24",
+      "id": "planlimits_getuserplan",
+      "community": 8
+    },
+    {
+      "label": "countUserPDFs()",
+      "file_type": "code",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L39",
+      "id": "planlimits_countuserpdfs",
+      "community": 8
+    },
+    {
+      "label": "countTodayQA()",
+      "file_type": "code",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L48",
+      "id": "planlimits_counttodayqa",
+      "community": 8
+    },
+    {
+      "label": "recordQAUsage()",
+      "file_type": "code",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L61",
+      "id": "planlimits_recordqausage",
+      "community": 8
+    },
+    {
+      "label": "canUploadPDF()",
+      "file_type": "code",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L70",
+      "id": "planlimits_canuploadpdf",
+      "community": 8
+    },
+    {
+      "label": "canAskQuestion()",
+      "file_type": "code",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L92",
+      "id": "planlimits_canaskquestion",
+      "community": 8
+    },
+    {
+      "label": "voiceLimits.js",
+      "file_type": "code",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L1",
+      "id": "voicelimits",
+      "community": 8
+    },
+    {
+      "label": "countTodayCalls()",
+      "file_type": "code",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L23",
+      "id": "voicelimits_counttodaycalls",
+      "community": 8
+    },
+    {
+      "label": "canStartCall()",
+      "file_type": "code",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L34",
+      "id": "voicelimits_canstartcall",
+      "community": 8
+    },
+    {
+      "label": "startCallSession()",
+      "file_type": "code",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L56",
+      "id": "voicelimits_startcallsession",
+      "community": 8
+    },
+    {
+      "label": "endCallSession()",
+      "file_type": "code",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L66",
+      "id": "voicelimits_endcallsession",
+      "community": 8
+    }
+  ],
+  "edges": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\process-pdf\\route.js",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "route",
+      "_tgt": "planlimits",
+      "source": "route",
+      "target": "planlimits",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\voice\\start\\route.js",
+      "source_location": "L3",
+      "weight": 1,
+      "_src": "route",
+      "_tgt": "voicelimits",
+      "source": "route",
+      "target": "voicelimits",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L24",
+      "weight": 1,
+      "_src": "planlimits",
+      "_tgt": "planlimits_getuserplan",
+      "source": "planlimits",
+      "target": "planlimits_getuserplan",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L39",
+      "weight": 1,
+      "_src": "planlimits",
+      "_tgt": "planlimits_countuserpdfs",
+      "source": "planlimits",
+      "target": "planlimits_countuserpdfs",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L48",
+      "weight": 1,
+      "_src": "planlimits",
+      "_tgt": "planlimits_counttodayqa",
+      "source": "planlimits",
+      "target": "planlimits_counttodayqa",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L61",
+      "weight": 1,
+      "_src": "planlimits",
+      "_tgt": "planlimits_recordqausage",
+      "source": "planlimits",
+      "target": "planlimits_recordqausage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L70",
+      "weight": 1,
+      "_src": "planlimits",
+      "_tgt": "planlimits_canuploadpdf",
+      "source": "planlimits",
+      "target": "planlimits_canuploadpdf",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L92",
+      "weight": 1,
+      "_src": "planlimits",
+      "_tgt": "planlimits_canaskquestion",
+      "source": "planlimits",
+      "target": "planlimits_canaskquestion",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L9",
+      "weight": 1,
+      "_src": "voicelimits",
+      "_tgt": "planlimits",
+      "source": "planlimits",
+      "target": "voicelimits",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L71",
+      "weight": 1,
+      "_src": "planlimits_canuploadpdf",
+      "_tgt": "planlimits_getuserplan",
+      "source": "planlimits_getuserplan",
+      "target": "planlimits_canuploadpdf",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L93",
+      "weight": 1,
+      "_src": "planlimits_canaskquestion",
+      "_tgt": "planlimits_getuserplan",
+      "source": "planlimits_getuserplan",
+      "target": "planlimits_canaskquestion",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L75",
+      "weight": 1,
+      "_src": "planlimits_canuploadpdf",
+      "_tgt": "planlimits_countuserpdfs",
+      "source": "planlimits_countuserpdfs",
+      "target": "planlimits_canuploadpdf",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\planLimits.js",
+      "source_location": "L97",
+      "weight": 1,
+      "_src": "planlimits_canaskquestion",
+      "_tgt": "planlimits_counttodayqa",
+      "source": "planlimits_counttodayqa",
+      "target": "planlimits_canaskquestion",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L23",
+      "weight": 1,
+      "_src": "voicelimits",
+      "_tgt": "voicelimits_counttodaycalls",
+      "source": "voicelimits",
+      "target": "voicelimits_counttodaycalls",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L34",
+      "weight": 1,
+      "_src": "voicelimits",
+      "_tgt": "voicelimits_canstartcall",
+      "source": "voicelimits",
+      "target": "voicelimits_canstartcall",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L56",
+      "weight": 1,
+      "_src": "voicelimits",
+      "_tgt": "voicelimits_startcallsession",
+      "source": "voicelimits",
+      "target": "voicelimits_startcallsession",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L66",
+      "weight": 1,
+      "_src": "voicelimits",
+      "_tgt": "voicelimits_endcallsession",
+      "source": "voicelimits",
+      "target": "voicelimits_endcallsession",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\voiceLimits.js",
+      "source_location": "L42",
+      "weight": 1,
+      "_src": "voicelimits_canstartcall",
+      "_tgt": "voicelimits_counttodaycalls",
+      "source": "voicelimits_counttodaycalls",
+      "target": "voicelimits_canstartcall",
+      "confidence_score": 1
+    }
+  ]
+}

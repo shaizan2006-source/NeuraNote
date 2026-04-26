@@ -1,0 +1,19 @@
+{
+  "community": 53,
+  "name": "claude-md-config",
+  "nodes": [
+    {
+      "label": "Antigravity Kit (CLAUDE.md Project Overview)",
+      "file_type": "document",
+      "source_file": "ui-ux-pro-max-skill/CLAUDE.md",
+      "source_location": "line 7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_antigravity_kit",
+      "community": 53
+    }
+  ],
+  "edges": []
+}

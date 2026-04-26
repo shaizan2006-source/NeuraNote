@@ -21,8 +21,8 @@ export default function StreakCard({ streak = 0, lastActiveDate = null }) {
 
   return (
     <div style={{
-      background: "#111111", border: "1px solid rgba(255,255,255,0.06)",
-      borderRadius: 12, padding: "18px 20px", display: "flex", flexDirection: "column",
+      background: "#111111", border: "1px solid rgba(255,255,255,0.07)",
+      borderRadius: 14, padding: "18px 20px", display: "flex", flexDirection: "column",
     }}>
       <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>
         Daily Streak

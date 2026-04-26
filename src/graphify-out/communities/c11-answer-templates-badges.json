@@ -1,0 +1,188 @@
+{
+  "community": 11,
+  "name": "answer-templates-badges",
+  "nodes": [
+    {
+      "label": "ConfidenceBadge.jsx",
+      "file_type": "code",
+      "source_file": "components\\answer\\ConfidenceBadge.jsx",
+      "source_location": "L1",
+      "id": "confidencebadge",
+      "community": 11
+    },
+    {
+      "label": "ConfidenceBadge()",
+      "file_type": "code",
+      "source_file": "components\\answer\\ConfidenceBadge.jsx",
+      "source_location": "L16",
+      "id": "confidencebadge_confidencebadge",
+      "community": 11
+    },
+    {
+      "label": "buildTooltip()",
+      "file_type": "code",
+      "source_file": "components\\answer\\ConfidenceBadge.jsx",
+      "source_location": "L107",
+      "id": "confidencebadge_buildtooltip",
+      "community": 11
+    },
+    {
+      "label": "answerTemplates.js",
+      "file_type": "code",
+      "source_file": "lib\\answerTemplates.js",
+      "source_location": "L1",
+      "id": "answertemplates",
+      "community": 11
+    },
+    {
+      "label": "getTemplate()",
+      "file_type": "code",
+      "source_file": "lib\\answerTemplates.js",
+      "source_location": "L424",
+      "id": "answertemplates_gettemplate",
+      "community": 11
+    },
+    {
+      "label": "postProcessor.js",
+      "file_type": "code",
+      "source_file": "lib\\postProcessor.js",
+      "source_location": "L1",
+      "id": "postprocessor",
+      "community": 11
+    },
+    {
+      "label": "validateAnswer()",
+      "file_type": "code",
+      "source_file": "lib\\postProcessor.js",
+      "source_location": "L22",
+      "id": "postprocessor_validateanswer",
+      "community": 11
+    },
+    {
+      "label": "extractVerifyMarkers()",
+      "file_type": "code",
+      "source_file": "lib\\postProcessor.js",
+      "source_location": "L82",
+      "id": "postprocessor_extractverifymarkers",
+      "community": 11
+    },
+    {
+      "label": "scoreAnswer()",
+      "file_type": "code",
+      "source_file": "lib\\postProcessor.js",
+      "source_location": "L102",
+      "id": "postprocessor_scoreanswer",
+      "community": 11
+    }
+  ],
+  "edges": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\ConfidenceBadge.jsx",
+      "source_location": "L4",
+      "weight": 1,
+      "_src": "confidencebadge",
+      "_tgt": "postprocessor",
+      "source": "confidencebadge",
+      "target": "postprocessor",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\ConfidenceBadge.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "confidencebadge",
+      "_tgt": "answertemplates",
+      "source": "confidencebadge",
+      "target": "answertemplates",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\ConfidenceBadge.jsx",
+      "source_location": "L16",
+      "weight": 1,
+      "_src": "confidencebadge",
+      "_tgt": "confidencebadge_confidencebadge",
+      "source": "confidencebadge",
+      "target": "confidencebadge_confidencebadge",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\ConfidenceBadge.jsx",
+      "source_location": "L107",
+      "weight": 1,
+      "_src": "confidencebadge",
+      "_tgt": "confidencebadge_buildtooltip",
+      "source": "confidencebadge",
+      "target": "confidencebadge_buildtooltip",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\ConfidenceBadge.jsx",
+      "source_location": "L39",
+      "weight": 1,
+      "_src": "confidencebadge_confidencebadge",
+      "_tgt": "confidencebadge_buildtooltip",
+      "source": "confidencebadge_confidencebadge",
+      "target": "confidencebadge_buildtooltip",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\answerTemplates.js",
+      "source_location": "L424",
+      "weight": 1,
+      "_src": "answertemplates",
+      "_tgt": "answertemplates_gettemplate",
+      "source": "answertemplates",
+      "target": "answertemplates_gettemplate",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\postProcessor.js",
+      "source_location": "L22",
+      "weight": 1,
+      "_src": "postprocessor",
+      "_tgt": "postprocessor_validateanswer",
+      "source": "postprocessor",
+      "target": "postprocessor_validateanswer",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\postProcessor.js",
+      "source_location": "L82",
+      "weight": 1,
+      "_src": "postprocessor",
+      "_tgt": "postprocessor_extractverifymarkers",
+      "source": "postprocessor",
+      "target": "postprocessor_extractverifymarkers",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\postProcessor.js",
+      "source_location": "L102",
+      "weight": 1,
+      "_src": "postprocessor",
+      "_tgt": "postprocessor_scoreanswer",
+      "source": "postprocessor",
+      "target": "postprocessor_scoreanswer",
+      "confidence_score": 1
+    }
+  ]
+}

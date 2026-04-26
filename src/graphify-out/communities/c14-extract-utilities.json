@@ -1,0 +1,228 @@
+{
+  "community": 14,
+  "name": "extract-utilities",
+  "nodes": [
+    {
+      "label": "extract.ts",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L1",
+      "id": "extract",
+      "community": 14
+    },
+    {
+      "label": "extractZip()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L13",
+      "id": "extract_extractzip",
+      "community": 14
+    },
+    {
+      "label": "exists()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L26",
+      "id": "extract_exists",
+      "community": 14
+    },
+    {
+      "label": "copyFolders()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L35",
+      "id": "extract_copyfolders",
+      "community": 14
+    },
+    {
+      "label": "cleanup()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L90",
+      "id": "extract_cleanup",
+      "community": 14
+    },
+    {
+      "label": "createTempDir()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L101",
+      "id": "extract_createtempdir",
+      "community": 14
+    },
+    {
+      "label": "findExtractedRoot()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L109",
+      "id": "extract_findextractedroot",
+      "community": 14
+    },
+    {
+      "label": "installFromZip()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L125",
+      "id": "extract_installfromzip",
+      "community": 14
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L13",
+      "weight": 1,
+      "_src": "extract",
+      "_tgt": "extract_extractzip",
+      "source": "extract",
+      "target": "extract_extractzip",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L26",
+      "weight": 1,
+      "_src": "extract",
+      "_tgt": "extract_exists",
+      "source": "extract",
+      "target": "extract_exists",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L35",
+      "weight": 1,
+      "_src": "extract",
+      "_tgt": "extract_copyfolders",
+      "source": "extract",
+      "target": "extract_copyfolders",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L90",
+      "weight": 1,
+      "_src": "extract",
+      "_tgt": "extract_cleanup",
+      "source": "extract",
+      "target": "extract_cleanup",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L101",
+      "weight": 1,
+      "_src": "extract",
+      "_tgt": "extract_createtempdir",
+      "source": "extract",
+      "target": "extract_createtempdir",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L109",
+      "weight": 1,
+      "_src": "extract",
+      "_tgt": "extract_findextractedroot",
+      "source": "extract",
+      "target": "extract_findextractedroot",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L125",
+      "weight": 1,
+      "_src": "extract",
+      "_tgt": "extract_installfromzip",
+      "source": "extract",
+      "target": "extract_installfromzip",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L135",
+      "weight": 1,
+      "_src": "extract_installfromzip",
+      "_tgt": "extract_extractzip",
+      "source": "extract_extractzip",
+      "target": "extract_installfromzip",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L54",
+      "weight": 1,
+      "_src": "extract_copyfolders",
+      "_tgt": "extract_exists",
+      "source": "extract_exists",
+      "target": "extract_copyfolders",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L141",
+      "weight": 1,
+      "_src": "extract_installfromzip",
+      "_tgt": "extract_copyfolders",
+      "source": "extract_copyfolders",
+      "target": "extract_installfromzip",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L146",
+      "weight": 1,
+      "_src": "extract_installfromzip",
+      "_tgt": "extract_cleanup",
+      "source": "extract_cleanup",
+      "target": "extract_installfromzip",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L131",
+      "weight": 1,
+      "_src": "extract_installfromzip",
+      "_tgt": "extract_createtempdir",
+      "source": "extract_createtempdir",
+      "target": "extract_installfromzip",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\extract.ts",
+      "source_location": "L138",
+      "weight": 1,
+      "_src": "extract_installfromzip",
+      "_tgt": "extract_findextractedroot",
+      "source": "extract_findextractedroot",
+      "target": "extract_installfromzip",
+      "confidence_score": 1
+    }
+  ]
+}

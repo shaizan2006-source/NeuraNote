@@ -1,0 +1,15 @@
+{
+  "community": 52,
+  "name": "cli-logger",
+  "nodes": [
+    {
+      "label": "logger.ts",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\logger.ts",
+      "source_location": "L1",
+      "id": "logger",
+      "community": 52
+    }
+  ],
+  "edges": []
+}

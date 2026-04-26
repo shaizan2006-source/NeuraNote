@@ -1,0 +1,268 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0A0A0A; font-family: -apple-system, 'Inter', sans-serif; color: #e4e4e7; }
+  .page { padding: 24px; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #f4f4f5; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 24px; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  .option-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .option-label.a { color: #8B5CF6; }
+  .option-label.b { color: #22D3EE; }
+
+  /* Hero card base */
+  .hero-card {
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Option A — Rich CTA */
+  .hero-card.option-a {
+    background: linear-gradient(135deg, rgba(139,92,246,0.14), rgba(109,40,217,0.06));
+    border: 1px solid rgba(139,92,246,0.25);
+  }
+
+  .hero-card.option-a .top {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .ai-badge {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(34,211,238,0.12);
+    border: 1px solid rgba(34,211,238,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .hero-title { font-size: 15px; font-weight: 700; color: #f4f4f5; }
+  .hero-sub { font-size: 11px; color: #71717a; margin-top: 1px; }
+
+  /* Last chat snippet */
+  .last-chat {
+    background: rgba(255,255,255,0.04);
+    border-left: 2px solid rgba(34,211,238,0.35);
+    border-radius: 0 6px 6px 0;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+  }
+  .last-chat .chat-label { font-size: 9px; color: #52525b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; }
+  .last-chat .chat-text { font-size: 11px; color: #a1a1aa; line-height: 1.4; }
+  .last-chat .chat-time { font-size: 9px; color: #3f3f46; margin-top: 3px; }
+
+  /* Suggested questions */
+  .suggestions { margin-bottom: 14px; }
+  .suggestions .sug-label { font-size: 9px; color: #52525b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+  .sug-pill {
+    display: inline-block;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 3px 9px;
+    font-size: 10px; color: #71717a;
+    margin: 0 3px 4px 0;
+    cursor: pointer;
+  }
+  .sug-pill:hover { border-color: rgba(139,92,246,0.3); color: #c4b5fd; }
+
+  /* CTA button */
+  .cta-btn {
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 12px; font-weight: 600; color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 16px rgba(139,92,246,0.3);
+    margin-top: auto;
+  }
+  .cta-btn .arrow { opacity: 0.8; font-size: 14px; }
+
+  /* Option B — Inline + slide-over */
+  .hero-card.option-b {
+    background: linear-gradient(135deg, rgba(34,211,238,0.06), rgba(0,0,0,0.3));
+    border: 1px solid rgba(34,211,238,0.18);
+    box-shadow: 0 0 24px rgba(34,211,238,0.05);
+  }
+
+  .hero-card.option-b .top {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .ai-badge.cyan {
+    background: rgba(34,211,238,0.15);
+    border-color: rgba(34,211,238,0.3);
+    /* breathing animation */
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,211,238,0.3); }
+    50% { box-shadow: 0 0 0 6px rgba(34,211,238,0.0); }
+  }
+
+  /* Inline input */
+  .inline-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(34,211,238,0.25);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px; color: #71717a;
+    box-shadow: 0 0 12px rgba(34,211,238,0.08);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .inline-input-text { flex: 1; }
+  .send-btn {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+  }
+
+  /* Slide-over preview */
+  .slide-preview {
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    flex: 1;
+  }
+  .slide-preview .sp-label { font-size: 9px; color: #3f3f46; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+  .slide-preview .sp-hint { font-size: 10px; color: #52525b; line-height: 1.5; }
+
+  .inline-actions {
+    display: flex; gap: 6px; margin-top: auto;
+  }
+  .inline-action-btn {
+    flex: 1; padding: 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    font-size: 10px; color: #71717a; text-align: center;
+    cursor: pointer;
+  }
+  .inline-action-btn.primary {
+    border-color: rgba(34,211,238,0.2);
+    color: #22D3EE;
+  }
+
+  /* Verdict box */
+  .verdict-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px; }
+  .verdict-box {
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 11px; line-height: 1.6;
+  }
+  .verdict-box.a { background: rgba(139,92,246,0.07); border: 1px solid rgba(139,92,246,0.15); }
+  .verdict-box.b { background: rgba(34,211,238,0.05); border: 1px solid rgba(34,211,238,0.12); }
+  .verdict-box .verdict-title { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+  .verdict-box.a .verdict-title { color: #c4b5fd; }
+  .verdict-box.b .verdict-title { color: #67e8f9; }
+  .verdict-box ul { padding-left: 14px; color: #71717a; }
+  .verdict-box ul li { margin-bottom: 2px; }
+  .verdict-box .pro { color: #86efac; }
+  .verdict-box .con { color: #fca5a5; }
+</style>
+
+<div class="page">
+  <h2>Ask AI Hero Card — Two Approaches</h2>
+  <p class="subtitle">Option A is your direction (CTA). Option B is my pushback (inline with slide-over).</p>
+
+  <div class="split">
+
+    <!-- OPTION A: Rich CTA -->
+    <div>
+      <div class="option-label a">Option A — Rich CTA (your direction)</div>
+      <div class="hero-card option-a">
+
+        <div class="top">
+          <div class="ai-badge">◈</div>
+          <div>
+            <div class="hero-title">Ask AI</div>
+            <div class="hero-sub">Powered by your PDFs</div>
+          </div>
+        </div>
+
+        <div class="last-chat">
+          <div class="chat-label">Last session</div>
+          <div class="chat-text">"Explain Newton's 3rd law with an example"</div>
+          <div class="chat-time">2 hours ago · 6 messages</div>
+        </div>
+
+        <div class="suggestions">
+          <div class="sug-label">From your PDFs</div>
+          <span class="sug-pill">Define inertia</span>
+          <span class="sug-pill">Friction types?</span>
+          <span class="sug-pill">Derive F=ma</span>
+        </div>
+
+        <div class="cta-btn">
+          Open Ask AI
+          <span class="arrow">→</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- OPTION B: Inline + slide-over -->
+    <div>
+      <div class="option-label b">Option B — Inline quick-ask (my pushback)</div>
+      <div class="hero-card option-b" style="display:flex;flex-direction:column;">
+
+        <div class="top">
+          <div class="ai-badge cyan">◈</div>
+          <div>
+            <div class="hero-title">Ask AI</div>
+            <div class="hero-sub" style="color:#22D3EE;opacity:0.7;">Active · Physics.pdf</div>
+          </div>
+        </div>
+
+        <div class="inline-input">
+          <div class="inline-input-text">Ask anything about Physics.pdf…</div>
+          <div class="send-btn">↑</div>
+        </div>
+
+        <div class="slide-preview">
+          <div class="sp-label">Answer appears here — stays on dashboard</div>
+          <div class="sp-hint">Quick answer expands in-place. "Open full chat →" link takes you to Ask AI page for extended sessions.</div>
+        </div>
+
+        <div class="inline-actions">
+          <div class="inline-action-btn primary">Open full chat →</div>
+          <div class="inline-action-btn">Recent chats</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-row">
+    <div class="verdict-box a">
+      <div class="verdict-title">Option A — Rich CTA</div>
+      <ul>
+        <li class="pro">✓ Simpler to build — no inline chat state</li>
+        <li class="pro">✓ Justifies hero size with last chat + suggestions</li>
+        <li class="pro">✓ Keeps Ask AI page as single source of truth</li>
+        <li class="con">✗ Extra navigation step for every question</li>
+        <li class="con">✗ Suggestions are static — need to pre-compute from PDFs</li>
+      </ul>
+    </div>
+    <div class="verdict-box b">
+      <div class="verdict-title">Option B — Inline slide-over</div>
+      <ul>
+        <li class="pro">✓ Fewer clicks — answers without leaving dashboard</li>
+        <li class="pro">✓ True "ambient" AI — always present, never loud</li>
+        <li class="pro">✓ Escape hatch to full page for extended sessions</li>
+        <li class="con">✗ More complex — needs dashboard-level chat state</li>
+        <li class="con">✗ PDF context selector lives on Ask AI page, not here</li>
+      </ul>
+    </div>
+  </div>
+</div>

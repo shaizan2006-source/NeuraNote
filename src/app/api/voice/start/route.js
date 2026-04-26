@@ -15,7 +15,7 @@ export async function POST(req) {
     const { data: { user }, error } = await supabase.auth.getUser(token);
     if (error || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const check = await canStartCall(user.id);
+    const check = await canStartCall(user.id, user);
     if (!check.allowed) {
       return NextResponse.json({
         error:        check.reason,

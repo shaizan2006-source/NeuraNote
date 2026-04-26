@@ -1,0 +1,15 @@
+{
+  "community": 51,
+  "name": "physics-domain",
+  "nodes": [
+    {
+      "label": "physics.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\physics.js",
+      "source_location": "L1",
+      "id": "physics",
+      "community": 51
+    }
+  ],
+  "edges": []
+}

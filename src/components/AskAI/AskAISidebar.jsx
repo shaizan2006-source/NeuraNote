@@ -5,15 +5,137 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
+import { loadAllChats, registerChat, deleteChat, renameChat } from "@/lib/chatStorage";
 
-// Same SVG icons as DashboardSidebar
+// ── Icons ────────────────────────────────────────────────────────────
+// Sidebar toggle icon — rounded rect split vertically (panel-left symbol)
+function SidebarToggleIcon({ size = 15, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.75" y="0.75" width="13.5" height="13.5" rx="1.5" stroke={color} strokeWidth="1.2" />
+      <path d="M5.25 0.75V14.25" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// ── SidebarHeader ─────────────────────────────────────────────────────────────
+// Expanded: [✦] [title] ·· [New Chat] [toggle]
+// Collapsed: [✦] — hover crossfades to expand toggle
+
+function SidebarHeader({ collapsed, onToggle, title, onNewChat }) {
+  const [iconHov, setIconHov] = useState(false);
+  const [btnHov,  setBtnHov]  = useState(false);
+
+  return (
+    <div style={{
+      display: "flex", alignItems: "center",
+      padding: "10px",
+      borderBottom: "1px solid rgba(255,255,255,0.05)",
+      minHeight: 52, gap: 6,
+    }}>
+      {/* Icon: clickable toggle when collapsed, plain mark when expanded */}
+      {collapsed ? (
+        <button
+          onClick={onToggle}
+          onMouseEnter={() => setIconHov(true)}
+          onMouseLeave={() => setIconHov(false)}
+          title="Expand sidebar"
+          style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}
+        >
+          <div style={{ position: "relative", width: 28, height: 28 }}>
+            <div style={{
+              position: "absolute", inset: 0, borderRadius: 7,
+              background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 13, color: "#fff", fontWeight: 700,
+              opacity: iconHov ? 0 : 1, transition: "opacity 180ms ease",
+            }}>✦</div>
+            <div style={{
+              position: "absolute", inset: 0,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "rgba(228,228,231,0.9)",
+              opacity: iconHov ? 1 : 0, transition: "opacity 180ms ease",
+              pointerEvents: "none",
+            }}>
+              <SidebarToggleIcon size={15} color="rgba(228,228,231,0.9)" />
+            </div>
+          </div>
+        </button>
+      ) : (
+        <div style={{
+          width: 28, height: 28, borderRadius: 7, flexShrink: 0,
+          background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 13, color: "#fff", fontWeight: 700,
+        }}>✦</div>
+      )}
+
+      {/* Title */}
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.span
+            key="title"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            style={{ fontSize: 13, fontWeight: 700, color: "#f4f4f5", whiteSpace: "nowrap", flex: 1 }}
+          >{title}</motion.span>
+        )}
+      </AnimatePresence>
+
+      {/* Right controls: New Chat + collapse toggle */}
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.div
+            key="right-ctrls"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}
+          >
+            {onNewChat && (
+              <button
+                onClick={onNewChat}
+                style={{
+                  display: "flex", alignItems: "center", gap: 3,
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  padding: "2px 8px", borderRadius: 5,
+                  background: "transparent", color: "#a1a1aa",
+                  fontSize: 9, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)"}
+                onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"}
+              >
+                <PlusIcon /> New Chat
+              </button>
+            )}
+            <button
+              onClick={onToggle}
+              onMouseEnter={() => setBtnHov(true)}
+              onMouseLeave={() => setBtnHov(false)}
+              title="Collapse sidebar"
+              style={{
+                background: "transparent", border: "none", cursor: "pointer",
+                padding: 4, display: "flex", alignItems: "center", justifyContent: "center",
+                opacity: btnHov ? 1 : 0.45,
+                filter: btnHov ? "drop-shadow(0 0 3px rgba(228,228,231,0.22))" : "none",
+                transition: "opacity 200ms ease, filter 200ms ease",
+                color: "rgba(228,228,231,0.9)",
+              }}
+            >
+              <SidebarToggleIcon size={15} color="rgba(228,228,231,0.9)" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function GridIcon({ size = 16, color = "currentColor" }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>;
 }
 function ChatIcon({ size = 16, color = "currentColor" }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>;
 }
-
 function PlusIcon() {
   return <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>;
 }
@@ -21,9 +143,25 @@ function ChevronIcon({ open }) {
   return <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} style={{ transform: open ? "rotate(0deg)" : "rotate(-90deg)", transition: "transform 150ms" }}><polyline points="6 9 12 15 18 9"/></svg>;
 }
 
+// ── Minimal spinner — appears only next to the item being saved ──────
+function Spinner() {
+  return (
+    <>
+      <style>{`@keyframes amn-sidebar-spin { to { transform: rotate(360deg); } }`}</style>
+      <div style={{
+        width: 10, height: 10, borderRadius: "50%",
+        border: "1.5px solid rgba(255,255,255,0.08)",
+        borderTopColor: "#22D3EE",
+        animation: "amn-sidebar-spin 0.7s linear infinite",
+        flexShrink: 0,
+      }} />
+    </>
+  );
+}
+
 const NAV_ITEMS = [
-  { icon: GridIcon, label: "Dashboard", href: "/dashboard"  },
-  { icon: ChatIcon, label: "Ask AI",    href: "/ask-ai"     },
+  { icon: GridIcon, label: "Dashboard", href: "/dashboard" },
+  { icon: ChatIcon, label: "Ask AI",    href: "/ask-ai"    },
 ];
 
 function Tooltip({ label }) {
@@ -50,6 +188,362 @@ function timeAgo(dateStr) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
+// Convert localStorage Chat to the shape ConversationItem expects
+function chatToConv(chat) {
+  return {
+    id:         chat.id,
+    title:      chat.title || "New Chat",
+    updated_at: new Date(chat.updatedAt || Date.now()).toISOString(),
+  };
+}
+
+// ── Inline SVG icons ──────────────────────────────────────────────────
+function PencilIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      style={{ flexShrink: 0, opacity: 0.85 }}>
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+  );
+}
+function TrashIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      style={{ flexShrink: 0, opacity: 0.85 }}>
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+    </svg>
+  );
+}
+
+// ── Conversation menu item ────────────────────────────────────────────
+function MenuItem({ label, danger, icon, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
+      style={{
+        display: "flex", alignItems: "center", gap: 8,
+        width: "100%", textAlign: "left",
+        padding: "5px 10px", borderRadius: 4, border: "none",
+        cursor: "pointer", fontSize: 9,
+        color: danger ? (hovered ? "#fca5a5" : "#f87171") : (hovered ? "#e4e4e7" : "#a1a1aa"),
+        background: hovered
+          ? (danger ? "rgba(239,68,68,0.12)" : "rgba(255,255,255,0.06)")
+          : "transparent",
+        transition: "background 100ms, color 100ms",
+      }}
+    >
+      {icon}
+      {label}
+    </button>
+  );
+}
+
+// ── Conversation list item with hover-reveal ellipsis menu ────────────
+function ConversationItem({
+  conv, isActive,
+  menuOpenId, setMenuOpenId,
+  renamingId, setRenamingId, renameValue, setRenameValue,
+  onSelect, onRename, onDelete,
+}) {
+  const [hovered, setHovered]   = useState(false);
+  const [menuPos, setMenuPos]   = useState({ bottom: 0, right: 0 });
+  const renameInputRef          = useRef(null);
+  const triggerRef              = useRef(null);
+  const isMenuOpen              = menuOpenId === conv.id;
+  const isRenaming              = renamingId === conv.id;
+
+  // Auto-focus the rename input when it mounts
+  useEffect(() => {
+    if (isRenaming) {
+      const t = setTimeout(() => renameInputRef.current?.focus(), 30);
+      return () => clearTimeout(t);
+    }
+  }, [isRenaming]);
+
+  return (
+    <div
+      style={{ position: "relative" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {isRenaming ? (
+        /* Inline rename input */
+        <div style={{ padding: "2px 4px 2px 6px" }}>
+          <input
+            ref={renameInputRef}
+            value={renameValue}
+            onChange={e => setRenameValue(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === "Enter")  { e.preventDefault(); onRename(conv.id); }
+              if (e.key === "Escape") setRenamingId(null);
+            }}
+            onBlur={() => onRename(conv.id)}
+            style={{
+              width: "100%", boxSizing: "border-box",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(139,92,246,0.4)",
+              borderRadius: 4, padding: "3px 6px",
+              fontSize: 9, color: "#e4e4e7", outline: "none",
+              fontFamily: "inherit",
+            }}
+          />
+        </div>
+      ) : (
+        /* Normal row */
+        <button
+          onClick={() => onSelect(conv.id)}
+          style={{
+            display: "flex", alignItems: "center",
+            width: "100%", textAlign: "left",
+            padding: "4px 10px", paddingRight: (hovered || isMenuOpen) ? 28 : 10,
+            borderRadius: 4, margin: "2px 0",
+            background: isActive ? "rgba(139,92,246,0.05)" : "transparent",
+            borderWidth: 0, borderStyle: "solid", borderColor: "transparent",
+            borderLeftWidth: 2, borderLeftStyle: "solid",
+            borderLeftColor: isActive ? "#8B5CF6" : "transparent",
+            cursor: "pointer",
+          }}
+        >
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{
+              margin: 0, fontSize: 9,
+              color: isActive ? "#a1a1aa" : "#52525b",
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            }}>{conv.title || "Untitled"}</p>
+            <p style={{ margin: 0, fontSize: 8, color: "#27272a" }}>{timeAgo(conv.updated_at)}</p>
+          </div>
+        </button>
+      )}
+
+      {/* Ellipsis trigger — visible on hover or while menu is open */}
+      {!isRenaming && (hovered || isMenuOpen) && (
+        <button
+          ref={triggerRef}
+          className="amn-menu-trigger"
+          onClick={e => {
+            e.stopPropagation();
+            if (!isMenuOpen) {
+              const rect = triggerRef.current?.getBoundingClientRect();
+              if (rect) setMenuPos({ bottom: window.innerHeight - rect.top + 4, right: window.innerWidth - rect.right });
+            }
+            setMenuOpenId(isMenuOpen ? null : conv.id);
+          }}
+          style={{
+            position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
+            width: 18, height: 18, padding: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: isMenuOpen ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)",
+            border: "none", borderRadius: 3, cursor: "pointer",
+            color: "#71717a", fontSize: 14, letterSpacing: 1,
+            lineHeight: 1,
+          }}
+        >···</button>
+      )}
+
+      {/* Floating menu — fixed so it escapes overflow:hidden parents */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            className="amn-menu-popup"
+            initial={{ opacity: 0, scale: 0.92, y: -4 }}
+            animate={{ opacity: 1, scale: 1,    y: 0  }}
+            exit={{    opacity: 0, scale: 0.92, y: -4 }}
+            transition={{ duration: 0.1 }}
+            style={{
+              position: "fixed", bottom: menuPos.bottom, right: menuPos.right,
+              background: "#1A1A1A",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 6, zIndex: 9999,
+              minWidth: 120, padding: 4,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+            }}
+          >
+            <MenuItem
+              label="Rename"
+              icon={<PencilIcon />}
+              onClick={() => {
+                setMenuOpenId(null);
+                setRenamingId(conv.id);
+                setRenameValue(conv.title || "");
+              }}
+            />
+            <MenuItem
+              label="Delete"
+              icon={<TrashIcon />}
+              danger
+              onClick={() => {
+                setMenuOpenId(null);
+                onDelete(conv.id);
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ── PDF list item with hover-reveal ellipsis menu ────────────────────
+function PdfListItem({
+  pdf, isActive,
+  pdfMenuOpenId, setPdfMenuOpenId,
+  pdfRenamingId, setPdfRenamingId, pdfRenameValue, setPdfRenameValue,
+  onSelect, onRename, onDelete,
+}) {
+  const [hovered, setHovered] = useState(false);
+  const [menuPos, setMenuPos] = useState({ bottom: 0, right: 0 });
+  const renameInputRef        = useRef(null);
+  const triggerRef            = useRef(null);
+  const isMenuOpen            = pdfMenuOpenId === pdf.id;
+  const isRenaming            = pdfRenamingId === pdf.id;
+
+  useEffect(() => {
+    if (isRenaming) {
+      const t = setTimeout(() => renameInputRef.current?.focus(), 30);
+      return () => clearTimeout(t);
+    }
+  }, [isRenaming]);
+
+  if (pdf._saving) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 6px", opacity: 0.7 }}>
+        <span style={{ fontSize: 10, flexShrink: 0 }}>📄</span>
+        <span style={{ fontSize: 9, color: "#52525b", flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pdf.name}</span>
+        <Spinner />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{ position: "relative" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {isRenaming ? (
+        <div style={{ padding: "2px 4px 2px 6px" }}>
+          <input
+            ref={renameInputRef}
+            value={pdfRenameValue}
+            onChange={e => setPdfRenameValue(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === "Enter")  { e.preventDefault(); onRename(pdf.id); }
+              if (e.key === "Escape") setPdfRenamingId(null);
+            }}
+            onBlur={() => onRename(pdf.id)}
+            style={{
+              width: "100%", boxSizing: "border-box",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(34,211,238,0.4)",
+              borderRadius: 4, padding: "3px 6px",
+              fontSize: 9, color: "#e4e4e7", outline: "none",
+              fontFamily: "inherit",
+            }}
+          />
+        </div>
+      ) : (
+        <button
+          onClick={() => onSelect(pdf)}
+          style={{
+            display: "flex", alignItems: "center", gap: 6,
+            width: "100%", textAlign: "left",
+            padding: "4px 6px", paddingRight: (hovered || isMenuOpen) ? 28 : 6,
+            borderRadius: 4, margin: "2px 0",
+            background: isActive ? "rgba(34,211,238,0.05)" : "transparent",
+            border: "none", cursor: "pointer",
+          }}
+        >
+          <span style={{ fontSize: 10, flexShrink: 0 }}>📄</span>
+          <span style={{
+            fontSize: 9,
+            color: isActive ? "#22D3EE" : "#52525b",
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1,
+          }}>{pdf.name}</span>
+          {isActive && (
+            <span style={{
+              fontSize: 8, color: "#22D3EE",
+              background: "rgba(34,211,238,0.08)",
+              border: "1px solid rgba(34,211,238,0.2)",
+              borderRadius: 3, padding: "1px 4px", flexShrink: 0,
+            }}>Active</span>
+          )}
+        </button>
+      )}
+
+      {/* Ellipsis trigger */}
+      {!isRenaming && !pdf._saving && (hovered || isMenuOpen) && (
+        <button
+          ref={triggerRef}
+          className="amn-menu-trigger"
+          onClick={e => {
+            e.stopPropagation();
+            if (!isMenuOpen) {
+              const rect = triggerRef.current?.getBoundingClientRect();
+              if (rect) setMenuPos({ bottom: window.innerHeight - rect.top + 4, right: window.innerWidth - rect.right });
+            }
+            setPdfMenuOpenId(isMenuOpen ? null : pdf.id);
+          }}
+          style={{
+            position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
+            width: 18, height: 18, padding: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: isMenuOpen ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)",
+            border: "none", borderRadius: 3, cursor: "pointer",
+            color: "#71717a", fontSize: 14, letterSpacing: 1, lineHeight: 1,
+          }}
+        >···</button>
+      )}
+
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            className="amn-menu-popup"
+            initial={{ opacity: 0, scale: 0.92, y: -4 }}
+            animate={{ opacity: 1, scale: 1,    y: 0  }}
+            exit={{    opacity: 0, scale: 0.92, y: -4 }}
+            transition={{ duration: 0.1 }}
+            style={{
+              position: "fixed", bottom: menuPos.bottom, right: menuPos.right,
+              background: "#1A1A1A",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 6, zIndex: 9999,
+              minWidth: 120, padding: 4,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+            }}
+          >
+            <MenuItem
+              label="Rename"
+              icon={<PencilIcon />}
+              onClick={() => {
+                setPdfMenuOpenId(null);
+                setPdfRenamingId(pdf.id);
+                setPdfRenameValue(pdf.name || "");
+              }}
+            />
+            <MenuItem
+              label="Delete"
+              icon={<TrashIcon />}
+              danger
+              onClick={() => {
+                setPdfMenuOpenId(null);
+                onDelete(pdf.id);
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+
 export default function AskAISidebar({
   userId,
   activeConversationId,
@@ -60,44 +554,157 @@ export default function AskAISidebar({
 }) {
   const router   = useRouter();
   const pathname = usePathname();
-  const { sidebarCollapsed, toggleSidebar, handleUpload, uploadStage } = useDashboard();
+  const { sidebarCollapsed, toggleSidebar } = useDashboard();
   const uploadInputRef = useRef(null);
 
-  const [hoveredItem, setHoveredItem] = useState(null);
+  const [hoveredItem, setHoveredItem]     = useState(null);
   const [showTooltipFor, setShowTooltipFor] = useState(null);
   const [conversations, setConversations] = useState([]);
-  const [pdfs, setPdfs] = useState([]);
-  const [chatsOpen, setChatsOpen] = useState(true);
-  const [pdfsOpen, setPdfsOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  // pdfs: [{ id, name, is_active?, _saving?, _file? }]
+  // _saving: true while being stored to server
+  // _file:   File object retained for lazy parse (cleared after first parse trigger)
+  const [pdfs, setPdfs]           = useState([]);
+  const [chatsOpen, setChatsOpen] = useState(false);
+  const [pdfsOpen, setPdfsOpen]   = useState(false);
+  const [isMobile, setIsMobile]   = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
+  const [hydrated, setHydrated]   = useState(false);
 
+  // ── Conversation ellipsis menu state ────────────────────────────
+  const [menuOpenId,   setMenuOpenId]   = useState(null);
+  const [renamingId,   setRenamingId]   = useState(null);
+  const [renameValue,  setRenameValue]  = useState("");
+
+  // ── PDF ellipsis menu state ──────────────────────────────────────
+  const [pdfMenuOpenId,  setPdfMenuOpenId]  = useState(null);
+  const [pdfRenamingId,  setPdfRenamingId]  = useState(null);
+  const [pdfRenameValue, setPdfRenameValue] = useState("");
+
+  // ── Hydration + mobile detection ────────────────────────────────
   useEffect(() => {
     setHydrated(true);
+    // Load conversations from localStorage now that we're on the client
+    try { setConversations(loadAllChats().map(chatToConv)); } catch {}
     function check() { setIsMobile(window.innerWidth < 768); }
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Tooltip delay (collapsed, desktop only)
+  // ── Tooltip delay (collapsed desktop only) ──────────────────────
   useEffect(() => {
     if (!hoveredItem || !sidebarCollapsed) { setShowTooltipFor(null); return; }
     const t = setTimeout(() => setShowTooltipFor(hoveredItem), 200);
     return () => clearTimeout(t);
   }, [hoveredItem, sidebarCollapsed]);
 
-  // Fetch recent conversations
+  // ── Close any open menu on outside click or Escape ──────────────
   useEffect(() => {
-    if (!userId) return;
-    fetch(`/api/conversations?user_id=${userId}`)
-      .then(r => r.json())
-      .then(data => setConversations(Array.isArray(data) ? data : []))
-      .catch(() => {});
-  }, [userId]);
+    const anyOpen = menuOpenId || pdfMenuOpenId;
+    if (!anyOpen) return;
+    function onMouseDown(e) {
+      if (!e.target.closest(".amn-menu-popup") && !e.target.closest(".amn-menu-trigger")) {
+        setMenuOpenId(null);
+        setPdfMenuOpenId(null);
+      }
+    }
+    function onKeyDown(e) {
+      if (e.key === "Escape") {
+        setMenuOpenId(null);    setRenamingId(null);
+        setPdfMenuOpenId(null); setPdfRenamingId(null);
+      }
+    }
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown",   onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown",   onKeyDown);
+    };
+  }, [menuOpenId, pdfMenuOpenId]);
 
-  // Fetch user PDFs
+  // Close rename inputs on Escape when no menu is open
+  useEffect(() => {
+    if (!renamingId && !pdfRenamingId) return;
+    function onKeyDown(e) {
+      if (e.key === "Escape") { setRenamingId(null); setPdfRenamingId(null); }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [renamingId, pdfRenamingId]);
+
+  // ── Rename handler ────────────────────────────────────────────────
+  async function handleRename(convId) {
+    const trimmed = renameValue.trim();
+    setRenamingId(null);
+    if (!trimmed) return;
+    renameChat(convId, trimmed); // updates localStorage + fires askmynotes:chats-updated
+    try {
+      await fetch(`/api/conversations/${convId}`, {
+        method:  "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ title: trimmed, user_id: userId }),
+      });
+    } catch {}
+  }
+
+  // ── Delete handler ────────────────────────────────────────────────
+  async function handleDelete(convId) {
+    deleteChat(convId); // updates localStorage + fires askmynotes:chats-updated
+    if (activeConversationId === convId) onNewChat?.();
+    try {
+      await fetch(`/api/conversations/${convId}?user_id=${encodeURIComponent(userId)}`, {
+        method: "DELETE",
+      });
+    } catch {}
+  }
+
+  // ── PDF rename handler ────────────────────────────────────────────
+  async function handlePdfRename(pdfId) {
+    const trimmed = pdfRenameValue.trim();
+    setPdfRenamingId(null);
+    if (!trimmed) return;
+    setPdfs(prev => prev.map(p => p.id === pdfId ? { ...p, name: trimmed } : p));
+    try {
+      await fetch("/api/user-pdfs", {
+        method:  "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ id: pdfId, name: trimmed, user_id: userId }),
+      });
+    } catch {}
+  }
+
+  // ── PDF delete handler ────────────────────────────────────────────
+  async function handlePdfDelete(pdfId) {
+    setPdfs(prev => prev.filter(p => p.id !== pdfId));
+    if (activePdf?.id === pdfId) onSelectPdf?.(null);
+    try {
+      await fetch(`/api/delete-pdf?id=${encodeURIComponent(pdfId)}`, { method: "DELETE" });
+    } catch {}
+  }
+
+  // ── Reload conversations from localStorage on any chat update ────
+  useEffect(() => {
+    function onUpdate() {
+      setConversations(loadAllChats().map(chatToConv));
+    }
+    window.addEventListener("askmynotes:chats-updated", onUpdate);
+    return () => window.removeEventListener("askmynotes:chats-updated", onUpdate);
+  }, []);
+
+  // ── Register new conversation immediately in localStorage ────────
+  // Fires when a first message is sent and Supabase creates the thread.
+  // This makes the sidebar show the entry before messages fully settle.
+  useEffect(() => {
+    function onNewConv(e) {
+      const { id, title } = e.detail;
+      registerChat(id, title || "New Chat");
+      // askmynotes:chats-updated fires inside registerChat — no need to setConversations here
+    }
+    window.addEventListener("askmynotes:new-conversation", onNewConv);
+    return () => window.removeEventListener("askmynotes:new-conversation", onNewConv);
+  }, []);
+
+  // ── Fetch user PDFs ──────────────────────────────────────────────
   useEffect(() => {
     if (!userId) return;
     fetch(`/api/user-pdfs?user_id=${userId}`)
@@ -106,15 +713,62 @@ export default function AskAISidebar({
       .catch(() => {});
   }, [userId]);
 
-  // Re-fetch PDFs when upload completes
-  useEffect(() => {
-    if (uploadStage !== "done" || !userId) return;
-    fetch(`/api/user-pdfs?user_id=${userId}`)
-      .then(r => r.json())
-      .then(data => setPdfs(Array.isArray(data) ? data : []))
-      .catch(() => {});
-  }, [uploadStage, userId]);
+  // ── File selected: store metadata only, no parsing ───────────────
+  async function handleFileSelect(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // reset so same file can be re-selected
+    if (!file || !userId) return;
+    if (file.type !== "application/pdf") return;
+    if (file.size > 20 * 1024 * 1024) return;
 
+    const tempId = `tmp_${Date.now()}`;
+
+    // Optimistic: add to top of list with spinner
+    setPdfs(prev => [{ id: tempId, name: file.name, _saving: true }, ...prev]);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("userId", userId);
+
+      const res  = await fetch("/api/store-pdf-only", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Save failed");
+
+      // Replace temp item with real item; retain File object for lazy parsing
+      setPdfs(prev => prev.map(p =>
+        p.id === tempId
+          ? { id: data.id, name: data.name, is_active: false, _file: file }
+          : p
+      ));
+    } catch {
+      // Remove failed item silently
+      setPdfs(prev => prev.filter(p => p.id !== tempId));
+    }
+  }
+
+  // ── PDF clicked: apply active state, then lazily trigger parsing ─
+  function handlePdfClick(pdf) {
+    // Update active state locally for immediate feedback
+    setPdfs(prev => prev.map(p => ({ ...p, is_active: p.id === pdf.id })));
+    onSelectPdf?.(pdf.id);
+
+    // Lazy parse: only if file object is present (newly stored, not yet parsed)
+    if (pdf._file) {
+      fetch("/api/parse-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ documentId: pdf.id, userId }),
+      })
+        .then(() => {
+          // Clear _file reference once parse is dispatched successfully
+          setPdfs(prev => prev.map(p => p.id === pdf.id ? { ...p, _file: undefined } : p));
+        })
+        .catch(() => {}); // Non-fatal — PDF is still usable, parse will retry on next click
+    }
+  }
+
+  // ── Mobile sidebar ───────────────────────────────────────────────
   if (hydrated && isMobile) {
     return (
       <>
@@ -141,6 +795,15 @@ export default function AskAISidebar({
             />
           )}
         </AnimatePresence>
+
+        {/* Hidden file input */}
+        <input
+          ref={uploadInputRef}
+          type="file"
+          accept="application/pdf"
+          style={{ display: "none" }}
+          onChange={handleFileSelect}
+        />
 
         {/* Sidebar overlay */}
         <motion.div
@@ -197,53 +860,54 @@ export default function AskAISidebar({
             })}
           </nav>
 
-          {/* Recent Chats */}
+          {/* Scrollable content */}
           <div style={{ padding: "0 10px", marginTop: 4, flex: 1, overflowY: "auto" }}>
+            {/* Recent chats */}
             <p style={{ fontSize: 9, fontWeight: 700, color: "#3f3f46", textTransform: "uppercase", letterSpacing: "0.05em", padding: "4px 0", margin: 0 }}>Recent</p>
             {conversations.length === 0 && <p style={{ fontSize: 9, color: "#27272a" }}>No conversations yet</p>}
-            {conversations.map(conv => {
-              const isActive = conv.id === activeConversationId;
-              return (
-                <button key={conv.id}
-                  onClick={() => { onSelectConversation?.(conv.id); setMobileOpen(false); }}
-                  style={{
-                    display: "block", width: "100%", textAlign: "left",
-                    padding: "4px 10px", borderRadius: 4, margin: "2px 4px",
-                    background: isActive ? "rgba(139,92,246,0.05)" : "transparent",
-                    borderLeft: isActive ? "2px solid #8B5CF6" : "2px solid transparent",
-                    border: "none", cursor: "pointer",
-                  }}
-                >
-                  <p style={{ margin: 0, fontSize: 9, color: isActive ? "#a1a1aa" : "#52525b",
-                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}>
-                    {conv.title || "Untitled"}
-                  </p>
-                  <p style={{ margin: 0, fontSize: 8, color: "#27272a" }}>{timeAgo(conv.updated_at)}</p>
-                </button>
-              );
-            })}
+            {conversations.map(conv => (
+              <ConversationItem
+                key={conv.id}
+                conv={conv}
+                isActive={conv.id === activeConversationId}
+                menuOpenId={menuOpenId}   setMenuOpenId={setMenuOpenId}
+                renamingId={renamingId}   setRenamingId={setRenamingId}
+                renameValue={renameValue} setRenameValue={setRenameValue}
+                onSelect={id => { onSelectConversation?.(id); setMobileOpen(false); }}
+                onRename={handleRename}
+                onDelete={handleDelete}
+              />
+            ))}
 
-            {/* PDFs */}
-            <p style={{ fontSize: 9, fontWeight: 700, color: "#3f3f46", textTransform: "uppercase", letterSpacing: "0.05em", padding: "4px 0", marginTop: 8 }}>Your PDFs</p>
-            {pdfs.length === 0 && <p style={{ fontSize: 9, color: "#27272a" }}>No PDFs uploaded</p>}
-            {pdfs.map(pdf => {
-              const isActivePdf = pdf.is_active;
-              return (
-                <button key={pdf.id}
-                  onClick={() => { onSelectPdf?.(pdf.id); setMobileOpen(false); }}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 6, width: "100%",
-                    padding: "4px 6px", borderRadius: 4, margin: "2px 0",
-                    background: isActivePdf ? "rgba(34,211,238,0.05)" : "transparent",
-                    border: "none", cursor: "pointer",
-                  }}
-                >
-                  <span style={{ fontSize: 10 }}>📄</span>
-                  <span style={{ fontSize: 9, color: isActivePdf ? "#22D3EE" : "#52525b", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pdf.name}</span>
-                  {isActivePdf && <span style={{ fontSize: 8, color: "#22D3EE", background: "rgba(34,211,238,0.08)", border: "1px solid rgba(34,211,238,0.2)", borderRadius: 3, padding: "1px 4px" }}>Active</span>}
-                </button>
-              );
-            })}
+            {/* Your PDFs */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0", marginTop: 8 }}>
+              <p style={{ fontSize: 9, fontWeight: 700, color: "#3f3f46", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Your PDFs</p>
+              <button
+                onClick={() => uploadInputRef.current?.click()}
+                style={{
+                  display: "flex", alignItems: "center", gap: 3,
+                  background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 4, padding: "2px 6px",
+                  fontSize: 8, fontWeight: 600, color: "#52525b", cursor: "pointer",
+                }}
+              >
+                <PlusIcon /> Save PDF
+              </button>
+            </div>
+            {pdfs.length === 0 && <p style={{ fontSize: 9, color: "#27272a" }}>No PDFs saved</p>}
+            {pdfs.map(pdf => (
+              <PdfListItem
+                key={pdf.id}
+                pdf={pdf}
+                isActive={pdf.is_active || activePdf?.id === pdf.id}
+                pdfMenuOpenId={pdfMenuOpenId}   setPdfMenuOpenId={setPdfMenuOpenId}
+                pdfRenamingId={pdfRenamingId}   setPdfRenamingId={setPdfRenamingId}
+                pdfRenameValue={pdfRenameValue} setPdfRenameValue={setPdfRenameValue}
+                onSelect={p => { handlePdfClick(p); setMobileOpen(false); }}
+                onRename={handlePdfRename}
+                onDelete={handlePdfDelete}
+              />
+            ))}
           </div>
         </motion.div>
       </>
@@ -259,57 +923,46 @@ export default function AskAISidebar({
         height: "100vh", background: "#111111",
         borderRight: "1px solid rgba(255,255,255,0.05)",
         display: "flex", flexDirection: "column",
-        overflow: "hidden", flexShrink: 0,
+        overflow: "visible", flexShrink: 0,
+        position: "sticky", top: 0, alignSelf: "flex-start",
       }}
     >
-      {/* Header row: logo + New Chat pill */}
-      <div style={{
-        display: "flex", alignItems: "center",
-        justifyContent: sidebarCollapsed ? "center" : "space-between",
-        padding: "10px", borderBottom: "1px solid rgba(255,255,255,0.05)",
-        minHeight: 52, gap: 6,
-      }}>
-        {!sidebarCollapsed && (
-          <motion.span
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
-            style={{ fontSize: 13, fontWeight: 700, color: "#f4f4f5", whiteSpace: "nowrap", flex: 1 }}
-          >
-            AskMyNotes
-          </motion.span>
-        )}
-        {!sidebarCollapsed && (
-          <motion.button
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
-            onClick={onNewChat}
-            style={{
-              display: "flex", alignItems: "center", gap: 3,
-              border: "1px solid rgba(255,255,255,0.1)",
-              padding: "2px 8px", borderRadius: 5,
-              background: "transparent", color: "#a1a1aa",
-              fontSize: 9, fontWeight: 600, cursor: "pointer",
-              whiteSpace: "nowrap", flexShrink: 0,
-            }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)"}
-            onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"}
-          >
-            <PlusIcon /> New Chat
-          </motion.button>
-        )}
-        <button
-          onClick={toggleSidebar}
-          style={{ background: "transparent", border: "none", color: "#52525b", cursor: "pointer", fontSize: 14, flexShrink: 0 }}
-        >
-          {sidebarCollapsed ? "›" : "‹"}
-        </button>
-      </div>
+      {/* Inner wrapper — clips content during collapse animation */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      {/* Hidden file input */}
+      <input
+        ref={uploadInputRef}
+        type="file"
+        accept="application/pdf"
+        style={{ display: "none" }}
+        onChange={handleFileSelect}
+      />
+
+      <SidebarHeader
+        collapsed={sidebarCollapsed}
+        onToggle={toggleSidebar}
+        title="AskMyNotes"
+        onNewChat={onNewChat}
+      />
 
       {/* Page nav */}
       <nav style={{ padding: "10px 0", display: "flex", flexDirection: "column", gap: 4 }}>
         {NAV_ITEMS.map(({ icon: Icon, label, href }) => {
           const isActive = pathname === href || pathname.startsWith(href + "/");
           const hasCyanDot = href === "/my-pdfs" && activePdf;
+          const isHovered = hoveredItem === href;
+          const navBg = isActive && isHovered
+            ? "rgba(139,92,246,0.18)"
+            : isActive
+              ? "rgba(139,92,246,0.12)"
+              : isHovered
+                ? "rgba(255,255,255,0.05)"
+                : "transparent";
+          const navShadow = isActive && isHovered
+            ? "0 0 0 1px rgba(139,92,246,0.22), 0 2px 16px rgba(139,92,246,0.10), inset 0 0 16px rgba(139,92,246,0.06)"
+            : !isActive && isHovered
+              ? "0 0 0 1px rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.12), inset 0 0 12px rgba(34,211,238,0.03)"
+              : "none";
           return (
             <div key={href} style={{ position: "relative" }}
               onMouseEnter={() => setHoveredItem(href)}
@@ -322,10 +975,15 @@ export default function AskAISidebar({
                   width: sidebarCollapsed ? 44 : "calc(100% - 12px)",
                   padding: sidebarCollapsed ? "8px 0" : "8px 10px",
                   justifyContent: sidebarCollapsed ? "center" : "flex-start",
-                  background: isActive ? "rgba(139,92,246,0.12)" : "transparent",
+                  background: navBg,
+                  backdropFilter: isHovered ? "blur(8px)" : "blur(0px)",
+                  WebkitBackdropFilter: isHovered ? "blur(8px)" : "blur(0px)",
+                  boxShadow: navShadow,
+                  transform: isHovered ? "scale(1.01)" : "scale(1)",
                   border: "none", borderRadius: 6, cursor: "pointer",
-                  color: isActive ? "#a78bfa" : "#52525b",
-                  transition: "background 150ms", margin: "0 6px",
+                  color: isActive ? "#a78bfa" : isHovered ? "#a1a1aa" : "#52525b",
+                  transition: "background 250ms ease-out, box-shadow 250ms ease-out, transform 200ms ease-out, color 200ms ease-out",
+                  margin: "0 6px",
                 }}
               >
                 <span style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
@@ -361,7 +1019,6 @@ export default function AskAISidebar({
             exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
             style={{ padding: "0 10px", marginTop: 4 }}
           >
-            {/* Section header */}
             <button
               onClick={() => setChatsOpen(o => !o)}
               style={{
@@ -386,28 +1043,19 @@ export default function AskAISidebar({
                   {conversations.length === 0 && (
                     <p style={{ fontSize: 9, color: "#27272a", padding: "4px 0" }}>No conversations yet</p>
                   )}
-                  {conversations.map(conv => {
-                    const isActive = conv.id === activeConversationId;
-                    return (
-                      <button
-                        key={conv.id}
-                        onClick={() => onSelectConversation?.(conv.id)}
-                        style={{
-                          display: "block", width: "100%", textAlign: "left",
-                          padding: "4px 10px", borderRadius: 4, margin: "2px 4px",
-                          background: isActive ? "rgba(139,92,246,0.05)" : "transparent",
-                          borderLeft: isActive ? "2px solid #8B5CF6" : "2px solid transparent",
-                          border: "none", cursor: "pointer",
-                        }}
-                      >
-                        <p style={{ margin: 0, fontSize: 9, color: isActive ? "#a1a1aa" : "#52525b",
-                          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 160 }}>
-                          {conv.title || "Untitled"}
-                        </p>
-                        <p style={{ margin: 0, fontSize: 8, color: "#27272a" }}>{timeAgo(conv.updated_at)}</p>
-                      </button>
-                    );
-                  })}
+                  {conversations.map(conv => (
+                    <ConversationItem
+                      key={conv.id}
+                      conv={conv}
+                      isActive={conv.id === activeConversationId}
+                      menuOpenId={menuOpenId}   setMenuOpenId={setMenuOpenId}
+                      renamingId={renamingId}   setRenamingId={setRenamingId}
+                      renameValue={renameValue} setRenameValue={setRenameValue}
+                      onSelect={id => onSelectConversation?.(id)}
+                      onRename={handleRename}
+                      onDelete={handleDelete}
+                    />
+                  ))}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -421,20 +1069,9 @@ export default function AskAISidebar({
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
-            style={{ padding: "0 10px", marginTop: 8, flex: 1 }}
+            style={{ padding: "0 10px", marginTop: 8, flex: 1, overflowY: "auto" }}
           >
-            {/* Hidden file input */}
-            <input
-              ref={uploadInputRef}
-              type="file"
-              accept="application/pdf"
-              style={{ display: "none" }}
-              onChange={(e) => {
-                const f = e.target.files[0];
-                if (f) { handleUpload(f); e.target.value = ""; }
-              }}
-            />
-
+            {/* Section header */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0" }}>
               <button
                 onClick={() => setPdfsOpen(o => !o)}
@@ -450,20 +1087,17 @@ export default function AskAISidebar({
 
               <button
                 onClick={() => uploadInputRef.current?.click()}
-                disabled={uploadStage === "uploading" || uploadStage === "processing"}
                 style={{
                   display: "flex", alignItems: "center", gap: 3,
                   background: "transparent",
                   border: "1px solid rgba(255,255,255,0.1)",
                   borderRadius: 4, padding: "2px 6px",
                   fontSize: 8, fontWeight: 600, color: "#52525b",
-                  cursor: uploadStage === "uploading" || uploadStage === "processing" ? "not-allowed" : "pointer",
-                  opacity: uploadStage === "uploading" || uploadStage === "processing" ? 0.4 : 1,
+                  cursor: "pointer",
                   transition: "border-color 0.15s, color 0.15s",
                   whiteSpace: "nowrap",
                 }}
                 onMouseEnter={e => {
-                  if (uploadStage === "uploading" || uploadStage === "processing") return;
                   e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)";
                   e.currentTarget.style.color = "#a78bfa";
                 }}
@@ -471,9 +1105,9 @@ export default function AskAISidebar({
                   e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
                   e.currentTarget.style.color = "#52525b";
                 }}
-                title="Upload a PDF"
+                title="Save a PDF"
               >
-                {uploadStage === "uploading" || uploadStage === "processing" ? "Saving…" : "+ Save PDF"}
+                + Save PDF
               </button>
             </div>
 
@@ -487,44 +1121,29 @@ export default function AskAISidebar({
                   style={{ overflow: "hidden" }}
                 >
                   {pdfs.length === 0 && (
-                    <p style={{ fontSize: 9, color: "#27272a", padding: "4px 0" }}>No PDFs uploaded</p>
+                    <p style={{ fontSize: 9, color: "#27272a", padding: "4px 0" }}>No PDFs saved</p>
                   )}
-                  {pdfs.map(pdf => {
-                    const isActivePdf = pdf.is_active;
-                    return (
-                      <button
-                        key={pdf.id}
-                        onClick={() => onSelectPdf?.(pdf.id)}
-                        style={{
-                          display: "flex", alignItems: "center", gap: 6,
-                          width: "100%", textAlign: "left",
-                          padding: "4px 6px", borderRadius: 4, margin: "2px 0",
-                          background: isActivePdf ? "rgba(34,211,238,0.05)" : "transparent",
-                          border: "none", cursor: "pointer",
-                        }}
-                      >
-                        <span style={{ fontSize: 10 }}>📄</span>
-                        <span style={{
-                          fontSize: 9, color: isActivePdf ? "#22D3EE" : "#52525b",
-                          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1,
-                        }}>{pdf.name}</span>
-                        {isActivePdf && (
-                          <span style={{
-                            fontSize: 8, color: "#22D3EE",
-                            background: "rgba(34,211,238,0.08)",
-                            border: "1px solid rgba(34,211,238,0.2)",
-                            borderRadius: 3, padding: "1px 4px", flexShrink: 0,
-                          }}>Active</span>
-                        )}
-                      </button>
-                    );
-                  })}
+                  {pdfs.map(pdf => (
+                    <PdfListItem
+                      key={pdf.id}
+                      pdf={pdf}
+                      isActive={pdf.is_active || activePdf?.id === pdf.id}
+                      pdfMenuOpenId={pdfMenuOpenId}   setPdfMenuOpenId={setPdfMenuOpenId}
+                      pdfRenamingId={pdfRenamingId}   setPdfRenamingId={setPdfRenamingId}
+                      pdfRenameValue={pdfRenameValue} setPdfRenameValue={setPdfRenameValue}
+                      onSelect={handlePdfClick}
+                      onRename={handlePdfRename}
+                      onDelete={handlePdfDelete}
+                    />
+                  ))}
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
+      </div>{/* end inner wrapper */}
+
     </motion.aside>
   );
 }

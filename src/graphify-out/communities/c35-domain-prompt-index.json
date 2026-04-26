@@ -1,0 +1,36 @@
+{
+  "community": 35,
+  "name": "domain-prompt-index",
+  "nodes": [
+    {
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\types\\index.ts",
+      "source_location": "L1",
+      "id": "index",
+      "community": 35
+    },
+    {
+      "label": "getDomainPrompt()",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\index.js",
+      "source_location": "L29",
+      "id": "index_getdomainprompt",
+      "community": 35
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\prompts\\domains\\index.js",
+      "source_location": "L29",
+      "weight": 1,
+      "_src": "index",
+      "_tgt": "index_getdomainprompt",
+      "source": "index",
+      "target": "index_getdomainprompt",
+      "confidence_score": 1
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "community": 33,
+  "name": "export-intent-detection",
+  "nodes": [
+    {
+      "label": "detectExportIntent.js",
+      "file_type": "code",
+      "source_file": "lib\\detectExportIntent.js",
+      "source_location": "L1",
+      "id": "detectexportintent",
+      "community": 33
+    },
+    {
+      "label": "detectExportIntent()",
+      "file_type": "code",
+      "source_file": "lib\\detectExportIntent.js",
+      "source_location": "L1",
+      "id": "detectexportintent_detectexportintent",
+      "community": 33
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\detectExportIntent.js",
+      "source_location": "L1",
+      "weight": 1,
+      "_src": "detectexportintent",
+      "_tgt": "detectexportintent_detectexportintent",
+      "source": "detectexportintent",
+      "target": "detectexportintent_detectexportintent",
+      "confidence_score": 1
+    }
+  ]
+}

@@ -1,0 +1,299 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0A0A0A; font-family: -apple-system, 'Inter', sans-serif; color: #e4e4e7; }
+  .page { padding: 24px; max-width: 960px; margin: 0 auto; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #f4f4f5; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 24px; }
+  .section-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 700; color: #c4b5fd; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 20px; }
+  .divider { height: 1px; background: rgba(255,255,255,0.05); margin: 24px 0; }
+  .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #52525b; margin-bottom: 14px; }
+
+  /* ── BUTTONS ── */
+  .btn-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; }
+  .btn-primary { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #fff; padding: 9px 18px; box-shadow: 0 0 16px rgba(139,92,246,0.35); }
+  .btn-primary:hover { box-shadow: 0 0 24px rgba(139,92,246,0.5); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: #a1a1aa; padding: 8px 16px; border: 1px solid rgba(255,255,255,0.12); }
+  .btn-ghost:hover { border-color: rgba(139,92,246,0.4); color: #c4b5fd; transform: translateY(-1px); }
+  .btn-compact { background: transparent; color: #a1a1aa; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 10px; }
+  .btn-compact:hover { border-color: rgba(255,255,255,0.2); color: #e4e4e7; }
+  .btn-compact svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 2; fill: none; }
+  .btn svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+  .btn-spec { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 24px; }
+  .btn-spec-card { background: #111; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; }
+  .btn-spec-title { font-size: 10px; font-weight: 700; color: #a1a1aa; margin-bottom: 8px; }
+  .btn-spec-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .btn-spec-row .k { font-size: 9px; color: #52525b; }
+  .btn-spec-row .v { font-size: 9px; color: #71717a; text-align: right; }
+  .chip { display: inline-block; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: 4px; padding: 1px 5px; font-size: 8px; color: #c4b5fd; font-family: monospace; }
+  .chip.c { background: rgba(34,211,238,0.08); border-color: rgba(34,211,238,0.2); color: #67e8f9; }
+  .chip.g { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); color: #86efac; }
+
+  /* ── CARDS ── */
+  .cards-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
+  .card { border-radius: 12px; padding: 16px; position: relative; overflow: hidden; }
+  .card-base { background: #111111; border: 1px solid rgba(255,255,255,0.06); }
+  .card-hero { background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(109,40,217,0.04)); border: 1px solid rgba(139,92,246,0.22); }
+  .card-hero::before { content: ''; position: absolute; inset: 0; border-left: 2px solid rgba(34,211,238,0.35); border-radius: 12px; box-shadow: inset 0 0 30px rgba(34,211,238,0.04); pointer-events: none; }
+  .card-ai { background: #111111; border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(34,211,238,0.3); box-shadow: 0 0 16px rgba(34,211,238,0.08); }
+  .card-title { font-size: 12px; font-weight: 700; color: #f4f4f5; margin-bottom: 4px; }
+  .card-sub { font-size: 10px; color: #71717a; line-height: 1.5; }
+  .card-tag { display: inline-block; font-size: 8px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 10px; margin-bottom: 8px; }
+  .tag-base { background: rgba(255,255,255,0.05); color: #52525b; }
+  .tag-hero { background: rgba(139,92,246,0.12); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.2); }
+  .tag-ai { background: rgba(34,211,238,0.08); color: #67e8f9; border: 1px solid rgba(34,211,238,0.2); }
+
+  /* ── COLOURS ── */
+  .color-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 24px; }
+  .swatch { border-radius: 9px; overflow: hidden; }
+  .swatch-color { height: 52px; }
+  .swatch-info { background: #111; border: 1px solid rgba(255,255,255,0.06); border-top: none; padding: 8px 10px; border-radius: 0 0 9px 9px; }
+  .swatch-name { font-size: 10px; font-weight: 600; color: #a1a1aa; }
+  .swatch-hex { font-size: 9px; color: #52525b; font-family: monospace; }
+  .swatch-use { font-size: 9px; color: #3f3f46; margin-top: 2px; line-height: 1.4; }
+
+  /* ── MASTERY GRADIENT ── */
+  .mastery-row { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+  .mastery-label { font-size: 9px; color: #52525b; white-space: nowrap; }
+  .mastery-track { flex: 1; height: 10px; border-radius: 5px; background: linear-gradient(to right, #27272a 0%, #27272a 25%, #92400e 40%, #F59E0B 60%, #22C55E 100%); }
+  .mastery-ticks { display: flex; justify-content: space-between; flex: 1; }
+  .mastery-tick { font-size: 8px; color: #52525b; }
+
+  /* ── ANIMATIONS ── */
+  .anim-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
+  .anim-card { background: #111; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 12px; }
+  .anim-card-title { font-size: 10px; font-weight: 700; color: #a1a1aa; margin-bottom: 8px; }
+  .anim-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .anim-k { font-size: 9px; color: #52525b; }
+  .anim-v { font-size: 9px; color: #71717a; }
+
+  /* ── SPACING ── */
+  .spacing-row { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 24px; }
+  .spacing-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .spacing-block { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.2); border-radius: 3px; width: 100%; }
+  .spacing-val { font-size: 9px; color: #71717a; font-family: monospace; }
+  .spacing-use { font-size: 8px; color: #3f3f46; text-align: center; max-width: 60px; }
+
+  /* ── TYPOGRAPHY ── */
+  .type-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .type-row { display: flex; align-items: baseline; gap: 16px; padding: 8px 12px; background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: 7px; }
+  .type-sample { color: #f4f4f5; }
+  .type-meta { font-size: 9px; color: #52525b; font-family: monospace; margin-left: auto; white-space: nowrap; }
+
+  .approval-box { margin-top: 24px; padding: 14px 16px; background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.18); border-radius: 10px; font-size: 11px; color: #a1a1aa; line-height: 1.7; }
+  .approval-box strong { color: #c4b5fd; }
+</style>
+
+<div class="page">
+  <div class="section-badge">Section 4 of 4 · Component System</div>
+  <h2>Component System</h2>
+  <p class="subtitle">Buttons, cards, colour application, animations, spacing, and typography — the full visual language.</p>
+
+  <!-- BUTTONS -->
+  <div class="lbl">Buttons — 3 variants</div>
+  <div class="btn-row">
+    <button class="btn btn-primary">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Ask AI
+    </button>
+    <button class="btn btn-ghost">View Analytics</button>
+    <button class="btn btn-compact">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Chat
+    </button>
+  </div>
+  <div class="btn-spec">
+    <div class="btn-spec-card">
+      <div class="btn-spec-title" style="color:#c4b5fd;">Primary — Purple</div>
+      <div class="btn-spec-row"><span class="k">Background</span><span class="v"><span class="chip">#8B5CF6 → #6D28D9</span></span></div>
+      <div class="btn-spec-row"><span class="k">Shadow</span><span class="v">0 0 16px rgba(139,92,246,0.35)</span></div>
+      <div class="btn-spec-row"><span class="k">Padding</span><span class="v">9px 18px</span></div>
+      <div class="btn-spec-row"><span class="k">Hover</span><span class="v">translateY(-1px) + stronger glow</span></div>
+      <div class="btn-spec-row"><span class="k">Use for</span><span class="v">Primary CTAs only</span></div>
+    </div>
+    <div class="btn-spec-card">
+      <div class="btn-spec-title" style="color:#a1a1aa;">Secondary — Ghost</div>
+      <div class="btn-spec-row"><span class="k">Background</span><span class="v">transparent</span></div>
+      <div class="btn-spec-row"><span class="k">Border</span><span class="v">1px rgba(255,255,255,0.12)</span></div>
+      <div class="btn-spec-row"><span class="k">Padding</span><span class="v">8px 16px</span></div>
+      <div class="btn-spec-row"><span class="k">Hover</span><span class="v">Purple border + label tint</span></div>
+      <div class="btn-spec-row"><span class="k">Use for</span><span class="v">Secondary actions</span></div>
+    </div>
+    <div class="btn-spec-card">
+      <div class="btn-spec-title" style="color:#a1a1aa;">Compact — Inline</div>
+      <div class="btn-spec-row"><span class="k">Background</span><span class="v">transparent</span></div>
+      <div class="btn-spec-row"><span class="k">Border</span><span class="v">1px rgba(255,255,255,0.10)</span></div>
+      <div class="btn-spec-row"><span class="k">Padding</span><span class="v">4px 10px</span></div>
+      <div class="btn-spec-row"><span class="k">Font size</span><span class="v">10px</span></div>
+      <div class="btn-spec-row"><span class="k">Use for</span><span class="v">+ New Chat, toolbar actions</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CARDS -->
+  <div class="lbl">Cards — 3 variants</div>
+  <div class="cards-row">
+    <div class="card card-base">
+      <div class="card-tag tag-base">Base card</div>
+      <div class="card-title">Focus Mode</div>
+      <div class="card-sub">Standard surface for all non-hero, non-AI cards. Subtle border, no glow.</div>
+    </div>
+    <div class="card card-hero">
+      <div class="card-tag tag-hero">Hero card</div>
+      <div class="card-title">Ask AI</div>
+      <div class="card-sub">Purple gradient bg + cyan left border + inner glow. Used for 2×2 or 2×3 hero slot only.</div>
+    </div>
+    <div class="card card-ai">
+      <div class="card-tag tag-ai">AI response</div>
+      <div class="card-title">AI Coach</div>
+      <div class="card-sub">Cyan left border 3px + subtle box-shadow glow. Ambient signal that AI generated this content.</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;">
+    <div class="btn-spec-card">
+      <div class="btn-spec-title">Base card</div>
+      <div class="btn-spec-row"><span class="k">Background</span><span class="v"><span class="chip">#111111</span></span></div>
+      <div class="btn-spec-row"><span class="k">Border</span><span class="v">1px rgba(255,255,255,0.06)</span></div>
+      <div class="btn-spec-row"><span class="k">Radius</span><span class="v">10–12px</span></div>
+      <div class="btn-spec-row"><span class="k">Hover</span><span class="v">translateY(-2px) 200ms</span></div>
+    </div>
+    <div class="btn-spec-card">
+      <div class="btn-spec-title">Hero card</div>
+      <div class="btn-spec-row"><span class="k">Background</span><span class="v">Purple gradient overlay</span></div>
+      <div class="btn-spec-row"><span class="k">Left border</span><span class="v"><span class="chip c">rgba(34,211,238,0.35)</span></span></div>
+      <div class="btn-spec-row"><span class="k">Inner glow</span><span class="v">inset 0 0 30px cyan 0.04</span></div>
+      <div class="btn-spec-row"><span class="k">Used</span><span class="v">Hero slot only</span></div>
+    </div>
+    <div class="btn-spec-card">
+      <div class="btn-spec-title">AI response card</div>
+      <div class="btn-spec-row"><span class="k">Left border</span><span class="v"><span class="chip c">3px rgba(34,211,238,0.3)</span></span></div>
+      <div class="btn-spec-row"><span class="k">Box shadow</span><span class="v">0 0 16px cyan 0.08</span></div>
+      <div class="btn-spec-row"><span class="k">Used</span><span class="v">AI Coach, drawer responses</span></div>
+      <div class="btn-spec-row"><span class="k">Never on</span><span class="v">User-generated content</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- COLOURS -->
+  <div class="lbl">Colour system — 3 layers</div>
+  <div class="color-row">
+    <div class="swatch">
+      <div class="swatch-color" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Brand Purple</div>
+        <div class="swatch-hex">#8B5CF6 / #6D28D9</div>
+        <div class="swatch-use">CTAs, active nav, hero borders, mastery badges</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:rgba(34,211,238,0.85);box-shadow:inset 0 0 20px rgba(34,211,238,0.3);"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Ambient Cyan</div>
+        <div class="swatch-hex">#22D3EE</div>
+        <div class="swatch-use">AI borders, input glow, active PDF badge — ONLY when AI is active</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:linear-gradient(to right,#27272a,#92400e,#F59E0B,#22C55E);"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Progress Gradient</div>
+        <div class="swatch-hex">Gray → Amber → Green</div>
+        <div class="swatch-use">Mastery map, topic heat, Your Brain cells</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:linear-gradient(135deg,#0A0A0A,#1A1A2E);"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Deep Black</div>
+        <div class="swatch-hex">#0A0A0A → #1A1A2E</div>
+        <div class="swatch-use">Page background — locked, not changing</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mastery gradient bar -->
+  <div style="font-size:9px;color:#52525b;font-weight:600;margin-bottom:8px;">Progress gradient — mastery states</div>
+  <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:24px;">
+    <div class="mastery-track" style="height:12px;border-radius:6px;"></div>
+    <div style="display:flex;justify-content:space-between;">
+      <span style="font-size:9px;color:#52525b;">Not studied</span>
+      <span style="font-size:9px;color:#92400e;">Learning</span>
+      <span style="font-size:9px;color:#F59E0B;">Progressing</span>
+      <span style="font-size:9px;color:#22C55E;">Mastered</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ANIMATIONS -->
+  <div class="lbl">Micro-interactions</div>
+  <div class="anim-grid">
+    <div class="anim-card">
+      <div class="anim-card-title">Card hover lift</div>
+      <div class="anim-row"><span class="anim-k">Transform</span><span class="anim-v">translateY(-2px)</span></div>
+      <div class="anim-row"><span class="anim-k">Duration</span><span class="anim-v"><span class="chip">200ms</span></span></div>
+      <div class="anim-row"><span class="anim-k">Easing</span><span class="anim-v">ease-out</span></div>
+      <div class="anim-row"><span class="anim-k">On</span><span class="anim-v">All interactive cards</span></div>
+    </div>
+    <div class="anim-card">
+      <div class="anim-card-title">Button press</div>
+      <div class="anim-row"><span class="anim-k">Transform</span><span class="anim-v">scale(0.97)</span></div>
+      <div class="anim-row"><span class="anim-k">Duration</span><span class="anim-v"><span class="chip">100ms</span></span></div>
+      <div class="anim-row"><span class="anim-k">Easing</span><span class="anim-v">ease-in</span></div>
+      <div class="anim-row"><span class="anim-k">On</span><span class="anim-v">All buttons</span></div>
+    </div>
+    <div class="anim-card">
+      <div class="anim-card-title">Mode switch</div>
+      <div class="anim-row"><span class="anim-k">Cards out</span><span class="anim-v">opacity 0, <span class="chip">150ms</span></span></div>
+      <div class="anim-row"><span class="anim-k">Cards in</span><span class="anim-v">opacity 1, <span class="chip">200ms</span></span></div>
+      <div class="anim-row"><span class="anim-k">Stagger</span><span class="anim-v">30ms per card</span></div>
+      <div class="anim-row"><span class="anim-k">No slide</span><span class="anim-v">Fade only</span></div>
+    </div>
+    <div class="anim-card">
+      <div class="anim-card-title">AI input breathing</div>
+      <div class="anim-row"><span class="anim-k">Effect</span><span class="anim-v">Cyan glow pulse</span></div>
+      <div class="anim-row"><span class="anim-k">Duration</span><span class="anim-v"><span class="chip">3s</span> infinite</span></div>
+      <div class="anim-row"><span class="anim-k">Easing</span><span class="anim-v">ease-in-out</span></div>
+      <div class="anim-row"><span class="anim-k">On</span><span class="anim-v">Hero card input when idle</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SPACING + TYPOGRAPHY -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <div>
+      <div class="lbl">Spacing — 8px base system</div>
+      <div class="spacing-row">
+        <div class="spacing-item"><div class="spacing-block" style="height:4px;width:40px;"></div><div class="spacing-val">4px</div><div class="spacing-use">Icon gap</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:8px;width:48px;"></div><div class="spacing-val">8px</div><div class="spacing-use">Base unit</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:16px;width:56px;"></div><div class="spacing-val">16px</div><div class="spacing-use">Card padding</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:24px;width:64px;"></div><div class="spacing-val">24px</div><div class="spacing-use">Page padding</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:32px;width:72px;"></div><div class="spacing-val">32px</div><div class="spacing-use">Section gap</div></div>
+      </div>
+      <div style="background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:12px;">
+        <div class="btn-spec-row" style="margin-bottom:5px;"><span class="k" style="font-size:10px;">Card padding</span><span class="v" style="font-size:10px;"><span class="chip">16–20px</span></span></div>
+        <div class="btn-spec-row" style="margin-bottom:5px;"><span class="k" style="font-size:10px;">Card gap (bento)</span><span class="v" style="font-size:10px;"><span class="chip">6px</span></span></div>
+        <div class="btn-spec-row"><span class="k" style="font-size:10px;">Section gap</span><span class="v" style="font-size:10px;"><span class="chip">20–24px</span></span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lbl">Typography scale</div>
+      <div class="type-rows">
+        <div class="type-row"><span class="type-sample" style="font-size:20px;font-weight:700;">Good evening</span><span class="type-meta">20px / 700 / #f4f4f5</span></div>
+        <div class="type-row"><span class="type-sample" style="font-size:15px;font-weight:700;">Ask AI</span><span class="type-meta">15px / 700 / #f4f4f5</span></div>
+        <div class="type-row"><span class="type-sample" style="font-size:12px;font-weight:600;">Card title</span><span class="type-meta">12px / 600 / #e4e4e7</span></div>
+        <div class="type-row"><span class="type-sample" style="font-size:11px;color:#a1a1aa;">Body / description</span><span class="type-meta">11px / 400 / #a1a1aa</span></div>
+        <div class="type-row"><span class="type-sample" style="font-size:9px;color:#71717a;">Timestamp · badge</span><span class="type-meta">9px / 400 / #71717a</span></div>
+        <div class="type-row"><span class="type-sample" style="font-size:9px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#52525b;">SECTION LABEL</span><span class="type-meta">9px / 700 / uppercase</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="approval-box">
+    <strong>Section 4 check:</strong> Does the component system look right — buttons, card variants, colour rules, animations, and spacing? This is the last section. Approve this and we write the full spec doc.
+  </div>
+</div>

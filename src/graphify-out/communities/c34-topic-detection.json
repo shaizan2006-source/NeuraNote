@@ -1,0 +1,36 @@
+{
+  "community": 34,
+  "name": "topic-detection",
+  "nodes": [
+    {
+      "label": "detectTopic.js",
+      "file_type": "code",
+      "source_file": "lib\\detectTopic.js",
+      "source_location": "L1",
+      "id": "detecttopic",
+      "community": 34
+    },
+    {
+      "label": "detectTopic()",
+      "file_type": "code",
+      "source_file": "lib\\detectTopic.js",
+      "source_location": "L1",
+      "id": "detecttopic_detecttopic",
+      "community": 34
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\detectTopic.js",
+      "source_location": "L1",
+      "weight": 1,
+      "_src": "detecttopic",
+      "_tgt": "detecttopic_detecttopic",
+      "source": "detecttopic",
+      "target": "detecttopic_detecttopic",
+      "confidence_score": 1
+    }
+  ]
+}

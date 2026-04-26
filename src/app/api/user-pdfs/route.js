@@ -32,6 +32,24 @@ export async function GET(req) {
   return NextResponse.json(result);
 }
 
+export async function PATCH(req) {
+  try {
+    const { id, name, user_id } = await req.json();
+    if (!id || !name?.trim() || !user_id) {
+      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+    const { error } = await supabase
+      .from("documents")
+      .update({ name: name.trim() })
+      .eq("id", id)
+      .eq("user_id", user_id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
+  }
+}
+
 export async function PUT(req) {
   try {
     const { user_id, pdf_id } = await req.json();

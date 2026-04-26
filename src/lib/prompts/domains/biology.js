@@ -49,7 +49,7 @@ ECOLOGY DIAGRAMS:
 - Energy pyramid: show 10% rule with numbers (e.g., 1000 J → 100 J → 10 J → 1 J)
 - Carbon/nitrogen cycle: show all reservoirs and fluxes with arrows
 
-NEET-STYLE CLARITY:
+UNIVERSITY-STYLE CLARITY:
 - Be precise about facts (exact chromosome numbers, exact ATP yields)
 - Use standard NCERT/textbook terminology
 - For definitions: give the official textbook-style definition, not a casual paraphrase

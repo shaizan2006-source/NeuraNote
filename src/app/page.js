@@ -62,9 +62,9 @@ const STEPS = [
 
 // ── Testimonials ──────────────────────────────────────────────────
 const QUOTES = [
-  { text: "I cleared JEE Advanced using Ask My Notes. The quiz feature helped me find gaps I never knew I had.", name: "Arjun S.", tag: "JEE Advanced" },
-  { text: "Finally an app that actually reads my PDFs and gives real answers. Not generic AI garbage.", name: "Priya M.", tag: "NEET UG" },
-  { text: "The mastery map is addictive. I can see myself getting better every day.", name: "Rahul K.", tag: "GATE CSE" },
+  { text: "I cleared my B.Tech finals using Ask My Notes. The quiz feature helped me find gaps I never knew I had.", name: "Arjun S.", tag: "B.Tech CSE" },
+  { text: "Finally an app that actually reads my PDFs and gives real answers. Not generic AI garbage.", name: "Priya M.", tag: "MBBS" },
+  { text: "The mastery map is addictive. I can see myself getting better every day.", name: "Rahul K.", tag: "BCA / IT" },
 ];
 
 export default function Home() {
@@ -143,7 +143,7 @@ export default function Home() {
             marginBottom: 28, letterSpacing: "0.4px",
           }}
         >
-          🇮🇳 Built for JEE · NEET · GATE · UPSC
+          🇮🇳 Built for B.Tech · BCA · BSc · BBA · MBBS
         </motion.div>
 
         <motion.h1
@@ -223,7 +223,7 @@ export default function Home() {
             Trusted by students preparing for
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
-            {["JEE Main", "JEE Advanced", "NEET UG", "GATE", "UPSC CSE", "CA Foundation"].map((exam) => (
+            {["B.Tech CSE", "BCA", "BSc IT", "BBA", "MBA", "MBBS"].map((exam) => (
               <span key={exam} style={{
                 padding: "6px 14px", borderRadius: 20,
                 background: "var(--surface-card)",

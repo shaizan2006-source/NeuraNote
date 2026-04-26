@@ -17,7 +17,7 @@ export default function StudyTimeCard({ thisWeekMins = 0, dailyStudyTime = [], p
 
   return (
     <div id="analytics" style={{
-      background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, padding: "16px 18px",
+      background: "#111111", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "16px 18px",
     }}>
       <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>Study Time</p>
       <p style={{ margin: "4px 0 0", fontSize: 22, fontWeight: 800, color: "#f4f4f5" }}>

@@ -1,0 +1,173 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0A0A0A; font-family: -apple-system, 'Inter', sans-serif; color: #e4e4e7; }
+  .page { padding: 24px; max-width: 720px; margin: 0 auto; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #f4f4f5; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 28px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 28px; }
+  .col-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+
+  /* Context card */
+  .context { background: #111; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .context-title { font-size: 12px; font-weight: 600; color: #f4f4f5; margin-bottom: 8px; }
+  .context-sub { font-size: 10px; color: #71717a; line-height: 1.6; }
+
+  /* Button showcase */
+  .btn-showcase { background: #0F0F14; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .btn-label { font-size: 9px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #3f3f46; margin-bottom: 6px; }
+
+  /* Button styles */
+  .btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; padding: 9px 18px; transition: all 200ms ease-out; }
+
+  /* Current: with glow */
+  .btn-current { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #fff; box-shadow: 0 0 16px rgba(139,92,246,0.35); }
+  .btn-current:hover { box-shadow: 0 0 24px rgba(139,92,246,0.5); transform: translateY(-1px); }
+
+  /* Simplified: gradient only */
+  .btn-simple { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #fff; box-shadow: none; }
+  .btn-simple:hover { transform: translateY(-1px); }
+
+  /* Alternative: subtle shadow */
+  .btn-subtle { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #fff; box-shadow: 0 4px 12px rgba(139,92,246,0.15); }
+  .btn-subtle:hover { box-shadow: 0 6px 16px rgba(139,92,246,0.25); transform: translateY(-1px); }
+
+  .btn svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 2; fill: none; }
+
+  /* Spec comparison */
+  .spec-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .spec-table th { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #3f3f46; padding: 6px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .spec-table td { font-size: 10px; color: #71717a; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .spec-table td:first-child { color: #a1a1aa; font-weight: 600; }
+  .chip { display: inline-block; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: 4px; padding: 1px 6px; font-size: 9px; color: #c4b5fd; font-family: monospace; }
+
+  /* Context comparison */
+  .context-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .context-item { background: #0F0F14; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; }
+  .context-item-title { font-size: 10px; font-weight: 700; color: #a1a1aa; margin-bottom: 8px; }
+  .context-item-text { font-size: 10px; color: #71717a; line-height: 1.6; }
+  .pro { color: #86efac; }
+  .con { color: #fca5a5; }
+
+  .verdict { background: #111; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px; margin-top: 24px; }
+  .verdict-title { font-size: 12px; font-weight: 700; color: #c4b5fd; margin-bottom: 8px; }
+  .verdict-text { font-size: 11px; color: #a1a1aa; line-height: 1.7; }
+
+  .approval-box { margin-top: 24px; padding: 14px 16px; background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.18); border-radius: 10px; font-size: 11px; color: #a1a1aa; line-height: 1.7; }
+  .approval-box strong { color: #c4b5fd; }
+</style>
+
+<div class="page">
+  <h2>Primary Button — Current vs Simplified</h2>
+  <p class="subtitle">Show the problem and two solutions.</p>
+
+  <div class="two-col">
+
+    <!-- CURRENT -->
+    <div>
+      <div class="col-label" style="color:#fca5a5;">Current — too glowy</div>
+      <div class="context">
+        <div class="context-title">The problem</div>
+        <div class="context-sub">0 0 16px glow makes the button feel aggressive. In a 3-hour study session, this demands attention every time it appears. Violates "ambient, never loud."</div>
+      </div>
+      <div class="btn-showcase">
+        <div class="btn-label">Current spec</div>
+        <button class="btn btn-current">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Ask AI
+        </button>
+        <table class="spec-table" style="margin-top:10px;">
+          <tr><th>Property</th><th>Value</th></tr>
+          <tr><td>Background</td><td><span class="chip">#8B5CF6 → #6D28D9</span></td></tr>
+          <tr><td>Shadow</td><td>0 0 16px rgba(139,92,246,0.35)</td></tr>
+          <tr><td>Hover shadow</td><td>0 0 24px rgba(139,92,246,0.5)</td></tr>
+          <tr><td>Feel</td><td>Glowy, premium, loud</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- RECOMMENDED -->
+    <div>
+      <div class="col-label" style="color:#86efac;">Recommended — gradient only</div>
+      <div class="context">
+        <div class="context-title">The solution</div>
+        <div class="context-sub">Remove the glow entirely. The gradient alone is premium and eye-catching. Hover lift (translateY) provides feedback. Quiet, clean.</div>
+      </div>
+      <div class="btn-showcase">
+        <div class="btn-label">Simplified spec</div>
+        <button class="btn btn-simple">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Ask AI
+        </button>
+        <table class="spec-table" style="margin-top:10px;">
+          <tr><th>Property</th><th>Value</th></tr>
+          <tr><td>Background</td><td><span class="chip">#8B5CF6 → #6D28D9</span></td></tr>
+          <tr><td>Shadow</td><td>none</td></tr>
+          <tr><td>Hover</td><td>translateY(-1px) 200ms</td></tr>
+          <tr><td>Feel</td><td>Premium, clean, quiet</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Context: where buttons appear -->
+  <div class="context-grid">
+    <div class="context-item">
+      <div class="context-item-title">Dashboard hero card</div>
+      <div class="context-item-text">
+        Primary button appears in Ask AI hero (2×2). Student is focused. A glowing button every time they look at the dashboard is distracting.
+      </div>
+    </div>
+    <div class="context-item">
+      <div class="context-item-title">Drawer footer</div>
+      <div class="context-item-text">
+        "Open full chat →" might be a button. With a glow, it pulls attention. But it's a secondary escape hatch, not a hero CTA.
+      </div>
+    </div>
+    <div class="context-item">
+      <div class="context-item-title">Study Plans card</div>
+      <div class="context-item-text">
+        If "Start studying" is primary, the glow applies there too. But in progress mode, that's just one card among many.
+      </div>
+    </div>
+    <div class="context-item">
+      <div class="context-item-title">Ambient intelligence principle</div>
+      <div class="context-item-text">
+        <span class="pro">✓ Gradient = premium feel</span><br>
+        <span class="con">✗ Glow = demands attention</span><br>
+        The gradient is enough.
+      </div>
+    </div>
+  </div>
+
+  <!-- Alternative: subtle shadow option -->
+  <div style="margin-bottom:24px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#52525b;margin-bottom:12px;">Alternative: subtle shadow (if you want some depth)</div>
+    <div class="btn-showcase">
+      <div class="btn-label">Option — subtle shadow</div>
+      <button class="btn btn-subtle">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Ask AI
+      </button>
+      <div style="font-size:10px;color:#71717a;margin-top:10px;">
+        <strong style="color:#a1a1aa;">Spec:</strong> box-shadow: 0 4px 12px rgba(139,92,246,0.15) → hover 0 6px 16px rgba(139,92,246,0.25)
+        <br><br>
+        <strong style="color:#a1a1aa;">Tradeoff:</strong> Slightly more depth than no shadow, but still way less glowy than current. A middle ground.
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-title">My recommendation</div>
+    <div class="verdict-text">
+      <strong>Go with the simplified version (gradient only, no shadow).</strong> It keeps the premium feel, it's cleaner for a study app, and it respects the Ambient Intelligence philosophy. The gradient is enough — you don't need the glow to make a button look good. The hover lift (translateY) provides tactile feedback without noise.
+      <br><br>
+      If you want a tiny bit of depth, the subtle shadow option is a compromise, but I think it's unnecessary. The gradient alone is premium.
+    </div>
+  </div>
+
+  <div class="approval-box">
+    <strong>Which way?</strong> Simplified (no shadow), subtle shadow (middle ground), or keep the current glow?
+  </div>
+</div>

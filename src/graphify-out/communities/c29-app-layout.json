@@ -1,0 +1,36 @@
+{
+  "community": 29,
+  "name": "app-layout",
+  "nodes": [
+    {
+      "label": "AppLayout.jsx",
+      "file_type": "code",
+      "source_file": "components\\layout\\AppLayout.jsx",
+      "source_location": "L1",
+      "id": "applayout",
+      "community": 29
+    },
+    {
+      "label": "AppLayout()",
+      "file_type": "code",
+      "source_file": "components\\layout\\AppLayout.jsx",
+      "source_location": "L1",
+      "id": "applayout_applayout",
+      "community": 29
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout\\AppLayout.jsx",
+      "source_location": "L1",
+      "weight": 1,
+      "_src": "applayout",
+      "_tgt": "applayout_applayout",
+      "source": "applayout",
+      "target": "applayout_applayout",
+      "confidence_score": 1
+    }
+  ]
+}

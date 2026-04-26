@@ -36,6 +36,7 @@ export async function GET(req) {
     supabase.from("focus_progress")
       .select("task, difficulty, active_time_seconds, created_at")
       .eq("user_id", user.id)
+      .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
       .order("created_at", { ascending: false })
       .limit(500),
     supabase.from("mastery_topics")

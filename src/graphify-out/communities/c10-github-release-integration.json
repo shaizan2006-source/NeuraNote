@@ -1,0 +1,232 @@
+{
+  "community": 10,
+  "name": "github-release-integration",
+  "nodes": [
+    {
+      "label": "github.ts",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L1",
+      "id": "github",
+      "community": 10
+    },
+    {
+      "label": "GitHubRateLimitError",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L8",
+      "id": "github_githubratelimiterror",
+      "community": 10
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L9",
+      "id": "github_githubratelimiterror_constructor",
+      "community": 10
+    },
+    {
+      "label": "GitHubDownloadError",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L15",
+      "id": "github_githubdownloaderror",
+      "community": 10
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L16",
+      "id": "github_githubdownloaderror_constructor",
+      "community": 10
+    },
+    {
+      "label": "checkRateLimit()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L22",
+      "id": "github_checkratelimit",
+      "community": 10
+    },
+    {
+      "label": "fetchReleases()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L34",
+      "id": "github_fetchreleases",
+      "community": 10
+    },
+    {
+      "label": "getLatestRelease()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L53",
+      "id": "github_getlatestrelease",
+      "community": 10
+    },
+    {
+      "label": "downloadRelease()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L72",
+      "id": "github_downloadrelease",
+      "community": 10
+    },
+    {
+      "label": "getAssetUrl()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L90",
+      "id": "github_getasseturl",
+      "community": 10
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "github",
+      "_tgt": "github_githubratelimiterror",
+      "source": "github",
+      "target": "github_githubratelimiterror",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L15",
+      "weight": 1,
+      "_src": "github",
+      "_tgt": "github_githubdownloaderror",
+      "source": "github",
+      "target": "github_githubdownloaderror",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L22",
+      "weight": 1,
+      "_src": "github",
+      "_tgt": "github_checkratelimit",
+      "source": "github",
+      "target": "github_checkratelimit",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L34",
+      "weight": 1,
+      "_src": "github",
+      "_tgt": "github_fetchreleases",
+      "source": "github",
+      "target": "github_fetchreleases",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L53",
+      "weight": 1,
+      "_src": "github",
+      "_tgt": "github_getlatestrelease",
+      "source": "github",
+      "target": "github_getlatestrelease",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L72",
+      "weight": 1,
+      "_src": "github",
+      "_tgt": "github_downloadrelease",
+      "source": "github",
+      "target": "github_downloadrelease",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L90",
+      "weight": 1,
+      "_src": "github",
+      "_tgt": "github_getasseturl",
+      "source": "github",
+      "target": "github_getasseturl",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L9",
+      "weight": 1,
+      "_src": "github_githubratelimiterror",
+      "_tgt": "github_githubratelimiterror_constructor",
+      "source": "github_githubratelimiterror",
+      "target": "github_githubratelimiterror_constructor",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L16",
+      "weight": 1,
+      "_src": "github_githubdownloaderror",
+      "_tgt": "github_githubdownloaderror_constructor",
+      "source": "github_githubdownloaderror",
+      "target": "github_githubdownloaderror_constructor",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L44",
+      "weight": 1,
+      "_src": "github_fetchreleases",
+      "_tgt": "github_checkratelimit",
+      "source": "github_checkratelimit",
+      "target": "github_fetchreleases",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L63",
+      "weight": 1,
+      "_src": "github_getlatestrelease",
+      "_tgt": "github_checkratelimit",
+      "source": "github_checkratelimit",
+      "target": "github_getlatestrelease",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\github.ts",
+      "source_location": "L80",
+      "weight": 1,
+      "_src": "github_downloadrelease",
+      "_tgt": "github_checkratelimit",
+      "source": "github_checkratelimit",
+      "target": "github_downloadrelease",
+      "confidence_score": 1
+    }
+  ]
+}

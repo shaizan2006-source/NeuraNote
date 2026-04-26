@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#060910; font-family:Inter,sans-serif; color:#fff; padding:28px 24px; }
+
+  h2 { font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:4px; }
+  .sub { font-size:12px; color:#334155; margin-bottom:24px; }
+
+  .flow { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; }
+
+  .screen-wrap { border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.06); }
+  .screen-wrap:hover { border-color:rgba(139,92,246,0.4); box-shadow:0 0 40px rgba(139,92,246,0.1); }
+
+  .screen-footer { padding:12px 16px; background:rgba(255,255,255,0.02); border-top:1px solid rgba(255,255,255,0.05); }
+  .screen-footer h3 { font-size:12px; font-weight:700; color:#e2e8f0; }
+  .screen-footer p { font-size:10px; color:#334155; margin-top:2px; }
+
+  .page { background:linear-gradient(160deg,#060910 0%,#0c1024 100%); min-height:480px; display:flex; flex-direction:column; position:relative; overflow:hidden; }
+  .glow { position:absolute; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%); top:40px; left:50%; transform:translateX(-50%); pointer-events:none; }
+
+  .topbar { padding:14px 18px; display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
+  .back { font-size:10px; color:#1e293b; }
+  .dot-row { display:flex; align-items:center; gap:5px; }
+  .dot { width:6px; height:6px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px rgba(34,197,94,0.7); }
+  .dot-lbl { font-size:9px; color:#1e3a2a; font-weight:600; }
+
+  .center { flex:1; display:flex; flex-direction:column; align-items:center; padding:0 24px 22px; gap:14px; position:relative; z-index:1; justify-content:center; }
+
+  .avatar { width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#6d28d9,#22D3EE); display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 0 0 8px rgba(109,40,217,0.1), 0 0 36px rgba(109,40,217,0.22); }
+
+  .greeting { text-align:center; }
+  .greeting .hi { font-size:11px; color:#334155; font-weight:600; margin-bottom:4px; }
+  .greeting .msg { font-size:15px; font-weight:700; color:#f1f5f9; line-height:1.5; max-width:260px; }
+
+  .q { font-size:11px; color:#334155; font-weight:500; }
+
+  /* Topic picker -->
+  .topic-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; width:100%; }
+  .topic-card { padding:12px 10px; border-radius:11px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.025); cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .topic-card:hover { border-color:rgba(139,92,246,0.3); background:rgba(139,92,246,0.08); }
+  .topic-icon { font-size:20px; }
+  .topic-name { font-size:10px; font-weight:700; color:#cbd5e1; text-align:center; line-height:1.3; }
+
+  /* Search bar -->
+  .search-wrap { width:100%; }
+  .search-bar { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:11px; padding:10px 12px; }
+  .search-icon { font-size:12px; }
+  .search-input { flex:1; font-size:11px; color:#cbd5e1; background:transparent; border:none; outline:none; }
+  .search-input::placeholder { color:#1e293b; }
+
+  /* Session mode select -->
+  .mode-q { font-size:11px; color:#334155; text-align:center; font-weight:500; }
+  .modes { display:flex; flex-direction:column; gap:6px; width:100%; }
+  .mode { display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.025); cursor:pointer; }
+  .mode.active { background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.3); }
+  .mode-icon { font-size:14px; }
+  .mode-text { display:flex; flex-direction:column; }
+  .mode-text h4 { font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:1px; }
+  .mode.active .mode-text h4 { color:#c4b5fd; }
+  .mode-text p { font-size:9px; color:#1e293b; }
+
+  .start { width:100%; padding:12px; background:linear-gradient(135deg,#7c3aed,#4f46e5); border-radius:11px; font-size:12px; font-weight:700; color:#fff; text-align:center; cursor:pointer; box-shadow:0 4px 20px rgba(124,58,237,0.3); }
+
+  /* Arrow between screens -->
+  .arrow { display:flex; align-items:center; justify-content:center; padding:20px 12px; }
+  .arrow-txt { font-size:11px; color:#334155; font-weight:600; text-align:center; line-height:1.4; max-width:100px; }
+  .arrow-line { width:2px; height:40px; background:rgba(139,92,246,0.2); margin:6px 0; border-radius:1px; }
+</style>
+</head>
+<body>
+
+<h2>Option A — Complete Flow After "Study Something Else"</h2>
+<p class="sub">Three screens: Welcome → Topic Picker → Mode Selector. Same minimal, calm aesthetic throughout.</p>
+
+<div class="flow">
+
+  <!-- Screen 1: Welcome (same as before) -->
+  <div class="screen-wrap">
+    <div class="page">
+      <div class="glow"></div>
+      <div class="topbar">
+        <span class="back">← Dashboard</span>
+        <div class="dot-row"><div class="dot"></div><span class="dot-lbl">Aria · ready</span></div>
+      </div>
+      <div class="center">
+        <div class="avatar">✦</div>
+        <div class="greeting">
+          <div class="hi">Good morning, Shafi ☀</div>
+          <div class="msg">You're close on Mechanics — but Thermodynamics needs work.</div>
+        </div>
+        <div class="q">How do you want to study?</div>
+        <div style="display:flex; flex-direction:column; gap:5px; width:100%;">
+          <div style="padding:11px 12px; border-radius:10px; border:1px solid rgba(139,92,246,0.3); background:rgba(139,92,246,0.1); font-size:11px; color:#a78bfa; font-weight:600;">🧠 Explain it to me</div>
+          <div style="padding:11px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.025); font-size:11px; color:#cbd5e1; font-weight:600;">⚡ Quiz me</div>
+          <div style="padding:11px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.025); font-size:11px; color:#cbd5e1; font-weight:600;">🎯 Exam prep</div>
+          <div style="margin:6px 0; display:flex; align-items:center; gap:8px;">
+            <div style="flex:1; height:0.5px; background:rgba(255,255,255,0.05);"></div>
+            <div style="font-size:9px; color:#1e293b; white-space:nowrap;">or study your own</div>
+            <div style="flex:1; height:0.5px; background:rgba(255,255,255,0.05);"></div>
+          </div>
+          <div style="padding:11px 12px; border-radius:10px; border:1px dashed rgba(255,255,255,0.1); background:rgba(255,255,255,0.015); display:flex; gap:10px; align-items:center;">
+            <div style="font-size:14px;">✏️</div>
+            <div>
+              <div style="font-size:11px; font-weight:700; color:#475569;">Study something else</div>
+              <div style="font-size:9px; color:#1e293b;">Pick your own topic</div>
+            </div>
+          </div>
+        </div>
+        <div class="start">Start Session →</div>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <h3>Screen 1</h3>
+      <p>Welcome state (user clicks dashed card)</p>
+    </div>
+  </div>
+
+  <!-- Arrow -->
+  <div class="arrow">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+      <div class="arrow-txt">Click dashed card</div>
+      <div class="arrow-line"></div>
+      <div style="font-size:14px;">↓</div>
+    </div>
+  </div>
+
+  <!-- Screen 2: Topic Picker -->
+  <div class="screen-wrap">
+    <div class="page">
+      <div class="glow"></div>
+      <div class="topbar">
+        <span class="back">← Back</span>
+        <div class="dot-row"><div class="dot"></div><span class="dot-lbl">Aria · ready</span></div>
+      </div>
+      <div class="center">
+        <div class="avatar">✦</div>
+        <div class="greeting">
+          <div class="hi">What's on your mind today?</div>
+          <div class="msg">Pick a topic from your documents, or search for something specific.</div>
+        </div>
+
+        <!-- Search bar -->
+        <div class="search-wrap">
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Search topics...">
+          </div>
+        </div>
+
+        <!-- Topic grid from uploaded docs -->
+        <div class="topic-grid">
+          <div class="topic-card">
+            <div class="topic-icon">📄</div>
+            <div class="topic-name">Mechanics Notes</div>
+          </div>
+          <div class="topic-card">
+            <div class="topic-icon">📄</div>
+            <div class="topic-name">Thermodynamics</div>
+          </div>
+          <div class="topic-card">
+            <div class="topic-icon">📄</div>
+            <div class="topic-name">Optics</div>
+          </div>
+          <div class="topic-card">
+            <div class="topic-icon">📄</div>
+            <div class="topic-name">Waves</div>
+          </div>
+          <div class="topic-card">
+            <div class="topic-icon">📄</div>
+            <div class="topic-name">Modern Physics</div>
+          </div>
+          <div class="topic-card">
+            <div class="topic-icon">➕</div>
+            <div class="topic-name">Browse All</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <h3>Screen 2</h3>
+      <p>Topic picker (user selects a topic)</p>
+    </div>
+  </div>
+
+  <!-- Arrow -->
+  <div class="arrow">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+      <div class="arrow-txt">Pick a topic</div>
+      <div class="arrow-line"></div>
+      <div style="font-size:14px;">↓</div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Mode selector for chosen topic -->
+  <div class="screen-wrap">
+    <div class="page">
+      <div class="glow"></div>
+      <div class="topbar">
+        <span class="back">← Back</span>
+        <div class="dot-row"><div class="dot"></div><span class="dot-lbl">Aria · ready</span></div>
+      </div>
+      <div class="center">
+        <div class="avatar">✦</div>
+        <div class="greeting">
+          <div class="hi">Starting: Thermodynamics</div>
+          <div class="msg">How would you like me to help you with this?</div>
+        </div>
+
+        <div class="mode-q">Pick a study style:</div>
+        <div class="modes">
+          <div class="mode active">
+            <div class="mode-icon">🧠</div>
+            <div class="mode-text">
+              <h4>Explain it</h4>
+              <p>Coach walks you through</p>
+            </div>
+          </div>
+          <div class="mode">
+            <div class="mode-icon">⚡</div>
+            <div class="mode-text">
+              <h4>Quiz me</h4>
+              <p>Test your understanding</p>
+            </div>
+          </div>
+          <div class="mode">
+            <div class="mode-icon">🎯</div>
+            <div class="mode-text">
+              <h4>Exam prep</h4>
+              <p>Practice exam questions</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="start">Start Session →</div>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <h3>Screen 3</h3>
+      <p>Mode selector for chosen topic</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

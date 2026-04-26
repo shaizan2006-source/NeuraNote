@@ -487,8 +487,8 @@ export default function StudyPlanSection() {
                         style={{
                           marginBottom: 12, padding: "14px 16px", borderRadius: 12,
                           background: "linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(79,70,229,0.07) 100%)",
-                          border: "1px solid rgba(124,58,237,0.25)",
-                          borderLeft: "3px solid var(--brand)",
+                          borderWidth: "1px 1px 1px 3px", borderStyle: "solid",
+                          borderColor: "rgba(124,58,237,0.25) rgba(124,58,237,0.25) rgba(124,58,237,0.25) var(--brand)",
                         }}
                       >
                         <p style={{ margin: "0 0 6px", fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--brand-light)" }}>

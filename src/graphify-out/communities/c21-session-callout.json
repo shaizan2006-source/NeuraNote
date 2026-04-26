@@ -1,0 +1,56 @@
+{
+  "community": 21,
+  "name": "session-callout",
+  "nodes": [
+    {
+      "label": "SessionCallout.jsx",
+      "file_type": "code",
+      "source_file": "components\\answer\\SessionCallout.jsx",
+      "source_location": "L1",
+      "id": "sessioncallout",
+      "community": 21
+    },
+    {
+      "label": "SessionCallout()",
+      "file_type": "code",
+      "source_file": "components\\answer\\SessionCallout.jsx",
+      "source_location": "L28",
+      "id": "sessioncallout_sessioncallout",
+      "community": 21
+    },
+    {
+      "label": "buildMessage()",
+      "file_type": "code",
+      "source_file": "components\\answer\\SessionCallout.jsx",
+      "source_location": "L63",
+      "id": "sessioncallout_buildmessage",
+      "community": 21
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\SessionCallout.jsx",
+      "source_location": "L28",
+      "weight": 1,
+      "_src": "sessioncallout",
+      "_tgt": "sessioncallout_sessioncallout",
+      "source": "sessioncallout",
+      "target": "sessioncallout_sessioncallout",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\SessionCallout.jsx",
+      "source_location": "L63",
+      "weight": 1,
+      "_src": "sessioncallout",
+      "_tgt": "sessioncallout_buildmessage",
+      "source": "sessioncallout",
+      "target": "sessioncallout_buildmessage",
+      "confidence_score": 1
+    }
+  ]
+}

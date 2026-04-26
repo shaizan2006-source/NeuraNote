@@ -1,0 +1,36 @@
+{
+  "community": 31,
+  "name": "sidebar",
+  "nodes": [
+    {
+      "label": "Sidebar.jsx",
+      "file_type": "code",
+      "source_file": "components\\layout\\Sidebar.jsx",
+      "source_location": "L1",
+      "id": "sidebar",
+      "community": 31
+    },
+    {
+      "label": "Sidebar()",
+      "file_type": "code",
+      "source_file": "components\\layout\\Sidebar.jsx",
+      "source_location": "L1",
+      "id": "sidebar_sidebar",
+      "community": 31
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\layout\\Sidebar.jsx",
+      "source_location": "L1",
+      "weight": 1,
+      "_src": "sidebar",
+      "_tgt": "sidebar_sidebar",
+      "source": "sidebar",
+      "target": "sidebar_sidebar",
+      "confidence_score": 1
+    }
+  ]
+}

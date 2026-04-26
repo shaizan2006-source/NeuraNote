@@ -1,0 +1,56 @@
+{
+  "community": 18,
+  "name": "layout-components",
+  "nodes": [
+    {
+      "label": "layout.js",
+      "file_type": "code",
+      "source_file": "app\\call-tutor\\layout.js",
+      "source_location": "L1",
+      "id": "layout",
+      "community": 18
+    },
+    {
+      "label": "RootLayout()",
+      "file_type": "code",
+      "source_file": "app\\layout.js",
+      "source_location": "L43",
+      "id": "layout_rootlayout",
+      "community": 18
+    },
+    {
+      "label": "CallTutorLayout()",
+      "file_type": "code",
+      "source_file": "app\\call-tutor\\layout.js",
+      "source_location": "L6",
+      "id": "layout_calltutorlayout",
+      "community": 18
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.js",
+      "source_location": "L43",
+      "weight": 1,
+      "_src": "layout",
+      "_tgt": "layout_rootlayout",
+      "source": "layout",
+      "target": "layout_rootlayout",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\call-tutor\\layout.js",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "layout",
+      "_tgt": "layout_calltutorlayout",
+      "source": "layout",
+      "target": "layout_calltutorlayout",
+      "confidence_score": 1
+    }
+  ]
+}

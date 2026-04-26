@@ -1,0 +1,15 @@
+{
+  "community": 41,
+  "name": "biology-domain",
+  "nodes": [
+    {
+      "label": "biology.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\biology.js",
+      "source_location": "L1",
+      "id": "biology",
+      "community": 41
+    }
+  ],
+  "edges": []
+}

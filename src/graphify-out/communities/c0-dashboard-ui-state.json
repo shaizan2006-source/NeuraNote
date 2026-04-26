@@ -1,0 +1,1116 @@
+{
+  "community": 0,
+  "name": "dashboard-ui-state",
+  "nodes": [
+    {
+      "label": "AICoachSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AICoachSection.jsx",
+      "source_location": "L1",
+      "id": "aicoachsection",
+      "community": 0
+    },
+    {
+      "label": "AICoachSection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AICoachSection.jsx",
+      "source_location": "L5",
+      "id": "aicoachsection_aicoachsection",
+      "community": 0
+    },
+    {
+      "label": "AnalyticsSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AnalyticsSection.jsx",
+      "source_location": "L1",
+      "id": "analyticssection",
+      "community": 0
+    },
+    {
+      "label": "AnalyticsSection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AnalyticsSection.jsx",
+      "source_location": "L7",
+      "id": "analyticssection_analyticssection",
+      "community": 0
+    },
+    {
+      "label": "DashboardSidebar.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L1",
+      "id": "dashboardsidebar",
+      "community": 0
+    },
+    {
+      "label": "scrollTo()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L28",
+      "id": "dashboardsidebar_scrollto",
+      "community": 0
+    },
+    {
+      "label": "NavTooltip()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L36",
+      "id": "dashboardsidebar_navtooltip",
+      "community": 0
+    },
+    {
+      "label": "NavButton()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L67",
+      "id": "dashboardsidebar_navbutton",
+      "community": 0
+    },
+    {
+      "label": "SidebarContent()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L124",
+      "id": "dashboardsidebar_sidebarcontent",
+      "community": 0
+    },
+    {
+      "label": "DashboardSidebar()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L812",
+      "id": "dashboardsidebar_dashboardsidebar",
+      "community": 0
+    },
+    {
+      "label": "ExamReadinessShareCard.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L1",
+      "id": "examreadinesssharecard",
+      "community": 0
+    },
+    {
+      "label": "scoreColor()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L8",
+      "id": "examreadinesssharecard_scorecolor",
+      "community": 0
+    },
+    {
+      "label": "scoreLabel()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L14",
+      "id": "examreadinesssharecard_scorelabel",
+      "community": 0
+    },
+    {
+      "label": "CardVisual()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L21",
+      "id": "examreadinesssharecard_cardvisual",
+      "community": 0
+    },
+    {
+      "label": "ShareModal()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L114",
+      "id": "examreadinesssharecard_sharemodal",
+      "community": 0
+    },
+    {
+      "label": "ExamReadinessShareCard()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L212",
+      "id": "examreadinesssharecard_examreadinesssharecard",
+      "community": 0
+    },
+    {
+      "label": "FocusModeSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\FocusModeSection.jsx",
+      "source_location": "L1",
+      "id": "focusmodesection",
+      "community": 0
+    },
+    {
+      "label": "TimerRing()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\FocusModeSection.jsx",
+      "source_location": "L17",
+      "id": "focusmodesection_timerring",
+      "community": 0
+    },
+    {
+      "label": "SessionProgress()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\FocusModeSection.jsx",
+      "source_location": "L57",
+      "id": "focusmodesection_sessionprogress",
+      "community": 0
+    },
+    {
+      "label": "FocusModeSection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\FocusModeSection.jsx",
+      "source_location": "L76",
+      "id": "focusmodesection_focusmodesection",
+      "community": 0
+    },
+    {
+      "label": "QuizSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L1",
+      "id": "quizsection",
+      "community": 0
+    },
+    {
+      "label": "SkeletonCard()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L14",
+      "id": "quizsection_skeletoncard",
+      "community": 0
+    },
+    {
+      "label": "QuestionCard()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L46",
+      "id": "quizsection_questioncard",
+      "community": 0
+    },
+    {
+      "label": "ScoreCard()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L212",
+      "id": "quizsection_scorecard",
+      "community": 0
+    },
+    {
+      "label": "QuizSection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L315",
+      "id": "quizsection_quizsection",
+      "community": 0
+    },
+    {
+      "label": "StudyPlanSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L1",
+      "id": "studyplansection",
+      "community": 0
+    },
+    {
+      "label": "TaskRow()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L20",
+      "id": "studyplansection_taskrow",
+      "community": 0
+    },
+    {
+      "label": "ListRow()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L86",
+      "id": "studyplansection_listrow",
+      "community": 0
+    },
+    {
+      "label": "EmptyState()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L114",
+      "id": "studyplansection_emptystate",
+      "community": 0
+    },
+    {
+      "label": "AIPlanTab()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L129",
+      "id": "studyplansection_aiplantab",
+      "community": 0
+    },
+    {
+      "label": "StudyPlanSection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L358",
+      "id": "studyplansection_studyplansection",
+      "community": 0
+    },
+    {
+      "label": "UploadModal.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\UploadModal.jsx",
+      "source_location": "L1",
+      "id": "uploadmodal",
+      "community": 0
+    },
+    {
+      "label": "SmartProgressBar()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\UploadModal.jsx",
+      "source_location": "L23",
+      "id": "uploadmodal_smartprogressbar",
+      "community": 0
+    },
+    {
+      "label": "UploadModal()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\UploadModal.jsx",
+      "source_location": "L45",
+      "id": "uploadmodal_uploadmodal",
+      "community": 0
+    },
+    {
+      "label": "UploadSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L1",
+      "id": "uploadsection",
+      "community": 0
+    },
+    {
+      "label": "StreakCard()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L8",
+      "id": "uploadsection_streakcard",
+      "community": 0
+    },
+    {
+      "label": "ProgressCard()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L80",
+      "id": "uploadsection_progresscard",
+      "community": 0
+    },
+    {
+      "label": "SmartProgressBar()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L168",
+      "id": "uploadsection_smartprogressbar",
+      "community": 0
+    },
+    {
+      "label": "WeakTopicsCard()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L272",
+      "id": "uploadsection_weaktopicscard",
+      "community": 0
+    },
+    {
+      "label": "UploadSection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L365",
+      "id": "uploadsection_uploadsection",
+      "community": 0
+    },
+    {
+      "label": "WeeklyRecapCard.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\WeeklyRecapCard.jsx",
+      "source_location": "L1",
+      "id": "weeklyrecapcard",
+      "community": 0
+    },
+    {
+      "label": "getMondayKey()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\WeeklyRecapCard.jsx",
+      "source_location": "L8",
+      "id": "weeklyrecapcard_getmondaykey",
+      "community": 0
+    },
+    {
+      "label": "isSunday()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\WeeklyRecapCard.jsx",
+      "source_location": "L16",
+      "id": "weeklyrecapcard_issunday",
+      "community": 0
+    },
+    {
+      "label": "WeeklyRecapCard()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\WeeklyRecapCard.jsx",
+      "source_location": "L23",
+      "id": "weeklyrecapcard_weeklyrecapcard",
+      "community": 0
+    },
+    {
+      "label": "DashboardContext.jsx",
+      "file_type": "code",
+      "source_file": "context\\DashboardContext.jsx",
+      "source_location": "L1",
+      "id": "dashboardcontext",
+      "community": 0
+    },
+    {
+      "label": "useDashboard()",
+      "file_type": "code",
+      "source_file": "context\\DashboardContext.jsx",
+      "source_location": "L14",
+      "id": "dashboardcontext_usedashboard",
+      "community": 0
+    },
+    {
+      "label": "DashboardProvider()",
+      "file_type": "code",
+      "source_file": "context\\DashboardContext.jsx",
+      "source_location": "L218",
+      "id": "dashboardcontext_dashboardprovider",
+      "community": 0
+    }
+  ],
+  "edges": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "dashboardcontext",
+      "source": "page",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L7",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "dashboardsidebar",
+      "source": "page",
+      "target": "dashboardsidebar",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L10",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "studyplansection",
+      "source": "page",
+      "target": "studyplansection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L11",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "quizsection",
+      "source": "page",
+      "target": "quizsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L13",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "focusmodesection",
+      "source": "page",
+      "target": "focusmodesection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L14",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "analyticssection",
+      "source": "page",
+      "target": "analyticssection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L15",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "aicoachsection",
+      "source": "page",
+      "target": "aicoachsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L17",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "weeklyrecapcard",
+      "source": "page",
+      "target": "weeklyrecapcard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AICoachSection.jsx",
+      "source_location": "L3",
+      "weight": 1,
+      "_src": "aicoachsection",
+      "_tgt": "dashboardcontext",
+      "source": "aicoachsection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AICoachSection.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "aicoachsection",
+      "_tgt": "aicoachsection_aicoachsection",
+      "source": "aicoachsection",
+      "target": "aicoachsection_aicoachsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AnalyticsSection.jsx",
+      "source_location": "L4",
+      "weight": 1,
+      "_src": "analyticssection",
+      "_tgt": "dashboardcontext",
+      "source": "analyticssection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AnalyticsSection.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "analyticssection",
+      "_tgt": "examreadinesssharecard",
+      "source": "analyticssection",
+      "target": "examreadinesssharecard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AnalyticsSection.jsx",
+      "source_location": "L7",
+      "weight": 1,
+      "_src": "analyticssection",
+      "_tgt": "analyticssection_analyticssection",
+      "source": "analyticssection",
+      "target": "analyticssection_analyticssection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "dashboardcontext",
+      "source": "askaisection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\BrainSection.jsx",
+      "source_location": "L3",
+      "weight": 1,
+      "_src": "brainsection",
+      "_tgt": "dashboardcontext",
+      "source": "brainsection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "dashboardsidebar",
+      "_tgt": "dashboardcontext",
+      "source": "dashboardsidebar",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L28",
+      "weight": 1,
+      "_src": "dashboardsidebar",
+      "_tgt": "dashboardsidebar_scrollto",
+      "source": "dashboardsidebar",
+      "target": "dashboardsidebar_scrollto",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L36",
+      "weight": 1,
+      "_src": "dashboardsidebar",
+      "_tgt": "dashboardsidebar_navtooltip",
+      "source": "dashboardsidebar",
+      "target": "dashboardsidebar_navtooltip",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L67",
+      "weight": 1,
+      "_src": "dashboardsidebar",
+      "_tgt": "dashboardsidebar_navbutton",
+      "source": "dashboardsidebar",
+      "target": "dashboardsidebar_navbutton",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L124",
+      "weight": 1,
+      "_src": "dashboardsidebar",
+      "_tgt": "dashboardsidebar_sidebarcontent",
+      "source": "dashboardsidebar",
+      "target": "dashboardsidebar_sidebarcontent",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\DashboardSidebar.jsx",
+      "source_location": "L812",
+      "weight": 1,
+      "_src": "dashboardsidebar",
+      "_tgt": "dashboardsidebar_dashboardsidebar",
+      "source": "dashboardsidebar",
+      "target": "dashboardsidebar_dashboardsidebar",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "examreadinesssharecard",
+      "_tgt": "dashboardcontext",
+      "source": "examreadinesssharecard",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "examreadinesssharecard",
+      "_tgt": "examreadinesssharecard_scorecolor",
+      "source": "examreadinesssharecard",
+      "target": "examreadinesssharecard_scorecolor",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L14",
+      "weight": 1,
+      "_src": "examreadinesssharecard",
+      "_tgt": "examreadinesssharecard_scorelabel",
+      "source": "examreadinesssharecard",
+      "target": "examreadinesssharecard_scorelabel",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L21",
+      "weight": 1,
+      "_src": "examreadinesssharecard",
+      "_tgt": "examreadinesssharecard_cardvisual",
+      "source": "examreadinesssharecard",
+      "target": "examreadinesssharecard_cardvisual",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L114",
+      "weight": 1,
+      "_src": "examreadinesssharecard",
+      "_tgt": "examreadinesssharecard_sharemodal",
+      "source": "examreadinesssharecard",
+      "target": "examreadinesssharecard_sharemodal",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L212",
+      "weight": 1,
+      "_src": "examreadinesssharecard",
+      "_tgt": "examreadinesssharecard_examreadinesssharecard",
+      "source": "examreadinesssharecard",
+      "target": "examreadinesssharecard_examreadinesssharecard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L22",
+      "weight": 1,
+      "_src": "examreadinesssharecard_cardvisual",
+      "_tgt": "examreadinesssharecard_scorecolor",
+      "source": "examreadinesssharecard_scorecolor",
+      "target": "examreadinesssharecard_cardvisual",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamReadinessShareCard.jsx",
+      "source_location": "L83",
+      "weight": 1,
+      "_src": "examreadinesssharecard_cardvisual",
+      "_tgt": "examreadinesssharecard_scorelabel",
+      "source": "examreadinesssharecard_scorelabel",
+      "target": "examreadinesssharecard_cardvisual",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamSection.jsx",
+      "source_location": "L3",
+      "weight": 1,
+      "_src": "examsection",
+      "_tgt": "dashboardcontext",
+      "source": "examsection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\FocusModeSection.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "focusmodesection",
+      "_tgt": "dashboardcontext",
+      "source": "focusmodesection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\FocusModeSection.jsx",
+      "source_location": "L17",
+      "weight": 1,
+      "_src": "focusmodesection",
+      "_tgt": "focusmodesection_timerring",
+      "source": "focusmodesection",
+      "target": "focusmodesection_timerring",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\FocusModeSection.jsx",
+      "source_location": "L57",
+      "weight": 1,
+      "_src": "focusmodesection",
+      "_tgt": "focusmodesection_sessionprogress",
+      "source": "focusmodesection",
+      "target": "focusmodesection_sessionprogress",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\FocusModeSection.jsx",
+      "source_location": "L76",
+      "weight": 1,
+      "_src": "focusmodesection",
+      "_tgt": "focusmodesection_focusmodesection",
+      "source": "focusmodesection",
+      "target": "focusmodesection_focusmodesection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "quizsection",
+      "_tgt": "dashboardcontext",
+      "source": "quizsection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L14",
+      "weight": 1,
+      "_src": "quizsection",
+      "_tgt": "quizsection_skeletoncard",
+      "source": "quizsection",
+      "target": "quizsection_skeletoncard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L46",
+      "weight": 1,
+      "_src": "quizsection",
+      "_tgt": "quizsection_questioncard",
+      "source": "quizsection",
+      "target": "quizsection_questioncard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L212",
+      "weight": 1,
+      "_src": "quizsection",
+      "_tgt": "quizsection_scorecard",
+      "source": "quizsection",
+      "target": "quizsection_scorecard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\QuizSection.jsx",
+      "source_location": "L315",
+      "weight": 1,
+      "_src": "quizsection",
+      "_tgt": "quizsection_quizsection",
+      "source": "quizsection",
+      "target": "quizsection_quizsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "studyplansection",
+      "_tgt": "dashboardcontext",
+      "source": "studyplansection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L20",
+      "weight": 1,
+      "_src": "studyplansection",
+      "_tgt": "studyplansection_taskrow",
+      "source": "studyplansection",
+      "target": "studyplansection_taskrow",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L86",
+      "weight": 1,
+      "_src": "studyplansection",
+      "_tgt": "studyplansection_listrow",
+      "source": "studyplansection",
+      "target": "studyplansection_listrow",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L114",
+      "weight": 1,
+      "_src": "studyplansection",
+      "_tgt": "studyplansection_emptystate",
+      "source": "studyplansection",
+      "target": "studyplansection_emptystate",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L129",
+      "weight": 1,
+      "_src": "studyplansection",
+      "_tgt": "studyplansection_aiplantab",
+      "source": "studyplansection",
+      "target": "studyplansection_aiplantab",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\StudyPlanSection.jsx",
+      "source_location": "L358",
+      "weight": 1,
+      "_src": "studyplansection",
+      "_tgt": "studyplansection_studyplansection",
+      "source": "studyplansection",
+      "target": "studyplansection_studyplansection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\UploadModal.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "uploadmodal",
+      "_tgt": "dashboardcontext",
+      "source": "uploadmodal",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\UploadModal.jsx",
+      "source_location": "L23",
+      "weight": 1,
+      "_src": "uploadmodal",
+      "_tgt": "uploadmodal_smartprogressbar",
+      "source": "uploadmodal",
+      "target": "uploadmodal_smartprogressbar",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\UploadModal.jsx",
+      "source_location": "L45",
+      "weight": 1,
+      "_src": "uploadmodal",
+      "_tgt": "uploadmodal_uploadmodal",
+      "source": "uploadmodal",
+      "target": "uploadmodal_uploadmodal",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "uploadsection",
+      "_tgt": "dashboardcontext",
+      "source": "uploadsection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "uploadsection",
+      "_tgt": "uploadsection_streakcard",
+      "source": "uploadsection",
+      "target": "uploadsection_streakcard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L80",
+      "weight": 1,
+      "_src": "uploadsection",
+      "_tgt": "uploadsection_progresscard",
+      "source": "uploadsection",
+      "target": "uploadsection_progresscard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L168",
+      "weight": 1,
+      "_src": "uploadsection",
+      "_tgt": "uploadsection_smartprogressbar",
+      "source": "uploadsection",
+      "target": "uploadsection_smartprogressbar",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L272",
+      "weight": 1,
+      "_src": "uploadsection",
+      "_tgt": "uploadsection_weaktopicscard",
+      "source": "uploadsection",
+      "target": "uploadsection_weaktopicscard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\UploadSection.jsx",
+      "source_location": "L365",
+      "weight": 1,
+      "_src": "uploadsection",
+      "_tgt": "uploadsection_uploadsection",
+      "source": "uploadsection",
+      "target": "uploadsection_uploadsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\WeeklyRecapCard.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "weeklyrecapcard",
+      "_tgt": "dashboardcontext",
+      "source": "weeklyrecapcard",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\WeeklyRecapCard.jsx",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "weeklyrecapcard",
+      "_tgt": "weeklyrecapcard_getmondaykey",
+      "source": "weeklyrecapcard",
+      "target": "weeklyrecapcard_getmondaykey",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\WeeklyRecapCard.jsx",
+      "source_location": "L16",
+      "weight": 1,
+      "_src": "weeklyrecapcard",
+      "_tgt": "weeklyrecapcard_issunday",
+      "source": "weeklyrecapcard",
+      "target": "weeklyrecapcard_issunday",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\WeeklyRecapCard.jsx",
+      "source_location": "L23",
+      "weight": 1,
+      "_src": "weeklyrecapcard",
+      "_tgt": "weeklyrecapcard_weeklyrecapcard",
+      "source": "weeklyrecapcard",
+      "target": "weeklyrecapcard_weeklyrecapcard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\WeeklyRecapCard.jsx",
+      "source_location": "L59",
+      "weight": 1,
+      "_src": "weeklyrecapcard_weeklyrecapcard",
+      "_tgt": "weeklyrecapcard_issunday",
+      "source": "weeklyrecapcard_issunday",
+      "target": "weeklyrecapcard_weeklyrecapcard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\DashboardContext.jsx",
+      "source_location": "L14",
+      "weight": 1,
+      "_src": "dashboardcontext",
+      "_tgt": "dashboardcontext_usedashboard",
+      "source": "dashboardcontext",
+      "target": "dashboardcontext_usedashboard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\DashboardContext.jsx",
+      "source_location": "L218",
+      "weight": 1,
+      "_src": "dashboardcontext",
+      "_tgt": "dashboardcontext_dashboardprovider",
+      "source": "dashboardcontext",
+      "target": "dashboardcontext_dashboardprovider",
+      "confidence_score": 1
+    }
+  ]
+}

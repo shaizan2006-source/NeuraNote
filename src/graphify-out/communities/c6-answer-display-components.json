@@ -1,0 +1,504 @@
+{
+  "community": 6,
+  "name": "answer-display-components",
+  "nodes": [
+    {
+      "label": "ThinkingAnimation.jsx",
+      "file_type": "code",
+      "source_file": "components\\ThinkingAnimation.jsx",
+      "source_location": "L1",
+      "id": "thinkinganimation",
+      "community": 6
+    },
+    {
+      "label": "ThinkingAnimation()",
+      "file_type": "code",
+      "source_file": "components\\ThinkingAnimation.jsx",
+      "source_location": "L20",
+      "id": "thinkinganimation_thinkinganimation",
+      "community": 6
+    },
+    {
+      "label": "AnswerSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\answer\\AnswerSection.jsx",
+      "source_location": "L1",
+      "id": "answersection",
+      "community": 6
+    },
+    {
+      "label": "AnswerSection()",
+      "file_type": "code",
+      "source_file": "components\\answer\\AnswerSection.jsx",
+      "source_location": "L14",
+      "id": "answersection_answersection",
+      "community": 6
+    },
+    {
+      "label": "hexToRgba()",
+      "file_type": "code",
+      "source_file": "components\\answer\\AnswerSection.jsx",
+      "source_location": "L235",
+      "id": "answersection_hextorgba",
+      "community": 6
+    },
+    {
+      "label": "DiagramBlock.jsx",
+      "file_type": "code",
+      "source_file": "components\\answer\\DiagramBlock.jsx",
+      "source_location": "L1",
+      "id": "diagramblock",
+      "community": 6
+    },
+    {
+      "label": "DiagramBlock()",
+      "file_type": "code",
+      "source_file": "components\\answer\\DiagramBlock.jsx",
+      "source_location": "L9",
+      "id": "diagramblock_diagramblock",
+      "community": 6
+    },
+    {
+      "label": "QuickSummary.jsx",
+      "file_type": "code",
+      "source_file": "components\\answer\\QuickSummary.jsx",
+      "source_location": "L1",
+      "id": "quicksummary",
+      "community": 6
+    },
+    {
+      "label": "QuickSummary()",
+      "file_type": "code",
+      "source_file": "components\\answer\\QuickSummary.jsx",
+      "source_location": "L10",
+      "id": "quicksummary_quicksummary",
+      "community": 6
+    },
+    {
+      "label": "StructuredAnswer.jsx",
+      "file_type": "code",
+      "source_file": "components\\answer\\StructuredAnswer.jsx",
+      "source_location": "L1",
+      "id": "structuredanswer",
+      "community": 6
+    },
+    {
+      "label": "StructuredAnswer()",
+      "file_type": "code",
+      "source_file": "components\\answer\\StructuredAnswer.jsx",
+      "source_location": "L16",
+      "id": "structuredanswer_structuredanswer",
+      "community": 6
+    },
+    {
+      "label": "AskAISection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L1",
+      "id": "askaisection",
+      "community": 6
+    },
+    {
+      "label": "hashQuestion()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L10",
+      "id": "askaisection_hashquestion",
+      "community": 6
+    },
+    {
+      "label": "CopyBtn()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L19",
+      "id": "askaisection_copybtn",
+      "community": 6
+    },
+    {
+      "label": "UserMessage()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L49",
+      "id": "askaisection_usermessage",
+      "community": 6
+    },
+    {
+      "label": "AIMessage()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L76",
+      "id": "askaisection_aimessage",
+      "community": 6
+    },
+    {
+      "label": "AskAISection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L178",
+      "id": "askaisection_askaisection",
+      "community": 6
+    },
+    {
+      "label": "DynamicGreeting.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\DynamicGreeting.jsx",
+      "source_location": "L1",
+      "id": "dynamicgreeting",
+      "community": 6
+    },
+    {
+      "label": "DynamicGreeting()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\DynamicGreeting.jsx",
+      "source_location": "L23",
+      "id": "dynamicgreeting_dynamicgreeting",
+      "community": 6
+    },
+    {
+      "label": "parseAnswerSections.js",
+      "file_type": "code",
+      "source_file": "lib\\parseAnswerSections.js",
+      "source_location": "L1",
+      "id": "parseanswersections",
+      "community": 6
+    },
+    {
+      "label": "parseAnswerSections()",
+      "file_type": "code",
+      "source_file": "lib\\parseAnswerSections.js",
+      "source_location": "L23",
+      "id": "parseanswersections_parseanswersections",
+      "community": 6
+    },
+    {
+      "label": "extractQuickSummary()",
+      "file_type": "code",
+      "source_file": "lib\\parseAnswerSections.js",
+      "source_location": "L110",
+      "id": "parseanswersections_extractquicksummary",
+      "community": 6
+    },
+    {
+      "label": "getSectionMeta()",
+      "file_type": "code",
+      "source_file": "lib\\parseAnswerSections.js",
+      "source_location": "L174",
+      "id": "parseanswersections_getsectionmeta",
+      "community": 6
+    }
+  ],
+  "edges": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\ask-ai\\page.js",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "askaisection",
+      "source": "page",
+      "target": "askaisection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ThinkingAnimation.jsx",
+      "source_location": "L20",
+      "weight": 1,
+      "_src": "thinkinganimation",
+      "_tgt": "thinkinganimation_thinkinganimation",
+      "source": "thinkinganimation",
+      "target": "thinkinganimation_thinkinganimation",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "thinkinganimation",
+      "source": "thinkinganimation",
+      "target": "askaisection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\AnswerSection.jsx",
+      "source_location": "L7",
+      "weight": 1,
+      "_src": "answersection",
+      "_tgt": "diagramblock",
+      "source": "answersection",
+      "target": "diagramblock",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\AnswerSection.jsx",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "answersection",
+      "_tgt": "parseanswersections",
+      "source": "answersection",
+      "target": "parseanswersections",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\AnswerSection.jsx",
+      "source_location": "L14",
+      "weight": 1,
+      "_src": "answersection",
+      "_tgt": "answersection_answersection",
+      "source": "answersection",
+      "target": "answersection_answersection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\AnswerSection.jsx",
+      "source_location": "L235",
+      "weight": 1,
+      "_src": "answersection",
+      "_tgt": "answersection_hextorgba",
+      "source": "answersection",
+      "target": "answersection_hextorgba",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\StructuredAnswer.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "structuredanswer",
+      "_tgt": "answersection",
+      "source": "answersection",
+      "target": "structuredanswer",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\AnswerSection.jsx",
+      "source_location": "L35",
+      "weight": 1,
+      "_src": "answersection_answersection",
+      "_tgt": "answersection_hextorgba",
+      "source": "answersection_answersection",
+      "target": "answersection_hextorgba",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\DiagramBlock.jsx",
+      "source_location": "L9",
+      "weight": 1,
+      "_src": "diagramblock",
+      "_tgt": "diagramblock_diagramblock",
+      "source": "diagramblock",
+      "target": "diagramblock_diagramblock",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\QuickSummary.jsx",
+      "source_location": "L10",
+      "weight": 1,
+      "_src": "quicksummary",
+      "_tgt": "quicksummary_quicksummary",
+      "source": "quicksummary",
+      "target": "quicksummary_quicksummary",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\StructuredAnswer.jsx",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "structuredanswer",
+      "_tgt": "quicksummary",
+      "source": "quicksummary",
+      "target": "structuredanswer",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\StructuredAnswer.jsx",
+      "source_location": "L4",
+      "weight": 1,
+      "_src": "structuredanswer",
+      "_tgt": "parseanswersections",
+      "source": "structuredanswer",
+      "target": "parseanswersections",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\StructuredAnswer.jsx",
+      "source_location": "L16",
+      "weight": 1,
+      "_src": "structuredanswer",
+      "_tgt": "structuredanswer_structuredanswer",
+      "source": "structuredanswer",
+      "target": "structuredanswer_structuredanswer",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L7",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "structuredanswer",
+      "source": "structuredanswer",
+      "target": "askaisection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "dashboardcontext",
+      "source": "askaisection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "dynamicgreeting",
+      "source": "askaisection",
+      "target": "dynamicgreeting",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L10",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "askaisection_hashquestion",
+      "source": "askaisection",
+      "target": "askaisection_hashquestion",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L19",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "askaisection_copybtn",
+      "source": "askaisection",
+      "target": "askaisection_copybtn",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L49",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "askaisection_usermessage",
+      "source": "askaisection",
+      "target": "askaisection_usermessage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L76",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "askaisection_aimessage",
+      "source": "askaisection",
+      "target": "askaisection_aimessage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\AskAISection.jsx",
+      "source_location": "L178",
+      "weight": 1,
+      "_src": "askaisection",
+      "_tgt": "askaisection_askaisection",
+      "source": "askaisection",
+      "target": "askaisection_askaisection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\DynamicGreeting.jsx",
+      "source_location": "L23",
+      "weight": 1,
+      "_src": "dynamicgreeting",
+      "_tgt": "dynamicgreeting_dynamicgreeting",
+      "source": "dynamicgreeting",
+      "target": "dynamicgreeting_dynamicgreeting",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\parseAnswerSections.js",
+      "source_location": "L23",
+      "weight": 1,
+      "_src": "parseanswersections",
+      "_tgt": "parseanswersections_parseanswersections",
+      "source": "parseanswersections",
+      "target": "parseanswersections_parseanswersections",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\parseAnswerSections.js",
+      "source_location": "L110",
+      "weight": 1,
+      "_src": "parseanswersections",
+      "_tgt": "parseanswersections_extractquicksummary",
+      "source": "parseanswersections",
+      "target": "parseanswersections_extractquicksummary",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\parseAnswerSections.js",
+      "source_location": "L174",
+      "weight": 1,
+      "_src": "parseanswersections",
+      "_tgt": "parseanswersections_getsectionmeta",
+      "source": "parseanswersections",
+      "target": "parseanswersections_getsectionmeta",
+      "confidence_score": 1
+    }
+  ]
+}

@@ -11,7 +11,7 @@ import { getSectionMeta } from "@/lib/parseAnswerSections";
  * AnswerSection — a single section card from the structured answer.
  * Renders its Markdown content with colour-coded left border.
  */
-export default function AnswerSection({ heading, content, index = 0, isStreaming = false }) {
+export default function AnswerSection({ heading, content, index = 0, isStreaming = false, isLast = false }) {
   const [copied, setCopied] = useState(false);
   const meta = getSectionMeta(heading);
 
@@ -29,12 +29,9 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, delay: index * 0.04, ease: [0.4, 0, 0.2, 1] }}
       style={{
-        marginBottom:  12,
-        borderRadius:  '0 10px 10px 0',
-        borderLeft:    `3px solid ${meta.accent}`,
-        background:    hexToRgba(meta.accent, 0.04),
-        padding:       '14px 16px 14px 18px',
-        position:      'relative',
+        padding:      '12px 0 16px',
+        position:     'relative',
+        borderBottom: isLast ? 'none' : '1px solid rgba(255,255,255,0.05)',
       }}
     >
       {/* Section header */}
@@ -136,7 +133,7 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
           // react-markdown v10 removed the `inline` prop. Detect block code by
           // language class OR presence of a newline (fenced blocks always have one).
           // Block code returns a <div>, so it MUST never be rendered inside <p>.
-          code: ({ className, children, ...props }) => {
+          code: ({ className, children }) => {
             const codeStr = String(children ?? '');
             const match = /language-(\w+)/.exec(className || '');
             const isBlock = !!match || codeStr.includes('\n');
@@ -231,10 +228,3 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
   );
 }
 
-// ── Utility ───────────────────────────────────────────────────
-function hexToRgba(hex, alpha) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r},${g},${b},${alpha})`;
-}

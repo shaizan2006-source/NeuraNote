@@ -1,0 +1,15 @@
+{
+  "community": 47,
+  "name": "general-domain",
+  "nodes": [
+    {
+      "label": "general.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\general.js",
+      "source_location": "L1",
+      "id": "general",
+      "community": 47
+    }
+  ],
+  "edges": []
+}

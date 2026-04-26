@@ -1,0 +1,312 @@
+{
+  "community": 9,
+  "name": "template-generation",
+  "nodes": [
+    {
+      "label": "template.ts",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L1",
+      "id": "template",
+      "community": 9
+    },
+    {
+      "label": "exists()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L51",
+      "id": "template_exists",
+      "community": 9
+    },
+    {
+      "label": "loadPlatformConfig()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L63",
+      "id": "template_loadplatformconfig",
+      "community": 9
+    },
+    {
+      "label": "loadAllPlatformConfigs()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L77",
+      "id": "template_loadallplatformconfigs",
+      "community": 9
+    },
+    {
+      "label": "loadTemplate()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L95",
+      "id": "template_loadtemplate",
+      "community": 9
+    },
+    {
+      "label": "renderFrontmatter()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L103",
+      "id": "template_renderfrontmatter",
+      "community": 9
+    },
+    {
+      "label": "renderSkillFile()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L123",
+      "id": "template_renderskillfile",
+      "community": 9
+    },
+    {
+      "label": "copyDataAndScripts()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L162",
+      "id": "template_copydataandscripts",
+      "community": 9
+    },
+    {
+      "label": "generatePlatformFiles()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L187",
+      "id": "template_generateplatformfiles",
+      "community": 9
+    },
+    {
+      "label": "generateAllPlatformFiles()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L223",
+      "id": "template_generateallplatformfiles",
+      "community": 9
+    },
+    {
+      "label": "getSupportedAITypes()",
+      "file_type": "code",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L241",
+      "id": "template_getsupportedaitypes",
+      "community": 9
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L51",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_exists",
+      "source": "template",
+      "target": "template_exists",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L63",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_loadplatformconfig",
+      "source": "template",
+      "target": "template_loadplatformconfig",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L77",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_loadallplatformconfigs",
+      "source": "template",
+      "target": "template_loadallplatformconfigs",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L95",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_loadtemplate",
+      "source": "template",
+      "target": "template_loadtemplate",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L103",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_renderfrontmatter",
+      "source": "template",
+      "target": "template_renderfrontmatter",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L123",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_renderskillfile",
+      "source": "template",
+      "target": "template_renderskillfile",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L162",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_copydataandscripts",
+      "source": "template",
+      "target": "template_copydataandscripts",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L187",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_generateplatformfiles",
+      "source": "template",
+      "target": "template_generateplatformfiles",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L223",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_generateallplatformfiles",
+      "source": "template",
+      "target": "template_generateallplatformfiles",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L241",
+      "weight": 1,
+      "_src": "template",
+      "_tgt": "template_getsupportedaitypes",
+      "source": "template",
+      "target": "template_getsupportedaitypes",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L170",
+      "weight": 1,
+      "_src": "template_copydataandscripts",
+      "_tgt": "template_exists",
+      "source": "template_exists",
+      "target": "template_copydataandscripts",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L82",
+      "weight": 1,
+      "_src": "template_loadallplatformconfigs",
+      "_tgt": "template_loadplatformconfig",
+      "source": "template_loadplatformconfig",
+      "target": "template_loadallplatformconfigs",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L192",
+      "weight": 1,
+      "_src": "template_generateplatformfiles",
+      "_tgt": "template_loadplatformconfig",
+      "source": "template_loadplatformconfig",
+      "target": "template_generateplatformfiles",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L125",
+      "weight": 1,
+      "_src": "template_renderskillfile",
+      "_tgt": "template_loadtemplate",
+      "source": "template_loadtemplate",
+      "target": "template_renderskillfile",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L134",
+      "weight": 1,
+      "_src": "template_renderskillfile",
+      "_tgt": "template_renderfrontmatter",
+      "source": "template_renderfrontmatter",
+      "target": "template_renderskillfile",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L209",
+      "weight": 1,
+      "_src": "template_generateplatformfiles",
+      "_tgt": "template_renderskillfile",
+      "source": "template_renderskillfile",
+      "target": "template_generateplatformfiles",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L215",
+      "weight": 1,
+      "_src": "template_generateplatformfiles",
+      "_tgt": "template_copydataandscripts",
+      "source": "template_copydataandscripts",
+      "target": "template_generateplatformfiles",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ui-ux-pro-max-skill\\cli\\src\\utils\\template.ts",
+      "source_location": "L228",
+      "weight": 1,
+      "_src": "template_generateallplatformfiles",
+      "_tgt": "template_generateplatformfiles",
+      "source": "template_generateplatformfiles",
+      "target": "template_generateallplatformfiles",
+      "confidence_score": 1
+    }
+  ]
+}

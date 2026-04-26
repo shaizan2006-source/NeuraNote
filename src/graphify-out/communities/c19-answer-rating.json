@@ -1,0 +1,68 @@
+{
+  "community": 19,
+  "name": "answer-rating",
+  "nodes": [
+    {
+      "label": "AnswerRating.jsx",
+      "file_type": "code",
+      "source_file": "components\\answer\\AnswerRating.jsx",
+      "source_location": "L1",
+      "id": "answerrating",
+      "community": 19
+    },
+    {
+      "label": "AnswerRating()",
+      "file_type": "code",
+      "source_file": "components\\answer\\AnswerRating.jsx",
+      "source_location": "L10",
+      "id": "answerrating_answerrating",
+      "community": 19
+    },
+    {
+      "label": "ratingBtnStyle()",
+      "file_type": "code",
+      "source_file": "components\\answer\\AnswerRating.jsx",
+      "source_location": "L117",
+      "id": "answerrating_ratingbtnstyle",
+      "community": 19
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\AnswerRating.jsx",
+      "source_location": "L10",
+      "weight": 1,
+      "_src": "answerrating",
+      "_tgt": "answerrating_answerrating",
+      "source": "answerrating",
+      "target": "answerrating_answerrating",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\AnswerRating.jsx",
+      "source_location": "L117",
+      "weight": 1,
+      "_src": "answerrating",
+      "_tgt": "answerrating_ratingbtnstyle",
+      "source": "answerrating",
+      "target": "answerrating_ratingbtnstyle",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\AnswerRating.jsx",
+      "source_location": "L60",
+      "weight": 1,
+      "_src": "answerrating_answerrating",
+      "_tgt": "answerrating_ratingbtnstyle",
+      "source": "answerrating_answerrating",
+      "target": "answerrating_ratingbtnstyle",
+      "confidence_score": 1
+    }
+  ]
+}

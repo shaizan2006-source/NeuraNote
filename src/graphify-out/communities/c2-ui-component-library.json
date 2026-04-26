@@ -1,0 +1,944 @@
+{
+  "community": 2,
+  "name": "ui-component-library",
+  "nodes": [
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L1",
+      "id": "page",
+      "community": 2
+    },
+    {
+      "label": "FadeUp()",
+      "file_type": "code",
+      "source_file": "app\\page.js",
+      "source_location": "L8",
+      "id": "page_fadeup",
+      "community": 2
+    },
+    {
+      "label": "Home()",
+      "file_type": "code",
+      "source_file": "app\\page.js",
+      "source_location": "L70",
+      "id": "page_home",
+      "community": 2
+    },
+    {
+      "label": "AskAIInner()",
+      "file_type": "code",
+      "source_file": "app\\ask-ai\\page.js",
+      "source_location": "L10",
+      "id": "page_askaiinner",
+      "community": 2
+    },
+    {
+      "label": "AskAIPage()",
+      "file_type": "code",
+      "source_file": "app\\ask-ai\\page.js",
+      "source_location": "L87",
+      "id": "page_askaipage",
+      "community": 2
+    },
+    {
+      "label": "getGreeting()",
+      "file_type": "code",
+      "source_file": "app\\call-tutor\\page.js",
+      "source_location": "L36",
+      "id": "page_getgreeting",
+      "community": 2
+    },
+    {
+      "label": "getSupportedMimeType()",
+      "file_type": "code",
+      "source_file": "app\\call-tutor\\page.js",
+      "source_location": "L41",
+      "id": "page_getsupportedmimetype",
+      "community": 2
+    },
+    {
+      "label": "fmtTime()",
+      "file_type": "code",
+      "source_file": "app\\call-tutor\\page.js",
+      "source_location": "L49",
+      "id": "page_fmttime",
+      "community": 2
+    },
+    {
+      "label": "CallTutorPage()",
+      "file_type": "code",
+      "source_file": "app\\call-tutor\\page.js",
+      "source_location": "L54",
+      "id": "page_calltutorpage",
+      "community": 2
+    },
+    {
+      "label": "ChatPage()",
+      "file_type": "code",
+      "source_file": "app\\chat\\page.js",
+      "source_location": "L6",
+      "id": "page_chatpage",
+      "community": 2
+    },
+    {
+      "label": "StudyTab()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L27",
+      "id": "page_studytab",
+      "community": 2
+    },
+    {
+      "label": "PracticeTab()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L38",
+      "id": "page_practicetab",
+      "community": 2
+    },
+    {
+      "label": "AnalyzeTab()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L54",
+      "id": "page_analyzetab",
+      "community": 2
+    },
+    {
+      "label": "DashboardInner()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L74",
+      "id": "page_dashboardinner",
+      "community": 2
+    },
+    {
+      "label": "DashboardPage()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L156",
+      "id": "page_dashboardpage",
+      "community": 2
+    },
+    {
+      "label": "LoginPage()",
+      "file_type": "code",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L20",
+      "id": "page_loginpage",
+      "community": 2
+    },
+    {
+      "label": "Divider()",
+      "file_type": "code",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L234",
+      "id": "page_divider",
+      "community": 2
+    },
+    {
+      "label": "Spinner()",
+      "file_type": "code",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L244",
+      "id": "page_spinner",
+      "community": 2
+    },
+    {
+      "label": "GoogleIcon()",
+      "file_type": "code",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L255",
+      "id": "page_googleicon",
+      "community": 2
+    },
+    {
+      "label": "OnboardingPage()",
+      "file_type": "code",
+      "source_file": "app\\onboarding\\page.js",
+      "source_location": "L25",
+      "id": "page_onboardingpage",
+      "community": 2
+    },
+    {
+      "label": "PricingPage()",
+      "file_type": "code",
+      "source_file": "app\\pricing\\page.js",
+      "source_location": "L91",
+      "id": "page_pricingpage",
+      "community": 2
+    },
+    {
+      "label": "loadRazorpayScript()",
+      "file_type": "code",
+      "source_file": "app\\pricing\\page.js",
+      "source_location": "L291",
+      "id": "page_loadrazorpayscript",
+      "community": 2
+    },
+    {
+      "label": "SignupPage()",
+      "file_type": "code",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L17",
+      "id": "page_signuppage",
+      "community": 2
+    },
+    {
+      "label": "Rule()",
+      "file_type": "code",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L225",
+      "id": "page_rule",
+      "community": 2
+    },
+    {
+      "label": "ErrorBoundary.jsx",
+      "file_type": "code",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L1",
+      "id": "errorboundary",
+      "community": 2
+    },
+    {
+      "label": "ErrorBoundary",
+      "file_type": "code",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L5",
+      "id": "errorboundary_errorboundary",
+      "community": 2
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L6",
+      "id": "errorboundary_errorboundary_constructor",
+      "community": 2
+    },
+    {
+      "label": ".getDerivedStateFromError()",
+      "file_type": "code",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L11",
+      "id": "errorboundary_errorboundary_getderivedstatefromerror",
+      "community": 2
+    },
+    {
+      "label": ".componentDidCatch()",
+      "file_type": "code",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L15",
+      "id": "errorboundary_errorboundary_componentdidcatch",
+      "community": 2
+    },
+    {
+      "label": ".render()",
+      "file_type": "code",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L19",
+      "id": "errorboundary_errorboundary_render",
+      "community": 2
+    },
+    {
+      "label": "ExamSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\ExamSection.jsx",
+      "source_location": "L1",
+      "id": "examsection",
+      "community": 2
+    },
+    {
+      "label": "ExamSection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\ExamSection.jsx",
+      "source_location": "L5",
+      "id": "examsection_examsection",
+      "community": 2
+    },
+    {
+      "label": "VoiceCallSection.jsx",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\VoiceCallSection.jsx",
+      "source_location": "L1",
+      "id": "voicecallsection",
+      "community": 2
+    },
+    {
+      "label": "VoiceCallSection()",
+      "file_type": "code",
+      "source_file": "components\\dashboard\\VoiceCallSection.jsx",
+      "source_location": "L5",
+      "id": "voicecallsection_voicecallsection",
+      "community": 2
+    },
+    {
+      "label": "MilestoneToast.jsx",
+      "file_type": "code",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L1",
+      "id": "milestonetoast",
+      "community": 2
+    },
+    {
+      "label": "persist()",
+      "file_type": "code",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L29",
+      "id": "milestonetoast_persist",
+      "community": 2
+    },
+    {
+      "label": "checkMilestones()",
+      "file_type": "code",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L35",
+      "id": "milestonetoast_checkmilestones",
+      "community": 2
+    },
+    {
+      "label": "Toast()",
+      "file_type": "code",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L47",
+      "id": "milestonetoast_toast",
+      "community": 2
+    },
+    {
+      "label": "MilestoneToast()",
+      "file_type": "code",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L87",
+      "id": "milestonetoast_milestonetoast",
+      "community": 2
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.js",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_fadeup",
+      "source": "page",
+      "target": "page_fadeup",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.js",
+      "source_location": "L70",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_home",
+      "source": "page",
+      "target": "page_home",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "dashboardcontext",
+      "source": "page",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "errorboundary",
+      "source": "page",
+      "target": "errorboundary",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L7",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "dashboardsidebar",
+      "source": "page",
+      "target": "dashboardsidebar",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "milestonetoast",
+      "source": "page",
+      "target": "milestonetoast",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\ask-ai\\page.js",
+      "source_location": "L8",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "askaisection",
+      "source": "page",
+      "target": "askaisection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\ask-ai\\page.js",
+      "source_location": "L10",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_askaiinner",
+      "source": "page",
+      "target": "page_askaiinner",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\ask-ai\\page.js",
+      "source_location": "L87",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_askaipage",
+      "source": "page",
+      "target": "page_askaipage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\call-tutor\\page.js",
+      "source_location": "L36",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_getgreeting",
+      "source": "page",
+      "target": "page_getgreeting",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\call-tutor\\page.js",
+      "source_location": "L41",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_getsupportedmimetype",
+      "source": "page",
+      "target": "page_getsupportedmimetype",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\call-tutor\\page.js",
+      "source_location": "L49",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_fmttime",
+      "source": "page",
+      "target": "page_fmttime",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\call-tutor\\page.js",
+      "source_location": "L54",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_calltutorpage",
+      "source": "page",
+      "target": "page_calltutorpage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\chat\\page.js",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_chatpage",
+      "source": "page",
+      "target": "page_chatpage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L9",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "brainsection",
+      "source": "page",
+      "target": "brainsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L10",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "studyplansection",
+      "source": "page",
+      "target": "studyplansection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L11",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "quizsection",
+      "source": "page",
+      "target": "quizsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L12",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "examsection",
+      "source": "page",
+      "target": "examsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L13",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "focusmodesection",
+      "source": "page",
+      "target": "focusmodesection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L14",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "analyticssection",
+      "source": "page",
+      "target": "analyticssection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L15",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "aicoachsection",
+      "source": "page",
+      "target": "aicoachsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L16",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "voicecallsection",
+      "source": "page",
+      "target": "voicecallsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L17",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "weeklyrecapcard",
+      "source": "page",
+      "target": "weeklyrecapcard",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L27",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_studytab",
+      "source": "page",
+      "target": "page_studytab",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L38",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_practicetab",
+      "source": "page",
+      "target": "page_practicetab",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L54",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_analyzetab",
+      "source": "page",
+      "target": "page_analyzetab",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L74",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_dashboardinner",
+      "source": "page",
+      "target": "page_dashboardinner",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L156",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_dashboardpage",
+      "source": "page",
+      "target": "page_dashboardpage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "auth",
+      "source": "page",
+      "target": "auth",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L20",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_loginpage",
+      "source": "page",
+      "target": "page_loginpage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L234",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_divider",
+      "source": "page",
+      "target": "page_divider",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L244",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_spinner",
+      "source": "page",
+      "target": "page_spinner",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L255",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_googleicon",
+      "source": "page",
+      "target": "page_googleicon",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\onboarding\\page.js",
+      "source_location": "L25",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_onboardingpage",
+      "source": "page",
+      "target": "page_onboardingpage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\pricing\\page.js",
+      "source_location": "L91",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_pricingpage",
+      "source": "page",
+      "target": "page_pricingpage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\pricing\\page.js",
+      "source_location": "L291",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_loadrazorpayscript",
+      "source": "page",
+      "target": "page_loadrazorpayscript",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L17",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_signuppage",
+      "source": "page",
+      "target": "page_signuppage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\signup\\page.js",
+      "source_location": "L225",
+      "weight": 1,
+      "_src": "page",
+      "_tgt": "page_rule",
+      "source": "page",
+      "target": "page_rule",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\call-tutor\\page.js",
+      "source_location": "L642",
+      "weight": 1,
+      "_src": "page_calltutorpage",
+      "_tgt": "page_fmttime",
+      "source": "page_fmttime",
+      "target": "page_calltutorpage",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "errorboundary",
+      "_tgt": "errorboundary_errorboundary",
+      "source": "errorboundary",
+      "target": "errorboundary_errorboundary",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L6",
+      "weight": 1,
+      "_src": "errorboundary_errorboundary",
+      "_tgt": "errorboundary_errorboundary_constructor",
+      "source": "errorboundary_errorboundary",
+      "target": "errorboundary_errorboundary_constructor",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L11",
+      "weight": 1,
+      "_src": "errorboundary_errorboundary",
+      "_tgt": "errorboundary_errorboundary_getderivedstatefromerror",
+      "source": "errorboundary_errorboundary",
+      "target": "errorboundary_errorboundary_getderivedstatefromerror",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L15",
+      "weight": 1,
+      "_src": "errorboundary_errorboundary",
+      "_tgt": "errorboundary_errorboundary_componentdidcatch",
+      "source": "errorboundary_errorboundary",
+      "target": "errorboundary_errorboundary_componentdidcatch",
+      "confidence_score": 1
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ErrorBoundary.jsx",
+      "source_location": "L19",
+      "weight": 1,
+      "_src": "errorboundary_errorboundary",
+      "_tgt": "errorboundary_errorboundary_render",
+      "source": "errorboundary_errorboundary",
+      "target": "errorboundary_errorboundary_render",
+      "confidence_score": 1
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamSection.jsx",
+      "source_location": "L3",
+      "weight": 1,
+      "_src": "examsection",
+      "_tgt": "dashboardcontext",
+      "source": "examsection",
+      "target": "dashboardcontext",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\ExamSection.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "examsection",
+      "_tgt": "examsection_examsection",
+      "source": "examsection",
+      "target": "examsection_examsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\dashboard\\VoiceCallSection.jsx",
+      "source_location": "L5",
+      "weight": 1,
+      "_src": "voicecallsection",
+      "_tgt": "voicecallsection_voicecallsection",
+      "source": "voicecallsection",
+      "target": "voicecallsection_voicecallsection",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L29",
+      "weight": 1,
+      "_src": "milestonetoast",
+      "_tgt": "milestonetoast_persist",
+      "source": "milestonetoast",
+      "target": "milestonetoast_persist",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L35",
+      "weight": 1,
+      "_src": "milestonetoast",
+      "_tgt": "milestonetoast_checkmilestones",
+      "source": "milestonetoast",
+      "target": "milestonetoast_checkmilestones",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L47",
+      "weight": 1,
+      "_src": "milestonetoast",
+      "_tgt": "milestonetoast_toast",
+      "source": "milestonetoast",
+      "target": "milestonetoast_toast",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L87",
+      "weight": 1,
+      "_src": "milestonetoast",
+      "_tgt": "milestonetoast_milestonetoast",
+      "source": "milestonetoast",
+      "target": "milestonetoast_milestonetoast",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ui\\MilestoneToast.jsx",
+      "source_location": "L40",
+      "weight": 1,
+      "_src": "milestonetoast_checkmilestones",
+      "_tgt": "milestonetoast_persist",
+      "source": "milestonetoast_persist",
+      "target": "milestonetoast_checkmilestones",
+      "confidence_score": 1
+    }
+  ]
+}

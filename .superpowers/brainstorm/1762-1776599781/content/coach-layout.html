@@ -1,0 +1,160 @@
+<h2>AI Coach — Layout Direction</h2>
+<p class="subtitle">Three approaches to a premium standalone AI Coach page</p>
+
+<div class="cards">
+
+  <!-- Option A: Premium Chat -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#080d18;border-radius:10px;min-height:240px;display:flex;font-family:Inter,sans-serif;overflow:hidden;">
+        <!-- Left sidebar -->
+        <div style="width:90px;background:#05080f;border-right:1px solid rgba(255,255,255,0.05);padding:10px 8px;display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:8px;color:#333;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;">History</div>
+          <div style="padding:5px 7px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:5px;font-size:8px;color:#a78bfa;line-height:1.3;">Work &amp; Energy doubts</div>
+          <div style="padding:5px 7px;border-radius:5px;font-size:8px;color:#334155;line-height:1.3;">Exam prep tips</div>
+          <div style="padding:5px 7px;border-radius:5px;font-size:8px;color:#334155;line-height:1.3;">Derivation help</div>
+          <div style="margin-top:auto;padding:5px 7px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:5px;font-size:8px;color:#555;text-align:center;">+ New</div>
+        </div>
+        <!-- Main chat -->
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <!-- context bar -->
+          <div style="padding:7px 10px;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:5px;align-items:center;">
+            <div style="font-size:8px;color:#334155;">Coaching context:</div>
+            <div style="padding:2px 7px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.15);border-radius:10px;font-size:8px;color:#22D3EE;">📄 Mechanics Notes</div>
+            <div style="padding:2px 7px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.15);border-radius:10px;font-size:8px;color:#22D3EE;">📄 Thermo Laws</div>
+          </div>
+          <!-- messages -->
+          <div style="flex:1;padding:10px;display:flex;flex-direction:column;gap:8px;overflow:hidden;">
+            <div style="display:flex;gap:6px;align-items:flex-start;">
+              <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#22D3EE);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;">✦</div>
+              <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;border-top-left-radius:3px;padding:8px 10px;font-size:9px;color:#94a3b8;line-height:1.5;max-width:85%;">
+                You've been struggling with <span style="color:#a78bfa;font-weight:600;">Work-Energy Theorem</span> for 3 days. Want to work through it together?
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:flex-start;flex-direction:row-reverse;">
+              <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.08);flex-shrink:0;"></div>
+              <div style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);border-radius:10px;border-top-right-radius:3px;padding:8px 10px;font-size:9px;color:#c4b5fd;line-height:1.5;max-width:75%;">
+                Yes, I keep confusing the derivation steps
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:flex-start;">
+              <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#22D3EE);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;">✦</div>
+              <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;border-top-left-radius:3px;padding:8px 10px;font-size:9px;color:#94a3b8;line-height:1.5;max-width:85%;">
+                Let's start from Newton's 2nd law. Can you write F = ma in terms of velocity?
+              </div>
+            </div>
+          </div>
+          <!-- input -->
+          <div style="padding:8px;border-top:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:6px 8px;">
+              <div style="flex:1;font-size:9px;color:#334155;">Ask your AI coach...</div>
+              <div style="padding:3px 10px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:5px;font-size:9px;color:#fff;font-weight:700;">↑</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Premium Chat + History</h3>
+      <p>Chat-first. Conversation history sidebar, note context bar, proactive AI messages. Feels like a personal tutor who already knows your weaknesses.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Coach Dashboard -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#080d18;border-radius:10px;min-height:240px;padding:12px;display:flex;flex-direction:column;gap:8px;font-family:Inter,sans-serif;">
+        <!-- top: weak topics insight -->
+        <div style="display:flex;gap:8px;">
+          <div style="flex:1;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:8px;">
+            <div style="font-size:8px;color:#f87171;font-weight:700;margin-bottom:4px;">⚠ Weak Areas</div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <div style="display:flex;align-items:center;gap:5px;"><div style="flex:1;background:rgba(255,255,255,0.05);border-radius:99px;height:3px;overflow:hidden;"><div style="width:80%;height:100%;background:#ef4444;border-radius:99px;"></div></div><span style="font-size:8px;color:#64748b;">Thermodynamics</span></div>
+              <div style="display:flex;align-items:center;gap:5px;"><div style="flex:1;background:rgba(255,255,255,0.05);border-radius:99px;height:3px;overflow:hidden;"><div style="width:60%;height:100%;background:#f59e0b;border-radius:99px;"></div></div><span style="font-size:8px;color:#64748b;">Work-Energy</span></div>
+              <div style="display:flex;align-items:center;gap:5px;"><div style="flex:1;background:rgba(255,255,255,0.05);border-radius:99px;height:3px;overflow:hidden;"><div style="width:40%;height:100%;background:#f59e0b;border-radius:99px;"></div></div><span style="font-size:8px;color:#64748b;">Optics</span></div>
+            </div>
+          </div>
+          <div style="flex:1;background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.15);border-radius:8px;padding:8px;">
+            <div style="font-size:8px;color:#a78bfa;font-weight:700;margin-bottom:5px;">✦ Today's Suggestion</div>
+            <div style="font-size:9px;color:#64748b;line-height:1.5;">Revise Carnot Cycle before your quiz on Thursday. Focus on efficiency formula.</div>
+            <div style="margin-top:6px;padding:3px 8px;background:rgba(139,92,246,0.2);border-radius:4px;font-size:8px;color:#a78bfa;font-weight:600;display:inline-block;">Start Session →</div>
+          </div>
+        </div>
+        <!-- chat area -->
+        <div style="flex:1;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;gap:5px;align-items:flex-start;">
+            <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#22D3EE);flex-shrink:0;"></div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:7px;padding:6px 8px;font-size:9px;color:#94a3b8;line-height:1.4;max-width:85%;">Based on your quiz results, I recommend focusing on Carnot Cycle efficiency today. Shall we begin?</div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:3px;">
+            <div style="padding:4px 10px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:20px;font-size:8px;color:#a78bfa;cursor:pointer;">Yes, let's go</div>
+            <div style="padding:4px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;font-size:8px;color:#555;cursor:pointer;">Something else</div>
+          </div>
+        </div>
+        <!-- input -->
+        <div style="display:flex;gap:5px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:7px;padding:5px 8px;">
+          <div style="flex:1;font-size:9px;color:#334155;">Ask anything...</div>
+          <div style="padding:3px 8px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:4px;font-size:9px;color:#fff;font-weight:700;">↑</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Coach Dashboard + Chat</h3>
+      <p>Weak topic analysis on top, proactive AI suggestions, then chat below. AI leads the session based on your performance data — not just reactive.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Guided Socratic Sessions -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#080d18;border-radius:10px;min-height:240px;padding:12px;display:flex;flex-direction:column;gap:8px;font-family:Inter,sans-serif;">
+        <!-- Session type picker -->
+        <div style="display:flex;gap:5px;">
+          <div style="flex:1;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.4);border-radius:7px;padding:6px 8px;text-align:center;">
+            <div style="font-size:12px;margin-bottom:2px;">🧠</div>
+            <div style="font-size:8px;color:#a78bfa;font-weight:700;">Explain to me</div>
+          </div>
+          <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:7px;padding:6px 8px;text-align:center;">
+            <div style="font-size:12px;margin-bottom:2px;">⚡</div>
+            <div style="font-size:8px;color:#555;font-weight:600;">Practice drill</div>
+          </div>
+          <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:7px;padding:6px 8px;text-align:center;">
+            <div style="font-size:12px;margin-bottom:2px;">🎯</div>
+            <div style="font-size:8px;color:#555;font-weight:600;">Exam prep</div>
+          </div>
+        </div>
+        <!-- Socratic dialogue -->
+        <div style="flex:1;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;gap:6px;align-items:flex-start;">
+            <div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#22D3EE);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;">✦</div>
+            <div style="background:rgba(255,255,255,0.03);border-radius:8px;border-top-left-radius:2px;padding:7px 9px;font-size:9px;color:#94a3b8;line-height:1.5;max-width:90%;">
+              I'll help you understand Carnot Cycle. First — <span style="color:#22D3EE;">what do you already know</span> about heat engines?
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:flex-start;flex-direction:row-reverse;">
+            <div style="width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.06);flex-shrink:0;"></div>
+            <div style="background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.2);border-radius:8px;border-top-right-radius:2px;padding:7px 9px;font-size:9px;color:#c4b5fd;line-height:1.5;max-width:80%;">
+              They convert heat to work?
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:flex-start;">
+            <div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#22D3EE);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;">✦</div>
+            <div style="background:rgba(255,255,255,0.03);border-radius:8px;border-top-left-radius:2px;padding:7px 9px;font-size:9px;color:#94a3b8;line-height:1.5;max-width:90%;">
+              Exactly. Now — <span style="color:#22D3EE;">can ALL the heat be converted?</span> Think about what limits it.
+            </div>
+          </div>
+        </div>
+        <!-- input -->
+        <div style="display:flex;gap:5px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:7px;padding:5px 8px;">
+          <div style="flex:1;font-size:9px;color:#334155;">Your answer...</div>
+          <div style="padding:3px 8px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:4px;font-size:9px;color:#fff;font-weight:700;">↑</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Socratic Session Modes</h3>
+      <p>Pick a session type (Explain / Practice / Exam Prep), then AI leads with Socratic questions — it teaches by asking, not telling. Builds deep understanding.</p>
+    </div>
+  </div>
+
+</div>

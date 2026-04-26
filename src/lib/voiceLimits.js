@@ -4,9 +4,12 @@
  * Student : 5 calls/day, 20 min max
  * Pro     : 15 calls/day, 40 min max
  * School  : unlimited, 60 min max
+ *
+ * Internal developer accounts bypass all voice limits — see internalAccess.js.
  */
 import { createClient } from "@supabase/supabase-js";
 import { getUserPlan } from "@/lib/planLimits";
+import { isInternalDev, DEV_PLAN } from "@/lib/internalAccess";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -31,7 +34,22 @@ export async function countTodayCalls(userId) {
   return count || 0;
 }
 
-export async function canStartCall(userId) {
+/**
+ * Check if user can start a new voice call.
+ * Pass `user` (from supabase.auth.getUser) to enable dev override.
+ */
+export async function canStartCall(userId, user = null) {
+  // Internal developer accounts: unlimited calls, max session duration.
+  if (isInternalDev(user)) {
+    return {
+      allowed:    true,
+      plan:       DEV_PLAN,
+      limits:     VOICE_LIMITS.school,
+      todayCount: 0,
+      _devOverride: true,
+    };
+  }
+
   const plan  = await getUserPlan(userId);
   const limits = VOICE_LIMITS[plan] || VOICE_LIMITS.free;
 

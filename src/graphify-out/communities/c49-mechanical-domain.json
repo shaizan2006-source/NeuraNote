@@ -1,0 +1,15 @@
+{
+  "community": 49,
+  "name": "mechanical-domain",
+  "nodes": [
+    {
+      "label": "mechanical.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\mechanical.js",
+      "source_location": "L1",
+      "id": "mechanical",
+      "community": 49
+    }
+  ],
+  "edges": []
+}

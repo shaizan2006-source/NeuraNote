@@ -1,0 +1,15 @@
+{
+  "community": 48,
+  "name": "law-domain",
+  "nodes": [
+    {
+      "label": "law.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\law.js",
+      "source_location": "L1",
+      "id": "law",
+      "community": 48
+    }
+  ],
+  "edges": []
+}

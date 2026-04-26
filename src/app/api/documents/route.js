@@ -10,7 +10,8 @@ export async function GET(req) {
   const token = req.headers.get("authorization")?.replace("Bearer ", "");
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+  const { data: authData, error: authErr } = await supabase.auth.getUser(token);
+  const user = authData?.user;
   if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { data, error } = await supabase
@@ -20,8 +21,9 @@ export async function GET(req) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[documents GET]', error);
+    return NextResponse.json([]);
   }
 
-  return NextResponse.json(data);
+  return NextResponse.json(data ?? []);
 }

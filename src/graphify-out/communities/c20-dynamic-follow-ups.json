@@ -1,0 +1,68 @@
+{
+  "community": 20,
+  "name": "dynamic-follow-ups",
+  "nodes": [
+    {
+      "label": "DynamicFollowUps.jsx",
+      "file_type": "code",
+      "source_file": "components\\answer\\DynamicFollowUps.jsx",
+      "source_location": "L1",
+      "id": "dynamicfollowups",
+      "community": 20
+    },
+    {
+      "label": "DynamicFollowUps()",
+      "file_type": "code",
+      "source_file": "components\\answer\\DynamicFollowUps.jsx",
+      "source_location": "L9",
+      "id": "dynamicfollowups_dynamicfollowups",
+      "community": 20
+    },
+    {
+      "label": "buildChips()",
+      "file_type": "code",
+      "source_file": "components\\answer\\DynamicFollowUps.jsx",
+      "source_location": "L50",
+      "id": "dynamicfollowups_buildchips",
+      "community": 20
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\DynamicFollowUps.jsx",
+      "source_location": "L9",
+      "weight": 1,
+      "_src": "dynamicfollowups",
+      "_tgt": "dynamicfollowups_dynamicfollowups",
+      "source": "dynamicfollowups",
+      "target": "dynamicfollowups_dynamicfollowups",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\DynamicFollowUps.jsx",
+      "source_location": "L50",
+      "weight": 1,
+      "_src": "dynamicfollowups",
+      "_tgt": "dynamicfollowups_buildchips",
+      "source": "dynamicfollowups",
+      "target": "dynamicfollowups_buildchips",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\answer\\DynamicFollowUps.jsx",
+      "source_location": "L10",
+      "weight": 1,
+      "_src": "dynamicfollowups_dynamicfollowups",
+      "_tgt": "dynamicfollowups_buildchips",
+      "source": "dynamicfollowups_dynamicfollowups",
+      "target": "dynamicfollowups_buildchips",
+      "confidence_score": 1
+    }
+  ]
+}

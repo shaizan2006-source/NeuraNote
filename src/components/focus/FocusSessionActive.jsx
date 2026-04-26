@@ -28,6 +28,7 @@ export default function FocusSessionActive({
   documentName,
   userId,
   onSessionEnd,
+  onAskAI,
 }) {
   const [timeLeft, setTimeLeft] = useState(durationSeconds);
   const [paused, setPaused] = useState(false);
@@ -125,11 +126,10 @@ export default function FocusSessionActive({
             Time's up!
           </div>
           <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary, marginBottom: SPACING.lg }}>
-            {pendingTasks.length + (currentTask ? 1 : 0)} task{(pendingTasks.length + (currentTask ? 1 : 0)) > 1 ? 's' : ''} remaining. Continue?
+            {pendingTasks.length + (currentTask ? 1 : 0)} task{(pendingTasks.length + (currentTask ? 1 : 0)) > 1 ? 's' : ''} completed.
           </div>
           <div style={{ display: 'flex', gap: SPACING.md, justifyContent: 'center' }}>
-            <Button label="Keep Going" variant="primary" onClick={() => { setTimeLeft(900); setTimeUp(false); }} />
-            <Button label="End Session" variant="secondary" onClick={onSessionEnd} />
+            <Button label="End Session" variant="primary" onClick={onSessionEnd} />
           </div>
         </div>
       </div>
@@ -198,7 +198,44 @@ export default function FocusSessionActive({
                   </div>
                 )}
               </div>
-              <Button label="✓ Mark Done" variant="primary" fullWidth onClick={handleMarkDone} />
+              <div style={{ display: 'flex', gap: SPACING.sm }}>
+                <Button
+                  label="✓ Mark Done"
+                  variant="primary"
+                  style={{ flex: 1 }}
+                  onClick={handleMarkDone}
+                />
+                {onAskAI && (
+                  <button
+                    onClick={() => onAskAI(currentTask.name)}
+                    title="Ask AI about this task"
+                    style={{
+                      flexShrink: 0,
+                      background: 'rgba(34,211,238,0.08)',
+                      border: `1px solid rgba(34,211,238,0.25)`,
+                      borderRadius: RADIUS.md,
+                      color: '#22D3EE',
+                      fontSize: TYPOGRAPHY.sizes.label,
+                      fontWeight: TYPOGRAPHY.weights.semibold,
+                      cursor: 'pointer',
+                      padding: `${SPACING.md} ${SPACING.lg}`,
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      transition: 'background 0.15s, border-color 0.15s',
+                      whiteSpace: 'nowrap',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'rgba(34,211,238,0.14)';
+                      e.currentTarget.style.borderColor = 'rgba(34,211,238,0.4)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = 'rgba(34,211,238,0.08)';
+                      e.currentTarget.style.borderColor = 'rgba(34,211,238,0.25)';
+                    }}
+                  >
+                    ✦ Ask AI
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
@@ -245,7 +282,6 @@ export default function FocusSessionActive({
                 All tasks complete! Great focus session.
               </div>
               <div style={{ display: 'flex', gap: SPACING.md, justifyContent: 'center' }}>
-                <Button label="Keep Going" variant="secondary" onClick={() => setPaused(false)} />
                 <Button label="End Session" variant="primary" onClick={onSessionEnd} />
               </div>
             </div>

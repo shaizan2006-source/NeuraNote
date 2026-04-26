@@ -6,6 +6,133 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
 
 // lucide-react is NOT in the project — use inline SVG icons
+// Sidebar toggle icon — rounded rect split vertically (panel-left symbol)
+function SidebarToggleIcon({ size = 15, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.75" y="0.75" width="13.5" height="13.5" rx="1.5" stroke={color} strokeWidth="1.2" />
+      <path d="M5.25 0.75V14.25" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// ── SidebarHeader ─────────────────────────────────────────────────────────────
+// Expanded: [✦ icon] [AskMyNotes] ············ [toggle button]
+// Collapsed: [✦ icon] — clicking/hovering icon reveals the expand toggle inline
+
+function SidebarHeader({ collapsed, onToggle }) {
+  const [iconHovered, setIconHovered] = useState(false);
+  const [btnHovered,  setBtnHovered]  = useState(false);
+
+  return (
+    <div style={{
+      display:        "flex",
+      alignItems:     "center",
+      justifyContent: "space-between",
+      padding:        "10px",
+      borderBottom:   "1px solid rgba(255,255,255,0.05)",
+      minHeight:      52,
+    }}>
+      {/* Left cluster: icon mark + app name */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+
+        {collapsed ? (
+          /* Collapsed: icon IS the expand button; ✦ crossfades to toggle icon on hover */
+          <button
+            onClick={onToggle}
+            onMouseEnter={() => setIconHovered(true)}
+            onMouseLeave={() => setIconHovered(false)}
+            title="Expand sidebar"
+            style={{
+              background: "transparent", border: "none", cursor: "pointer",
+              padding: 0, display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <div style={{ position: "relative", width: 28, height: 28 }}>
+              {/* Gradient logo layer — fades out on hover */}
+              <div style={{
+                position: "absolute", inset: 0, borderRadius: 7,
+                background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 13, color: "#fff", fontWeight: 700,
+                opacity:    iconHovered ? 0 : 1,
+                transition: "opacity 180ms ease",
+              }}>✦</div>
+              {/* Toggle icon layer — fades in on hover */}
+              <div style={{
+                position: "absolute", inset: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "rgba(228,228,231,0.9)",
+                opacity:    iconHovered ? 1 : 0,
+                transition: "opacity 180ms ease",
+                pointerEvents: "none",
+              }}>
+                <SidebarToggleIcon size={15} />
+              </div>
+            </div>
+          </button>
+        ) : (
+          /* Expanded: plain logo mark */
+          <div style={{
+            width: 28, height: 28, borderRadius: 7, flexShrink: 0,
+            background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 13, color: "#fff", fontWeight: 700,
+          }}>✦</div>
+        )}
+
+        {/* App name — fades in/out */}
+        <AnimatePresence>
+          {!collapsed && (
+            <motion.span
+              key="app-name"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              style={{ fontSize: 13, fontWeight: 700, color: "#f4f4f5", whiteSpace: "nowrap" }}
+            >
+              AskMyNotes
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Right: collapse toggle — only visible when expanded */}
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.div
+            key="toggle-btn"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            style={{ flexShrink: 0 }}
+          >
+            <button
+              onClick={onToggle}
+              onMouseEnter={() => setBtnHovered(true)}
+              onMouseLeave={() => setBtnHovered(false)}
+              title="Collapse sidebar"
+              style={{
+                background: "transparent", border: "none", cursor: "pointer",
+                padding: 4, display: "flex", alignItems: "center", justifyContent: "center",
+                opacity:    btnHovered ? 1 : 0.45,
+                filter:     btnHovered ? "drop-shadow(0 0 3px rgba(228,228,231,0.22))" : "none",
+                transition: "opacity 200ms ease, filter 200ms ease",
+                color:      "rgba(228,228,231,0.9)",
+              }}
+            >
+              <SidebarToggleIcon size={15} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function GridIcon({ size = 16, color = "currentColor" }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -56,11 +183,24 @@ function Tooltip({ label }) {
   );
 }
 
-function NavItems({ pathname, router, sidebarCollapsed, setHoveredItem, showTooltipFor, setShowTooltipFor, onItemClick }) {
+function NavItems({ pathname, router, sidebarCollapsed, hoveredItem, setHoveredItem, showTooltipFor, setShowTooltipFor, onItemClick }) {
   return (
     <nav style={{ flex: 1, padding: "10px 0", display: "flex", flexDirection: "column", gap: 4 }}>
       {NAV_ITEMS.map(({ icon: Icon, label, href }) => {
         const isActive = pathname === href || pathname.startsWith(href + "/");
+        const isHovered = hoveredItem === href;
+        const btnBg = isActive && isHovered
+          ? "rgba(139,92,246,0.18)"
+          : isActive
+            ? "rgba(139,92,246,0.12)"
+            : isHovered
+              ? "rgba(255,255,255,0.05)"
+              : "transparent";
+        const btnShadow = isActive && isHovered
+          ? "0 0 0 1px rgba(139,92,246,0.22), 0 2px 16px rgba(139,92,246,0.10), inset 0 0 16px rgba(139,92,246,0.06)"
+          : !isActive && isHovered
+            ? "0 0 0 1px rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.12), inset 0 0 12px rgba(34,211,238,0.03)"
+            : "none";
         return (
           <div
             key={href}
@@ -75,10 +215,15 @@ function NavItems({ pathname, router, sidebarCollapsed, setHoveredItem, showTool
                 width: sidebarCollapsed ? 44 : "calc(100% - 12px)",
                 padding: sidebarCollapsed ? "8px 0" : "8px 10px",
                 justifyContent: sidebarCollapsed ? "center" : "flex-start",
-                background: isActive ? "rgba(139,92,246,0.12)" : "transparent",
+                background: btnBg,
+                backdropFilter: isHovered ? "blur(8px)" : "blur(0px)",
+                WebkitBackdropFilter: isHovered ? "blur(8px)" : "blur(0px)",
+                boxShadow: btnShadow,
+                transform: isHovered ? "scale(1.01)" : "scale(1)",
                 border: "none", borderRadius: 6, cursor: "pointer",
-                color: isActive ? "#a78bfa" : "#52525b",
-                transition: "background 150ms", margin: "0 6px",
+                color: isActive ? "#a78bfa" : isHovered ? "#a1a1aa" : "#52525b",
+                transition: "background 250ms ease-out, box-shadow 250ms ease-out, transform 200ms ease-out, color 200ms ease-out",
+                margin: "0 6px",
               }}
             >
               <span style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
@@ -108,7 +253,7 @@ function NavItems({ pathname, router, sidebarCollapsed, setHoveredItem, showTool
 export default function DashboardSidebar() {
   const router   = useRouter();
   const pathname = usePathname();
-  const { sidebarCollapsed, toggleSidebar, dashboardMode, toggleDashboardMode } = useDashboard();
+  const { sidebarCollapsed, toggleSidebar } = useDashboard();
   const [hoveredItem, setHoveredItem] = useState(null);
   const [showTooltipFor, setShowTooltipFor] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -186,26 +331,28 @@ export default function DashboardSidebar() {
           <NavItems
             pathname={pathname} router={router}
             sidebarCollapsed={false}
+            hoveredItem={hoveredItem}
             setHoveredItem={setHoveredItem} showTooltipFor={showTooltipFor}
             setShowTooltipFor={setShowTooltipFor}
             onItemClick={() => setMobileOpen(false)}
           />
 
-          {/* Mode toggle pill */}
+          {/* Progress nav shortcut */}
           <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
             <button
-              onClick={() => { toggleDashboardMode(); setMobileOpen(false); }}
+              onClick={() => { router.push("/progress"); setMobileOpen(false); }}
               style={{
                 width: "100%", padding: "8px 0", borderRadius: 20,
-                background: dashboardMode === "study"
-                  ? "linear-gradient(135deg, rgba(139,92,246,0.2), rgba(109,40,217,0.2))"
-                  : "rgba(255,255,255,0.04)",
+                background: "rgba(255,255,255,0.04)",
                 border: "1px solid rgba(255,255,255,0.08)",
-                color: dashboardMode === "study" ? "#a78bfa" : "#52525b",
+                color: "#71717a",
                 fontSize: 11, fontWeight: 600, cursor: "pointer",
+                transition: "color 200ms ease-in-out",
               }}
+              onMouseEnter={e => e.currentTarget.style.color = "#a1a1aa"}
+              onMouseLeave={e => e.currentTarget.style.color = "#71717a"}
             >
-              {dashboardMode === "study" ? "Study mode" : "Progress mode"}
+              View Progress →
             </button>
           </div>
         </motion.div>
@@ -222,47 +369,25 @@ export default function DashboardSidebar() {
         height: "100vh", background: "#111111",
         borderRight: "1px solid rgba(255,255,255,0.05)",
         display: "flex", flexDirection: "column",
-        overflow: "hidden", flexShrink: 0,
+        overflow: "visible", flexShrink: 0,
+        position: "sticky",
+        top: 0,
+        alignSelf: "flex-start",
       }}
     >
-      {/* Header */}
-      <div style={{
-        display: "flex", alignItems: "center",
-        justifyContent: sidebarCollapsed ? "center" : "space-between",
-        padding: "10px", borderBottom: "1px solid rgba(255,255,255,0.05)", minHeight: 52,
-      }}>
-        {!sidebarCollapsed && (
-          <motion.span
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
-            style={{ fontSize: 13, fontWeight: 700, color: "#f4f4f5", whiteSpace: "nowrap" }}
-          >
-            AskMyNotes
-          </motion.span>
-        )}
-        <button
-          onClick={toggleSidebar}
-          style={{ background: "transparent", border: "none", color: "#52525b", cursor: "pointer", fontSize: 14, lineHeight: 1, padding: 4, flexShrink: 0 }}
-          title={sidebarCollapsed ? "Expand" : "Collapse"}
-        >
-          {sidebarCollapsed ? "›" : "‹"}
-        </button>
+      {/* Inner wrapper — clips content during collapse animation */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <SidebarHeader collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+
+        <NavItems
+          pathname={pathname} router={router}
+          sidebarCollapsed={sidebarCollapsed}
+          hoveredItem={hoveredItem}
+          setHoveredItem={setHoveredItem} showTooltipFor={showTooltipFor}
+          setShowTooltipFor={setShowTooltipFor}
+        />
       </div>
 
-      <NavItems
-        pathname={pathname} router={router}
-        sidebarCollapsed={sidebarCollapsed}
-        setHoveredItem={setHoveredItem} showTooltipFor={showTooltipFor}
-        setShowTooltipFor={setShowTooltipFor}
-      />
-
-      {/* Expand button (collapsed only, bottom) */}
-      {sidebarCollapsed && (
-        <div style={{ padding: "8px 0", display: "flex", justifyContent: "center", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-          <button onClick={toggleSidebar}
-            style={{ background: "transparent", border: "none", color: "#52525b", cursor: "pointer", fontSize: 14 }}>›</button>
-        </div>
-      )}
     </motion.aside>
   );
 }

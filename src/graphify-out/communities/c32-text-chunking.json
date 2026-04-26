@@ -1,0 +1,36 @@
+{
+  "community": 32,
+  "name": "text-chunking",
+  "nodes": [
+    {
+      "label": "chunkText.js",
+      "file_type": "code",
+      "source_file": "lib\\chunkText.js",
+      "source_location": "L1",
+      "id": "chunktext",
+      "community": 32
+    },
+    {
+      "label": "chunkText()",
+      "file_type": "code",
+      "source_file": "lib\\chunkText.js",
+      "source_location": "L1",
+      "id": "chunktext_chunktext",
+      "community": 32
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\chunkText.js",
+      "source_location": "L1",
+      "weight": 1,
+      "_src": "chunktext",
+      "_tgt": "chunktext_chunktext",
+      "source": "chunktext",
+      "target": "chunktext_chunktext",
+      "confidence_score": 1
+    }
+  ]
+}

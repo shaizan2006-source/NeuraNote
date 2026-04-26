@@ -71,8 +71,9 @@ export async function POST(req) {
       });
 
       if (!parseRes.ok) {
+        console.error('[generate-focus-tasks] PDF parsing failed:', parseRes.status);
         return NextResponse.json(
-          { error: "pdf_parse_failed", message: "Could not read this PDF. Please try re-uploading it." },
+          { error: "pdf_parse_failed", message: "Failed to process PDF. The file may be corrupted or in an unsupported format. Please try re-uploading." },
           { status: 422 }
         );
       }
@@ -86,8 +87,9 @@ export async function POST(req) {
       chunks = refetch.data;
 
       if (!chunks || chunks.length === 0) {
+        console.error('[generate-focus-tasks] PDF has no readable content after parsing');
         return NextResponse.json(
-          { error: "pdf_empty", message: "This PDF has no readable text. Please upload a different file." },
+          { error: "pdf_empty", message: "This PDF appears to be empty or contains no readable text. Please upload a different file." },
           { status: 422 }
         );
       }

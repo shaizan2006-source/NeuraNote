@@ -1,0 +1,15 @@
+{
+  "community": 40,
+  "name": "base-prompt",
+  "nodes": [
+    {
+      "label": "base.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\base.js",
+      "source_location": "L1",
+      "id": "base",
+      "community": 40
+    }
+  ],
+  "edges": []
+}

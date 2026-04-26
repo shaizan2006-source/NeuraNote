@@ -41,7 +41,7 @@ export async function POST(req) {
     ? "\nThis is a REGENERATION — vary session order, topic depth, time slots, and distribution meaningfully from before."
     : "";
 
-  const prompt = `You are a study planner for Indian students (JEE/NEET/University exams).
+  const prompt = `You are a study planner for university level students.
 
 Student inputs:
 - Subject: ${subject}

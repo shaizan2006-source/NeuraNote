@@ -1,0 +1,240 @@
+{
+  "community": 13,
+  "name": "markdown-processing",
+  "nodes": [
+    {
+      "label": "normalizeMarkdownTables.js",
+      "file_type": "code",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L1",
+      "id": "normalizemarkdowntables",
+      "community": 13
+    },
+    {
+      "label": "isSeparatorRow()",
+      "file_type": "code",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L21",
+      "id": "normalizemarkdowntables_isseparatorrow",
+      "community": 13
+    },
+    {
+      "label": "splitRow()",
+      "file_type": "code",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L29",
+      "id": "normalizemarkdowntables_splitrow",
+      "community": 13
+    },
+    {
+      "label": "joinRow()",
+      "file_type": "code",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L37",
+      "id": "normalizemarkdowntables_joinrow",
+      "community": 13
+    },
+    {
+      "label": "buildSeparator()",
+      "file_type": "code",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L41",
+      "id": "normalizemarkdowntables_buildseparator",
+      "community": 13
+    },
+    {
+      "label": "looksLikeNumberingHeader()",
+      "file_type": "code",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L45",
+      "id": "normalizemarkdowntables_lookslikenumberingheader",
+      "community": 13
+    },
+    {
+      "label": "normaliseBlock()",
+      "file_type": "code",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L53",
+      "id": "normalizemarkdowntables_normaliseblock",
+      "community": 13
+    },
+    {
+      "label": "normalizeMarkdownTables()",
+      "file_type": "code",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L119",
+      "id": "normalizemarkdowntables_normalizemarkdowntables",
+      "community": 13
+    }
+  ],
+  "edges": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L21",
+      "weight": 1,
+      "_src": "normalizemarkdowntables",
+      "_tgt": "normalizemarkdowntables_isseparatorrow",
+      "source": "normalizemarkdowntables",
+      "target": "normalizemarkdowntables_isseparatorrow",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L29",
+      "weight": 1,
+      "_src": "normalizemarkdowntables",
+      "_tgt": "normalizemarkdowntables_splitrow",
+      "source": "normalizemarkdowntables",
+      "target": "normalizemarkdowntables_splitrow",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L37",
+      "weight": 1,
+      "_src": "normalizemarkdowntables",
+      "_tgt": "normalizemarkdowntables_joinrow",
+      "source": "normalizemarkdowntables",
+      "target": "normalizemarkdowntables_joinrow",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L41",
+      "weight": 1,
+      "_src": "normalizemarkdowntables",
+      "_tgt": "normalizemarkdowntables_buildseparator",
+      "source": "normalizemarkdowntables",
+      "target": "normalizemarkdowntables_buildseparator",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L45",
+      "weight": 1,
+      "_src": "normalizemarkdowntables",
+      "_tgt": "normalizemarkdowntables_lookslikenumberingheader",
+      "source": "normalizemarkdowntables",
+      "target": "normalizemarkdowntables_lookslikenumberingheader",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L53",
+      "weight": 1,
+      "_src": "normalizemarkdowntables",
+      "_tgt": "normalizemarkdowntables_normaliseblock",
+      "source": "normalizemarkdowntables",
+      "target": "normalizemarkdowntables_normaliseblock",
+      "confidence_score": 1
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L119",
+      "weight": 1,
+      "_src": "normalizemarkdowntables",
+      "_tgt": "normalizemarkdowntables_normalizemarkdowntables",
+      "source": "normalizemarkdowntables",
+      "target": "normalizemarkdowntables_normalizemarkdowntables",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L24",
+      "weight": 1,
+      "_src": "normalizemarkdowntables_isseparatorrow",
+      "_tgt": "normalizemarkdowntables_splitrow",
+      "source": "normalizemarkdowntables_isseparatorrow",
+      "target": "normalizemarkdowntables_splitrow",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L60",
+      "weight": 1,
+      "_src": "normalizemarkdowntables_normaliseblock",
+      "_tgt": "normalizemarkdowntables_isseparatorrow",
+      "source": "normalizemarkdowntables_isseparatorrow",
+      "target": "normalizemarkdowntables_normaliseblock",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L56",
+      "weight": 1,
+      "_src": "normalizemarkdowntables_normaliseblock",
+      "_tgt": "normalizemarkdowntables_splitrow",
+      "source": "normalizemarkdowntables_splitrow",
+      "target": "normalizemarkdowntables_normaliseblock",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L103",
+      "weight": 1,
+      "_src": "normalizemarkdowntables_normaliseblock",
+      "_tgt": "normalizemarkdowntables_joinrow",
+      "source": "normalizemarkdowntables_joinrow",
+      "target": "normalizemarkdowntables_normaliseblock",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L104",
+      "weight": 1,
+      "_src": "normalizemarkdowntables_normaliseblock",
+      "_tgt": "normalizemarkdowntables_buildseparator",
+      "source": "normalizemarkdowntables_buildseparator",
+      "target": "normalizemarkdowntables_normaliseblock",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L81",
+      "weight": 1,
+      "_src": "normalizemarkdowntables_normaliseblock",
+      "_tgt": "normalizemarkdowntables_lookslikenumberingheader",
+      "source": "normalizemarkdowntables_lookslikenumberingheader",
+      "target": "normalizemarkdowntables_normaliseblock",
+      "confidence_score": 1
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\normalizeMarkdownTables.js",
+      "source_location": "L153",
+      "weight": 1,
+      "_src": "normalizemarkdowntables_normalizemarkdowntables",
+      "_tgt": "normalizemarkdowntables_normaliseblock",
+      "source": "normalizemarkdowntables_normaliseblock",
+      "target": "normalizemarkdowntables_normalizemarkdowntables",
+      "confidence_score": 1
+    }
+  ]
+}

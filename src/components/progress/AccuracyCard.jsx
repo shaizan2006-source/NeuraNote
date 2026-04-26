@@ -8,7 +8,7 @@ function barColor(pct) {
 export default function AccuracyCard({ avgAccuracy = 0, topicAccuracy = [] }) {
   return (
     <div style={{
-      background: "#111111", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, padding: "16px 18px",
+      background: "#111111", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "16px 18px",
     }}>
       <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>Accuracy</p>
       <p style={{ margin: "4px 0 0", fontSize: 22, fontWeight: 800, color: barColor(avgAccuracy) }}>
@@ -17,7 +17,7 @@ export default function AccuracyCard({ avgAccuracy = 0, topicAccuracy = [] }) {
       </p>
 
       <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
-        {topicAccuracy.slice(0, 4).map(({ topic, accuracy }) => (
+        {topicAccuracy.slice(0, 5).map(({ topic, accuracy }) => (
           <div key={topic}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
               <span style={{ fontSize: 9, color: "#a1a1aa", maxWidth: "76%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>

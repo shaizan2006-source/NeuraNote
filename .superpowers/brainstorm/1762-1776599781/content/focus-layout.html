@@ -1,0 +1,122 @@
+<h2>Focus Mode — Layout Direction</h2>
+<p class="subtitle">Which layout feels most premium and immersive for a study timer?</p>
+
+<div class="cards">
+
+  <!-- Option A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0a0a14;border-radius:10px;padding:18px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;position:relative;overflow:hidden;">
+        <!-- ambient glow -->
+        <div style="position:absolute;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.35),transparent);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;"></div>
+        <!-- timer ring -->
+        <svg width="100" height="100" viewBox="0 0 100 100" style="transform:rotate(-90deg)">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#8B5CF6" stroke-width="6" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="66" style="filter:drop-shadow(0 0 8px #8B5CF6)"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+          <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px;">18:45</div>
+          <div style="font-size:9px;color:#8B5CF6;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:2px;">FOCUS</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:60px;">
+          <div style="padding:5px 14px;background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.4);border-radius:6px;font-size:10px;color:#a78bfa;">⏸ Pause</div>
+          <div style="padding:5px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-size:10px;color:#666;">⏹ Stop</div>
+        </div>
+        <div style="position:absolute;bottom:12px;font-size:10px;color:#444;">🔥 3 sessions today</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Full-screen Immersive</h3>
+      <p>Timer dominates the screen. Task list slides up on demand. Ambient glow pulses. Maximum focus — nothing else competes for attention.</p>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0a0a14;border-radius:10px;padding:14px;min-height:220px;display:flex;gap:10px;">
+        <!-- Left: timer -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,0.02);border-radius:8px;padding:12px;position:relative;overflow:hidden;">
+          <div style="position:absolute;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.25),transparent);top:50%;left:50%;transform:translate(-50%,-54%);"></div>
+          <svg width="80" height="80" viewBox="0 0 100 100" style="transform:rotate(-90deg)">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#8B5CF6" stroke-width="6" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="88" style="filter:drop-shadow(0 0 6px #8B5CF6)"/>
+          </svg>
+          <div style="text-align:center;margin-top:-6px;">
+            <div style="font-size:18px;font-weight:800;color:#fff;">18:45</div>
+            <div style="font-size:8px;color:#8B5CF6;font-weight:700;letter-spacing:2px;">FOCUS</div>
+          </div>
+          <div style="display:flex;gap:5px;">
+            <div style="padding:4px 10px;background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.4);border-radius:5px;font-size:9px;color:#a78bfa;">⏸</div>
+            <div style="padding:4px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:5px;font-size:9px;color:#555;">⏹</div>
+          </div>
+        </div>
+        <!-- Right: tasks -->
+        <div style="flex:1.1;display:flex;flex-direction:column;gap:5px;background:rgba(255,255,255,0.02);border-radius:8px;padding:10px;">
+          <div style="font-size:9px;color:#555;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">Today's Tasks</div>
+          <div style="background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.25);border-radius:5px;padding:6px 8px;font-size:9px;color:#c4b5fd;">📖 Chapter 12 — Mechanics</div>
+          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:5px;padding:6px 8px;font-size:9px;color:#666;">✓ Thermo Laws revision</div>
+          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:5px;padding:6px 8px;font-size:9px;color:#666;">Practice 20 MCQs</div>
+          <div style="margin-top:auto;">
+            <div style="background:rgba(255,255,255,0.04);border-radius:4px;height:4px;">
+              <div style="width:33%;height:100%;background:linear-gradient(90deg,#8B5CF6,#22D3EE);border-radius:4px;"></div>
+            </div>
+            <div style="font-size:8px;color:#444;margin-top:3px;">1 / 3 tasks done</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Focus Cockpit (Split)</h3>
+      <p>Timer on the left, task list always visible on the right. Everything in one view — feels like a mission control for studying.</p>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0a0a14;border-radius:10px;padding:14px;min-height:220px;display:flex;flex-direction:column;gap:8px;">
+        <!-- Top stats bar -->
+        <div style="display:flex;gap:6px;">
+          <div style="flex:1;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.15);border-radius:6px;padding:6px 8px;text-align:center;">
+            <div style="font-size:14px;font-weight:800;color:#a78bfa;">3</div>
+            <div style="font-size:8px;color:#555;">Sessions</div>
+          </div>
+          <div style="flex:1;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.15);border-radius:6px;padding:6px 8px;text-align:center;">
+            <div style="font-size:14px;font-weight:800;color:#22D3EE;">75m</div>
+            <div style="font-size:8px;color:#555;">Focused</div>
+          </div>
+          <div style="flex:1;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);border-radius:6px;padding:6px 8px;text-align:center;">
+            <div style="font-size:14px;font-weight:800;color:#10B981;">🔥7</div>
+            <div style="font-size:8px;color:#555;">Streak</div>
+          </div>
+        </div>
+        <!-- Center: compact timer -->
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:14px;background:rgba(255,255,255,0.02);border-radius:8px;padding:10px;">
+          <svg width="64" height="64" viewBox="0 0 100 100" style="transform:rotate(-90deg);flex-shrink:0;">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#8B5CF6" stroke-width="7" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="88" style="filter:drop-shadow(0 0 6px #8B5CF6)"/>
+          </svg>
+          <div>
+            <div style="font-size:24px;font-weight:800;color:#fff;letter-spacing:-1px;">18:45</div>
+            <div style="font-size:8px;color:#8B5CF6;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Focus Mode</div>
+            <div style="display:flex;gap:4px;margin-top:5px;">
+              <div style="padding:3px 8px;background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.35);border-radius:4px;font-size:8px;color:#a78bfa;">⏸ Pause</div>
+              <div style="padding:3px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:4px;font-size:8px;color:#444;">⏹</div>
+            </div>
+          </div>
+        </div>
+        <!-- Bottom: task + AI tip -->
+        <div style="display:flex;gap:6px;">
+          <div style="flex:1.5;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:7px;font-size:9px;color:#888;">📖 Current: Chapter 12 Mechanics <span style="color:#22D3EE;float:right">✓ Done</span></div>
+          <div style="flex:1;background:rgba(34,211,238,0.05);border:1px solid rgba(34,211,238,0.12);border-radius:6px;padding:7px;font-size:8px;color:#67e8f9;">💡 You focus best at 9–11 AM</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Cockpit Dashboard</h3>
+      <p>Stats bar on top, compact timer in the middle, current task + AI insight at the bottom. Data-rich layout that rewards consistent study habits.</p>
+    </div>
+  </div>
+
+</div>

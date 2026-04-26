@@ -1,0 +1,15 @@
+{
+  "community": 42,
+  "name": "business-domain",
+  "nodes": [
+    {
+      "label": "business.js",
+      "file_type": "code",
+      "source_file": "lib\\prompts\\domains\\business.js",
+      "source_location": "L1",
+      "id": "business",
+      "community": 42
+    }
+  ],
+  "edges": []
+}

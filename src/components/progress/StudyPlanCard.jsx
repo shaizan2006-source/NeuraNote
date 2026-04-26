@@ -1,8 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
 
-export default function StudyPlanCard({ studyPlanProgress = null, dailyPlan = [] }) {
-  const router = useRouter();
+export default function StudyPlanCard({ studyPlanProgress = null, dailyPlan = [], onSwitchToStudy = null }) {
   const prog    = studyPlanProgress || { currentDay: 0, totalDays: 30, completionPct: 0 };
   const nextTask = dailyPlan[0] || null;
 
@@ -38,7 +36,7 @@ export default function StudyPlanCard({ studyPlanProgress = null, dailyPlan = []
       )}
 
       <button
-        onClick={() => router.push("/dashboard")}
+        onClick={onSwitchToStudy}
         style={{
           marginTop: 12, width: "100%", padding: "9px 0",
           background: "linear-gradient(135deg, #8B5CF6, #7C3AED)",

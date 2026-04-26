@@ -18,14 +18,15 @@ export default function CognitiveProgressCard({
 
   return (
     <div style={{
-      background:    "linear-gradient(135deg, rgba(139,92,246,0.12), rgba(20,10,40,0.5))",
-      border:        "1px solid rgba(139,92,246,0.22)",
-      borderRadius:  12,
-      padding:       "18px 20px",
+      background:    "linear-gradient(135deg, rgba(139,92,246,0.14), rgba(20,10,40,0.6))",
+      border:        "1px solid rgba(139,92,246,0.28)",
+      borderRadius:  16,
+      padding:       "22px 24px",
       display:       "flex",
       flexDirection: "column",
       height:        "100%",
       boxSizing:     "border-box",
+      boxShadow:     "0 0 40px rgba(139,92,246,0.10)",
     }}>
       <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>
         Cognitive Progress

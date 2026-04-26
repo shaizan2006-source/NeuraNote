@@ -8,7 +8,7 @@
 
 ## Project Overview
 
-**AskMyNotes** is an AI-powered study companion targeting Indian competitive exam students (JEE, NEET, GATE, UPSC, CA).
+**AskMyNotes** is an AI-powered study companion targeting university level students (B.Tech, BCA, BSc, Medical, Law, Finance, BBA, MBA, MBBS, etc.).
 
 | Layer | Technology |
 |---|---|

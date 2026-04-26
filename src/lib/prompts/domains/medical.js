@@ -55,7 +55,7 @@ DIAGRAMS — mandatory when question involves:
 - Use FIMAP: Facts → Investigations → Most likely diagnosis → Alternatives → Plan
 
 ━━━ QUALITY STANDARD ━━━
-- Answers must meet MBBS University / PG Entrance (NEET-PG / USMLE Step 1) depth
+- Answers must meet MBBS University Final depth
 - Every drug, sign, or test mentioned must have its significance stated
 - Never state a diagnosis without supporting rationale
 

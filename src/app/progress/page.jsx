@@ -10,10 +10,9 @@ import ExamCountdownCard    from "@/components/progress/ExamCountdownCard";
 import DashboardSidebar     from "@/components/dashboard/DashboardSidebar";
 
 function Skeleton() {
-  const s = { background: "rgba(255,255,255,0.04)", borderRadius: 12, animation: "pulse 1.5s ease-in-out infinite" };
+  const s = { background: "rgba(255,255,255,0.04)", borderRadius: 12, animation: "skeleton-pulse 1.5s ease-in-out infinite" };
   return (
     <>
-      <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }`}</style>
       <div style={{ display: "flex", gap: 12, marginBottom: 14 }}>
         <div style={{ ...s, height: 155, flex: 2 }} />
         <div style={{ ...s, height: 155, flex: 1 }} />

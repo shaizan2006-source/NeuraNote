@@ -236,6 +236,18 @@ export function DashboardProvider({ children }) {
   const [suggestions, setSuggestions] = useState([]);
   const [downloadUrl, setDownloadUrl] = useState(null);
 
+  // ── Chat mode (answering | coach) ─────────────────────────────
+  const [chatMode, setChatModeState] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("amn_chat_mode") || "answering";
+    }
+    return "answering";
+  });
+  const setChatMode = (m) => {
+    setChatModeState(m);
+    if (typeof window !== "undefined") localStorage.setItem("amn_chat_mode", m);
+  };
+
   // ── Active Tab ─────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState("study");
 
@@ -343,34 +355,72 @@ export function DashboardProvider({ children }) {
   // ── showHistory ───────────────────────────────────────────────
   const [showHistory, setShowHistory] = useState(false);
 
-  // ── Dashboard mode: "study" | "progress" ─────────────────────
-  const [dashboardMode, setDashboardMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("dashboard_mode") || "study";
+  // ── Progress summary cache ────────────────────────────────────
+  const [progressSummary, setProgressSummary] = useState(null);
+  const [progressSummaryLoading, setProgressSummaryLoading] = useState(false);
+  const [progressSummaryError, setProgressSummaryError] = useState(null);
+  const progressSummaryFetchedAt  = useRef(null);
+  const progressSummaryFetchingRef = useRef(false); // ref-based guard avoids stale-closure race
+
+  const fetchProgressSummary = useCallback(async () => {
+    // Skip if data is fresh (< 5 min old)
+    if (progressSummaryFetchedAt.current && Date.now() - progressSummaryFetchedAt.current < 5 * 60 * 1000) return;
+    // Skip if already in flight — use ref, not state, to avoid stale closure
+    if (progressSummaryFetchingRef.current) return;
+    progressSummaryFetchingRef.current = true;
+    setProgressSummaryLoading(true);
+    setProgressSummaryError(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        setProgressSummaryError("unauthenticated");
+        return;
+      }
+      const res = await fetch("/api/progress/summary", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) throw new Error(`summary fetch failed (${res.status})`);
+      const json = await res.json();
+      setProgressSummary(json);
+      progressSummaryFetchedAt.current = Date.now();
+    } catch (err) {
+      setProgressSummaryError(err.message);
+    } finally {
+      setProgressSummaryLoading(false);
+      progressSummaryFetchingRef.current = false;
     }
-    return "study";
-  });
+  }, []);
+
+  // ── Dashboard mode: "study" | "progress" ─────────────────────
+  // SSR-safe: always start with "study"; read sessionStorage only after mount
+  // sessionStorage persists on page refresh, but resets when browser tab closes
+  const [dashboardMode, setDashboardMode] = useState("study");
+
+  useEffect(() => {
+    const stored = typeof window !== "undefined" ? sessionStorage.getItem("dashboard_mode") : null;
+    if (stored && stored !== "study") setDashboardMode(stored);
+  }, []);
 
   function toggleDashboardMode() {
     const next = dashboardMode === "study" ? "progress" : "study";
     setDashboardMode(next);
     if (typeof window !== "undefined") {
-      localStorage.setItem("dashboard_mode", next);
+      sessionStorage.setItem("dashboard_mode", next);
     }
   }
 
   // ── Sidebar collapsed state ───────────────────────────────────
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("sidebar_collapsed") === "true";
-    }
-    return false;
-  });
+  // SSR-safe: always start expanded; read localStorage only after mount
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    setSidebarCollapsed(localStorage.getItem("sidebar_collapsed") === "true");
+  }, []);
 
   function toggleSidebar() {
     setSidebarCollapsed(prev => {
       const next = !prev;
-      if (typeof window !== "undefined") localStorage.setItem("sidebar_collapsed", String(next));
+      localStorage.setItem("sidebar_collapsed", String(next));
       return next;
     });
   }
@@ -1063,6 +1113,7 @@ export function DashboardProvider({ children }) {
           question:        questionText,
           documentId:      documentIds[0] || null,
           documentIds:     documentIds.length > 0 ? documentIds : undefined,
+          mode:            chatMode,
           // Continuation context — only set when coming from QuickChat / a saved conversation
           conversationId:  opts.conversationId  || undefined,
           priorMessages:   opts.priorMessages?.length ? opts.priorMessages : undefined,
@@ -1365,6 +1416,7 @@ export function DashboardProvider({ children }) {
       messages, input, setInput,
       showHistory, setShowHistory,
       dashboardMode, toggleDashboardMode,
+      progressSummary, progressSummaryLoading, progressSummaryError, fetchProgressSummary,
       sidebarCollapsed, toggleSidebar,
       difficultyData, score,
       // Functions
@@ -1381,6 +1433,7 @@ export function DashboardProvider({ children }) {
       generateQuiz, handleNewQuiz, handleReattemptQuiz,
       handleUpload, cancelUpload,
       handleAsk, handleInputChange, queue, enqueue,
+      chatMode, setChatMode,
     }}>
       {children}
     </DashboardContext.Provider>

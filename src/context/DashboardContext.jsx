@@ -237,16 +237,16 @@ export function DashboardProvider({ children }) {
   const [downloadUrl, setDownloadUrl] = useState(null);
 
   // ── Chat mode (answering | coach) ─────────────────────────────
-  const [chatMode, setChatModeState] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("amn_chat_mode") || "answering";
-    }
-    return "answering";
-  });
-  const setChatMode = (m) => {
+  // SSR-safe: always start with "answering"; read localStorage only after mount
+  const [chatMode, setChatModeState] = useState("answering");
+  useEffect(() => {
+    const stored = localStorage.getItem("amn_chat_mode");
+    if (stored && stored !== "answering") setChatModeState(stored);
+  }, []);
+  const setChatMode = useCallback((m) => {
     setChatModeState(m);
-    if (typeof window !== "undefined") localStorage.setItem("amn_chat_mode", m);
-  };
+    localStorage.setItem("amn_chat_mode", m);
+  }, []);
 
   // ── Active Tab ─────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState("study");

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter }        from "next/navigation";
 import { useProgressData }  from "@/hooks/useProgressData";
-import { useDashboard }     from "@/context/DashboardContext";
+import { DashboardProvider, useDashboard } from "@/context/DashboardContext";
 import HeroSection          from "@/components/progress/HeroSection";
 import AnalyticsGrid        from "@/components/progress/AnalyticsGrid";
 import InsightsPanel        from "@/components/progress/InsightsPanel";
@@ -30,7 +30,7 @@ function Skeleton() {
   );
 }
 
-export default function ProgressPage() {
+function ProgressInner() {
   const router                   = useRouter();
   const { data, loading, error } = useProgressData();
   const { dailyPlan }            = useDashboard();
@@ -93,5 +93,13 @@ export default function ProgressPage() {
         ) : null}
       </main>
     </div>
+  );
+}
+
+export default function ProgressPage() {
+  return (
+    <DashboardProvider>
+      <ProgressInner />
+    </DashboardProvider>
   );
 }

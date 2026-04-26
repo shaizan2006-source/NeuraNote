@@ -6,6 +6,7 @@ import { canAskQuestion, recordQAUsage } from "@/lib/planLimits";
 import { classifyQuery } from "@/lib/queryClassifier";
 import { classifyWithLLM } from "@/lib/llmClassifier";
 import { assemblePrompt } from "@/lib/promptAssembler";
+import { COACH_SYSTEM_PROMPT } from "@/lib/prompts/coach";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -31,14 +32,6 @@ async function getCachedAnswer(cacheKey) {
     .maybeSingle();
 
   if (error || !data) return null;
-
-  // Increment hit counter fire-and-forget
-  supabase
-    .from("qa_cache")
-    .update({ hit_count: supabase.rpc("qa_cache_hit_count_increment", { key: cacheKey }) })
-    .eq("cache_key", cacheKey)
-    .then(({ error }) => { if (error) console.error("cache hit increment failed:", error.message); });
-
   return data;
 }
 
@@ -95,6 +88,10 @@ export async function POST(req) {
       documentIds,
       subject,                   // optional: from UI subject selector
       marks: metaMarks,          // optional: from UI marks selector
+      mode = "answering",        // "answering" | "coach"
+      // Continuation — set when user navigated from QuickChat "Open full chat"
+      conversationId,            // existing conversation to append Q&A to
+      priorMessages,             // [{role:"user"|"assistant", content:string}] history
     } = body;
 
     // ── Validate ─────────────────────────────────────────────
@@ -102,15 +99,17 @@ export async function POST(req) {
       return NextResponse.json({ error: "Question is required" }, { status: 400 });
     }
 
-    // ── Auth + free tier Q&A limit ────────────────────────────
+    // ── Auth + free tier Q&A limit (dev accounts bypass automatically) ──
     const token = req.headers.get("authorization")?.replace("Bearer ", "");
     let userId = null;
+    let authUser = null;
     if (token) {
       const { data: { user } } = await supabase.auth.getUser(token);
-      userId = user?.id || null;
+      userId   = user?.id || null;
+      authUser = user || null;
     }
     if (userId) {
-      const qaCheck = await canAskQuestion(userId);
+      const qaCheck = await canAskQuestion(userId, authUser);
       if (!qaCheck.allowed) {
         return NextResponse.json(
           { error: qaCheck.reason, upgradeUrl: qaCheck.upgradeUrl, limitReached: true },
@@ -118,6 +117,118 @@ export async function POST(req) {
         );
       }
       recordQAUsage(userId).catch(() => {});
+    }
+
+    // ── Coach mode: Socratic guidance, no RAG pipeline ────────
+    if (mode === "coach") {
+      const sanitisedPrior = Array.isArray(priorMessages)
+        ? priorMessages
+            .filter(m => (m.role === "user" || m.role === "assistant") && m.content?.trim())
+            .slice(-8)
+        : [];
+
+      const coachMessages = [
+        { role: "system", content: COACH_SYSTEM_PROMPT },
+        ...sanitisedPrior,
+        { role: "user", content: question },
+      ];
+
+      const coachStream = await openai.chat.completions.create({
+        model:       "gpt-4o-mini",
+        temperature: 0.5,
+        max_tokens:  700,
+        stream:      true,
+        messages:    coachMessages,
+      });
+
+      const coachReadableStream = new ReadableStream({
+        async start(controller) {
+          const encoder = new TextEncoder();
+          try {
+            const meta = JSON.stringify({
+              sources:        [],
+              usedContext:    false,
+              classification: { domain: "coach", marks: 0, questionType: "theory", language: "en" },
+            }) + "\n";
+            controller.enqueue(encoder.encode(`__META__${meta}`));
+
+            let fullAnswer = "";
+            for await (const chunk of coachStream) {
+              const text = chunk.choices[0]?.delta?.content || "";
+              if (text) {
+                fullAnswer += text;
+                controller.enqueue(encoder.encode(text));
+              }
+            }
+
+            const ts = new Date().toISOString();
+
+            if (conversationId && fullAnswer) {
+              try {
+                const { data: conv } = await supabase
+                  .from("conversations")
+                  .select("messages")
+                  .eq("id", conversationId)
+                  .single();
+                const existing = Array.isArray(conv?.messages) ? conv.messages : [];
+                await supabase
+                  .from("conversations")
+                  .update({
+                    messages:   [...existing,
+                      { role: "user",      content: question,   ts },
+                      { role: "assistant", content: fullAnswer, ts },
+                    ],
+                    updated_at: ts,
+                  })
+                  .eq("id", conversationId);
+              } catch (saveErr) {
+                console.error("coach conversation save error:", saveErr);
+              }
+            } else if (!conversationId && userId && fullAnswer) {
+              try {
+                const title = question.trim().slice(0, 80) || "Coach Session";
+                const { data: newConv } = await supabase
+                  .from("conversations")
+                  .insert({
+                    user_id:    userId,
+                    title,
+                    messages:   [
+                      { role: "user",      content: question,   ts },
+                      { role: "assistant", content: fullAnswer, ts },
+                    ],
+                    created_at: ts,
+                    updated_at: ts,
+                  })
+                  .select("id")
+                  .single();
+                if (newConv?.id) {
+                  controller.enqueue(
+                    encoder.encode(`\n__CONV__${JSON.stringify({ conversation_id: newConv.id })}`)
+                  );
+                }
+              } catch (err) {
+                console.error("coach new conversation create error:", err);
+              }
+            }
+
+            controller.close();
+          } catch (err) {
+            console.error("Coach stream error:", err);
+            controller.error(err);
+          }
+        },
+      });
+
+      return new Response(coachReadableStream, {
+        headers: {
+          "Content-Type":           "text/plain; charset=utf-8",
+          "X-Content-Type-Options": "nosniff",
+          "Cache-Control":          "no-cache",
+          "X-Sources":              "[]",
+          "X-Used-Context":         "false",
+          "X-From-Cache":           "false",
+        },
+      });
     }
 
     // ── Classify query ────────────────────────────────────────
@@ -271,16 +382,28 @@ export async function POST(req) {
       }
     }
 
+    // ── Build OpenAI messages array ───────────────────────────
+    // When continuing a QuickChat conversation, inject prior turns between
+    // the system prompt and the current user question so the model has context.
+    const sanitisedPrior = Array.isArray(priorMessages)
+      ? priorMessages
+          .filter(m => (m.role === "user" || m.role === "assistant") && m.content?.trim())
+          .slice(-8)
+      : [];
+
+    const openAIMessages = [
+      { role: "system", content: systemPrompt },
+      ...sanitisedPrior,
+      { role: "user",   content: userPrompt   },
+    ];
+
     // ── Streaming response ────────────────────────────────────
     const stream = await openai.chat.completions.create({
       model:       "gpt-4o-mini",
       temperature,
       max_tokens:  maxTokens,
       stream:      true,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user",   content: userPrompt   },
-      ],
+      messages:    openAIMessages,
     });
 
     const readableStream = new ReadableStream({
@@ -311,9 +434,62 @@ export async function POST(req) {
             }
           }
 
+          const ts = new Date().toISOString();
+
+          if (conversationId && fullAnswer) {
+            // ── Append Q&A to existing conversation ────────────────
+            try {
+              const { data: conv } = await supabase
+                .from("conversations")
+                .select("messages")
+                .eq("id", conversationId)
+                .single();
+              const existing = Array.isArray(conv?.messages) ? conv.messages : [];
+              await supabase
+                .from("conversations")
+                .update({
+                  messages:   [...existing,
+                    { role: "user",      content: question,   ts },
+                    { role: "assistant", content: fullAnswer, ts },
+                  ],
+                  updated_at: ts,
+                })
+                .eq("id", conversationId);
+            } catch (saveErr) {
+              console.error("conversation save error:", saveErr);
+            }
+          } else if (!conversationId && userId && fullAnswer) {
+            // ── Create new conversation (Ask AI direct path) ────────
+            try {
+              const title = question.trim().slice(0, 80) || "New Chat";
+              const { data: newConv } = await supabase
+                .from("conversations")
+                .insert({
+                  user_id:    userId,
+                  title,
+                  messages:   [
+                    { role: "user",      content: question,   ts },
+                    { role: "assistant", content: fullAnswer, ts },
+                  ],
+                  created_at: ts,
+                  updated_at: ts,
+                })
+                .select("id")
+                .single();
+              if (newConv?.id) {
+                // Signal the client with the new conversation ID
+                controller.enqueue(
+                  encoder.encode(`\n__CONV__${JSON.stringify({ conversation_id: newConv.id })}`)
+                );
+              }
+            } catch (err) {
+              console.error("new conversation create error:", err);
+            }
+          }
+
           controller.close();
 
-          // Store in cache if no PDF context was used
+          // Store in cache (fire-and-forget, after stream ends)
           if (!usedContext && fullAnswer.length > 50) {
             storeCachedAnswer(cacheKey, question, classificationMeta, fullAnswer);
           }

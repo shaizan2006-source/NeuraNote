@@ -241,7 +241,7 @@ export function DashboardProvider({ children }) {
   const [chatMode, setChatModeState] = useState("answering");
   useEffect(() => {
     const stored = localStorage.getItem("amn_chat_mode");
-    if (stored && stored !== "answering") setChatModeState(stored);
+    if (stored === "coach") setChatModeState("coach");
   }, []);
   const setChatMode = useCallback((m) => {
     setChatModeState(m);

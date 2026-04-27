@@ -30,6 +30,10 @@ export default function ModeSwitcher() {
   const { chatMode, setChatMode } = useDashboard();
   const [open, setOpen]           = useState(false);
   const ref                       = useRef(null);
+  const openRef                   = useRef(false);
+
+  // Keep ref in sync so event handlers can read current open state
+  useEffect(() => { openRef.current = open; }, [open]);
 
   // Close on outside click or Escape key
   useEffect(() => {
@@ -37,7 +41,7 @@ export default function ModeSwitcher() {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
     };
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape" && openRef.current) { setOpen(false); e.stopPropagation(); }
     };
     document.addEventListener("mousedown", handleOutside);
     document.addEventListener("keydown", handleKeyDown);
@@ -45,7 +49,7 @@ export default function ModeSwitcher() {
       document.removeEventListener("mousedown", handleOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []); // [] intentional — setOpen is a stable React setter
+  }, []); // [] intentional — setOpen and openRef are stable references
 
   const current = MODES.find(m => m.id === chatMode) ?? MODES[0];
 

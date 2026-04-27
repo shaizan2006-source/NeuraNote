@@ -70,5 +70,5 @@ export function useExamReminders(exams = []) {
     checkReminders();
 
     return () => clearInterval(intervalId);
-  }, [exams]);
+  }, []);
 }

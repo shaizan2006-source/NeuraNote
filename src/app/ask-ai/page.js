@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { DashboardProvider, useDashboard } from "@/context/DashboardContext";
 import { DrawerProvider } from "@/context/DrawerContext";
+import { TrackingProvider } from "@/components/providers/TrackingProvider";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import AskAISidebar from "@/components/AskAI/AskAISidebar";
 import AskAISection from "@/components/dashboard/AskAISection";
@@ -144,12 +145,14 @@ function AskAIInner() {
 
 export default function AskAIPage() {
   return (
-    <DashboardProvider>
-      <DrawerProvider>
-        <Suspense fallback={null}>
-          <AskAIInner />
-        </Suspense>
-      </DrawerProvider>
-    </DashboardProvider>
+    <TrackingProvider surface="ask_ai">
+      <DashboardProvider>
+        <DrawerProvider>
+          <Suspense fallback={null}>
+            <AskAIInner />
+          </Suspense>
+        </DrawerProvider>
+      </DashboardProvider>
+    </TrackingProvider>
   );
 }

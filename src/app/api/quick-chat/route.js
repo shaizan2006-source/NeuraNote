@@ -123,6 +123,21 @@ export async function POST(req) {
               .eq("user_id", user_id);
           }
 
+          // Track question server-side (fires even if client tab closes mid-stream)
+          supabase.from("learning_events").insert({
+            user_id:    user_id,
+            event_type: "question_asked",
+            surface:    "ask_ai",
+            metadata:   {
+              mode:         "answer",
+              threadId:     convId,
+              depth:        priorMessages.length,
+              charCount:    question.length,
+              used_rag:     usedRag,
+              questionText: question.slice(0, 400),
+            },
+          }).then(() => {}).catch(() => {});
+
           // Send conversation metadata to client — parsed by QuickChatDrawer
           controller.enqueue(encoder.encode(
             `\n__CONV__${JSON.stringify({ conversation_id: convId, used_rag: usedRag })}`

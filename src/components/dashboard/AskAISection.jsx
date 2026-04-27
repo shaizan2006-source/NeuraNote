@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { trackQuestion } from "@/lib/track";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
 import ThinkingAnimation from "@/components/ThinkingAnimation";
@@ -883,6 +884,13 @@ export default function AskAISection({ fullPage = false, conversationId = null }
 
     if (hasText) {
       currentQRef.current = q;
+      const depth = messages.filter(m => m.role === "user").length;
+      trackQuestion(chatMode === "coach" ? "coach" : "answer", {
+        threadId:     continuationIdRef.current || undefined,
+        depth,
+        charCount:    q.length,
+        questionText: q,
+      });
       setMessages(prev => [...prev, { id: nextId(), role: "user", text: q }]);
     }
 
@@ -1309,9 +1317,9 @@ export default function AskAISection({ fullPage = false, conversationId = null }
           {/* ── Input row ── */}
           <div style={{
             display:    "flex",
-            alignItems: "flex-end",   // buttons pin to bottom as textarea grows
+            alignItems: "flex-end",
           }}>
-            {/* + button */}
+            {/* Attach + button */}
             <motion.button
               whileTap={{ scale: 0.88 }}
               onClick={() => setMenuOpen(o => !o)}
@@ -1320,16 +1328,6 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 background:  "transparent",
                 border:      "none",
                 cursor:      "pointer",
-                // Match textarea metrics exactly so the + sits on the same
-                // optical baseline as the first line of text.
-                // fontSize 15 → 1px over textarea (14) for slight visual weight.
-                // lineHeight 1.6 → identical to textarea, makes button height
-                // = padding-top(14) + 15*1.6(24) + padding-bottom(14) = 52px,
-                // centering the + at 14+12=26px from bottom.
-                // Textarea first-line center = padding-bottom(14)+half-line(11.2) = 25.2px.
-                // Delta = 0.8px — imperceptible optically.
-                // fontSize 20, lineHeight 1.6 → line = 32px, half = 16px
-                // paddingBottom = 25.2 (text center from floor) − 16 = 9.2 ≈ 9px
                 padding:     "14px 6px 9px 14px",
                 fontSize:    20,
                 lineHeight:  1.6,
@@ -1342,19 +1340,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
               +
             </motion.button>
 
-            {/* Mode switcher */}
-            <div style={{ alignSelf: "flex-end", paddingBottom: 10, paddingRight: 4, flexShrink: 0 }}>
-              <ModeSwitcher />
-            </div>
-
-            {/*
-              Textarea
-              ─────────────────────────────────────────────────────────────────
-              flex:1 + minWidth:0 = fills remaining space without blowing out
-              overflow:hidden on pill clips any stray rendering at the corners
-              overflowY managed by autoResize (hidden → auto at max-height)
-              wordBreak + overflowWrap guarantee long strings wrap, never overflow
-            */}
+            {/* Textarea */}
             <textarea
               ref={textareaRef}
               placeholder={
@@ -1406,6 +1392,11 @@ export default function AskAISection({ fullPage = false, conversationId = null }
               }}
             />
 
+            {/* Mode switcher — RIGHT of textarea */}
+            <div style={{ alignSelf: "flex-end", paddingBottom: 10, paddingLeft: 4, flexShrink: 0 }}>
+              <ModeSwitcher />
+            </div>
+
             {/* Send / Stop button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -1415,8 +1406,6 @@ export default function AskAISection({ fullPage = false, conversationId = null }
               style={{
                 flexShrink:     0,
                 alignSelf:      "flex-end",
-                // margin-bottom: 14 (textarea pad) + 11.2 (half text line) − 17 (half button) = 8.2 → 8px
-                // This centres the button on the same optical axis as the text.
                 margin:         "0 10px 8px 4px",
                 width:          34,
                 height:         34,

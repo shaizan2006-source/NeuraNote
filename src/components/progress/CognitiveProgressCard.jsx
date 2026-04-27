@@ -1,5 +1,7 @@
 "use client";
+import { useState, useCallback } from "react";
 import AnimatedNumber from "./AnimatedNumber";
+import ArtifactModal from "@/components/artifacts/ArtifactModal";
 
 function getCellColor(score) {
   if (!score || score === 0) return "#27272a";
@@ -11,7 +13,17 @@ export default function CognitiveProgressCard({
   topicsMastered = 0, totalTopics = 0,
   avgAccuracy = 0, retentionScore = 0,
   peerPercentile = 0, masteryTopics = [],
+  weakTopicClusters = [],   // [{label, topics, avgScore, subject}] — Phase 2
+  token = null,             // Auth token for artifact generation — Phase 4
 }) {
+  const [selectedCluster, setSelectedCluster] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = useCallback((cluster) => {
+    if (!token) return; // Require auth
+    setSelectedCluster(cluster);
+    setModalOpen(true);
+  }, [token]);
   const cells = Array.from({ length: 16 }, (_, i) => ({
     score: masteryTopics[i]?.accuracy ?? 0,
   }));
@@ -72,6 +84,76 @@ export default function CognitiveProgressCard({
             Ahead of {peerPercentile}% of students
           </span>
         </div>
+      )}
+
+      {/* Semantic weak-topic clusters — Phase 2 */}
+      {weakTopicClusters.length > 0 && (
+        <div style={{ marginTop: 14 }}>
+          <p style={{ margin: "0 0 6px", fontSize: 9, fontWeight: 600, color: "#52525b", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            Knowledge Gaps
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+            {weakTopicClusters.slice(0, 3).map((cluster, i) => (
+              <button
+                key={i}
+                onClick={() => openModal(cluster)}
+                style={{
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  background: token ? "rgba(139, 92, 246, 0.08)" : "rgba(239,68,68,0.07)",
+                  border: token ? "1px solid rgba(139, 92, 246, 0.15)" : "1px solid rgba(239,68,68,0.15)",
+                  borderRadius: 8, padding: "5px 10px",
+                  cursor: token ? "pointer" : "default",
+                  transition: token ? "all 0.2s" : "none",
+                  width: "100%",
+                  textAlign: "left",
+                }}
+                onMouseEnter={(e) => {
+                  if (token) {
+                    e.currentTarget.style.background = "rgba(139, 92, 246, 0.15)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (token) {
+                    e.currentTarget.style.background = "rgba(139, 92, 246, 0.08)";
+                  }
+                }}
+              >
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <span style={{ fontSize: 11, color: "#f4f4f5", fontWeight: 600, display: "block",
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {cluster.label}
+                  </span>
+                  {cluster.topics.length > 1 && (
+                    <span style={{ fontSize: 9, color: "#71717a" }}>
+                      + {cluster.topics.length - 1} related topic{cluster.topics.length > 2 ? "s" : ""}
+                    </span>
+                  )}
+                </div>
+                <div style={{
+                  flexShrink: 0, marginLeft: 8, display: "flex", alignItems: "center", gap: 6,
+                  fontSize: 11, fontWeight: 700,
+                  color: cluster.avgScore < 30 ? "#EF4444" : "#F59E0B",
+                }}>
+                  <span>{cluster.avgScore}%</span>
+                  {token && <span style={{ fontSize: 10, opacity: 0.6 }}>→</span>}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Artifact Modal — Phase 4 */}
+      {selectedCluster && (
+        <ArtifactModal
+          cluster={selectedCluster}
+          isOpen={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+            setSelectedCluster(null);
+          }}
+          token={token}
+        />
       )}
     </div>
   );

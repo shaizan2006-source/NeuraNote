@@ -2,6 +2,7 @@
 
 import { DashboardProvider, useDashboard } from "@/context/DashboardContext";
 import { DrawerProvider } from "@/context/DrawerContext";
+import { TrackingProvider } from "@/components/providers/TrackingProvider";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import GreetingRow from "@/components/Dashboard/GreetingRow";
@@ -62,10 +63,12 @@ function DashboardInner() {
 
 export default function DashboardPage() {
   return (
-    <DashboardProvider>
-      <DrawerProvider>
-        <DashboardInner />
-      </DrawerProvider>
-    </DashboardProvider>
+    <TrackingProvider surface="dashboard">
+      <DashboardProvider>
+        <DrawerProvider>
+          <DashboardInner />
+        </DrawerProvider>
+      </DashboardProvider>
+    </TrackingProvider>
   );
 }

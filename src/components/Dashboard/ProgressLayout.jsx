@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useDashboard }                 from "@/context/DashboardContext";
+import { createClient }                 from "@supabase/supabase-js";
 
 import CognitiveProgressCard from "@/components/progress/CognitiveProgressCard";
 import FocusScoreCard        from "@/components/progress/FocusScoreCard";
@@ -13,6 +14,8 @@ import WeeklyRecapCard       from "@/components/progress/WeeklyRecapCard";
 import InsightsPanel         from "@/components/progress/InsightsPanel";
 import StudyPlanCard         from "@/components/progress/StudyPlanCard";
 import ExamCountdownCard     from "@/components/progress/ExamCountdownCard";
+import SpacedRepetitionCard  from "@/components/progress/SpacedRepetitionCard";
+import ProgressQuestionsPanel from "@/components/progress/ProgressQuestionsPanel";
 
 // Analytics hooks
 import { useFocusScore }    from "@/hooks/useFocusScore";
@@ -41,7 +44,8 @@ function ProgressSkeleton({ isMobile }) {
       </div>
       <div style={{ ...s, height: 84, marginBottom: 12 }} />
       <div style={{ ...s, height: 56, marginBottom: 12 }} />
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 12 }}>
+        <div style={{ ...s, height: 160 }} />
         <div style={{ ...s, height: 160 }} />
         <div style={{ ...s, height: 160 }} />
       </div>
@@ -59,10 +63,30 @@ export default function ProgressLayout() {
     toggleDashboardMode,
   } = useDashboard();
   const [isMobile, setIsMobile] = useState(false);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     fetchProgressSummary();
   }, [fetchProgressSummary]);
+
+  useEffect(() => {
+    // Get auth token for artifact generation (Phase 4)
+    const getToken = async () => {
+      try {
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        );
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          setToken(session.access_token);
+        }
+      } catch (err) {
+        console.error("[ProgressLayout] Failed to get auth token:", err.message);
+      }
+    };
+    getToken();
+  }, []);
 
   useEffect(() => {
     function checkMobile() {
@@ -77,8 +101,24 @@ export default function ProgressLayout() {
   const focusAnalytics = useFocusScore(data);
   const accuracy       = useAccuracy(data);
   const trends         = useTrends(data);
-  const insights       = useStudyInsights(data);
+  const localInsights  = useStudyInsights(data);
   const depthData      = useMemo(() => computeStudyDepth(data), [data]);
+
+  // Normalise API insights ({kind,text}) → InsightsPanel shape ({icon,message,type}).
+  // Falls back to locally computed insights when the API hasn't tracked enough events yet.
+  const KIND_MAP = { strength: "positive", gap: "warning", nudge: "nudge" };
+  const KIND_ICON = { strength: "✨", gap: "⚠️", nudge: "💡" };
+  const insights = useMemo(() => {
+    const api = data?.insights;
+    if (Array.isArray(api) && api.length > 0) {
+      return api.map(({ kind, text }) => ({
+        icon:    KIND_ICON[kind] ?? "💡",
+        message: text,
+        type:    KIND_MAP[kind]  ?? "nudge",
+      }));
+    }
+    return localInsights;
+  }, [data, localInsights]);
 
   // ── Render ────────────────────────────────────────────────────────────────────
 
@@ -143,6 +183,8 @@ export default function ProgressLayout() {
                 retentionScore={data.retentionScore}
                 peerPercentile={data.peerPercentile}
                 masteryTopics={accuracy.byTopic}
+                weakTopicClusters={data.weakTopicClusters ?? []}
+                token={token}
               />
             </div>
 
@@ -181,6 +223,7 @@ export default function ProgressLayout() {
               sessionsCompleted={data.sessionsCompleted}
               difficultyBreakdown={data.difficultyBreakdown}
               depthData={depthData}
+              followupDepth={data.followupDepth ?? null}
             />
           </div>
 
@@ -190,6 +233,8 @@ export default function ProgressLayout() {
               thisWeekMins={data.thisWeekMins}
               weeklyChange={trends.studyTimeTrend}
               strongestSubject={data.strongestSubject}
+              learningTrend={data.learningTrend ?? null}
+              modeBalance={data.modeBalance ?? null}
             />
           </div>
 
@@ -198,10 +243,15 @@ export default function ProgressLayout() {
             <InsightsPanel insights={insights} />
           </div>
 
-          {/* Row 5: Study Plan + Exam Countdown */}
+          {/* Row 4b: Conversational Progress Panel — Phase 5 */}
+          <div style={{ marginBottom: 16 }}>
+            <ProgressQuestionsPanel token={token} />
+          </div>
+
+          {/* Row 5: Study Plan + Exam Countdown + SR Review Queue */}
           <div style={{
             display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
             gap: 12,
           }}>
             <StudyPlanCard
@@ -215,6 +265,7 @@ export default function ProgressLayout() {
               examReadiness={data.examReadiness}
               syllabusPct={data.syllabusPct}
             />
+            <SpacedRepetitionCard nextDueTopics={data.nextDueTopics} />
           </div>
         </>
       ) : null}

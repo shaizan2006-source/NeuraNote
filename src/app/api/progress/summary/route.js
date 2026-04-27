@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import OpenAI from "openai";
+import { computeWeakTopicClusters } from "@/lib/topicClusters";
 import {
   computeFocusScore,
   computePeerPercentile,
@@ -9,12 +11,18 @@ import {
   computeWeeklyChange,
   computeStrongestSubject,
   computeStudyPlanProgress,
+  computeEngagementScore,
+  computeModeBalance,
+  computeFollowupDepth,
+  computeLearningTrend,
+  generateInsights,
 } from "@/lib/progressUtils";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function getUser(req) {
   const token = req.headers.get("authorization")?.replace("Bearer ", "");
@@ -28,7 +36,7 @@ export async function GET(req) {
   const user = await getUser(req);
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const [streakRes, focusRes, masteryRes, examRes] = await Promise.all([
+  const [streakRes, focusRes, masteryRes, examRes, eventsRes, srRes] = await Promise.all([
     supabase.from("study_streaks")
       .select("streak_count, last_active_date")
       .eq("user_id", user.id)
@@ -48,16 +56,27 @@ export async function GET(req) {
       .eq("status", "active")
       .order("exam_date", { ascending: true })
       .limit(1),
+    supabase.from("learning_events")
+      .select("event_type, metadata, session_id, topic, created_at")
+      .eq("user_id", user.id)
+      .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+      .order("created_at", { ascending: false })
+      .limit(500),
+    supabase.rpc("sr_next_due", { p_user_id: user.id, p_limit: 20 }),
   ]);
 
   if (focusRes.error)   console.error("[progress/summary] focus_progress:", focusRes.error.message);
   if (masteryRes.error) console.error("[progress/summary] mastery_topics:", masteryRes.error.message);
+  if (eventsRes.error)  console.error("[progress/summary] learning_events:", eventsRes.error.message);
+  if (srRes.error)      console.error("[progress/summary] sr_next_due:", srRes.error.message);
 
   const streak         = streakRes.data?.streak_count  || 0;
   const lastActiveDate = streakRes.data?.last_active_date || null;
   const focusRows      = focusRes.data  || [];
   const masteryTopics  = masteryRes.data || [];
   const exam           = examRes.data?.[0] || null;
+  const learningEvents = eventsRes.data  || [];
+  const nextDueTopics  = srRes.data || [];
 
   const dailyStudyTime     = computeDailyStudyTime(focusRows, 14);
   const totalStudyTimeMins = Math.round(dailyStudyTime.reduce((s, d) => s + d.minutes, 0));
@@ -115,6 +134,29 @@ export async function GET(req) {
 
   const studyPlanProgress = computeStudyPlanProgress(focusRows);
 
+  // ── Derived from learning_events ──────────────────────────────────
+  const engagementScore = computeEngagementScore(learningEvents, streak, totalTopics);
+  const modeBalance     = computeModeBalance(learningEvents);
+  const followupDepth   = computeFollowupDepth(learningEvents);
+  const learningTrend   = computeLearningTrend(learningEvents);
+
+  // ── Semantic weak-topic clusters (Phase 2) ────────────────────────
+  // Run only when there are weak topics to cluster; skip for new users.
+  const weakTopicClusters = masteryTopics.some(t => (t.mastery_score || 0) < 50)
+    ? await computeWeakTopicClusters(masteryTopics, openai).catch(() => [])
+    : [];
+
+  const insights        = generateInsights({
+    learningTrend,
+    followupDepth,
+    modeBalance,
+    streak,
+    strongestSubject,
+    avgAccuracy,
+    topicAccuracy,
+    weeklyChange,
+  });
+
   return NextResponse.json({
     streak, lastActiveDate,
     totalStudyTimeMins, thisWeekMins, dailyStudyTime,
@@ -125,6 +167,18 @@ export async function GET(req) {
     difficultyBreakdown,
     examName, examDaysLeft, examReadiness, syllabusPct,
     studyPlanProgress,
+    // New fields powered by learning_events
+    engagementScore,
+    modeBalance,
+    followupDepth,
+    learningTrend,
+    insights,
+    // Phase 2: semantic weak-topic clusters
+    weakTopicClusters,
+    // Phase 3: spaced repetition next-due topics
+    nextDueTopics,
+  }, {
+    headers: { "Cache-Control": "private, max-age=60, stale-while-revalidate=300" },
   });
   } catch (err) {
     console.error("[progress/summary]", err);

@@ -1,6 +1,12 @@
 "use client";
 
-export default function WeeklyRecapCard({ thisWeekMins = 0, weeklyChange = 0, strongestSubject = null }) {
+export default function WeeklyRecapCard({
+  thisWeekMins    = 0,
+  weeklyChange    = 0,
+  strongestSubject = null,
+  learningTrend   = null,   // 'rising' | 'steady' | 'declining' from learning_events
+  modeBalance     = null,   // { answeringMins, coachMins, ratio }
+}) {
   const hrs    = Math.floor(thisWeekMins / 60);
   const mins   = thisWeekMins % 60;
   const up     = weeklyChange >= 0;
@@ -52,6 +58,33 @@ export default function WeeklyRecapCard({ thisWeekMins = 0, weeklyChange = 0, st
           <p style={{ margin: "2px 0 0", fontSize: 14, fontWeight: 700, color: "#8B5CF6" }}>{strongestSubject}</p>
         </div>
       ) : null}
+
+      {/* Learning trend badge */}
+      {learningTrend && learningTrend !== "steady" && (
+        <div style={{
+          background: learningTrend === "rising" ? "rgba(34,197,94,0.08)" : "rgba(239,68,68,0.08)",
+          border: `1px solid ${learningTrend === "rising" ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)"}`,
+          borderRadius: 10, padding: "6px 12px", flexShrink: 0,
+        }}>
+          <p style={{ margin: 0, fontSize: 9, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Trend</p>
+          <p style={{ margin: "2px 0 0", fontSize: 12, fontWeight: 700, color: learningTrend === "rising" ? "#22C55E" : "#EF4444" }}>
+            {learningTrend === "rising" ? "↑ Rising" : "↓ Declining"}
+          </p>
+        </div>
+      )}
+
+      {/* Mode balance */}
+      {modeBalance && (modeBalance.answeringMins > 0 || modeBalance.coachMins > 0) && (
+        <div style={{
+          background: "rgba(251,191,36,0.07)", border: "1px solid rgba(251,191,36,0.15)",
+          borderRadius: 10, padding: "6px 12px", flexShrink: 0,
+        }}>
+          <p style={{ margin: 0, fontSize: 9, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Mode split</p>
+          <p style={{ margin: "2px 0 0", fontSize: 11, fontWeight: 600, color: "#fbbf24" }}>
+            {modeBalance.answeringMins}m answer · {modeBalance.coachMins}m coach
+          </p>
+        </div>
+      )}
 
       {/* Motivational message */}
       <p style={{ margin: 0, fontSize: 11, color: up ? "#22C55E" : "#71717a", flexShrink: 0 }}>

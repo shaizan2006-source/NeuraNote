@@ -12,8 +12,8 @@ export default function SessionDepthCard({
   avgSessionDepthMins = 0,
   sessionsCompleted   = 0,
   difficultyBreakdown = { easy: 0, medium: 0, hard: 0 },
-  // Optional: pre-computed from computeStudyDepth analytics function
-  depthData = null,
+  depthData           = null,
+  followupDepth       = null,   // avg thread depth from learning_events
 }) {
   const avgDuration = depthData?.avgDuration ?? avgSessionDepthMins;
   const depthScore  = depthData?.depthScore  ?? null;
@@ -59,6 +59,20 @@ export default function SessionDepthCard({
           <span style={{ fontSize: 9, color: "#52525b" }}>depth score: <span style={{ color: "#71717a" }}>{depthScore}</span></span>
         )}
       </div>
+
+      {followupDepth !== null && (
+        <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: 4,
+            background: "rgba(139,92,246,0.07)", border: "1px solid rgba(139,92,246,0.14)",
+            borderRadius: 20, padding: "2px 8px",
+          }}>
+            <span style={{ fontSize: 9, color: "#a78bfa", fontWeight: 600 }}>
+              ↩ {followupDepth} avg follow-up depth
+            </span>
+          </div>
+        </div>
+      )}
 
       <p style={{ margin: "10px 0 4px", fontSize: 9, color: "#52525b" }}>{sessionsCompleted} sessions total</p>
 

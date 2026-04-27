@@ -1,5 +1,7 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { track } from '@/lib/track';
+import { EVENT_TYPES } from '@/lib/eventRegistry';
 import { createClient } from '@supabase/supabase-js';
 import TopBar from '@/components/shared/TopBar';
 import Button from '@/components/shared/Button';
@@ -34,6 +36,14 @@ export default function FocusSessionActive({
   const [paused, setPaused] = useState(false);
   const [tipIndex, setTipIndex] = useState(0);
   const [timeUp, setTimeUp] = useState(false);
+  const focusStartRef = useRef(Date.now());
+
+  // Fire focus_started once on mount
+  useEffect(() => {
+    focusStartRef.current = Date.now();
+    track(EVENT_TYPES.FOCUS_STARTED, { surface: 'focus_mode' });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Countdown timer
   useEffect(() => {
@@ -97,6 +107,10 @@ export default function FocusSessionActive({
 
   const handleStop = () => {
     if (window.confirm('End session? Your task progress will be saved.')) {
+      track(EVENT_TYPES.FOCUS_ENDED, {
+        surface: 'focus_mode',
+        durationMs: Date.now() - focusStartRef.current,
+      });
       onSessionEnd();
     }
   };

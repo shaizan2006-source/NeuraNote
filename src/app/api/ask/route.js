@@ -89,10 +89,14 @@ export async function POST(req) {
       subject,                   // optional: from UI subject selector
       marks: metaMarks,          // optional: from UI marks selector
       mode = "answering",        // "answering" | "coach"
+      model = "gpt-4o-mini",    // "gpt-4o-mini" | "gpt-4o"
       // Continuation — set when user navigated from QuickChat "Open full chat"
       conversationId,            // existing conversation to append Q&A to
       priorMessages,             // [{role:"user"|"assistant", content:string}] history
     } = body;
+
+    // Only allow known model IDs to prevent injection
+    const safeModel = model === "gpt-4o" ? "gpt-4o" : "gpt-4o-mini";
 
     // ── Validate ─────────────────────────────────────────────
     if (!question || question.trim() === "") {
@@ -135,7 +139,7 @@ export async function POST(req) {
       ];
 
       const coachStream = await openai.chat.completions.create({
-        model:       "gpt-4o-mini",
+        model:       safeModel,
         temperature: 0.5,
         max_tokens:  700,
         stream:      true,
@@ -357,7 +361,7 @@ export async function POST(req) {
     // ── Export intent — non-streaming path ────────────────────
     if (exportIntent) {
       const completion = await openai.chat.completions.create({
-        model:       "gpt-4o-mini",
+        model:       safeModel,
         temperature,
         max_tokens:  maxTokens,
         messages: [
@@ -400,7 +404,7 @@ export async function POST(req) {
 
     // ── Streaming response ────────────────────────────────────
     const stream = await openai.chat.completions.create({
-      model:       "gpt-4o-mini",
+      model:       safeModel,
       temperature,
       max_tokens:  maxTokens,
       stream:      true,

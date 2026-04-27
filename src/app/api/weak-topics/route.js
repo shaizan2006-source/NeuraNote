@@ -5,6 +5,11 @@ import OpenAI from "openai";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // ─────────────────────────────────────────────
+// WEAK TOPIC THRESHOLD (tunable for experiments)
+// ─────────────────────────────────────────────
+const WEAK_TOPIC_THRESHOLD = 5;
+
+// ─────────────────────────────────────────────
 // STEP 4 — AI TOPIC NORMALIZATION (synonym map)
 // ─────────────────────────────────────────────
 const SYNONYM_MAP = {
@@ -181,7 +186,7 @@ export async function POST(req) {
         user_id: user.id,
         topic: manualTopic,
         subject: normalizedSubject,
-        count: 3,
+        count: WEAK_TOPIC_THRESHOLD,
         level: "hard",
       });
 
@@ -240,7 +245,7 @@ async function trackTopicAttempt(supabase, { user_id, topic, subject }) {
       .eq("id", attempt.id);
 
     // Promote to weak_topics at threshold
-    if (newCount >= 3) {
+    if (newCount >= WEAK_TOPIC_THRESHOLD) {
       await upsertWeakTopic(supabase, {
         user_id,
         topic,

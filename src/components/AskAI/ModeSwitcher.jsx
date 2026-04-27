@@ -106,6 +106,7 @@ export default function ModeSwitcher() {
               padding:        5,
               zIndex:         200,
               minWidth:       200,
+              maxWidth:       "calc(100vw - 32px)",
               boxShadow:      "0 8px 30px rgba(0,0,0,0.5)",
               backdropFilter: "blur(14px)",
             }}

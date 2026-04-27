@@ -348,13 +348,6 @@ export function DashboardProvider({ children }) {
   const [isInsightsExpanded, setIsInsightsExpanded] = useState(false);
   const [chartType, setChartType] = useState("bar");
 
-  // ── AI Coach ──────────────────────────────────────────────────
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-
-  // ── showHistory ───────────────────────────────────────────────
-  const [showHistory, setShowHistory] = useState(false);
-
   // ── Progress summary cache ────────────────────────────────────
   const [progressSummary, setProgressSummary] = useState(null);
   const [progressSummaryLoading, setProgressSummaryLoading] = useState(false);
@@ -709,27 +702,6 @@ export function DashboardProvider({ children }) {
     setCompletedTasks((prev) => [...prev, currentTaskIndex]);
     setCurrentTaskIndex((prev) => (prev + 1 >= dailyPlan.length ? prev : prev + 1));
     setTaskStartTime(Date.now());
-  };
-
-  // ================================================================
-  // AI COACH
-  // ================================================================
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-    const userMsg = { role: "user", text: input };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-    try {
-      const res = await fetch("/api/ai-coach", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input, context: { exams, weakTopics, readiness, analytics } }),
-      });
-      const data = await res.json();
-      setMessages((prev) => [...prev, { role: "ai", text: data.reply }]);
-    } catch (err) {
-      console.error(err);
-    }
   };
 
   // ================================================================
@@ -1413,8 +1385,6 @@ export function DashboardProvider({ children }) {
       isAnalyticsExpanded, setIsAnalyticsExpanded,
       isInsightsExpanded, setIsInsightsExpanded,
       chartType, setChartType,
-      messages, input, setInput,
-      showHistory, setShowHistory,
       dashboardMode, toggleDashboardMode,
       progressSummary, progressSummaryLoading, progressSummaryError, fetchProgressSummary,
       sidebarCollapsed, toggleSidebar,
@@ -1426,7 +1396,7 @@ export function DashboardProvider({ children }) {
       generateSmartPlan, generateAdaptivePlan,
       generateAnalytics, generateInsights, generateReadiness,
       startFocus, stopFocus, markTaskDone,
-      sendMessage, handleLogin,
+      handleLogin,
       fetchDocuments, fetchSavedPDFs, handleSavePDF, deletePDF,
       fetchStreak, fetchExam, fetchWeakTopics, fetchSyllabus,
       fetchDailyPlan, fetchProgress, fetchFocusProgress,

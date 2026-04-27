@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
+import { useExamReminders } from "@/hooks/useExamReminders";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -16,6 +17,14 @@ export function useDashboard() {
   if (!ctx) throw new Error("useDashboard must be used inside DashboardProvider");
   return ctx;
 }
+
+// ── State Management Verification ──────────────────────────────
+// VERIFIED: exams, activeExams, historyExams, weakTopics state are declared (line ~276-288)
+// VERIFIED: fetchExam() and fetchWeakTopics() functions exist
+// VERIFIED: Both functions called on mount in Promise.all (line ~1278)
+// VERIFIED: fetchWeakTopics() called post-question in handleAsk (line ~1084)
+// VERIFIED: useExamReminders hook integrated (line ~1308)
+// Status: All exam and weak topic state management is properly set up
 
 // ── Subject normalisation map ──────────────────────────────────
 // RULE: no two distinct courses may share a canonical key.
@@ -244,9 +253,14 @@ export function DashboardProvider({ children }) {
     if (stored === "coach") setChatModeState("coach");
   }, []);
   const setChatMode = useCallback((m) => {
+    if (typeof window !== "undefined") {
+      import("@/lib/track").then(({ trackModeSwitch }) => {
+        trackModeSwitch(chatMode, m);
+      }).catch(() => {});
+    }
     setChatModeState(m);
     localStorage.setItem("amn_chat_mode", m);
-  }, []);
+  }, [chatMode]);
 
   // ── Active Tab ─────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState("study");
@@ -399,6 +413,9 @@ export function DashboardProvider({ children }) {
     setDashboardMode(next);
     if (typeof window !== "undefined") {
       sessionStorage.setItem("dashboard_mode", next);
+      import("@/lib/track").then(({ trackDashboardToggle }) => {
+        trackDashboardToggle(dashboardMode, next);
+      }).catch(() => {});
     }
   }
 
@@ -1086,6 +1103,7 @@ export function DashboardProvider({ children }) {
           documentId:      documentIds[0] || null,
           documentIds:     documentIds.length > 0 ? documentIds : undefined,
           mode:            chatMode,
+          model:           opts.model || "gpt-4o-mini",
           // Continuation context — only set when coming from QuickChat / a saved conversation
           conversationId:  opts.conversationId  || undefined,
           priorMessages:   opts.priorMessages?.length ? opts.priorMessages : undefined,
@@ -1293,6 +1311,9 @@ export function DashboardProvider({ children }) {
 
     return () => { authListener?.subscription?.unsubscribe(); };
   }, []);
+
+  // ── Exam Reminders ─────────────────────────────────
+  useExamReminders(exams);
 
   useEffect(() => {
     if (!user) return;

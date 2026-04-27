@@ -71,17 +71,6 @@ export default function StudyModeCards() {
         glowColor="rgba(34,211,238,0.25)"
       />
       <BentoCard
-        icon="💬"
-        title="AI Coach"
-        subtitle="Switch to Coach mode"
-        href="/ask-ai"
-        glowColor="rgba(34,211,238,0.25)"
-        style={{
-          borderLeft: "3px solid rgba(34,211,238,0.3)",
-          boxShadow:  "0 0 16px rgba(34,211,238,0.08)",
-        }}
-      />
-      <BentoCard
         icon="🎤"
         title="Voice Tutor"
         subtitle="Speak to learn"

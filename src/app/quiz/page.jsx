@@ -11,8 +11,10 @@ import Button from '@/components/shared/Button';
 import { segmentText } from '@/lib/wordSegmenter';
 import ProgressBar from '@/components/shared/ProgressBar';
 import QuizSkeleton from '@/components/shared/QuizSkeleton';
+import QuestionSkeleton from '@/components/quiz/QuestionSkeleton';
 import QuizPDFSelector from '@/components/quiz/QuizPDFSelector';
 import { useActivePDF } from '@/hooks/useActivePDF';
+import { useQuizStream } from '@/hooks/useQuizStream';
 import { saveQuizSession, loadQuizSession, clearQuizSession } from '@/utils/quizSession';
 import { retryWithBackoff } from '@/utils/quizResilience';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
@@ -26,8 +28,7 @@ const supabase = createClient(
 // 'init'         — checking auth + localStorage
 // 'resumeDialog' — asking to resume or start new
 // 'selectingPdf' — showing PDF selector
-// 'generating'   — generating questions from PDF
-// 'active'       — quiz in progress
+// 'active'       — quiz in progress (streamStatus tracks loading within this state)
 
 function QuizContent() {
   const router = useRouter();
@@ -61,10 +62,21 @@ function QuizContent() {
     });
   }, [userId]);
 
-  // ── Quiz state ────────────────────────────────────────────────────────────
+  // ── Quiz stream (replaces plain questions useState) ───────────────────────
+  const {
+    questions,
+    streamStatus,
+    readyCount,
+    initStream,
+    revealStream,
+    failStream,
+    restoreStream,
+    cleanup: cleanupStream,
+  } = useQuizStream();
+
+  // ── Other quiz state ──────────────────────────────────────────────────────
   const [quizState, setQuizState] = useState('init');
   const [selectedDocument, setSelectedDocument] = useState(null);
-  const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [evaluations, setEvaluations] = useState({});
@@ -113,18 +125,34 @@ function QuizContent() {
     }
   }, [authLoading, activePdfLoading]);
 
-  // Keep ref current every render so the interval always saves fresh data
-  autoSaveDataRef.current = { selectedDocument, questions, currentIndex, answers, evaluations, sessionSeconds, performanceSignals };
+  // Keep ref current every render so the interval always saves fresh data.
+  // Only persist questions that are fully ready (not streaming placeholders).
+  // streamStatus is included so the autosave interval can skip mid-stream ticks.
+  autoSaveDataRef.current = {
+    selectedDocument,
+    questions: questions.filter((q) => q._status === 'ready'),
+    currentIndex,
+    answers,
+    evaluations,
+    sessionSeconds,
+    performanceSignals,
+    streamStatus,
+  };
 
   // ── Auto-save every 30s when active ──────────────────────────────────────
+  // Guard: only persist when streaming is complete so a mid-reveal tick cannot
+  // overwrite a full session with a truncated ready-only prefix.
   useEffect(() => {
     if (quizState !== 'active') return;
-    const id = setInterval(() => saveQuizSession(autoSaveDataRef.current), 30000);
+    const id = setInterval(() => {
+      if (autoSaveDataRef.current.streamStatus === 'complete') saveQuizSession(autoSaveDataRef.current);
+    }, 30000);
     return () => clearInterval(id);
   }, [quizState]);
 
-  // ── Cleanup coach timer on unmount ────────────────────────────────────────
+  // ── Cleanup timers on unmount ─────────────────────────────────────────────
   useEffect(() => () => clearTimeout(coachTimerRef.current), []);
+  useEffect(() => () => cleanupStream(), [cleanupStream]);
 
   const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
@@ -135,7 +163,7 @@ function QuizContent() {
   const handleResume = useCallback(() => {
     if (!savedSession) return;
     setSelectedDocument(savedSession.selectedDocument);
-    setQuestions(savedSession.questions);
+    restoreStream(savedSession.questions);
     setCurrentIndex(savedSession.currentIndex);
     setAnswers(savedSession.answers);
     setEvaluations(savedSession.evaluations);
@@ -147,7 +175,7 @@ function QuizContent() {
       weakConcepts: {},
     });
     setQuizState('active');
-  }, [savedSession]);
+  }, [savedSession, restoreStream]);
 
   // ── Abandon saved session ─────────────────────────────────────────────────
   const handleAbandon = useCallback(() => {
@@ -156,7 +184,9 @@ function QuizContent() {
     setQuizState('selectingPdf');
   }, []);
 
-  // ── PDF selected → generate questions ────────────────────────────────────
+  // ── PDF selected → stream questions ──────────────────────────────────────
+  // Transitions to 'active' IMMEDIATELY with placeholder slots, then reveals
+  // questions progressively as the API responds (fake streaming over batch).
   const handleSelectPDF = useCallback(async (documentId, documentName) => {
     const existing = loadQuizSession();
     if (existing && existing.questions.length > 0) {
@@ -169,7 +199,16 @@ function QuizContent() {
 
     setSelectedDocument({ id: documentId, name: documentName });
     setGenerationError(null);
-    setQuizState('generating');
+    setCurrentIndex(0);
+    setAnswers({});
+    setEvaluations({});
+    setSessionSeconds(0);
+    setCoachSuggestion(null);
+    setPerformanceSignals({ questionTimes: {}, wrongAnswers: [], skippedQuestions: [], weakConcepts: {} });
+
+    // Show quiz shell instantly with 12 placeholder slots
+    initStream(12);
+    setQuizState('active');
 
     try {
       const requestBody = JSON.stringify({ documentId, userId, count: 12, marks: [5, 10, 20] });
@@ -183,35 +222,33 @@ function QuizContent() {
         2000,
         60000
       );
+
       if (!data.success) {
         setGenerationError(data.error || 'Could not generate questions from this PDF. Please try a different file.');
+        failStream();
         setQuizState('selectingPdf');
         return;
       }
 
       if (data.sourceDocument?.id !== documentId) {
         setGenerationError('Questions were not generated from the selected PDF. Please try again.');
+        failStream();
         setQuizState('selectingPdf');
         return;
       }
 
-      setQuestions(data.questions);
-      setCurrentIndex(0);
-      setAnswers({});
-      setEvaluations({});
-      setSessionSeconds(0);
-      setCoachSuggestion(null);
-      setPerformanceSignals({ questionTimes: {}, wrongAnswers: [], skippedQuestions: [], weakConcepts: {} });
-      setQuizState('active');
+      // Progressively reveal questions one by one
+      revealStream(data.questions);
     } catch {
       setGenerationError('Connection error. Please check your internet and try again.');
+      failStream();
       setQuizState('selectingPdf');
     }
-  }, [userId]);
+  }, [userId, initStream, revealStream, failStream]);
 
   // ── Evaluate answer ───────────────────────────────────────────────────────
   const handleSave = useCallback(async () => {
-    if (!answers[currentIndex] || !currentQ) return;
+    if (!answers[currentIndex] || !currentQ || currentQ._status !== 'ready') return;
     setEvaluating(true);
 
     const timeSpent = Math.floor((Date.now() - questionStartTimeRef.current) / 1000);
@@ -296,7 +333,7 @@ function QuizContent() {
 
   // ── Skip question ─────────────────────────────────────────────────────────
   const handleSkip = useCallback(() => {
-    if (!currentQ) return;
+    if (!currentQ || currentQ._status !== 'ready') return;
     const topicGuess = currentQ.text.split(' ').slice(0, 6).join(' ');
     setPerformanceSignals((prev) => ({
       ...prev,
@@ -390,33 +427,9 @@ function QuizContent() {
     );
   }
 
-  // ── State: generating ─────────────────────────────────────────────────────
-  if (quizState === 'generating') {
-    return (
-      <div style={{ ...pageStyle, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{
-          maxWidth: 380,
-          width: '100%',
-          border: `1px solid ${COLORS.border.lighter}`,
-          borderRadius: RADIUS.lg,
-          padding: SPACING.xxl,
-          background: COLORS.bg.card,
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: SPACING.lg,
-        }}>
-          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>⏳ Generating Quiz…</div>
-          <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
-            Reading {selectedDocument?.name || 'your PDF'} and building your questions.
-            <br />This takes about 15–30 seconds.
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // ── State: active quiz (includes streaming phase) ─────────────────────────
+  const isStreaming = streamStatus === 'fetching' || streamStatus === 'revealing';
 
-  // ── State: active quiz ────────────────────────────────────────────────────
   return (
     <div style={{ ...pageStyle, display: 'flex' }}>
       <ContextualSidebar />
@@ -433,7 +446,11 @@ function QuizContent() {
             color: COLORS.text.secondary,
             borderBottom: `1px solid ${COLORS.border.lighter}`,
           }}>
-            📄 Generating from: <strong>{selectedDocument.name}</strong>
+            📄 {isStreaming ? 'Preparing from' : 'From'}:{' '}
+            <strong>{selectedDocument.name}</strong>
+            {isStreaming && (
+              <span style={{ marginLeft: 8, opacity: 0.55 }}>— Your quiz is being prepared…</span>
+            )}
           </div>
         )}
 
@@ -441,6 +458,11 @@ function QuizContent() {
           <ProgressBar current={answeredCount} total={questions.length} />
           <div style={{ fontSize: TYPOGRAPHY.sizes.small, color: COLORS.text.secondary, marginTop: SPACING.sm }}>
             {answeredCount}/{questions.length} answered
+            {isStreaming && (
+              <span style={{ marginLeft: 12, opacity: 0.65 }}>
+                · {readyCount}/{questions.length} questions ready
+              </span>
+            )}
           </div>
         </div>
 
@@ -455,103 +477,129 @@ function QuizContent() {
           }}>
             {/* Left: Question + Answer */}
             <div>
-              <div style={{ border: `1px solid ${COLORS.border.lighter}`, borderRadius: RADIUS.md, padding: SPACING.lg, background: COLORS.bg.card, marginBottom: SPACING.lg }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: SPACING.md }}>
-                  <span style={{ fontSize: TYPOGRAPHY.sizes.small, color: COLORS.text.secondary }}>▲ Question</span>
-                  <span style={{ fontSize: TYPOGRAPHY.sizes.caption, background: COLORS.bg.accentLight, border: `1px solid ${COLORS.border.accent}`, padding: `2px ${SPACING.sm}`, borderRadius: RADIUS.sm, color: COLORS.text.accent, fontWeight: 700 }}>
-                    {currentQ.marks}M
-                  </span>
-                </div>
-                <p style={{ fontSize: '14px', lineHeight: 1.7, margin: 0, color: COLORS.text.primary }}>{currentQ.text}</p>
-              </div>
-
-              <textarea
-                placeholder="Type your answer here..."
-                value={answers[currentIndex] || ''}
-                onChange={(e) => setAnswers((prev) => ({ ...prev, [currentIndex]: e.target.value }))}
-                disabled={evaluating || !!evaluations[currentIndex]}
-                style={{
-                  width: '100%',
-                  minHeight: '180px',
-                  padding: SPACING.lg,
-                  border: `1px solid ${COLORS.border.lighter}`,
-                  borderRadius: RADIUS.md,
-                  background: 'rgba(255,255,255,0.02)',
-                  color: COLORS.text.primary,
-                  fontFamily: TYPOGRAPHY.fontFamily,
-                  fontSize: TYPOGRAPHY.sizes.body,
-                  resize: 'vertical',
-                  marginBottom: SPACING.lg,
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                }}
-              />
-
-              {evaluations[currentIndex] && (
-                <div style={{ border: `1px solid ${COLORS.border.accent}`, borderRadius: RADIUS.md, padding: SPACING.lg, background: COLORS.bg.accentLight, marginBottom: SPACING.lg }}>
-                  <div style={{ fontSize: TYPOGRAPHY.sizes.label, fontWeight: 700, color: COLORS.text.accent, marginBottom: SPACING.sm }}>
-                    {evaluations[currentIndex].marksEarned}/{evaluations[currentIndex].totalMarks} marks
+              {currentQ._status !== 'ready' ? (
+                <QuestionSkeleton
+                  streamStatus={streamStatus}
+                  isError={currentQ._status === 'error'}
+                  errorMessage={generationError}
+                />
+              ) : (
+                <>
+                  <div style={{ border: `1px solid ${COLORS.border.lighter}`, borderRadius: RADIUS.md, padding: SPACING.lg, background: COLORS.bg.card, marginBottom: SPACING.lg }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: SPACING.md }}>
+                      <span style={{ fontSize: TYPOGRAPHY.sizes.small, color: COLORS.text.secondary }}>▲ Question</span>
+                      <span style={{ fontSize: TYPOGRAPHY.sizes.caption, background: COLORS.bg.accentLight, border: `1px solid ${COLORS.border.accent}`, padding: `2px ${SPACING.sm}`, borderRadius: RADIUS.sm, color: COLORS.text.accent, fontWeight: 700 }}>
+                        {currentQ.marks}M
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '14px', lineHeight: 1.7, margin: 0, color: COLORS.text.primary }}>{currentQ.text}</p>
                   </div>
-                  <p style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, margin: 0, lineHeight: 1.6 }}>
-                    {evaluations[currentIndex].feedback}
-                  </p>
-                </div>
-              )}
 
-              <div style={{ display: 'flex', gap: SPACING.md }}>
-                {currentIndex > 0 && (
-                  <Button label="← Previous" variant="secondary" onClick={() => setCurrentIndex((i) => i - 1)} />
-                )}
-                {!evaluations[currentIndex] && (
-                  <Button label="Skip" variant="ghost" onClick={handleSkip} />
-                )}
-                {!evaluations[currentIndex] ? (
-                  <Button
-                    label={evaluating ? 'Evaluating...' : 'Save Answer'}
-                    variant="primary"
-                    onClick={handleSave}
-                    disabled={!answers[currentIndex] || evaluating}
-                    style={{ flex: 1 }}
+                  <textarea
+                    placeholder="Type your answer here..."
+                    value={answers[currentIndex] || ''}
+                    onChange={(e) => setAnswers((prev) => ({ ...prev, [currentIndex]: e.target.value }))}
+                    disabled={evaluating || !!evaluations[currentIndex]}
+                    style={{
+                      width: '100%',
+                      minHeight: '180px',
+                      padding: SPACING.lg,
+                      border: `1px solid ${COLORS.border.lighter}`,
+                      borderRadius: RADIUS.md,
+                      background: 'rgba(255,255,255,0.02)',
+                      color: COLORS.text.primary,
+                      fontFamily: TYPOGRAPHY.fontFamily,
+                      fontSize: TYPOGRAPHY.sizes.body,
+                      resize: 'vertical',
+                      marginBottom: SPACING.lg,
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                    }}
                   />
-                ) : (
-                  <Button
-                    label={currentIndex < questions.length - 1 ? 'Next Question →' : 'Finish Quiz'}
-                    variant="primary"
-                    onClick={currentIndex < questions.length - 1 ? () => setCurrentIndex((i) => i + 1) : handleFinish}
-                    style={{ flex: 1 }}
-                  />
-                )}
-              </div>
+
+                  {evaluations[currentIndex] && (
+                    <div style={{ border: `1px solid ${COLORS.border.accent}`, borderRadius: RADIUS.md, padding: SPACING.lg, background: COLORS.bg.accentLight, marginBottom: SPACING.lg }}>
+                      <div style={{ fontSize: TYPOGRAPHY.sizes.label, fontWeight: 700, color: COLORS.text.accent, marginBottom: SPACING.sm }}>
+                        {evaluations[currentIndex].marksEarned}/{evaluations[currentIndex].totalMarks} marks
+                      </div>
+                      <p style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, margin: 0, lineHeight: 1.6 }}>
+                        {evaluations[currentIndex].feedback}
+                      </p>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', gap: SPACING.md }}>
+                    {currentIndex > 0 && (
+                      <Button label="← Previous" variant="secondary" onClick={() => setCurrentIndex((i) => i - 1)} />
+                    )}
+                    {!evaluations[currentIndex] && (
+                      <Button label="Skip" variant="ghost" onClick={handleSkip} />
+                    )}
+                    {!evaluations[currentIndex] ? (
+                      <Button
+                        label={evaluating ? 'Evaluating...' : 'Save Answer'}
+                        variant="primary"
+                        onClick={handleSave}
+                        disabled={!answers[currentIndex] || evaluating}
+                        style={{ flex: 1 }}
+                      />
+                    ) : (
+                      <Button
+                        label={currentIndex < questions.length - 1 ? 'Next Question →' : 'Finish Quiz'}
+                        variant="primary"
+                        onClick={currentIndex < questions.length - 1 ? () => setCurrentIndex((i) => i + 1) : handleFinish}
+                        style={{ flex: 1 }}
+                      />
+                    )}
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Right: Source + Hints + AI Coach */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.lg }}>
-              <div>
-                <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.muted ?? COLORS.text.secondary, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: SPACING.sm, display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ opacity: 0.7 }}>📄</span> Source excerpt
+              {currentQ._status !== 'ready' ? (
+                <div style={{
+                  padding: SPACING.lg,
+                  border: `1px solid ${COLORS.border.lighter}`,
+                  borderRadius: RADIUS.md,
+                  background: COLORS.bg.card,
+                  fontSize: TYPOGRAPHY.sizes.caption,
+                  color: COLORS.text.secondary,
+                  lineHeight: 1.7,
+                }}>
+                  Context and hints will appear when this question is ready.
                 </div>
-                <div style={{ padding: SPACING.md, border: `1px solid rgba(34,211,238,0.15)`, borderRadius: RADIUS.md, background: 'rgba(34,211,238,0.03)', fontSize: '0.78rem', color: COLORS.text.secondary, lineHeight: 1.75, wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>
-                  {currentQ.sourceSnippet
-                    ? segmentText(currentQ.sourceSnippet)
-                    : 'No excerpt available for this question.'}
-                </div>
-              </div>
+              ) : (
+                <>
+                  <div>
+                    <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: SPACING.sm, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ opacity: 0.7 }}>📄</span> Source excerpt
+                    </div>
+                    <div style={{ padding: SPACING.md, border: `1px solid rgba(34,211,238,0.15)`, borderRadius: RADIUS.md, background: 'rgba(34,211,238,0.03)', fontSize: '0.78rem', color: COLORS.text.secondary, lineHeight: 1.75, wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>
+                      {currentQ.sourceSnippet
+                        ? segmentText(currentQ.sourceSnippet)
+                        : 'No excerpt available for this question.'}
+                    </div>
+                  </div>
 
-              <div>
-                <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>💡 Answer Structure:</div>
-                <ul style={{ margin: 0, paddingLeft: SPACING.lg, fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, lineHeight: 1.8 }}>
-                  {(currentQ.hints || []).map((h, i) => <li key={i}>{h}</li>)}
-                </ul>
-              </div>
+                  <div>
+                    <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>💡 Answer Structure:</div>
+                    <ul style={{ margin: 0, paddingLeft: SPACING.lg, fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, lineHeight: 1.8 }}>
+                      {(currentQ.hints || []).map((h, i) => <li key={i}>{h}</li>)}
+                    </ul>
+                  </div>
 
-              <div>
-                <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>🤖 AI Coach:</div>
-                <div style={{ padding: SPACING.md, borderRadius: RADIUS.md, background: 'rgba(139,92,246,0.05)', border: `1px solid rgba(139,92,246,0.1)`, fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, lineHeight: 1.6 }}>
-                  {coachLoading
-                    ? 'Thinking…'
-                    : coachSuggestion || 'Answer a question to get coaching feedback.'}
-                </div>
-              </div>
+                  <div>
+                    <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>🤖 AI Coach:</div>
+                    <div style={{ padding: SPACING.md, borderRadius: RADIUS.md, background: 'rgba(139,92,246,0.05)', border: `1px solid rgba(139,92,246,0.1)`, fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, lineHeight: 1.6 }}>
+                      {coachLoading
+                        ? 'Thinking…'
+                        : coachSuggestion || 'Answer a question to get coaching feedback.'}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

@@ -1106,7 +1106,7 @@ export function DashboardProvider({ children }) {
         setSources(data.sources || []);
         if (data.downloadUrl) setDownloadUrl(data.downloadUrl);
         setAsking(false);
-        fireTracking();
+        if (chatMode !== "coach") fireTracking();
         return;
       }
 
@@ -1171,7 +1171,7 @@ export function DashboardProvider({ children }) {
         setAnswer(accumulated);
       }
 
-      fireTracking();
+      if (chatMode !== "coach") fireTracking();
     } catch (err) {
       console.error("Stream error:", err);
       setAnswer("");

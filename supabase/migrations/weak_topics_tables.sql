@@ -14,6 +14,10 @@ create table if not exists public.topic_attempts (
   created_at   timestamptz default now()
 );
 
+-- Backfill missing columns for pre-existing table
+alter table public.topic_attempts add column if not exists updated_at timestamptz default now();
+alter table public.topic_attempts add column if not exists created_at timestamptz default now();
+
 create index if not exists topic_attempts_user_topic_idx
   on public.topic_attempts (user_id, topic);
 
@@ -28,6 +32,10 @@ create table if not exists public.weak_topics (
   updated_at   timestamptz default now(),
   created_at   timestamptz default now()
 );
+
+-- Backfill missing columns for pre-existing table
+alter table public.weak_topics add column if not exists updated_at timestamptz default now();
+alter table public.weak_topics add column if not exists created_at timestamptz default now();
 
 create index if not exists weak_topics_user_topic_idx
   on public.weak_topics (user_id, topic);

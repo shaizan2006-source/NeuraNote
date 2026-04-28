@@ -1,74 +1,84 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+
+// Safe localStorage helpers — can throw in private browsing / restricted environments
+function lsGet(key) {
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+function lsSet(key, value) {
+  try { localStorage.setItem(key, value); } catch { /* silently skip */ }
+}
 
 export function useExamReminders(exams = []) {
-  const reminderTimestampsRef = useRef({});
-
   useEffect(() => {
-    if (!("Notification" in window)) {
-      console.warn("This browser does not support notifications");
-      return;
+    // Guard: Notification API not available (some browsers / SSR)
+    if (typeof window === "undefined" || !("Notification" in window)) return;
+
+    // Request permission once — don't block on the result
+    if (Notification.permission === "default") {
+      Notification.requestPermission().catch(() => {});
     }
 
-    // Request permission once on mount
-    if (Notification.permission === "default") {
-      Notification.requestPermission();
+    function sendNotification(exam, daysLeft, reminderId) {
+      if (Notification.permission !== "granted") return;
+
+      const name = exam.name || "Upcoming exam";
+      const body = daysLeft === 0
+        ? `${name} is TODAY. Good luck!`
+        : `${daysLeft} day${daysLeft !== 1 ? "s" : ""} left until ${name}. Start preparing!`;
+
+      try {
+        new Notification(`📚 ${name}`, {
+          body,
+          tag: reminderId,       // deduplicates if browser already shows it
+          requireInteraction: false,
+        });
+      } catch (err) {
+        // Notification constructor can throw if permission revoked mid-session
+        console.warn("[useExamReminders] Notification failed:", err?.message);
+      }
     }
 
     const checkReminders = () => {
       const now = new Date();
+      const safeExams = Array.isArray(exams) ? exams : [];
 
-      exams.forEach((exam) => {
-        if (exam.status !== "active") return;
+      safeExams.forEach((exam) => {
+        // Guard: must have id, exam_date, and be active
+        if (!exam?.id || !exam?.exam_date || exam?.status !== "active") return;
 
         const examDate = new Date(exam.exam_date + "T00:00:00");
+        if (isNaN(examDate.getTime())) return; // invalid date — skip
+
         const daysLeft = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
 
-        // Determine reminder frequency based on days left
-        let reminderIntervalMs = null;
-        let reminderLabel = null;
+        let reminderIntervalMs;
+        let reminderLabel;
 
         if (daysLeft > 7) {
-          // Send reminder once every 7 days
           reminderIntervalMs = 7 * 24 * 60 * 60 * 1000;
           reminderLabel = "7day";
         } else if (daysLeft >= 0) {
-          // Send reminder every 2 days
           reminderIntervalMs = 2 * 24 * 60 * 60 * 1000;
           reminderLabel = "2day";
         } else {
-          // Exam has passed, skip
-          return;
+          return; // exam passed
         }
 
         const reminderId = `exam_${exam.id}_${reminderLabel}`;
-        const lastSent = localStorage.getItem(reminderId);
-        const lastSentTime = lastSent ? parseInt(lastSent, 10) : 0;
-        const timeSinceLastReminder = now.getTime() - lastSentTime;
+        const lastSentRaw = lsGet(reminderId);
+        const lastSentTime = lastSentRaw ? parseInt(lastSentRaw, 10) : 0;
+        const timeSince = isNaN(lastSentTime) ? Infinity : now.getTime() - lastSentTime;
 
-        // Send notification if enough time has passed
-        if (timeSinceLastReminder >= reminderIntervalMs) {
-          if (Notification.permission === "granted") {
-            new Notification(`📚 ${exam.name}`, {
-              body: `${daysLeft} days left until your exam. Start preparing!`,
-              icon: "/exam-icon.png",
-              badge: "/exam-badge.png",
-              tag: reminderId,
-              requireInteraction: false,
-            });
-          }
-
-          // Update last sent timestamp in localStorage
-          localStorage.setItem(reminderId, now.getTime().toString());
+        if (timeSince >= reminderIntervalMs) {
+          sendNotification(exam, daysLeft, reminderId);
+          lsSet(reminderId, now.getTime().toString());
         }
       });
     };
 
-    // Check reminders every 60 seconds
     const intervalId = setInterval(checkReminders, 60 * 1000);
-
-    // Run check immediately on mount
-    checkReminders();
+    checkReminders(); // run immediately on mount
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, []); // empty deps: interval set up once, reads exams via closure
 }

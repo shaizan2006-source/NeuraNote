@@ -72,10 +72,17 @@ export default function StudyModeCards() {
       />
       <BentoCard
         icon="🎤"
-        title="Voice Tutor"
+        title="Call Tutor"
         subtitle="Speak to learn"
         href="/call-tutor"
         glowColor="rgba(245,158,11,0.25)"
+      />
+      <BentoCard
+        icon="📅"
+        title="Exams"
+        subtitle="Track upcoming exams"
+        href="/exams"
+        glowColor="rgba(34,211,238,0.25)"
       />
     </>
   );

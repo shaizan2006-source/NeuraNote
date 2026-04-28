@@ -3,7 +3,7 @@
 import { useState, useEffect, Component } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
-import ExamsHeroCard from "./ExamsHeroCard";
+import AskAIHeroCard from "./AskAIHeroCard";
 import StudyModeCards from "./StudyModeCards";
 import ProgressLayout from "./ProgressLayout";
 
@@ -111,8 +111,8 @@ export default function BentoGrid({ activePdf = null }) {
             exit="exit"
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-              gridTemplateRows: isMobile ? "auto auto auto" : "1fr 1fr",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
+              gridTemplateRows: "auto auto auto",
               gap: 6,
               flex: 1,
               minHeight: 0,
@@ -122,11 +122,11 @@ export default function BentoGrid({ activePdf = null }) {
             <motion.div
               variants={cardVariants}
               style={{
-                gridColumn: 1,
+                gridColumn: isMobile ? "1" : "1 / 3",
                 gridRow: isMobile ? "1" : "1 / 3",
               }}
             >
-              <ExamsHeroCard exams={exams} weakTopics={weakTopics} onAddExam={addExam} />
+              <AskAIHeroCard activePdf={activePdf} />
             </motion.div>
 
             {/* Study cards */}

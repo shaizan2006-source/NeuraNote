@@ -6,10 +6,12 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+const VALID_STATUSES = new Set(["active", "completed"]);
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
 // ── GET: fetch all exams, auto-mark expired ones ─────────
 export async function GET() {
   try {
-    // 1. Auto-move expired exams → completed
     const today = new Date().toISOString().split("T")[0];
 
     await supabase
@@ -18,7 +20,6 @@ export async function GET() {
       .lt("exam_date", today)
       .eq("status", "active");
 
-    // 2. Fetch all exams
     const { data, error } = await supabase
       .from("exams")
       .select("*")
@@ -26,12 +27,8 @@ export async function GET() {
 
     if (error) throw error;
 
-    // 3. Split into active + history in JS
-    const active = (data || []).filter((e) => e.status === "active");
+    const active  = (data || []).filter((e) => e.status === "active");
     const history = (data || []).filter((e) => e.status === "completed");
-
-    console.log("ACTIVE EXAMS:", active);
-    console.log("HISTORY:", history);
 
     return NextResponse.json({ active, history });
 
@@ -44,21 +41,30 @@ export async function GET() {
 // ── POST: create new exam ────────────────────────────────
 export async function POST(req) {
   try {
-    const { name, exam_date } = await req.json();
-
-    if (!name || !exam_date) {
-      return NextResponse.json(
-        { error: "name and exam_date are required" },
-        { status: 400 }
-      );
+    const body = await req.json().catch(() => null);
+    if (!body) {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
+    const { name, exam_date } = body;
+
+    if (!name || typeof name !== "string" || !name.trim()) {
+      return NextResponse.json({ error: "name is required" }, { status: 400 });
+    }
+    if (!exam_date || typeof exam_date !== "string") {
+      return NextResponse.json({ error: "exam_date is required" }, { status: 400 });
+    }
+    if (!DATE_RE.test(exam_date)) {
+      return NextResponse.json({ error: "exam_date must be YYYY-MM-DD" }, { status: 400 });
+    }
+
+    const cleanName = name.trim().slice(0, 100);
     const today = new Date().toISOString().split("T")[0];
     const status = exam_date >= today ? "active" : "completed";
 
     const { data, error } = await supabase
       .from("exams")
-      .insert([{ name, exam_date, status }])
+      .insert([{ name: cleanName, exam_date, status }])
       .select()
       .single();
 
@@ -75,7 +81,22 @@ export async function POST(req) {
 // ── PATCH: mark exam completed manually ──────────────────
 export async function PATCH(req) {
   try {
-    const { id, status } = await req.json();
+    const body = await req.json().catch(() => null);
+    if (!body) {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    const { id, status } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: "id is required" }, { status: 400 });
+    }
+    if (!status || !VALID_STATUSES.has(status)) {
+      return NextResponse.json(
+        { error: `status must be one of: ${[...VALID_STATUSES].join(", ")}` },
+        { status: 400 }
+      );
+    }
 
     const { data, error } = await supabase
       .from("exams")
@@ -85,6 +106,9 @@ export async function PATCH(req) {
       .single();
 
     if (error) throw error;
+    if (!data) {
+      return NextResponse.json({ error: "Exam not found" }, { status: 404 });
+    }
 
     return NextResponse.json(data);
 

@@ -1,7 +1,7 @@
 // src/components/Dashboard/AskAIHeroCard.jsx
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useDrawer } from "@/context/DrawerContext";
 
 // CSS keyframe injected once
@@ -15,15 +15,24 @@ const GLOW_CSS = `
 export default function AskAIHeroCard({ activePdf = null }) {
   const [question, setQuestion] = useState("");
   const inputRef = useRef(null);
-  const { startNewDrawerConversation } = useDrawer();
+  const drawerOpenedRef = useRef(false);
+  const { openDrawer, startNewDrawerConversation } = useDrawer();
+
+  // Open drawer on first focus — only once per mount to avoid reopening while user types
+  const handleInputFocus = useCallback(() => {
+    if (!drawerOpenedRef.current) {
+      drawerOpenedRef.current = true;
+      openDrawer();
+    }
+  }, [openDrawer]);
 
   function handleSend() {
     const q = question.trim();
     if (!q) return;
     startNewDrawerConversation();
-    // Pass initial question via sessionStorage so drawer can pick it up
     sessionStorage.setItem("drawer_initial_question", q);
     setQuestion("");
+    drawerOpenedRef.current = false; // reset so next session opens fresh
   }
 
   function handleKeyDown(e) {
@@ -75,6 +84,7 @@ export default function AskAIHeroCard({ activePdf = null }) {
             value={question}
             onChange={e => setQuestion(e.target.value)}
             onKeyDown={handleKeyDown}
+            onFocus={handleInputFocus}
             placeholder="Ask anything…"
             style={{
               flex:         1,

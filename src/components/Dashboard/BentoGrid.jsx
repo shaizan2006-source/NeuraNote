@@ -53,30 +53,30 @@ function StudyModeSkeleton({ isMobile }) {
   return (
     <div style={{
       display: "grid",
-      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-      gridTemplateRows: isMobile ? "auto auto auto" : "1fr 1fr",
+      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
+      gridTemplateRows: "auto auto auto",
       gap: 6,
       flex: 1,
       minHeight: 0,
     }}>
-      {/* Hero card skeleton */}
+      {/* Hero card skeleton — spans 2 cols × 2 rows on desktop */}
       <div style={{
         ...S,
-        gridColumn: 1,
+        gridColumn: isMobile ? "1" : "1 / 3",
         gridRow: isMobile ? "1" : "1 / 3",
         minHeight: isMobile ? 200 : "auto",
       }} />
       {/* Small card skeletons */}
       <div style={{ ...S, minHeight: 90 }} />
       <div style={{ ...S, minHeight: 90 }} />
-      {isMobile && <div style={{ ...S, minHeight: 90 }} />}
-      {isMobile && <div style={{ ...S, minHeight: 90 }} />}
+      <div style={{ ...S, minHeight: 90 }} />
+      <div style={{ ...S, minHeight: 90 }} />
     </div>
   );
 }
 
 export default function BentoGrid({ activePdf = null }) {
-  const { dashboardMode, exams, weakTopics, addExam } = useDashboard();
+  const { dashboardMode } = useDashboard();
   const [isMobile, setIsMobile] = useState(false);
   const [studyReady, setStudyReady] = useState(false);
 

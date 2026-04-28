@@ -862,10 +862,10 @@ export default function AskAISidebar({
                     justifyContent: "flex-start",
                     background: isActive ? "rgba(139,92,246,0.12)" : "transparent",
                     border: "none", borderRadius: 6, cursor: "pointer",
-                    color: isActive ? "#a78bfa" : "#52525b",
+                    color: isActive ? "#a78bfa" : "#a1a1aa",
                   }}
                 >
-                  <Icon size={16} color={isActive ? "#a78bfa" : "#52525b"} />
+                  <Icon size={16} color={isActive ? "#a78bfa" : "#a1a1aa"} />
                   <span style={{ fontSize: 12, fontWeight: isActive ? 600 : 400 }}>{label}</span>
                 </button>
               );
@@ -993,13 +993,13 @@ export default function AskAISidebar({
                   boxShadow: navShadow,
                   transform: isHovered ? "scale(1.01)" : "scale(1)",
                   border: "none", borderRadius: 6, cursor: "pointer",
-                  color: isActive ? "#a78bfa" : isHovered ? "#a1a1aa" : "#52525b",
+                  color: isActive ? "#a78bfa" : isHovered ? "#e4e4e7" : "#a1a1aa",
                   transition: "background 250ms ease-out, box-shadow 250ms ease-out, transform 200ms ease-out, color 200ms ease-out",
                   margin: "0 6px",
                 }}
               >
                 <span style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
-                  <Icon size={16} color={isActive ? "#a78bfa" : "#52525b"} />
+                  <Icon size={16} color={isActive ? "#a78bfa" : isHovered ? "#e4e4e7" : "#a1a1aa"} />
                   {sidebarCollapsed && isActive && (
                     <span style={{ position: "absolute", bottom: 2, right: 2, width: 5, height: 5, borderRadius: "50%", background: "#8B5CF6" }} />
                   )}

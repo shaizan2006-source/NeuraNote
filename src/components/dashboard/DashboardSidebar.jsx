@@ -191,12 +191,8 @@ function CalendarIcon({ size = 16, color = "currentColor" }) {
 }
 
 const NAV_ITEMS = [
-  { icon: GridIcon,    label: "Dashboard", href: "/dashboard"  },
-  { icon: ChatIcon,    label: "Ask AI",    href: "/ask-ai"     },
-  { icon: FocusIcon,   label: "Focus",     href: "/focus"      },
-  { icon: QuizIcon,    label: "Quiz",      href: "/quiz"       },
-  { icon: MicIcon,     label: "Call Tutor",href: "/call-tutor" },
-  { icon: CalendarIcon,label: "Exams",     href: "/exams"      },
+  { icon: GridIcon, label: "Dashboard", href: "/dashboard" },
+  { icon: ChatIcon, label: "Ask AI",    href: "/ask-ai"    },
 ];
 
 function Tooltip({ label }) {

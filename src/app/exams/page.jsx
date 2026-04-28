@@ -6,7 +6,7 @@ import { useExamReminders } from "@/hooks/useExamReminders";
 import ExamCountdownSection from "@/components/dashboard/exams/ExamCountdownSection";
 import WeakTopicsSection from "@/components/dashboard/exams/WeakTopicsSection";
 import AddExamModal from "@/components/dashboard/exams/AddExamModal";
-import Link from "next/link";
+import ExamsSidebar from "@/components/exams/ExamsSidebar";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -62,27 +62,22 @@ export default function ExamsPage() {
 
   return (
     <div style={{
+      display: "flex",
       minHeight: "100vh",
       background: "linear-gradient(180deg, #0A0A0A 0%, #1A1A2E 100%)",
-      padding: "20px 24px",
     }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <ExamsSidebar />
+
+      {/* Main content */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
 
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
-          <Link href="/dashboard" style={{
-            display: "inline-flex", alignItems: "center", gap: 6,
-            fontSize: 12, color: "#71717a", textDecoration: "none", marginBottom: 16,
-          }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#a1a1aa")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#71717a")}
-          >
-            ← Back to Dashboard
-          </Link>
-          <h1 style={{ margin: "0 0 8px", fontSize: 32, fontWeight: 700, color: "#f4f4f5" }}>
+          <h1 style={{ margin: "0 0 6px", fontSize: 28, fontWeight: 700, color: "#f4f4f5" }}>
             Exams
           </h1>
-          <p style={{ margin: 0, fontSize: 14, color: "#71717a" }}>
+          <p style={{ margin: 0, fontSize: 13, color: "#71717a" }}>
             Track your upcoming exams and focus on weak areas
           </p>
         </div>
@@ -237,18 +232,17 @@ export default function ExamsPage() {
             </div>
           </>
         )}
-      </div>
+        </div>{/* /max-width */}
+      </div>{/* /main content */}
 
       {/* Add Exam Modal */}
       {showModal && (
         <AddExamModal
           onClose={() => setShowModal(false)}
           onSubmit={(newExam) => {
-            // AddExamModal already POSTed to API and returns the created exam
-            // Optimistically add it to local state, then re-fetch to sync
             setExams((prev) => [...prev, newExam]);
             setShowModal(false);
-            fetchAll(); // sync with server
+            fetchAll();
           }}
         />
       )}

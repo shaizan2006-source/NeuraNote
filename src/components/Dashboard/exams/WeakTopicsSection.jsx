@@ -1,35 +1,59 @@
+// src/components/dashboard/exams/WeakTopicsSection.jsx
 "use client";
 
-const MAX_TOPIC_LENGTH = 24;
+import WeakTopicCard from "./WeakTopicCard";
+import EmptyState from "./EmptyState";
 
-function truncate(str) {
-  if (!str || typeof str !== "string") return "";
-  return str.length > MAX_TOPIC_LENGTH ? str.slice(0, MAX_TOPIC_LENGTH) + "…" : str;
-}
-
-export default function WeakTopicsSection({ weakTopics = [] }) {
-  // Guard: must be a non-null array with valid topic strings
-  const safeTopics = Array.isArray(weakTopics)
-    ? weakTopics.filter((t) => t?.topic && typeof t.topic === "string" && t.topic.trim())
-    : [];
-
-  const sortedTopics = [...safeTopics]
-    .sort((a, b) => (b.count || 0) - (a.count || 0))
-    .slice(0, 5);
-
-  if (sortedTopics.length === 0) {
+/**
+ * @param {{
+ *   topics: Array,
+ *   loading: boolean,
+ *   selectedExam: object|null,
+ *   nullSubject: boolean,
+ *   onAddExam: () => void,
+ *   onPractice: (topic: string) => void,
+ *   onAskAI: (topic: string) => void,
+ *   onStartQuiz: () => void,
+ * }} props
+ */
+export default function WeakTopicsSection({
+  topics = [],
+  loading = false,
+  selectedExam = null,
+  nullSubject = false,
+  onAddExam,
+  onPractice,
+  onAskAI,
+  onStartQuiz,
+}) {
+  // State 1: Loading — skeleton cards
+  if (loading) {
     return (
       <div style={{
         padding: "12px",
         background: "rgba(255,255,255,0.02)",
         borderRadius: 8,
         border: "1px solid rgba(255,255,255,0.06)",
-        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
       }}>
-        <p style={{ margin: 0, fontSize: 10, color: "#52525b" }}>No weak topics yet</p>
-        <p style={{ margin: "4px 0 0", fontSize: 9, color: "#3f3f46" }}>Ask questions to start tracking</p>
+        <div style={{ height: 11, width: "40%", background: "rgba(255,255,255,0.06)", borderRadius: 4 }} />
+        {[0, 1, 2].map((i) => (
+          <div key={i} style={{
+            height: 52,
+            background: "rgba(255,255,255,0.04)",
+            borderRadius: 6,
+            animation: "skeleton-pulse 1.5s ease-in-out infinite",
+          }} />
+        ))}
       </div>
     );
+  }
+
+  // State 2: No exam selected
+  if (!selectedExam) {
+    return <EmptyState variant="no-exam" onAction={onAddExam} />;
   }
 
   return (
@@ -39,48 +63,45 @@ export default function WeakTopicsSection({ weakTopics = [] }) {
       borderRadius: 8,
       border: "1px solid rgba(255,255,255,0.06)",
     }}>
+      {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
         <p style={{ margin: 0, fontSize: 10, color: "#71717a", fontWeight: 600 }}>Weak Topics</p>
-        <p style={{ margin: 0, fontSize: 9, color: "#3f3f46" }}>{sortedTopics.length} tracked</p>
+        {topics.length > 0 && (
+          <p style={{ margin: 0, fontSize: 9, color: "#3f3f46" }}>{topics.length} tracked</p>
+        )}
       </div>
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-        {sortedTopics.map((topic) => {
-          const label = truncate(topic.topic);
-          const count = typeof topic.count === "number" ? topic.count : 0;
-          const key = topic.id ?? topic.topic;
 
-          return (
-            <button
-              key={key}
-              title={`${topic.topic} — asked ${count} time${count !== 1 ? "s" : ""}`}
-              style={{
-                padding: "5px 10px",
-                background: "rgba(239,68,68,0.1)",
-                border: "1px solid rgba(239,68,68,0.3)",
-                borderRadius: 4,
-                color: "#fca5a5",
-                fontSize: 9,
-                cursor: "pointer",
-                transition: "all 150ms ease",
-                maxWidth: "100%",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(239,68,68,0.2)";
-                e.currentTarget.style.boxShadow = "0 2px 8px rgba(239,68,68,0.2)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(239,68,68,0.1)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
+      {/* Null-subject banner */}
+      {nullSubject && (
+        <div style={{
+          marginBottom: 8,
+          padding: "5px 8px",
+          background: "rgba(245,158,11,0.08)",
+          border: "1px solid rgba(245,158,11,0.2)",
+          borderRadius: 4,
+        }}>
+          <p style={{ margin: 0, fontSize: 9, color: "#fbbf24" }}>
+            Subject not set — showing all weak topics.{" "}
+            <span style={{ color: "#71717a" }}>Edit this exam to add a subject.</span>
+          </p>
+        </div>
+      )}
+
+      {/* State 3: No topics / State 4: Topics list */}
+      {topics.length === 0 ? (
+        <EmptyState variant="no-topics" onAction={onStartQuiz} />
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {topics.map((t) => (
+            <WeakTopicCard
+              key={t.id ?? t.topic}
+              topic={t}
+              onPractice={onPractice}
+              onAskAI={onAskAI}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

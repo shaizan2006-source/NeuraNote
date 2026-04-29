@@ -11,11 +11,11 @@ export async function POST(req) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { userId, subject, results } = body;
+  const { subject, results } = body;
 
-  if (!userId || !Array.isArray(results) || results.length === 0) {
+  if (!Array.isArray(results) || results.length === 0) {
     return NextResponse.json(
-      { error: "userId and results[] are required" },
+      { error: "results[] is required" },
       { status: 400 }
     );
   }
@@ -25,68 +25,72 @@ export async function POST(req) {
     process.env.SUPABASE_SERVICE_ROLE_KEY
   );
 
+  // Verify caller identity — don't trust body-supplied userId
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader?.replace("Bearer ", "");
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const verifiedUserId = user.id; // use this instead of body's userId
+
   const normalizedSubject = (subject || "general").toLowerCase().trim();
 
   for (const item of results) {
     const { topic, correct, total } = item;
-    if (!topic || !total) continue;
+    if (!topic || !total || typeof correct !== "number") continue;
 
     const accuracy = (correct / total) * 100;
 
-    // 1. Update mastery score (uses existing lib/mastery.js)
-    await updateMastery({ user_id: userId, topic, correct, total }).catch(
+    // 1. Update mastery (non-critical — .catch so it never throws)
+    await updateMastery({ user_id: verifiedUserId, topic, correct, total }).catch(
       (err) => console.error("[quiz-results] mastery update failed:", err)
     );
 
-    // 2. Update weak_topics based on performance
-    const { data: existing } = await supabase
-      .from("weak_topics")
-      .select("id, count")
-      .eq("user_id", userId)
-      .eq("topic", topic)
-      .eq("subject", normalizedSubject)
-      .single();
+    try {
+      // 2. Read existing weak_topics row
+      const { data: existing } = await supabase
+        .from("weak_topics")
+        .select("id, count")
+        .eq("user_id", verifiedUserId)
+        .eq("topic", topic)
+        .eq("subject", normalizedSubject)
+        .single();
 
-    if (accuracy >= 80) {
-      // Mastered — remove from weak topics entirely
-      if (existing) {
-        await supabase
-          .from("weak_topics")
-          .delete()
-          .eq("id", existing.id);
-      }
-    } else if (accuracy >= 60) {
-      // Improving — reduce count by 2
-      if (existing) {
-        const newCount = Math.max(0, existing.count - 2);
-        await supabase
-          .from("weak_topics")
-          .update({
+      if (accuracy >= 80) {
+        if (existing) {
+          await supabase.from("weak_topics").delete().eq("id", existing.id);
+        }
+      } else if (accuracy >= 60) {
+        if (existing) {
+          const newCount = Math.max(0, existing.count - 2);
+          await supabase.from("weak_topics").update({
             count: newCount,
             level: "medium",
             updated_at: new Date().toISOString(),
-          })
-          .eq("id", existing.id);
-      }
-    } else {
-      // Still weak — increment count
-      if (existing) {
-        await supabase
-          .from("weak_topics")
-          .update({
+          }).eq("id", existing.id);
+        }
+      } else {
+        if (existing) {
+          await supabase.from("weak_topics").update({
             count: existing.count + 1,
             level: "hard",
             updated_at: new Date().toISOString(),
-          })
-          .eq("id", existing.id);
+          }).eq("id", existing.id);
+        }
       }
+    } catch (err) {
+      console.error("[quiz-results] weak_topics update failed for topic:", topic, err);
+      // Continue processing remaining topics — don't let one failure block others
     }
 
-    // 3. Log to learning_events (Realtime also watches this table)
+    // 3. Log to learning_events (non-critical — .catch so it never throws)
     await supabase
       .from("learning_events")
       .insert({
-        user_id: userId,
+        user_id: verifiedUserId,
         event_type: "quiz_completed",
         metadata: {
           topic,

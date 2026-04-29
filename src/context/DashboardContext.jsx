@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, useRef, useCallback } f
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { useExamReminders } from "@/hooks/useExamReminders";
+import { useRealtimeProgress } from "@/hooks/useRealtimeProgress";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -369,10 +370,9 @@ export function DashboardProvider({ children }) {
   const progressSummaryFetchedAt  = useRef(null);
   const progressSummaryFetchingRef = useRef(false); // ref-based guard avoids stale-closure race
 
+  // Realtime-driven: freshness guard removed (Supabase Realtime invalidates).
+  // In-flight guard kept so a second realtime burst doesn't double-fetch.
   const fetchProgressSummary = useCallback(async () => {
-    // Skip if data is fresh (< 5 min old)
-    if (progressSummaryFetchedAt.current && Date.now() - progressSummaryFetchedAt.current < 5 * 60 * 1000) return;
-    // Skip if already in flight — use ref, not state, to avoid stale closure
     if (progressSummaryFetchingRef.current) return;
     progressSummaryFetchingRef.current = true;
     setProgressSummaryLoading(true);
@@ -1359,6 +1359,22 @@ export function DashboardProvider({ children }) {
     setBrainInsight(getBrainInsight(filtered));
   }, [masteryTopics, selectedSubject, weakTopics]);
 
+  // ── Realtime live-progress layer ─────────────────────────────
+  // Subscribes to Supabase Realtime on the six progress tables for the
+  // current user, debounces refetches into fetchProgressSummary, falls
+  // back to 60s polling, pauses on tab hidden, cleans up on sign-out.
+  const {
+    status:        progressStatus,
+    lastDelta:     progressLastDelta,
+    lastUpdateAt:  progressLastUpdateAt,
+    manualRefetch: progressManualRefetch,
+  } = useRealtimeProgress({
+    refetch:            fetchProgressSummary,
+    refetchDailyPlan:   fetchDailyPlan,
+    refetchExam:        fetchExam,
+    refetchWeakTopics:  fetchWeakTopics,
+  });
+
   // ================================================================
   // CONTEXT VALUE
   // ================================================================
@@ -1408,6 +1424,7 @@ export function DashboardProvider({ children }) {
       chartType, setChartType,
       dashboardMode, toggleDashboardMode,
       progressSummary, progressSummaryLoading, progressSummaryError, fetchProgressSummary,
+      progressStatus, progressLastDelta, progressLastUpdateAt, progressManualRefetch,
       sidebarCollapsed, toggleSidebar,
       difficultyData, score,
       // Functions

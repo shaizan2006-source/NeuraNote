@@ -46,7 +46,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const { name, exam_date } = body;
+    const { name, exam_date, subject } = body;
 
     if (!name || typeof name !== "string" || !name.trim()) {
       return NextResponse.json({ error: "name is required" }, { status: 400 });
@@ -59,12 +59,15 @@ export async function POST(req) {
     }
 
     const cleanName = name.trim().slice(0, 100);
+    const cleanSubject = subject && typeof subject === "string"
+      ? subject.toLowerCase().trim().slice(0, 60)
+      : null;
     const today = new Date().toISOString().split("T")[0];
     const status = exam_date >= today ? "active" : "completed";
 
     const { data, error } = await supabase
       .from("exams")
-      .insert([{ name: cleanName, exam_date, status }])
+      .insert([{ name: cleanName, exam_date, status, subject: cleanSubject }])
       .select()
       .single();
 
@@ -86,21 +89,32 @@ export async function PATCH(req) {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const { id, status } = body;
+    const { id, status, subject } = body;
 
     if (!id) {
       return NextResponse.json({ error: "id is required" }, { status: 400 });
     }
-    if (!status || !VALID_STATUSES.has(status)) {
-      return NextResponse.json(
-        { error: `status must be one of: ${[...VALID_STATUSES].join(", ")}` },
-        { status: 400 }
-      );
+
+    const patch = {};
+    if (status !== undefined) {
+      if (!VALID_STATUSES.has(status)) {
+        return NextResponse.json(
+          { error: `status must be one of: ${[...VALID_STATUSES].join(", ")}` },
+          { status: 400 }
+        );
+      }
+      patch.status = status;
+    }
+    if (subject !== undefined) {
+      patch.subject = subject ? subject.toLowerCase().trim().slice(0, 60) : null;
+    }
+    if (Object.keys(patch).length === 0) {
+      return NextResponse.json({ error: "Nothing to update" }, { status: 400 });
     }
 
     const { data, error } = await supabase
       .from("exams")
-      .update({ status })
+      .update(patch)
       .eq("id", id)
       .select()
       .single();

@@ -59,8 +59,9 @@ export async function POST(req) {
     }
 
     const cleanName = name.trim().slice(0, 100);
-    const cleanSubject = subject && typeof subject === "string"
-      ? subject.toLowerCase().trim().slice(0, 60)
+    const trimmedSubject = subject && typeof subject === "string" ? subject.trim() : "";
+    const cleanSubject = trimmedSubject.length > 0
+      ? trimmedSubject.toLowerCase().slice(0, 60)
       : null;
     const today = new Date().toISOString().split("T")[0];
     const status = exam_date >= today ? "active" : "completed";
@@ -81,7 +82,7 @@ export async function POST(req) {
   }
 }
 
-// ── PATCH: mark exam completed manually ──────────────────
+// ── PATCH: update exam fields (status and/or subject) ────
 export async function PATCH(req) {
   try {
     const body = await req.json().catch(() => null);
@@ -106,7 +107,8 @@ export async function PATCH(req) {
       patch.status = status;
     }
     if (subject !== undefined) {
-      patch.subject = subject ? subject.toLowerCase().trim().slice(0, 60) : null;
+      const trimmedSub = (subject && typeof subject === "string") ? subject.trim() : "";
+      patch.subject = trimmedSub.length > 0 ? trimmedSub.toLowerCase().slice(0, 60) : null;
     }
     if (Object.keys(patch).length === 0) {
       return NextResponse.json({ error: "Nothing to update" }, { status: 400 });

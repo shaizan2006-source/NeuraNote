@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { SUBJECT_OPTIONS } from "@/lib/subjectOptions";
 import { motion } from "framer-motion";
 
 const MAX_NAME_LENGTH = 100;
@@ -8,6 +9,7 @@ const MAX_NAME_LENGTH = 100;
 export default function AddExamModal({ onClose, onSubmit }) {
   const [examName, setExamName] = useState("");
   const [examDate, setExamDate] = useState("");
+  const [subject, setSubject] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const nameRef = useRef(null);
@@ -32,6 +34,7 @@ export default function AddExamModal({ onClose, onSubmit }) {
   function validate() {
     if (!examName.trim()) return "Exam name is required.";
     if (examName.trim().length > MAX_NAME_LENGTH) return `Name must be under ${MAX_NAME_LENGTH} characters.`;
+    if (!subject) return "Subject is required.";
     if (!examDate) return "Exam date is required.";
     if (isPastDate) return "Exam date cannot be in the past.";
     return null;
@@ -47,7 +50,7 @@ export default function AddExamModal({ onClose, onSubmit }) {
       const res = await fetch("/api/exam", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: examName.trim(), exam_date: examDate }),
+        body: JSON.stringify({ name: examName.trim(), exam_date: examDate, subject }),
       });
 
       if (!res.ok) {
@@ -133,6 +136,29 @@ export default function AddExamModal({ onClose, onSubmit }) {
               {charCount}/{MAX_NAME_LENGTH} characters
             </p>
           )}
+        </div>
+
+        {/* Subject */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <select
+            value={subject}
+            onChange={(e) => { setSubject(e.target.value); setError(""); }}
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: `1px solid ${error && !subject ? "rgba(239,68,68,0.5)" : "rgba(255,255,255,0.06)"}`,
+              borderRadius: 6,
+              padding: "10px",
+              fontSize: 12,
+              color: subject ? "#e4e4e7" : "#52525b",
+              outline: "none",
+              cursor: "pointer",
+            }}
+          >
+            <option value="">Select Subject...</option>
+            {SUBJECT_OPTIONS.map((opt) => (
+              <option key={opt.key} value={opt.key}>{opt.label}</option>
+            ))}
+          </select>
         </div>
 
         {/* Exam date */}

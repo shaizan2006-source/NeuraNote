@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 function borderColor(hex) {
   const map = {
     "#22C55E": "rgba(34,197,94,0.2)",
-    "#F59E0B": "rgba(245,158,11,0.2)",
+    "#EAB308": "rgba(234,179,8,0.2)",
     "#EF4444": "rgba(239,68,68,0.2)",
     "#52525b": "rgba(82,82,91,0.2)",
   };
@@ -69,8 +69,8 @@ export default function ExamCountdownSection({ exams = [] }) {
   const countdownColor =
     isPast    ? "#52525b" :
     isToday   ? "#EF4444" :
-    daysLeft > 30 ? "#22C55E" :
-    daysLeft > 7  ? "#F59E0B" :
+    daysLeft > 14 ? "#22C55E" :
+    daysLeft > 7  ? "#EAB308" :
                     "#EF4444";
 
   return (

@@ -38,7 +38,7 @@ export default function AskAIHeroCard({ activePdf = null }) {
         boxShadow: "0 8px 40px rgba(124,58,237,0.2), inset 0 1px 0 rgba(255,255,255,0.05)",
         display: "flex",
         flexDirection: "column",
-        padding: "16px",
+        padding: "20px",
         cursor: "text",
         position: "relative",
         overflow: "hidden",
@@ -97,7 +97,7 @@ export default function AskAIHeroCard({ activePdf = null }) {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        padding: "8px",
+        padding: "16px",
         position: "relative",
         zIndex: 1,
       }}>

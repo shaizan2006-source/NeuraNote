@@ -44,9 +44,8 @@ function DashboardInner() {
         flex:          1,
         display:       "flex",
         flexDirection: "column",
-        padding:       "20px 24px",
-        overflowY:     "auto",
-        overflowX:     "hidden",
+        padding:       "24px",
+        overflow:      "hidden",
         minWidth:      0,
       }}>
         <GreetingRow userName={userName} />

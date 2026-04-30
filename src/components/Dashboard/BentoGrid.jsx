@@ -113,10 +113,10 @@ export default function BentoGrid({ activePdf = null }) {
             style={{
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
-              gridTemplateRows: isMobile ? "auto" : "1fr 1fr 1fr",
-              gap: 10,
+              gridTemplateRows: isMobile ? "auto" : "1fr 1fr auto",
+              gap: 16,
               flex: 1,
-              minHeight: 0,
+              overflow: "hidden",
             }}
           >
             {/* Hero card */}
@@ -125,8 +125,6 @@ export default function BentoGrid({ activePdf = null }) {
               style={{
                 gridColumn: isMobile ? "1" : "1 / 3",
                 gridRow: isMobile ? "1" : "1 / 3",
-                minHeight: 0,
-                overflow: "hidden",
               }}
             >
               <AskAIHeroCard activePdf={activePdf} />

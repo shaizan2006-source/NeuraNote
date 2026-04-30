@@ -13,11 +13,10 @@ const CARD = {
   background: "linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
   border: "1px solid rgba(255,255,255,0.08)",
   boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
-  padding: "14px",
+  padding: "18px",
   display: "flex",
   flexDirection: "column",
   height: "100%",
-  minHeight: 0,
   boxSizing: "border-box",
   cursor: "pointer",
   overflow: "hidden",
@@ -52,7 +51,7 @@ function FocusModeCard() {
       style={CARD}
     >
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
         <div style={{
           width: 28, height: 28, borderRadius: 8, flexShrink: 0,
           background: "rgba(34,211,238,0.1)",
@@ -71,11 +70,11 @@ function FocusModeCard() {
 
       {/* Circular timer */}
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ position: "relative", width: 80, height: 80 }}>
-          <svg width="80" height="80" viewBox="0 0 80 80" style={{ transform: "rotate(-90deg)" }}>
-            <circle cx="40" cy="40" r={RADIUS} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+        <div style={{ position: "relative", width: 96, height: 96 }}>
+          <svg width="96" height="96" viewBox="0 0 96 96" style={{ transform: "rotate(-90deg)" }}>
+            <circle cx="48" cy="48" r="36" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
             <motion.circle
-              cx="40" cy="40" r={RADIUS}
+              cx="48" cy="48" r="36"
               fill="none" stroke={stroke}
               strokeWidth="6" strokeLinecap="round"
               strokeDasharray={CIRCUMFERENCE}
@@ -89,7 +88,7 @@ function FocusModeCard() {
             display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
           }}>
-            <span style={{ fontSize: 16, fontWeight: 800, color: "#f4f4f5", letterSpacing: "-0.5px" }}>
+            <span style={{ fontSize: 20, fontWeight: 800, color: "#f4f4f5", letterSpacing: "-0.5px" }}>
               {mm}:{ss}
             </span>
             <span style={{ fontSize: 8, color: "#6d6d80", marginTop: 1 }}>Start focus</span>
@@ -219,12 +218,12 @@ function CallTutorCard() {
             }}
           />
           <div style={{
-            width: 46, height: 46, borderRadius: "50%",
+            width: 54, height: 54, borderRadius: "50%",
             background: "linear-gradient(135deg, rgba(34,197,94,0.18), rgba(34,197,94,0.08))",
             border: "2px solid rgba(34,197,94,0.35)",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round">
               <rect x="9" y="2" width="6" height="11" rx="3" />
               <path d="M5 10a7 7 0 0 0 14 0" />
               <line x1="12" y1="19" x2="12" y2="22" />
@@ -356,7 +355,7 @@ function ExamsCard() {
           border: "1px solid rgba(255,255,255,0.06)",
           borderRadius: 9,
           padding: "8px 12px",
-          marginBottom: 8,
+          marginBottom: 12,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -397,7 +396,7 @@ function ExamsCard() {
       )}
 
       {/* Stats row */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
         {[
           { value: nextExam ? `${syllabus}%` : "—", label: "Syllabus", color: "#22c55e" },
           {
@@ -431,7 +430,7 @@ export default function StudyModeCards() {
       <QuizCard />
       <CallTutorCard />
       {/* Exams spans 2 columns in the bottom row */}
-      <div style={{ gridColumn: "span 2", height: "100%", minHeight: 0, overflow: "hidden" }}>
+      <div style={{ gridColumn: "span 2" }}>
         <ExamsCard />
       </div>
     </>

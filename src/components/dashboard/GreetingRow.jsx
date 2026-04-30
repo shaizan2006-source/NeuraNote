@@ -29,10 +29,10 @@ export default function GreetingRow() {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "flex-start",
-      marginBottom: 8,
+      marginBottom: 20,
     }}>
       <div>
-        <h1 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#f4f4f5", lineHeight: 1.2 }}>
+        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#f4f4f5", lineHeight: 1.2 }}>
           {heading}
         </h1>
         <p style={{ margin: 0, fontSize: 10, fontWeight: 400, color: "#71717a", marginTop: 2 }}>

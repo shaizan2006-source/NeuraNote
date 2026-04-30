@@ -15,8 +15,17 @@ import { loadSavedChatId } from "@/lib/chatStorage";
 
 function AskAIInner() {
   const searchParams = useSearchParams();
-  const { streak, progressQuestions, masteryTopics, user, setDocumentId } = useDashboard();
+  const { streak, progressQuestions, masteryTopics, user, setDocumentId, setQuestion } = useDashboard();
   const userId = user?.id;
+
+  useEffect(() => {
+    try {
+      const prefill = sessionStorage.getItem("amn_ask_prefill");
+      if (!prefill) return;
+      sessionStorage.removeItem("amn_ask_prefill");
+      setQuestion(prefill);
+    } catch {}
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const { activePdf, setActivePdfId } = useActivePDF(userId);
 
   // Active conversation — priority: URL ?cid= → localStorage → null

@@ -42,6 +42,22 @@ function FocusPageContent() {
   const [chatInitialInput, setChatInitialInput] = useState('');
   const [isMobile, setIsMobile] = useState(false);
 
+  // Read weak-topic prefill from ExamCard navigation
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("amn_focus_prefill");
+      if (!raw) return;
+      sessionStorage.removeItem("amn_focus_prefill");
+      const prefill = JSON.parse(raw);
+      if (prefill?.topic) {
+        setChatInitialInput(
+          `Help me study "${prefill.topic}"${prefill.subject ? ` from ${prefill.subject.toUpperCase()}` : ""}. Start with the key concepts I should know.`
+        );
+        setChatOpen(true);
+      }
+    } catch {}
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Resume after page refresh during generation
   useEffect(() => {
     const resumeDocId = sessionStorage.getItem('focusSelectedDocumentId');

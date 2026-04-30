@@ -46,6 +46,19 @@ function QuizContent() {
 
   const { activePdf, loading: activePdfLoading } = useActivePDF(userId);
 
+  // ── Prefill context (from sessionStorage amn_prefill) ────────────────────
+  const [prefillContext, setPrefillContext] = useState(null);
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("amn_prefill");
+      if (raw) {
+        sessionStorage.removeItem("amn_prefill");
+        setPrefillContext(JSON.parse(raw));
+      }
+    } catch {}
+  }, []);
+
   // ── Documents list ────────────────────────────────────────────────────────
   const [documents, setDocuments] = useState([]);
 
@@ -368,10 +381,35 @@ function QuizContent() {
   };
 
   // ── Finish quiz ───────────────────────────────────────────────────────────
-  const handleFinish = useCallback(() => {
+  const handleFinish = useCallback(async () => {
+    // Fire quiz-results only for prefilled (topic-focused) quizzes
+    if (userId && prefillContext?.topic && Object.keys(evaluations).length > 0) {
+      const totalQ   = questions.length;
+      const correctQ = questions.filter((_, i) => {
+        const e = evaluations[i];
+        return e && e.marksEarned >= e.totalMarks * 0.5;
+      }).length;
+
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session?.access_token) {
+        fetch("/api/quiz-results", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            subject: prefillContext.subject ?? "general",
+            results: [{ topic: prefillContext.topic, correct: correctQ, total: totalQ }],
+          }),
+        }).catch(console.error); // fire-and-forget — non-blocking
+      }
+    }
+
     clearQuizSession();
-    router.push('/dashboard');
-  }, [router]);
+    router.push("/dashboard");
+  }, [router, userId, prefillContext, evaluations, questions]);
 
   const pageStyle = {
     background: `linear-gradient(160deg, ${COLORS.bg.dark} 0%, ${COLORS.bg.darkGradient} 100%)`,

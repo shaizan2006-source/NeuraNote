@@ -54,10 +54,11 @@ function StudyModeSkeleton({ isMobile }) {
     <div style={{
       display: "grid",
       gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
-      gridTemplateRows: isMobile ? "auto" : "1fr 1fr auto",
-      gap: 12,
+      gridTemplateRows: isMobile ? "auto" : "1fr 1fr 1fr",
+      gap: 10,
       flex: 1,
       minHeight: 0,
+      overflow: "hidden",
     }}>
       {/* Hero card skeleton — spans 2 cols × 2 rows on desktop */}
       <div style={{
@@ -112,10 +113,11 @@ export default function BentoGrid({ activePdf = null }) {
             style={{
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
-              gridTemplateRows: isMobile ? "auto" : "1fr 1fr auto",
-              gap: 12,
+              gridTemplateRows: isMobile ? "auto" : "1fr 1fr 1fr",
+              gap: 10,
               flex: 1,
               minHeight: 0,
+              overflow: "hidden",
             }}
           >
             {/* Hero card */}
@@ -124,6 +126,8 @@ export default function BentoGrid({ activePdf = null }) {
               style={{
                 gridColumn: isMobile ? "1" : "1 / 3",
                 gridRow: isMobile ? "1" : "1 / 3",
+                minHeight: 0,
+                overflow: "hidden",
               }}
             >
               <AskAIHeroCard activePdf={activePdf} />

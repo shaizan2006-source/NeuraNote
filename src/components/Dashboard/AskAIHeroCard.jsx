@@ -31,6 +31,7 @@ export default function AskAIHeroCard({ activePdf = null }) {
       onClick={() => inputRef.current?.focus()}
       style={{
         height: "100%",
+        minHeight: 0,
         borderRadius: 20,
         background: "linear-gradient(160deg, #1a0533 0%, #2d1060 45%, #1a0533 100%)",
         border: "1px solid rgba(139,92,246,0.3)",

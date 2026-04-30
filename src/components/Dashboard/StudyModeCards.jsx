@@ -17,6 +17,7 @@ const CARD = {
   display: "flex",
   flexDirection: "column",
   height: "100%",
+  minHeight: 0,
   boxSizing: "border-box",
   cursor: "pointer",
   overflow: "hidden",
@@ -430,7 +431,7 @@ export default function StudyModeCards() {
       <QuizCard />
       <CallTutorCard />
       {/* Exams spans 2 columns in the bottom row */}
-      <div style={{ gridColumn: "span 2", height: "100%" }}>
+      <div style={{ gridColumn: "span 2", height: "100%", minHeight: 0, overflow: "hidden" }}>
         <ExamsCard />
       </div>
     </>

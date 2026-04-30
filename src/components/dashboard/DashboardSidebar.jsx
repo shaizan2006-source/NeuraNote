@@ -223,6 +223,121 @@ function Tooltip({ label }) {
   );
 }
 
+// ── Initials from full name or email ──────────────────────────────
+function getInitials(nameOrEmail = "") {
+  const words = nameOrEmail.trim().split(/\s+/).filter(Boolean);
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+  return nameOrEmail.slice(0, 2).toUpperCase();
+}
+
+// ── User avatar section ───────────────────────────────────────────
+function UserSection({ user, collapsed }) {
+  const fullName = user?.user_metadata?.full_name || "";
+  const email    = user?.email || "";
+  const display  = fullName || email.split("@")[0] || "User";
+  const initials = getInitials(fullName || email);
+
+  const avatar = (
+    <div style={{
+      width: 30, height: 30, borderRadius: "50%", flexShrink: 0,
+      background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      fontSize: 11, fontWeight: 700, color: "#fff",
+    }}>
+      {initials}
+    </div>
+  );
+
+  if (collapsed) {
+    return (
+      <div style={{
+        padding: "8px 0",
+        display: "flex",
+        justifyContent: "center",
+        borderTop: "1px solid rgba(255,255,255,0.05)",
+      }}>
+        {avatar}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      padding: "10px 10px",
+      borderTop: "1px solid rgba(255,255,255,0.05)",
+      display: "flex",
+      alignItems: "center",
+      gap: 9,
+    }}>
+      {avatar}
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <p style={{
+          margin: 0, fontSize: 11, fontWeight: 600, color: "#e4e4e7",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        }}>
+          {display}
+        </p>
+        <p style={{
+          margin: "1px 0 0", fontSize: 9, color: "#52525b",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        }}>
+          {email}
+        </p>
+      </div>
+      <button style={{
+        background: "transparent", border: "none",
+        color: "#3f3f46", cursor: "pointer", fontSize: 14,
+        padding: "2px 4px", flexShrink: 0,
+      }}>⋯</button>
+    </div>
+  );
+}
+
+// ── Upgrade to Pro card ───────────────────────────────────────────
+function UpgradePro({ router, collapsed }) {
+  if (collapsed) return null;
+  return (
+    <div style={{
+      margin: "0 8px 8px",
+      padding: "12px",
+      background: "rgba(139,92,246,0.07)",
+      border: "1px solid rgba(139,92,246,0.18)",
+      borderRadius: 10,
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+        <span style={{ fontSize: 12 }}>👑</span>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "#f4f4f5" }}>Upgrade to Pro</span>
+      </div>
+      <p style={{ margin: "0 0 10px", fontSize: 10, color: "#71717a", lineHeight: 1.45 }}>
+        Unlock unlimited AI, PDFs and advanced features.
+      </p>
+      <button
+        onClick={() => router.push("/pricing")}
+        style={{
+          width: "100%",
+          padding: "7px",
+          background: "linear-gradient(135deg, #8B5CF6, #6D28D9)",
+          border: "none",
+          borderRadius: 7,
+          color: "#fff",
+          fontSize: 11,
+          fontWeight: 600,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 4,
+          transition: "opacity 150ms ease",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.opacity = "0.88"; }}
+        onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
+      >
+        Upgrade Now →
+      </button>
+    </div>
+  );
+}
+
 function NavItems({ pathname, router, sidebarCollapsed, hoveredItem, setHoveredItem, showTooltipFor, setShowTooltipFor, onItemClick }) {
   return (
     <nav style={{ flex: 1, padding: "10px 0", display: "flex", flexDirection: "column", gap: 4 }}>
@@ -293,7 +408,7 @@ function NavItems({ pathname, router, sidebarCollapsed, hoveredItem, setHoveredI
 export default function DashboardSidebar() {
   const router   = useRouter();
   const pathname = usePathname();
-  const { sidebarCollapsed, toggleSidebar } = useDashboard();
+  const { sidebarCollapsed, toggleSidebar, user } = useDashboard();
   const [hoveredItem, setHoveredItem] = useState(null);
   const [showTooltipFor, setShowTooltipFor] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -377,23 +492,10 @@ export default function DashboardSidebar() {
             onItemClick={() => setMobileOpen(false)}
           />
 
-          {/* Progress nav shortcut */}
-          <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-            <button
-              onClick={() => { router.push("/progress"); setMobileOpen(false); }}
-              style={{
-                width: "100%", padding: "8px 0", borderRadius: 20,
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                color: "#71717a",
-                fontSize: 11, fontWeight: 600, cursor: "pointer",
-                transition: "color 200ms ease-in-out",
-              }}
-              onMouseEnter={e => e.currentTarget.style.color = "#a1a1aa"}
-              onMouseLeave={e => e.currentTarget.style.color = "#71717a"}
-            >
-              View Progress →
-            </button>
+          {/* Bottom: Upgrade to Pro + user section */}
+          <div style={{ marginTop: "auto", paddingBottom: 4 }}>
+            <UpgradePro router={router} collapsed={false} />
+            <UserSection user={user} collapsed={false} />
           </div>
         </motion.div>
       </>
@@ -426,6 +528,12 @@ export default function DashboardSidebar() {
           setHoveredItem={setHoveredItem} showTooltipFor={showTooltipFor}
           setShowTooltipFor={setShowTooltipFor}
         />
+
+        {/* Bottom: Upgrade to Pro + user section */}
+        <div style={{ marginTop: "auto" }}>
+          <UpgradePro router={router} collapsed={sidebarCollapsed} />
+          <UserSection user={user} collapsed={sidebarCollapsed} />
+        </div>
       </div>
 
     </motion.aside>

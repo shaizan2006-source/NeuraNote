@@ -117,7 +117,6 @@ export default function BentoGrid({ activePdf = null }) {
               gap: 10,
               flex: 1,
               minHeight: 0,
-              overflow: "hidden",
             }}
           >
             {/* Hero card */}

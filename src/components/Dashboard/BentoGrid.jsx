@@ -116,7 +116,7 @@ export default function BentoGrid({ activePdf = null }) {
               gridTemplateRows: isMobile ? "auto" : "1fr 1fr auto",
               gap: 16,
               flex: 1,
-              overflow: "hidden",
+              minHeight: 0,
             }}
           >
             {/* Hero card */}

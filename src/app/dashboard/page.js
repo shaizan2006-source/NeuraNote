@@ -44,7 +44,7 @@ function DashboardInner() {
         flex:          1,
         display:       "flex",
         flexDirection: "column",
-        padding:       "24px",
+        padding:       "20px 24px",
         overflow:      "hidden",
         minWidth:      0,
       }}>

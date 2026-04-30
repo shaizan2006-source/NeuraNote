@@ -37,7 +37,7 @@ export default function AskAIHeroCard({ activePdf = null }) {
         boxShadow: "0 8px 40px rgba(124,58,237,0.2), inset 0 1px 0 rgba(255,255,255,0.05)",
         display: "flex",
         flexDirection: "column",
-        padding: "20px",
+        padding: "16px",
         cursor: "text",
         position: "relative",
         overflow: "hidden",
@@ -96,32 +96,32 @@ export default function AskAIHeroCard({ activePdf = null }) {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        padding: "16px 8px",
+        padding: "8px",
         position: "relative",
         zIndex: 1,
       }}>
         <motion.div
           animate={{ opacity: [0.35, 0.75, 0.35] }}
           transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-          style={{ fontSize: 22, marginBottom: 18, letterSpacing: 12, color: "#a78bfa" }}
+          style={{ fontSize: 18, marginBottom: 12, letterSpacing: 10, color: "#a78bfa" }}
         >
           ✦ ✧ ✦
         </motion.div>
         <p style={{
-          margin: "0 0 10px",
-          fontSize: 17,
+          margin: "0 0 8px",
+          fontSize: 15,
           fontWeight: 700,
           color: "#f4f4f5",
-          lineHeight: 1.35,
+          lineHeight: 1.3,
         }}>
           Ask anything. Get instant answers.
         </p>
         <p style={{
           margin: 0,
-          fontSize: 12,
+          fontSize: 11,
           color: "#6d6d80",
-          lineHeight: 1.6,
-          maxWidth: 280,
+          lineHeight: 1.5,
+          maxWidth: 260,
         }}>
           From explanations to study guidance, I&apos;m here to help.
         </p>
@@ -149,7 +149,7 @@ export default function AskAIHeroCard({ activePdf = null }) {
             background: "rgba(255,255,255,0.07)",
             border: "1px solid rgba(139,92,246,0.25)",
             borderRadius: 10,
-            padding: "11px 14px",
+            padding: "9px 12px",
             fontSize: 13,
             color: "#e4e4e7",
             outline: "none",

@@ -55,7 +55,7 @@ function StudyModeSkeleton({ isMobile }) {
       display: "grid",
       gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
       gridTemplateRows: isMobile ? "auto" : "1fr 1fr auto",
-      gap: 16,
+      gap: 12,
       flex: 1,
       minHeight: 0,
     }}>
@@ -113,7 +113,7 @@ export default function BentoGrid({ activePdf = null }) {
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
               gridTemplateRows: isMobile ? "auto" : "1fr 1fr auto",
-              gap: 16,
+              gap: 12,
               flex: 1,
               minHeight: 0,
             }}

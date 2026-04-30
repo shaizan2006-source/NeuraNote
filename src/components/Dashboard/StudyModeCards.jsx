@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
+import ExamCard from "./exams/ExamCard";
 
 const CARD_BASE = {
   background: "#111111",
@@ -77,13 +78,7 @@ export default function StudyModeCards() {
         href="/call-tutor"
         glowColor="rgba(245,158,11,0.25)"
       />
-      <BentoCard
-        icon="📅"
-        title="Exams"
-        subtitle="Track upcoming exams"
-        href="/exams"
-        glowColor="rgba(34,211,238,0.25)"
-      />
+      <ExamCard />
     </>
   );
 }

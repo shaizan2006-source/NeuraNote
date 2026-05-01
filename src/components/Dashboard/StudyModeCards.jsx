@@ -167,7 +167,7 @@ function QuizCard() {
   return (
     <motion.div
       {...entry(0.16)}
-      whileHover={{ scale: 1.03, y: -3, boxShadow: "0 0 40px rgba(139,92,246,0.2)" }}
+      whileHover={{ scale: 1.04, y: -4, boxShadow: "0 0 40px rgba(99,102,241,0.25)" }}
       whileTap={{ scale: 0.97 }}
       onClick={() => router.push("/quiz")}
       style={CARD}
@@ -190,20 +190,62 @@ function QuizCard() {
         </div>
       </div>
 
-      {/* Animated count */}
-      <div style={{ flex: 1, display: "flex", alignItems: "flex-end", paddingTop: 6 }}>
-        <div>
-          <motion.p
-            key={count}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            style={{ margin: 0, fontSize: 26, fontWeight: 800, color: "#f4f4f5", lineHeight: 1 }}
-          >
-            {count}
-          </motion.p>
-          <p style={{ margin: "4px 0 0", fontSize: 10, color: "#6d6d80" }}>cards ready</p>
+      {/* 3D stacked flashcards — top-right aligned */}
+      <motion.div
+        initial={{ opacity: 0, y: 8, rotate: 5 }}
+        animate={{ opacity: 1, y: 0, rotate: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "flex-end",
+          paddingTop: 6,
+        }}
+      >
+        <div style={{ position: "relative", width: 70, height: 72 }}>
+          {/* Back card */}
+          <div style={{
+            position: "absolute", right: 6, top: 6,
+            width: 52, height: 66, borderRadius: 8,
+            background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+            transform: "rotate(8deg)", opacity: 0.6,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 22, color: "rgba(255,255,255,0.4)",
+          }}>?</div>
+          {/* Mid card */}
+          <div style={{
+            position: "absolute", right: 2, top: 2,
+            width: 52, height: 66, borderRadius: 8,
+            background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+            transform: "rotate(3deg)", opacity: 0.75,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 22, color: "rgba(255,255,255,0.5)",
+          }}>?</div>
+          {/* Front card */}
+          <div style={{
+            position: "absolute", right: 0, top: 0,
+            width: 52, height: 66, borderRadius: 8,
+            background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+            boxShadow: "0 4px 16px rgba(124,58,237,0.4)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 24, color: "rgba(255,255,255,0.85)", fontWeight: 700,
+          }}>?</div>
         </div>
+      </motion.div>
+
+      {/* Animated count — pinned at bottom */}
+      <div style={{ paddingTop: 4 }}>
+        <motion.p
+          key={count}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          style={{ margin: 0, fontSize: 26, fontWeight: 800, color: "#f4f4f5", lineHeight: 1 }}
+        >
+          {count}
+        </motion.p>
+        <p style={{ margin: "4px 0 0", fontSize: 10, color: "#6d6d80" }}>cards ready</p>
       </div>
     </motion.div>
   );

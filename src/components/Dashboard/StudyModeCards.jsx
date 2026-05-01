@@ -5,9 +5,6 @@ import { motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
 
 // ── Shared constants ───────────────────────────────────────────────
-const RADIUS = 30;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
 const CARD = {
   borderRadius: 20,
   background: "linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
@@ -37,15 +34,15 @@ function FocusModeCard() {
 
   const totalSecs = isBreak ? 5 * 60 : 25 * 60;
   const secs = timeLeft ?? 25 * 60;
-  const dashOffset = CIRCUMFERENCE * (1 - secs / totalSecs);
   const mm = Math.floor(secs / 60).toString().padStart(2, "0");
   const ss = (secs % 60).toString().padStart(2, "0");
-  const stroke = "#22d3ee";
+  // Proportional dot count: 36 at full time, 0 at 0:00
+  const activeDotCount = Math.round((secs / totalSecs) * 36);
 
   return (
     <motion.div
       {...entry(0.08)}
-      whileHover={{ scale: 1.03, y: -3, boxShadow: "0 0 40px rgba(34,211,238,0.15)" }}
+      whileHover={{ scale: 1.04, y: -4, boxShadow: "0 0 40px rgba(34,211,238,0.25)" }}
       whileTap={{ scale: 0.97 }}
       onClick={() => router.push("/focus")}
       style={CARD}
@@ -57,7 +54,7 @@ function FocusModeCard() {
           background: "rgba(34,211,238,0.1)",
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="2.5" strokeLinecap="round">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round">
             <circle cx="12" cy="12" r="10" />
             <polyline points="12 6 12 12 16 14" />
           </svg>
@@ -68,21 +65,81 @@ function FocusModeCard() {
         </div>
       </div>
 
-      {/* Circular timer */}
+      {/* Dot ring */}
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ position: "relative", width: 96, height: 96 }}>
-          <svg width="96" height="96" viewBox="0 0 96 96" style={{ transform: "rotate(-90deg)" }}>
-            <circle cx="48" cy="48" r="36" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
-            <motion.circle
-              cx="48" cy="48" r="36"
-              fill="none" stroke={stroke}
-              strokeWidth="6" strokeLinecap="round"
-              strokeDasharray={CIRCUMFERENCE}
-              animate={{ strokeDashoffset: dashOffset }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-              style={{ filter: `drop-shadow(0 0 4px ${stroke})` }}
-            />
+        <div style={{ position: "relative", width: 110, height: 110 }}>
+
+          {/* Ambient glow blob */}
+          <motion.div
+            animate={{ opacity: [0.3, 0.65, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            style={{
+              position: "absolute", inset: 0, borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(34,211,238,0.12) 0%, transparent 70%)",
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Outer pulse ring */}
+          <motion.div
+            animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0, 0.4] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            style={{
+              position: "absolute", inset: -14, borderRadius: "50%",
+              border: "1.5px solid rgba(34,211,238,0.15)", pointerEvents: "none",
+            }}
+          />
+
+          {/* Inner pulse ring */}
+          <motion.div
+            animate={{ scale: [1, 1.18, 1], opacity: [0.4, 0.05, 0.4] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.35 }}
+            style={{
+              position: "absolute", inset: -6, borderRadius: "50%",
+              border: "1.5px solid rgba(34,211,238,0.22)", pointerEvents: "none",
+            }}
+          />
+
+          {/* Track dots (always dim, show ring shape) */}
+          <svg width="110" height="110" viewBox="0 0 110 110" style={{ position: "absolute", inset: 0 }}>
+            {Array.from({ length: 36 }, (_, i) => {
+              const angle = (i * 10 - 90) * (Math.PI / 180);
+              return (
+                <circle
+                  key={i}
+                  cx={55 + 42 * Math.cos(angle)}
+                  cy={55 + 42 * Math.sin(angle)}
+                  r={3}
+                  fill="rgba(255,255,255,0.08)"
+                />
+              );
+            })}
           </svg>
+
+          {/* Active dots with cyan glow */}
+          <svg
+            width="110" height="110" viewBox="0 0 110 110"
+            style={{ position: "absolute", inset: 0, filter: "drop-shadow(0 0 3px #22d3ee)" }}
+          >
+            {Array.from({ length: 36 }, (_, i) => {
+              if (i >= activeDotCount) return null;
+              const angle = (i * 10 - 90) * (Math.PI / 180);
+              // Fade from 1.0 (first active dot) → 0.3 (last active dot)
+              const opacity = Math.max(0.3, 1 - (i / Math.max(activeDotCount - 1, 1)) * 0.7);
+              return (
+                <circle
+                  key={i}
+                  cx={55 + 42 * Math.cos(angle)}
+                  cy={55 + 42 * Math.sin(angle)}
+                  r={3}
+                  fill="#22d3ee"
+                  opacity={opacity}
+                />
+              );
+            })}
+          </svg>
+
+          {/* Timer display */}
           <div style={{
             position: "absolute", inset: 0,
             display: "flex", flexDirection: "column",
@@ -91,7 +148,9 @@ function FocusModeCard() {
             <span style={{ fontSize: 20, fontWeight: 800, color: "#f4f4f5", letterSpacing: "-0.5px" }}>
               {mm}:{ss}
             </span>
-            <span style={{ fontSize: 8, color: "#6d6d80", marginTop: 1 }}>Start focus</span>
+            <span style={{ fontSize: 8, color: "#22d3ee", marginTop: 1, fontWeight: 600 }}>
+              Start focus
+            </span>
           </div>
         </div>
       </div>

@@ -228,6 +228,7 @@ function QuizCard() {
             width: 52, height: 66, borderRadius: 8,
             background: "linear-gradient(135deg, #7c3aed, #a855f7)",
             boxShadow: "0 4px 16px rgba(124,58,237,0.4)",
+            opacity: 1,
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 24, color: "rgba(255,255,255,0.85)", fontWeight: 700,
           }}>?</div>

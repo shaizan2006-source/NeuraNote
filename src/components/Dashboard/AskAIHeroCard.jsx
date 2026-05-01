@@ -27,7 +27,8 @@ export default function AskAIHeroCard({ activePdf = null }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      whileHover={{ scale: 1.01, y: -2 }}
+      whileHover={{ scale: 1.02, y: -3, boxShadow: "0 0 50px rgba(139,92,246,0.3)" }}
+      whileTap={{ scale: 0.98 }}
       onClick={() => inputRef.current?.focus()}
       style={{
         height: "100%",

@@ -378,8 +378,8 @@ function ExamsCard() {
   return (
     <motion.div
       {...entry(0.32)}
-      whileHover={{ scale: 1.015, y: -3 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.04, y: -4 }}
+      whileTap={{ scale: 0.97 }}
       onClick={() => router.push("/exams")}
       style={{
         ...CARD,

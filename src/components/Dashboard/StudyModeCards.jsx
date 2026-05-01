@@ -259,7 +259,7 @@ function CallTutorCard() {
   return (
     <motion.div
       {...entry(0.24)}
-      whileHover={{ scale: 1.03, y: -3, boxShadow: "0 0 40px rgba(34,197,94,0.15)" }}
+      whileHover={{ scale: 1.04, y: -4, boxShadow: "0 0 40px rgba(34,197,94,0.2)" }}
       whileTap={{ scale: 0.97 }}
       onClick={() => router.push("/call-tutor")}
       style={CARD}
@@ -286,46 +286,44 @@ function CallTutorCard() {
 
       {/* Beta badge */}
       <div style={{
-        display: "inline-block",
-        padding: "2px 8px",
+        display: "inline-block", padding: "2px 8px",
         background: "rgba(34,197,94,0.1)",
         border: "1px solid rgba(34,197,94,0.22)",
-        borderRadius: 20,
-        fontSize: 8,
-        color: "#22c55e",
-        fontWeight: 700,
-        marginBottom: 6,
-        alignSelf: "flex-start",
+        borderRadius: 20, fontSize: 8, color: "#22c55e", fontWeight: 700,
+        marginBottom: 6, alignSelf: "flex-start",
       }}>
         Beta
       </div>
 
-      {/* Pulsing mic */}
+      {/* Pulsing mic orb — 80px, centered */}
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ position: "relative" }}>
+          {/* Outer pulse */}
           <motion.div
             animate={{ scale: [1, 1.35, 1], opacity: [0.25, 0, 0.25] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
             style={{
-              position: "absolute", inset: -10, borderRadius: "50%",
-              border: "2px solid rgba(34,197,94,0.3)",
+              position: "absolute", inset: -18, borderRadius: "50%",
+              border: "2px solid rgba(34,197,94,0.3)", pointerEvents: "none",
             }}
           />
+          {/* Inner pulse */}
           <motion.div
             animate={{ scale: [1, 1.18, 1], opacity: [0.4, 0.05, 0.4] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.35 }}
             style={{
-              position: "absolute", inset: -5, borderRadius: "50%",
-              border: "2px solid rgba(34,197,94,0.4)",
+              position: "absolute", inset: -8, borderRadius: "50%",
+              border: "2px solid rgba(34,197,94,0.4)", pointerEvents: "none",
             }}
           />
+          {/* Orb */}
           <div style={{
-            width: 54, height: 54, borderRadius: "50%",
-            background: "linear-gradient(135deg, rgba(34,197,94,0.18), rgba(34,197,94,0.08))",
-            border: "2px solid rgba(34,197,94,0.35)",
+            width: 80, height: 80, borderRadius: "50%",
+            background: "linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.08))",
+            border: "2px solid rgba(34,197,94,0.45)",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round">
               <rect x="9" y="2" width="6" height="11" rx="3" />
               <path d="M5 10a7 7 0 0 0 14 0" />
               <line x1="12" y1="19" x2="12" y2="22" />
@@ -335,21 +333,14 @@ function CallTutorCard() {
         </div>
       </div>
 
-      {/* CTA button */}
+      {/* CTA */}
       <button
         onClick={e => { e.stopPropagation(); router.push("/call-tutor"); }}
         style={{
-          width: "100%",
-          padding: "7px",
-          background: "transparent",
-          border: "1px solid rgba(34,197,94,0.22)",
-          borderRadius: 9,
-          color: "#22c55e",
-          fontSize: 11,
-          fontWeight: 600,
-          cursor: "pointer",
-          marginTop: 6,
-          transition: "all 200ms ease",
+          width: "100%", padding: "7px", background: "transparent",
+          border: "1px solid rgba(34,197,94,0.22)", borderRadius: 9,
+          color: "#22c55e", fontSize: 11, fontWeight: 600, cursor: "pointer",
+          marginTop: 6, transition: "all 200ms ease",
         }}
         onMouseEnter={e => {
           e.currentTarget.style.background = "rgba(34,197,94,0.08)";

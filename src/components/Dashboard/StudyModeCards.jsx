@@ -101,7 +101,7 @@ function FocusModeCard() {
           />
 
           {/* Track dots (always dim, show ring shape) */}
-          <svg width="110" height="110" viewBox="0 0 110 110" style={{ position: "absolute", inset: 0 }}>
+          <svg width="110" height="110" viewBox="0 0 110 110" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
             {Array.from({ length: 36 }, (_, i) => {
               const angle = (i * 10 - 90) * (Math.PI / 180);
               return (
@@ -119,7 +119,7 @@ function FocusModeCard() {
           {/* Active dots with cyan glow */}
           <svg
             width="110" height="110" viewBox="0 0 110 110"
-            style={{ position: "absolute", inset: 0, filter: "drop-shadow(0 0 3px #22d3ee)" }}
+            style={{ position: "absolute", inset: 0, filter: "drop-shadow(0 0 3px #22d3ee)", pointerEvents: "none" }}
           >
             {Array.from({ length: 36 }, (_, i) => {
               if (i >= activeDotCount) return null;

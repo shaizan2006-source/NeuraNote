@@ -26,20 +26,25 @@ export default function ThinkingAnimation({ domain, uploadPending }) {
 
   const showTextTimerRef = useRef(null);
   const intervalRef      = useRef(null);
+  const showTextRef      = useRef(false);
 
   useEffect(() => {
     setStep(0);
     setTextKey(k => k + 1);
     setShowText(false);
+    showTextRef.current = false;
 
     clearTimeout(showTextTimerRef.current);
     clearInterval(intervalRef.current);
 
-    showTextTimerRef.current = setTimeout(() => setShowText(true), 3000);
+    showTextTimerRef.current = setTimeout(() => {
+      showTextRef.current = true;
+      setShowText(true);
+    }, 3000);
 
     intervalRef.current = setInterval(() => {
       setStep(prev => (prev + 1) % steps.length);
-      setTextKey(k => k + 1);
+      if (showTextRef.current) setTextKey(k => k + 1);
     }, 1300);
 
     return () => {
@@ -49,7 +54,7 @@ export default function ThinkingAnimation({ domain, uploadPending }) {
   }, [steps]);
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 0" }}>
+    <div className="amn-thinking-root" style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 0" }}>
 
       {/* ── Vortex SVG ── */}
       <svg
@@ -118,6 +123,7 @@ export default function ThinkingAnimation({ domain, uploadPending }) {
       {/* ── Shimmer text — fades in after 3s ── */}
       <span
         key={textKey}
+        className="amn-thinking-text"
         style={{
           fontSize:               15,
           fontWeight:             600,
@@ -139,32 +145,42 @@ export default function ThinkingAnimation({ domain, uploadPending }) {
 
       <style>{`
         /* Vortex dot animation */
-        .amn-vl {
+        .amn-thinking-root .amn-vl {
           fill: #ffffff;
           opacity: 0;
           animation: amnVortex 2400ms linear infinite both;
         }
         @media (prefers-reduced-motion: reduce) {
-          .amn-vl { animation: none; opacity: 0.45; }
+          .amn-thinking-root .amn-vl { animation: none; opacity: 0.45; }
+          .amn-thinking-text { animation: none !important; background: none; -webkit-text-fill-color: #a78bfa; color: #a78bfa; }
         }
 
         /* Animation delay classes */
-        .amn-d00, .amn-d11, .amn-d22 { animation-delay:    0ms; }
-        .amn-d01                      { animation-delay:  150ms; }
-        .amn-d02, .amn-d21            { animation-delay:  300ms; }
-        .amn-d03                      { animation-delay:  450ms; }
-        .amn-d04, .amn-d31            { animation-delay:  600ms; }
-        .amn-d14                      { animation-delay:  750ms; }
-        .amn-d24, .amn-d32            { animation-delay:  900ms; }
-        .amn-d34                      { animation-delay: 1050ms; }
-        .amn-d33, .amn-d44            { animation-delay: 1200ms; }
-        .amn-d43                      { animation-delay: 1350ms; }
-        .amn-d23, .amn-d42            { animation-delay: 1500ms; }
-        .amn-d41                      { animation-delay: 1650ms; }
-        .amn-d13, .amn-d40            { animation-delay: 1800ms; }
-        .amn-d30                      { animation-delay: 1950ms; }
-        .amn-d12, .amn-d20            { animation-delay: 2100ms; }
-        .amn-d10                      { animation-delay: 2250ms; }
+        .amn-thinking-root .amn-d00,
+        .amn-thinking-root .amn-d11,
+        .amn-thinking-root .amn-d22 { animation-delay:    0ms; }
+        .amn-thinking-root .amn-d01 { animation-delay:  150ms; }
+        .amn-thinking-root .amn-d02,
+        .amn-thinking-root .amn-d21 { animation-delay:  300ms; }
+        .amn-thinking-root .amn-d03 { animation-delay:  450ms; }
+        .amn-thinking-root .amn-d04,
+        .amn-thinking-root .amn-d31 { animation-delay:  600ms; }
+        .amn-thinking-root .amn-d14 { animation-delay:  750ms; }
+        .amn-thinking-root .amn-d24,
+        .amn-thinking-root .amn-d32 { animation-delay:  900ms; }
+        .amn-thinking-root .amn-d34 { animation-delay: 1050ms; }
+        .amn-thinking-root .amn-d33,
+        .amn-thinking-root .amn-d44 { animation-delay: 1200ms; }
+        .amn-thinking-root .amn-d43 { animation-delay: 1350ms; }
+        .amn-thinking-root .amn-d23,
+        .amn-thinking-root .amn-d42 { animation-delay: 1500ms; }
+        .amn-thinking-root .amn-d41 { animation-delay: 1650ms; }
+        .amn-thinking-root .amn-d13,
+        .amn-thinking-root .amn-d40 { animation-delay: 1800ms; }
+        .amn-thinking-root .amn-d30 { animation-delay: 1950ms; }
+        .amn-thinking-root .amn-d12,
+        .amn-thinking-root .amn-d20 { animation-delay: 2100ms; }
+        .amn-thinking-root .amn-d10 { animation-delay: 2250ms; }
 
         @keyframes amnVortex {
           0%   { opacity: 0;    }

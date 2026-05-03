@@ -152,7 +152,7 @@ export default function ThinkingAnimation({ domain, uploadPending }) {
         }
         @media (prefers-reduced-motion: reduce) {
           .amn-thinking-root .amn-vl { animation: none; opacity: 0.45; }
-          .amn-thinking-text { animation: none !important; background: none; -webkit-text-fill-color: #a78bfa; color: #a78bfa; }
+          .amn-thinking-root .amn-thinking-text { animation: none !important; background: none; -webkit-text-fill-color: #a78bfa; color: #a78bfa; }
         }
 
         /* Animation delay classes */

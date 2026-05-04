@@ -1,0 +1,46 @@
+/* src/styles/theme-animation.css */
+
+/**
+ * Theme Animation and Transition Styles
+ * Smooth transitions when switching between themes
+ */
+
+/* Smooth transition for color changes */
+html {
+  transition: background-color 300ms ease-in-out;
+}
+
+body {
+  transition: background-color 300ms ease-in-out, color 300ms ease-in-out;
+}
+
+/* Smooth transitions for all themed elements */
+[class*="bg-"],
+[class*="color-"],
+[class*="text-"],
+[class*="border-"] {
+  transition: background-color 250ms ease-in-out, color 250ms ease-in-out,
+    border-color 250ms ease-in-out;
+}
+
+/* Specific elements that benefit from theme transitions */
+a,
+button,
+input,
+textarea,
+select {
+  transition: background-color 250ms ease-in-out, color 250ms ease-in-out,
+    border-color 250ms ease-in-out;
+}
+
+/* CSS variable transition support */
+:root {
+  transition: all 300ms ease-in-out;
+}
+
+/* Prevent transition on initial load */
+html.no-transitions,
+html.no-transitions body,
+html.no-transitions * {
+  transition: none !important;
+}

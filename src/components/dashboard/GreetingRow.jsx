@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDashboard } from "@/context/DashboardContext";
+import { ThemeToggle } from "@/components/Theme/ThemeToggle";
 
 function getGreeting(hour) {
   if (hour >= 21 || hour < 5)  return { heading: "Studying late? 🌙",   subtext: "Stay consistent. You’re closer than you think." };
@@ -40,7 +41,11 @@ export default function GreetingRow() {
         </p>
       </div>
 
-      {/* Toggle button — Study | Progress pill */}
+      {/* Right side actions — Theme Toggle + Study/Progress toggle */}
+      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <ThemeToggle />
+
+        {/* Toggle button — Study | Progress pill */}
       {hydrated && (
         <button
           onClick={toggleDashboardMode}
@@ -96,6 +101,7 @@ export default function GreetingRow() {
           </div>
         </button>
       )}
+      </div>
     </div>
   );
 }

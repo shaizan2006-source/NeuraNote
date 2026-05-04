@@ -104,7 +104,7 @@ export default function QuickChatVortex() {
       <span
         key={textKey}
         style={{
-          fontSize:               14,
+          fontSize:               11,
           fontWeight:             600,
           opacity:                showText ? 1 : 0,
           transition:             "opacity 0.35s ease",

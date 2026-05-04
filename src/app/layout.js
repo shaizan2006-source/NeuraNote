@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
+import AIDustLayer from "@/components/AIDust/AIDustLayer";
 import "@/styles/variables.css";
 import "@/styles/theme-animation.css";
 
@@ -50,6 +51,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
+          <AIDustLayer />
           {children}
         </ThemeProvider>
       </body>

@@ -1,0 +1,93 @@
+/* src/styles/variables.css */
+
+/**
+ * Theme CSS Variables
+ * Both gradient (default) and dark (teal) modes defined here
+ * Applied via :root class (theme-gradient, theme-dark, theme-light)
+ */
+
+:root.theme-gradient {
+  /* Gradient Mode (Default - Purple + Cyan) */
+  --color-brand: #8B5CF6;
+  --color-brand-dark: #6D28D9;
+  --color-brand-light: #8B5CF6;
+  --color-ai-signal: #22D3EE;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+
+  --bg-base: linear-gradient(to bottom, #0A0A0A, #1A1A2E);
+  --bg-surface: #111111;
+  --bg-surface-alt: #18181B;
+  --bg-surface-alt-2: #1F1F23;
+
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #E5E7EB;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-strong: rgba(255, 255, 255, 0.12);
+
+  /* Semantic */
+  --color-info: #3B82F6;
+  --color-tip: #8B5CF6;
+}
+
+:root.theme-dark {
+  /* Dark Mode (Teal Accent) */
+  --color-brand: #14B8A6;
+  --color-brand-dark: #0D9488;
+  --color-brand-light: #2DD4BF;
+  --color-ai-signal: #2DD4BF;
+  --color-success: #10B981;
+  --color-warning: #FBBF24;
+  --color-error: #F43F5E;
+
+  --bg-base: #050505;
+  --bg-surface: #0F0F0F;
+  --bg-surface-alt: #1A1A1A;
+  --bg-surface-alt-2: #252525;
+
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #E5E7EB;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-strong: rgba(255, 255, 255, 0.12);
+
+  /* Semantic */
+  --color-info: #3B82F6;
+  --color-tip: #10B981;
+}
+
+:root.theme-light {
+  /* Light Mode (Coming Soon) */
+  --color-brand: #8B5CF6;
+  --color-brand-dark: #6D28D9;
+  --color-brand-light: #8B5CF6;
+  --color-ai-signal: #22D3EE;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+
+  --bg-base: #FFFFFF;
+  --bg-surface: #F5F5F5;
+  --bg-surface-alt: #EEEEEE;
+  --bg-surface-alt-2: #E5E5E5;
+
+  --color-text-primary: #000000;
+  --color-text-secondary: #666666;
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-border-strong: rgba(0, 0, 0, 0.12);
+
+  /* Semantic */
+  --color-info: #3B82F6;
+  --color-tip: #8B5CF6;
+}
+
+/* Transition for smooth theme switching */
+html {
+  transition: background-color 250ms ease-in-out;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--color-text-primary);
+  transition: background-color 250ms ease-in-out, color 250ms ease-in-out;
+}

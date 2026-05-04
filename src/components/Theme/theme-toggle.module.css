@@ -1,0 +1,126 @@
+.themeToggleWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.toggleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 200ms ease-out;
+}
+
+.toggleButton:hover {
+  border-color: var(--color-brand);
+  background: var(--bg-surface-alt);
+}
+
+.toggleButton:active {
+  transform: scale(0.97);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: dropdownSlideIn 150ms ease-out;
+}
+
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 150ms ease-out;
+  text-align: left;
+}
+
+.dropdownItem:not(.disabled):hover {
+  background: var(--bg-surface-alt);
+}
+
+.dropdownItem.active {
+  background: var(--bg-surface-alt);
+  color: var(--color-brand);
+  font-weight: 500;
+}
+
+.dropdownItem.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.checkmark {
+  margin-left: auto;
+  color: var(--color-brand);
+  font-weight: bold;
+}
+
+.badge {
+  margin-left: auto;
+  background: var(--color-warning);
+  color: #000;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.togglePlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--bg-surface-alt);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}

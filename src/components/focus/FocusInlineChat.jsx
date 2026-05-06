@@ -2,13 +2,10 @@
 import { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { useFocusSessionChat } from '@/lib/useFocusSessionChat';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
+import QuickChatVortex from '../QuickChat/QuickChatVortex';
 
 const CHAT_CSS = `
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-@keyframes dotPulse {
-  0%, 80%, 100% { opacity: 0.25; transform: scale(0.85); }
-  40%           { opacity: 1;    transform: scale(1);    }
-}
 .fic-messages pre  { overflow-x: auto; max-width: 100%; white-space: pre; }
 .fic-messages code { white-space: pre-wrap; word-break: break-word; }
 .fic-messages pre code { white-space: pre; word-break: normal; }
@@ -42,19 +39,6 @@ function BlinkingCursor() {
   );
 }
 
-function ThinkingDots() {
-  return (
-    <span style={{ display: 'inline-flex', gap: 4, alignItems: 'center', padding: '2px 0' }}>
-      {[0, 1, 2].map(i => (
-        <span key={i} style={{
-          width: 5, height: 5, borderRadius: '50%', background: '#52525b',
-          display: 'inline-block',
-          animation: `dotPulse 1.4s ease-in-out ${i * 0.22}s infinite`,
-        }} />
-      ))}
-    </span>
-  );
-}
 
 function UserBubble({ text }) {
   return (
@@ -140,7 +124,7 @@ function AIBubble({ messageId, text, isStreaming = false, isExpanded, onToggle, 
         }}
       >
         {!text && isStreaming
-          ? <ThinkingDots />
+          ? <QuickChatVortex />
           : <>{text}{isStreaming && <BlinkingCursor />}</>
         }
       </div>

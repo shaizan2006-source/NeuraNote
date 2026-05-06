@@ -4,7 +4,7 @@ import { useState, useEffect, Component } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
 import AskAIHeroCard from "./AskAIHeroCard";
-import StudyModeCards from "./StudyModeCards";
+import { FocusModeCard, QuizCard, CallTutorCard, ExamsCard } from "./StudyModeCards";
 import ProgressLayout from "./ProgressLayout";
 
 class ProgressErrorBoundary extends Component {
@@ -53,25 +53,23 @@ function StudyModeSkeleton({ isMobile }) {
   return (
     <div style={{
       display: "grid",
-      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
-      gridTemplateRows: isMobile ? "auto" : "1fr 1fr 1fr",
-      gap: 10,
+      gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
+      gap: 20,
       flex: 1,
       minHeight: 0,
       overflow: "hidden",
     }}>
-      {/* Hero card skeleton — spans 2 cols × 2 rows on desktop */}
-      <div style={{
-        ...S,
-        gridColumn: isMobile ? "1" : "1 / 3",
-        gridRow: isMobile ? "1" : "1 / 3",
-        minHeight: isMobile ? 200 : "auto",
-      }} />
-      {/* Small card skeletons */}
-      <div style={{ ...S, minHeight: 90 }} />
-      <div style={{ ...S, minHeight: 90 }} />
-      <div style={{ ...S, minHeight: 90 }} />
-      <div style={{ ...S, minHeight: 90 }} />
+      {/* Left column skeleton */}
+      <div style={{ display: "grid", gridTemplateRows: "65% 35%", gap: 20, minHeight: 0 }}>
+        <div style={{ ...S }} />
+        <div style={{ ...S }} />
+      </div>
+      {/* Right column skeleton */}
+      <div style={{ display: "grid", gridTemplateRows: "40% 25% 35%", gap: 20, minHeight: 0 }}>
+        <div style={{ ...S }} />
+        <div style={{ ...S }} />
+        <div style={{ ...S }} />
+      </div>
     </div>
   );
 }
@@ -112,26 +110,45 @@ export default function BentoGrid({ activePdf = null }) {
             exit="exit"
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
-              gridTemplateRows: isMobile ? "auto" : "1fr 1fr auto",
-              gap: 16,
+              gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
+              gap: 20,
               flex: 1,
               minHeight: 0,
+              overflowY: isMobile ? "auto" : "hidden",
             }}
           >
-            {/* Hero card */}
-            <motion.div
-              variants={cardVariants}
-              style={{
-                gridColumn: isMobile ? "1" : "1 / 3",
-                gridRow: isMobile ? "1" : "1 / 3",
-              }}
-            >
-              <AskAIHeroCard activePdf={activePdf} />
-            </motion.div>
+            {/* ── LEFT COLUMN: Ask AI (65%) + Call Tutor (35%) ── */}
+            <div style={{
+              display: "grid",
+              gridTemplateRows: isMobile ? "400px auto" : "65% 35%",
+              gap: 20,
+              minHeight: 0,
+            }}>
+              <motion.div variants={cardVariants} style={{ minHeight: 0 }}>
+                <AskAIHeroCard activePdf={activePdf} />
+              </motion.div>
+              <motion.div variants={cardVariants} style={{ minHeight: 0 }}>
+                <CallTutorCard />
+              </motion.div>
+            </div>
 
-            {/* Study cards */}
-            <StudyModeCards />
+            {/* ── RIGHT COLUMN: Focus Mode (40%) + Quiz (25%) + Exams (35%) ── */}
+            <div style={{
+              display: "grid",
+              gridTemplateRows: isMobile ? "220px 160px auto" : "40% 25% 35%",
+              gap: 20,
+              minHeight: 0,
+            }}>
+              <motion.div variants={cardVariants} style={{ minHeight: 0 }}>
+                <FocusModeCard />
+              </motion.div>
+              <motion.div variants={cardVariants} style={{ minHeight: 0 }}>
+                <QuizCard />
+              </motion.div>
+              <motion.div variants={cardVariants} style={{ minHeight: 0 }}>
+                <ExamsCard />
+              </motion.div>
+            </div>
           </motion.div>
         )
       ) : (

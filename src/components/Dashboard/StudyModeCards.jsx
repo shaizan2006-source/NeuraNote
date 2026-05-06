@@ -45,78 +45,77 @@ function FocusModeCard() {
       whileHover={{ scale: 1.04, y: -4, boxShadow: "0 0 40px rgba(34,211,238,0.25)" }}
       whileTap={{ scale: 0.97 }}
       onClick={() => router.push("/focus")}
-      style={{ ...CARD, flexDirection: "row", alignItems: "center", gap: 16 }}
+      style={{ ...CARD, flexDirection: "column", alignItems: "flex-start", gap: 0 }}
     >
-      {/* Left: icon + title */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 10, flexShrink: 0 }}>
+      {/* Top: icon + label row */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexShrink: 0 }}>
         <div style={{
-          width: 36, height: 36, borderRadius: 10,
+          width: 32, height: 32, borderRadius: 9,
           background: "rgba(34,211,238,0.1)",
           display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0,
         }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round">
             <circle cx="12" cy="12" r="10" />
             <polyline points="12 6 12 12 16 14" />
           </svg>
         </div>
         <div>
           <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#f4f4f5" }}>Focus Mode</p>
-          <p style={{ margin: "3px 0 0", fontSize: 10, color: "#6d6d80" }}>Pomodoro 25m</p>
+          <p style={{ margin: "2px 0 0", fontSize: 10, color: "#6d6d80" }}>Pomodoro 25m</p>
         </div>
       </div>
 
-      {/* Right: dot ring — centered in remaining space */}
+      {/* Center: large dot-ring timer */}
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ position: "relative", width: 96, height: 96 }}>
+        <div style={{ position: "relative", width: 130, height: 130 }}>
 
-          {/* Ambient glow blob */}
+          {/* Ambient glow */}
           <motion.div
             animate={{ opacity: [0.3, 0.65, 0.3] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             style={{
               position: "absolute", inset: 0, borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(34,211,238,0.12) 0%, transparent 70%)",
+              background: "radial-gradient(circle, rgba(34,211,238,0.14) 0%, transparent 70%)",
               pointerEvents: "none",
             }}
           />
-
-          {/* Outer pulse ring */}
+          {/* Outer pulse */}
           <motion.div
             animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0, 0.4] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
             style={{
-              position: "absolute", inset: -12, borderRadius: "50%",
+              position: "absolute", inset: -14, borderRadius: "50%",
               border: "1.5px solid rgba(34,211,238,0.15)", pointerEvents: "none",
             }}
           />
-
-          {/* Inner pulse ring */}
+          {/* Inner pulse */}
           <motion.div
             animate={{ scale: [1, 1.18, 1], opacity: [0.4, 0.05, 0.4] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.35 }}
             style={{
-              position: "absolute", inset: -5, borderRadius: "50%",
+              position: "absolute", inset: -6, borderRadius: "50%",
               border: "1.5px solid rgba(34,211,238,0.22)", pointerEvents: "none",
             }}
           />
 
           {/* Track dots */}
-          <svg width="96" height="96" viewBox="0 0 96 96" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+          <svg width="130" height="130" viewBox="0 0 130 130" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
             {Array.from({ length: 36 }, (_, i) => {
               const angle = (i * 10 - 90) * (Math.PI / 180);
               return (
                 <circle key={i}
-                  cx={48 + 36 * Math.cos(angle)}
-                  cy={48 + 36 * Math.sin(angle)}
-                  r={2.5} fill="rgba(255,255,255,0.08)"
+                  cx={65 + 49 * Math.cos(angle)}
+                  cy={65 + 49 * Math.sin(angle)}
+                  r={3} fill="rgba(255,255,255,0.08)"
                 />
               );
             })}
           </svg>
 
-          {/* Active dots with cyan glow */}
-          <svg width="96" height="96" viewBox="0 0 96 96"
-            style={{ position: "absolute", inset: 0, filter: "drop-shadow(0 0 3px #22d3ee)", pointerEvents: "none" }}
+          {/* Active dots */}
+          <svg width="130" height="130" viewBox="0 0 130 130"
+            style={{ position: "absolute", inset: 0, filter: "drop-shadow(0 0 4px #22d3ee)", pointerEvents: "none" }}
           >
             {Array.from({ length: 36 }, (_, i) => {
               if (i >= activeDotCount) return null;
@@ -124,24 +123,24 @@ function FocusModeCard() {
               const opacity = Math.max(0.3, 1 - (i / Math.max(activeDotCount - 1, 1)) * 0.7);
               return (
                 <circle key={i}
-                  cx={48 + 36 * Math.cos(angle)}
-                  cy={48 + 36 * Math.sin(angle)}
-                  r={2.5} fill="#22d3ee" opacity={opacity}
+                  cx={65 + 49 * Math.cos(angle)}
+                  cy={65 + 49 * Math.sin(angle)}
+                  r={3} fill="#22d3ee" opacity={opacity}
                 />
               );
             })}
           </svg>
 
-          {/* Timer display */}
+          {/* Timer text */}
           <div style={{
             position: "absolute", inset: 0,
             display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
           }}>
-            <span style={{ fontSize: 18, fontWeight: 800, color: "#f4f4f5", letterSpacing: "-0.5px" }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: "#f4f4f5", letterSpacing: "-1px" }}>
               {mm}:{ss}
             </span>
-            <span style={{ fontSize: 7, color: "#22d3ee", marginTop: 1, fontWeight: 600 }}>
+            <span style={{ fontSize: 9, color: "#22d3ee", marginTop: 2, fontWeight: 600 }}>
               Start focus
             </span>
           </div>
@@ -502,14 +501,16 @@ function ExamsCard() {
   );
 }
 
-// ── Main export ────────────────────────────────────────────────────
+// ── Named exports for individual cards ────────────────────────────
+export { FocusModeCard, QuizCard, CallTutorCard, ExamsCard };
+
+// ── Main export (legacy) ──────────────────────────────────────────
 export default function StudyModeCards() {
   return (
     <>
       <FocusModeCard />
       <QuizCard />
       <CallTutorCard />
-      {/* Exams spans 2 columns in the bottom row */}
       <div style={{ gridColumn: "span 2" }}>
         <ExamsCard />
       </div>

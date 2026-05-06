@@ -12,20 +12,24 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize theme on mount
   useEffect(() => {
+    let isMounted = true;
+
     const initializeTheme = async () => {
       try {
-        // Try to get user's authenticated theme preference
         const {
           data: { user },
         } = await supabase.auth.getUser();
 
+        if (!isMounted) return;
+
         if (user) {
-          // User authenticated: fetch from user_profiles
           const { data, error } = await supabase
             .from('user_profiles')
             .select('theme_preference')
             .eq('id', user.id)
             .single();
+
+          if (!isMounted) return;
 
           if (!error && data?.theme_preference) {
             const savedTheme = data.theme_preference as ThemeMode;
@@ -36,26 +40,29 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
-        // Not authenticated: try localStorage
         const storedTheme = localStorage.getItem('ask-my-notes:theme') as ThemeMode | null;
         if (storedTheme) {
           setThemeState(storedTheme);
           applyTheme(storedTheme);
         } else {
-          // Default to gradient mode
           setThemeState(DEFAULT_THEME);
           applyTheme(DEFAULT_THEME);
         }
       } catch (error) {
+        if (!isMounted) return;
         console.error('[ThemeProvider] Error initializing theme:', error);
         setThemeState(DEFAULT_THEME);
         applyTheme(DEFAULT_THEME);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
 
     initializeTheme();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const applyTheme = (newTheme: ThemeMode) => {

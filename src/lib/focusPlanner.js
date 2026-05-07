@@ -149,13 +149,15 @@ export async function buildBlueprint(chunkTexts, docName) {
   try {
     const material = chunkTexts.join('\n\n---\n\n').slice(0, BLUEPRINT_TEXT_CAP);
 
+    const safeDocName = String(docName).slice(0, 200);
+
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
-      max_tokens: 2000,
+      max_tokens: 3000,
       temperature: 0.2,
       messages: [
         { role: 'system', content: BLUEPRINT_SYSTEM_PROMPT },
-        { role: 'user',   content: `Document name: ${docName}\n\nStudy material:\n${material}` },
+        { role: 'user',   content: `Document name: ${safeDocName}\n\nStudy material:\n${material}` },
       ],
     });
 
@@ -166,11 +168,11 @@ export async function buildBlueprint(chunkTexts, docName) {
     // One retry with explicit correction nudge
     const retry = await openai.chat.completions.create({
       model: 'gpt-4o',
-      max_tokens: 2000,
+      max_tokens: 3000,
       temperature: 0.1,
       messages: [
         { role: 'system',    content: BLUEPRINT_SYSTEM_PROMPT },
-        { role: 'user',      content: `Document name: ${docName}\n\nStudy material:\n${material}` },
+        { role: 'user',      content: `Document name: ${safeDocName}\n\nStudy material:\n${material}` },
         { role: 'assistant', content: raw },
         { role: 'user',      content: 'Your response was not valid JSON. Return ONLY the JSON object, starting with { and ending with }. No other text.' },
       ],

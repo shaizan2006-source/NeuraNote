@@ -318,28 +318,33 @@ ${material}`;
  * Never throws. Always returns a valid tasks array and a totalMinutes integer.
  */
 export async function generateFocusPlan(chunkTexts, docName) {
-  let tasks = null;
-  let blueprint = null;
+  try {
+    let tasks = null;
+    let blueprint = null;
 
-  // ── Attempt Pass 1 ─────────────────────────────────────────────
-  blueprint = await buildBlueprint(chunkTexts, docName);
+    // ── Attempt Pass 1 ─────────────────────────────────────────────
+    blueprint = await buildBlueprint(chunkTexts, docName);
 
-  if (blueprint) {
-    // ── Attempt Pass 2 ───────────────────────────────────────────
-    tasks = await synthesizeTasks(blueprint);
+    if (blueprint) {
+      // ── Attempt Pass 2 ───────────────────────────────────────────
+      tasks = await synthesizeTasks(blueprint);
+    }
+
+    // ── Legacy fallback if either pass failed ─────────────────────
+    if (!tasks) {
+      tasks = await singlePassFallback(chunkTexts);
+    }
+
+    // ── Hard fallback: always returns something ───────────────────
+    if (!tasks || tasks.length === 0) {
+      tasks = ENHANCED_FALLBACK_TASKS.map(t => ({ ...t })); // spread to avoid mutating the exported constant
+    }
+
+    const totalMinutes = tasks.reduce((sum, t) => sum + t.estimatedMinutes, 0);
+
+    return { tasks, totalMinutes, blueprint };
+  } catch {
+    const tasks = ENHANCED_FALLBACK_TASKS.map(t => ({ ...t }));
+    return { tasks, totalMinutes: tasks.reduce((s, t) => s + t.estimatedMinutes, 0), blueprint: null };
   }
-
-  // ── Legacy fallback if either pass failed ─────────────────────
-  if (!tasks) {
-    tasks = await singlePassFallback(chunkTexts);
-  }
-
-  // ── Hard fallback: always returns something ───────────────────
-  if (!tasks || tasks.length === 0) {
-    tasks = ENHANCED_FALLBACK_TASKS.map(t => ({ ...t })); // spread to avoid mutating the exported constant
-  }
-
-  const totalMinutes = tasks.reduce((sum, t) => sum + t.estimatedMinutes, 0);
-
-  return { tasks, totalMinutes, blueprint };
 }

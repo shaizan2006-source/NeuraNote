@@ -184,3 +184,162 @@ export async function buildBlueprint(chunkTexts, docName) {
     return null;
   }
 }
+
+/**
+ * Pass 2: convert a blueprint into an ordered task list.
+ * Returns a parsed task array or null if GPT fails.
+ * Never throws.
+ */
+export async function synthesizeTasks(blueprint) {
+  try {
+    const { min, max } = getTaskBounds(blueprint);
+
+    const prompt = `You are an expert study coach and exam strategist.
+Convert this document blueprint into an ordered study task list.
+
+Blueprint:
+${JSON.stringify(blueprint, null, 2)}
+
+Rules:
+1. Generate between ${min} and ${max} tasks — choose the count that best fits the material complexity
+2. Task names must be specific and actionable. Start each name with one of: Understand / Memorise / Derive / Practice / Revise / Analyse
+3. Never use generic names like "Study chapter", "Read material", or "Task 1"
+4. Sequence: foundational concepts first, harder derivations and practice after, revision last
+5. Place HIGH YIELD clusters early unless they require prerequisite knowledge
+6. Time estimates must be varied and realistic (5–45 min per task, not all equal)
+7. Use the taskType and examWeight from the matching blueprint cluster
+
+Return ONLY a valid JSON array. No prose, no markdown fences.
+[
+  { "name": "Understand TCP/IP layered architecture", "estimatedMinutes": 20, "taskType": "conceptual", "examWeight": "high" },
+  ...
+]`;
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 1500,
+      temperature: 0.3,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    const raw = completion.choices[0]?.message?.content?.trim() ?? '';
+    const tasks = parseSynthesizedTasks(raw);
+    if (tasks) return tasks;
+
+    // One retry
+    const retry = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 1500,
+      temperature: 0.1,
+      messages: [
+        { role: 'user',      content: prompt },
+        { role: 'assistant', content: raw },
+        { role: 'user',      content: 'Return ONLY the JSON array. Start with [ and end with ]. No other text.' },
+      ],
+    });
+
+    const raw2 = retry.choices[0]?.message?.content?.trim() ?? '';
+    return parseSynthesizedTasks(raw2); // null if still invalid
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Legacy single-pass fallback: used when Pass 1 fails entirely.
+ * Uses gpt-4o-mini directly on raw material with an uncapped task count.
+ * Returns a task array or null.
+ * Never throws.
+ */
+export async function singlePassFallback(chunkTexts) {
+  try {
+    const material = chunkTexts.join('\n\n---\n\n').slice(0, 60_000);
+
+    const prompt = `You are an AI study coach. Given the following study material, generate focused study tasks.
+
+Rules:
+- Tasks must be specific to the content (not generic like "Study hard" or "Read pages")
+- Start each task name with a strong verb: Understand / Memorise / Derive / Practice / Revise / Analyse
+- Progress from foundational to advanced, ending with a revision task
+- Estimate realistic and varied minutes per task (5–40 min each)
+- Generate as many tasks as the content genuinely requires — no fixed count
+
+Return ONLY a JSON array, no other text:
+[
+  { "name": "Understand [specific concept]", "estimatedMinutes": 15 },
+  ...
+]
+
+Study material:
+${material}`;
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 1200,
+      temperature: 0.3,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    const raw = completion.choices[0]?.message?.content?.trim() ?? '';
+    const tasks = parseSynthesizedTasks(raw);
+    if (tasks) return tasks;
+
+    // One retry
+    const retry = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 1200,
+      temperature: 0.1,
+      messages: [
+        { role: 'user',      content: prompt },
+        { role: 'assistant', content: raw },
+        { role: 'user',      content: 'Return ONLY the JSON array. No prose, no markdown.' },
+      ],
+    });
+
+    const raw2 = retry.choices[0]?.message?.content?.trim() ?? '';
+    return parseSynthesizedTasks(raw2);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Main export. Orchestrates the full pipeline with layered fallbacks.
+ *
+ * Fallback chain:
+ *   Pass 1 (GPT-4o blueprint)
+ *     └── success → Pass 2 (GPT-4o-mini synthesis)
+ *           └── success → return intelligence-rich tasks ✓
+ *           └── fail    → singlePassFallback
+ *                 └── success → return legacy tasks ✓
+ *                 └── fail    → return ENHANCED_FALLBACK_TASKS ✓
+ *     └── fail    → singlePassFallback (same sub-chain)
+ *
+ * Never throws. Always returns a valid tasks array and a totalMinutes integer.
+ */
+export async function generateFocusPlan(chunkTexts, docName) {
+  let tasks = null;
+  let blueprint = null;
+
+  // ── Attempt Pass 1 ─────────────────────────────────────────────
+  blueprint = await buildBlueprint(chunkTexts, docName);
+
+  if (blueprint) {
+    // ── Attempt Pass 2 ───────────────────────────────────────────
+    tasks = await synthesizeTasks(blueprint);
+  }
+
+  // ── Legacy fallback if either pass failed ─────────────────────
+  if (!tasks) {
+    tasks = await singlePassFallback(chunkTexts);
+  }
+
+  // ── Hard fallback: always returns something ───────────────────
+  if (!tasks || tasks.length === 0) {
+    tasks = ENHANCED_FALLBACK_TASKS.map(t => ({ ...t })); // spread to avoid mutating the exported constant
+  }
+
+  const totalMinutes = tasks.reduce((sum, t) => sum + t.estimatedMinutes, 0);
+
+  return { tasks, totalMinutes, blueprint };
+}

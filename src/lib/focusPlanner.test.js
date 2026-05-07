@@ -64,6 +64,20 @@ test('parseBlueprint: strips code fences before parsing', () => {
   const inner = JSON.stringify({ conceptClusters: [{ title: 'X', type: 'conceptual', examWeight: 'high', estimatedMinutes: 10, keyTerms: [] }] });
   assert.notEqual(parseBlueprint('```json\n' + inner + '\n```'), null);
 });
+test('parseBlueprint: treats 0 as valid (clamps to min, not fallback)', () => {
+  const input = JSON.stringify({
+    totalConcepts: 0,
+    complexityScore: 0,
+    examHeaviness: 0,
+    estimatedStudyMinutes: 0,
+    conceptClusters: [{ title: 'X', type: 'conceptual', examWeight: 'high', estimatedMinutes: 10, keyTerms: [] }],
+  });
+  const result = parseBlueprint(input);
+  assert.equal(result.totalConcepts, 1);         // clamped to min, not fallback 6
+  assert.equal(result.complexityScore, 1);       // clamped to min, not fallback 5
+  assert.equal(result.examHeaviness, 1);         // clamped to min, not fallback 5
+  assert.equal(result.estimatedStudyMinutes, 10); // clamped to min, not fallback 45
+});
 
 // ── parseSynthesizedTasks ───────────────────────────────────────────
 test('parseSynthesizedTasks: returns null for empty array', () => {

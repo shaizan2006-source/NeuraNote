@@ -49,10 +49,10 @@ export function parseBlueprint(raw) {
 
     return {
       subject:               String(parsed.subject              || 'Unknown subject'),
-      totalConcepts:         Math.max(1, Number(parsed.totalConcepts)        || 6),
-      complexityScore:       Math.min(10, Math.max(1, Number(parsed.complexityScore)   || 5)),
-      examHeaviness:         Math.min(10, Math.max(1, Number(parsed.examHeaviness)     || 5)),
-      estimatedStudyMinutes: Math.max(10, Number(parsed.estimatedStudyMinutes) || 45),
+      totalConcepts:         Math.max(1, (parsed.totalConcepts        != null && !Number.isNaN(Number(parsed.totalConcepts)))        ? Number(parsed.totalConcepts)        : 6),
+      complexityScore:       Math.min(10, Math.max(1, (parsed.complexityScore   != null && !Number.isNaN(Number(parsed.complexityScore)))   ? Number(parsed.complexityScore)   : 5)),
+      examHeaviness:         Math.min(10, Math.max(1, (parsed.examHeaviness     != null && !Number.isNaN(Number(parsed.examHeaviness)))     ? Number(parsed.examHeaviness)     : 5)),
+      estimatedStudyMinutes: Math.max(10, (parsed.estimatedStudyMinutes != null && !Number.isNaN(Number(parsed.estimatedStudyMinutes))) ? Number(parsed.estimatedStudyMinutes) : 45),
       conceptClusters: parsed.conceptClusters.map((c, i) => ({
         title:              String(c.title || `Topic ${i + 1}`),
         type:               VALID_TASK_TYPES.includes(c.type) ? c.type : 'conceptual',

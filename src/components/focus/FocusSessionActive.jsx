@@ -8,6 +8,7 @@ import Button from '@/components/shared/Button';
 import ProgressBar from '@/components/shared/ProgressBar';
 import TimerRing from '@/components/shared/TimerRing';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
+import FocusAmbience from './FocusAmbience';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -22,17 +23,69 @@ const AI_TIPS = [
   "You're making real progress. Keep going!",
 ];
 
+const EXAM_WEIGHT_BADGE = {
+  high:   { label: 'HIGH YIELD', bg: 'rgba(239,68,68,0.15)',   border: 'rgba(239,68,68,0.40)',   color: '#ef4444' },
+  medium: { label: 'MUST KNOW',  bg: 'rgba(245,158,11,0.12)',  border: 'rgba(245,158,11,0.30)',  color: '#f59e0b' },
+};
+
+const TASK_TYPE_PILL = {
+  conceptual:   { label: 'conceptual',   bg: 'rgba(139,92,246,0.15)', border: 'rgba(139,92,246,0.30)', color: '#a78bfa' },
+  memorisation: { label: 'memorise',     bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.30)', color: '#f59e0b' },
+  derivation:   { label: 'derivation',   bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.30)', color: '#60a5fa' },
+  practice:     { label: 'practice',     bg: 'rgba(34,211,238,0.08)', border: 'rgba(34,211,238,0.25)', color: '#22d3ee' },
+  revision:     { label: 'revision',     bg: 'rgba(34,197,94,0.10)',  border: 'rgba(34,197,94,0.25)',  color: '#4ade80' },
+};
+
+function ExamWeightBadge({ examWeight }) {
+  const cfg = EXAM_WEIGHT_BADGE[examWeight];
+  if (!cfg) return null;
+  return (
+    <span style={{
+      background: cfg.bg,
+      border: `1px solid ${cfg.border}`,
+      color: cfg.color,
+      borderRadius: '4px',
+      padding: '2px 7px',
+      fontSize: '9px',
+      fontWeight: 700,
+      letterSpacing: '0.5px',
+      flexShrink: 0,
+    }}>
+      {cfg.label}
+    </span>
+  );
+}
+
+function TaskTypePill({ taskType }) {
+  const cfg = TASK_TYPE_PILL[taskType];
+  if (!cfg) return null;
+  return (
+    <span style={{
+      background: cfg.bg,
+      border: `1px solid ${cfg.border}`,
+      color: cfg.color,
+      borderRadius: '4px',
+      padding: '2px 7px',
+      fontSize: '9px',
+      fontWeight: 600,
+    }}>
+      {cfg.label}
+    </span>
+  );
+}
+
 export default function FocusSessionActive({
   tasks,
   setTasks,
   durationSeconds,
+  initialTimeLeft,
   documentId,
   documentName,
   userId,
   onSessionEnd,
   onAskAI,
 }) {
-  const [timeLeft, setTimeLeft] = useState(durationSeconds);
+  const [timeLeft, setTimeLeft] = useState(initialTimeLeft ?? durationSeconds);
   const [paused, setPaused] = useState(false);
   const [tipIndex, setTipIndex] = useState(0);
   const [timeUp, setTimeUp] = useState(false);
@@ -132,18 +185,21 @@ export default function FocusSessionActive({
   // ── Time's up state ───────────────────────────────────────────────
   if (timeUp && !allDone) {
     return (
-      <div style={{ ...pageStyle, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: SPACING.xl, padding: SPACING.xxl }}>
-        <TopBar title="Time's Up" />
-        <div style={{ ...panelStyle, textAlign: 'center', maxWidth: 400 }}>
-          <div style={{ fontSize: '32px', marginBottom: SPACING.md }}>⏰</div>
-          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 700, color: COLORS.text.primary, marginBottom: SPACING.sm }}>
-            Time's up!
-          </div>
-          <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary, marginBottom: SPACING.lg }}>
-            {pendingTasks.length + (currentTask ? 1 : 0)} task{(pendingTasks.length + (currentTask ? 1 : 0)) > 1 ? 's' : ''} completed.
-          </div>
-          <div style={{ display: 'flex', gap: SPACING.md, justifyContent: 'center' }}>
-            <Button label="End Session" variant="primary" onClick={onSessionEnd} />
+      <div style={{ ...pageStyle, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <FocusAmbience />
+        <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: SPACING.xl, padding: SPACING.xxl }}>
+          <TopBar title="Time's Up" />
+          <div style={{ ...panelStyle, textAlign: 'center', maxWidth: 400 }}>
+            <div style={{ fontSize: '32px', marginBottom: SPACING.md }}>⏰</div>
+            <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 700, color: COLORS.text.primary, marginBottom: SPACING.sm }}>
+              Time's up!
+            </div>
+            <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary, marginBottom: SPACING.lg }}>
+              {pendingTasks.length + (currentTask ? 1 : 0)} task{(pendingTasks.length + (currentTask ? 1 : 0)) > 1 ? 's' : ''} completed.
+            </div>
+            <div style={{ display: 'flex', gap: SPACING.md, justifyContent: 'center' }}>
+              <Button label="End Session" variant="primary" onClick={onSessionEnd} />
+            </div>
           </div>
         </div>
       </div>
@@ -151,12 +207,14 @@ export default function FocusSessionActive({
   }
 
   return (
-    <div style={{ ...pageStyle, display: 'flex', flexDirection: 'column' }}>
-      <TopBar
-        title={documentName ? `Focus: ${documentName.length > 24 ? documentName.slice(0, 24) + '…' : documentName}` : 'Focus Session'}
-      />
+    <div style={{ ...pageStyle, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+      <FocusAmbience />
+      <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <TopBar
+          title={documentName ? `Focus: ${documentName.length > 24 ? documentName.slice(0, 24) + '…' : documentName}` : 'Focus Session'}
+        />
 
-      <div style={{ padding: `${SPACING.xl} ${SPACING.xxl}`, maxWidth: '900px', margin: '0 auto', width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: SPACING.xl }}>
+        <div style={{ padding: `${SPACING.xl} ${SPACING.xxl}`, maxWidth: '900px', margin: '0 auto', width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: SPACING.xl }}>
 
         {/* ── Left: Timer ── */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: SPACING.xl }}>
@@ -199,12 +257,18 @@ export default function FocusSessionActive({
           {/* Current task */}
           {currentTask && (
             <div style={{ ...panelStyle, border: `2px solid ${COLORS.border.accent}`, background: COLORS.bg.accentLight }}>
-              <div style={{ fontSize: TYPOGRAPHY.sizes.small, color: COLORS.text.secondary, fontWeight: 700, letterSpacing: '0.5px', marginBottom: SPACING.md }}>
-                CURRENT
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: SPACING.md }}>
+                <div style={{ fontSize: TYPOGRAPHY.sizes.small, color: COLORS.text.secondary, fontWeight: 700, letterSpacing: '0.5px' }}>
+                  CURRENT
+                </div>
+                <ExamWeightBadge examWeight={currentTask.examWeight} />
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: SPACING.lg }}>
-                <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.primary, lineHeight: 1.5, flex: 1 }}>
-                  {currentTask.name}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.primary, lineHeight: 1.5, marginBottom: SPACING.xs }}>
+                    {currentTask.name}
+                  </div>
+                  <TaskTypePill taskType={currentTask.taskType} />
                 </div>
                 {currentTask.estimatedMinutes && (
                   <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, marginLeft: SPACING.md, flexShrink: 0 }}>
@@ -274,15 +338,18 @@ export default function FocusSessionActive({
                 PENDING
               </div>
               {pendingTasks.map((t) => (
-                <div key={t.id} style={{ display: 'flex', justifyContent: 'space-between', padding: `${SPACING.sm} 0`, borderBottom: `1px solid ${COLORS.border.light}` }}>
-                  <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary }}>
+                <div key={t.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: `${SPACING.sm} 0`, borderBottom: `1px solid ${COLORS.border.light}` }}>
+                  <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, flex: 1 }}>
                     ☐ {t.name}
                   </div>
-                  {t.estimatedMinutes && (
-                    <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, opacity: 0.6 }}>
-                      {t.estimatedMinutes}m
-                    </div>
-                  )}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: SPACING.sm, flexShrink: 0 }}>
+                    <ExamWeightBadge examWeight={t.examWeight} />
+                    {t.estimatedMinutes && (
+                      <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, opacity: 0.6 }}>
+                        {t.estimatedMinutes}m
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -301,6 +368,7 @@ export default function FocusSessionActive({
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

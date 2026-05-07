@@ -79,7 +79,6 @@ export default function FocusModeLoader({ documentName }) {
       fontFamily: TYPOGRAPHY.fontFamily,
       overflowY: 'auto',
       position: 'relative',
-      overflow: 'hidden',
     }}>
       <FocusAmbience />
       <style>{KEYFRAMES}</style>

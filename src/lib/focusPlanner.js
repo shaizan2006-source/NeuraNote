@@ -57,7 +57,7 @@ export function parseBlueprint(raw) {
         title:              String(c.title || `Topic ${i + 1}`),
         type:               VALID_TASK_TYPES.includes(c.type) ? c.type : 'conceptual',
         examWeight:         VALID_EXAM_WEIGHTS.includes(c.examWeight) ? c.examWeight : 'standard',
-        estimatedMinutes:   Math.max(5, Math.min(60, Number(c.estimatedMinutes) || 15)),
+        estimatedMinutes:   Math.max(5, Math.min(60, (c.estimatedMinutes != null && !Number.isNaN(Number(c.estimatedMinutes))) ? Number(c.estimatedMinutes) : 15)),
         keyTerms:           Array.isArray(c.keyTerms) ? c.keyTerms.map(String) : [],
       })),
     };
@@ -78,7 +78,7 @@ export function parseSynthesizedTasks(raw) {
     return parsed.map((t, i) => ({
       id:               `t${i + 1}`,
       name:             String(t.name || 'Study task'),
-      estimatedMinutes: Math.max(5, Math.min(60, Number(t.estimatedMinutes) || 15)),
+      estimatedMinutes: Math.max(5, Math.min(60, (t.estimatedMinutes != null && !Number.isNaN(Number(t.estimatedMinutes))) ? Number(t.estimatedMinutes) : 15)),
       taskType:         VALID_TASK_TYPES.includes(t.taskType)    ? t.taskType    : 'conceptual',
       examWeight:       VALID_EXAM_WEIGHTS.includes(t.examWeight) ? t.examWeight : 'standard',
     }));

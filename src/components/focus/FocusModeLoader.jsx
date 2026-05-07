@@ -1,5 +1,6 @@
 'use client';
 import { COLORS, TYPOGRAPHY } from '@/lib/styles';
+import FocusAmbience from './FocusAmbience';
 
 const KEYFRAMES = `
   @keyframes fmlSpin {
@@ -77,11 +78,16 @@ export default function FocusModeLoader({ documentName }) {
       boxSizing: 'border-box',
       fontFamily: TYPOGRAPHY.fontFamily,
       overflowY: 'auto',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
+      <FocusAmbience />
       <style>{KEYFRAMES}</style>
 
       {/* Card */}
       <div style={{
+        position: 'relative',
+        zIndex: 1,
         width: '100%',
         maxWidth: 420,
         display: 'flex',

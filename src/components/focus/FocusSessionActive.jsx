@@ -185,7 +185,7 @@ export default function FocusSessionActive({
   // ── Time's up state ───────────────────────────────────────────────
   if (timeUp && !allDone) {
     return (
-      <div style={{ ...pageStyle, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <div style={{ ...pageStyle, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
         <FocusAmbience />
         <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: SPACING.xl, padding: SPACING.xxl }}>
           <TopBar title="Time's Up" />

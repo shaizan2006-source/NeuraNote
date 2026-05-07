@@ -100,3 +100,85 @@ export function getTaskBounds(blueprint) {
     max: Math.min(base + 4, 25),
   };
 }
+
+// Maximum characters of chunk text sent to GPT-4o.
+// ~80k chars ≈ ~20k tokens — well within gpt-4o's 128k context window.
+const BLUEPRINT_TEXT_CAP = 80_000;
+
+const BLUEPRINT_SYSTEM_PROMPT = `You are an expert academic study coach and exam strategist.
+Analyse the provided study material and return a single JSON object matching this exact schema.
+Return ONLY valid JSON. No prose, no markdown fences, no commentary.
+
+{
+  "subject": "<2-4 word subject name>",
+  "totalConcepts": <integer 1-30>,
+  "complexityScore": <integer 1-10, 1=very simple, 10=graduate/research level>,
+  "examHeaviness": <integer 1-10, 1=theory only, 10=heavy formulas/derivations/past-paper weight>,
+  "estimatedStudyMinutes": <integer, realistic total session time>,
+  "conceptClusters": [
+    {
+      "title": "<concise topic title>",
+      "type": "<conceptual|memorisation|derivation|practice|revision>",
+      "examWeight": "<high|medium|standard>",
+      "estimatedMinutes": <integer 5-45>,
+      "keyTerms": ["term1", "term2"]
+    }
+  ]
+}
+
+Type guide:
+  conceptual    = understanding models, theories, processes
+  memorisation  = definitions, formulas, facts to memorise
+  derivation    = mathematical or logical proofs and derivations
+  practice      = applying concepts to examples or problems
+  revision      = consolidation and review of covered material
+
+ExamWeight guide:
+  high     = frequently appears in exams, critical concept, high weightage
+  medium   = appears moderately, important but not always tested
+  standard = background or supporting knowledge
+
+Ordering: sequence clusters foundational → advanced → revision.`;
+
+/**
+ * Pass 1: analyse full document text and return a structured blueprint.
+ * Returns a parsed blueprint object or null if GPT fails.
+ * Never throws.
+ */
+export async function buildBlueprint(chunkTexts, docName) {
+  try {
+    const material = chunkTexts.join('\n\n---\n\n').slice(0, BLUEPRINT_TEXT_CAP);
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      max_tokens: 2000,
+      temperature: 0.2,
+      messages: [
+        { role: 'system', content: BLUEPRINT_SYSTEM_PROMPT },
+        { role: 'user',   content: `Document name: ${docName}\n\nStudy material:\n${material}` },
+      ],
+    });
+
+    const raw = completion.choices[0]?.message?.content?.trim() ?? '';
+    const blueprint = parseBlueprint(raw);
+    if (blueprint) return blueprint;
+
+    // One retry with explicit correction nudge
+    const retry = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      max_tokens: 2000,
+      temperature: 0.1,
+      messages: [
+        { role: 'system',    content: BLUEPRINT_SYSTEM_PROMPT },
+        { role: 'user',      content: `Document name: ${docName}\n\nStudy material:\n${material}` },
+        { role: 'assistant', content: raw },
+        { role: 'user',      content: 'Your response was not valid JSON. Return ONLY the JSON object, starting with { and ending with }. No other text.' },
+      ],
+    });
+
+    const raw2 = retry.choices[0]?.message?.content?.trim() ?? '';
+    return parseBlueprint(raw2); // null if still invalid — caller handles
+  } catch {
+    return null;
+  }
+}

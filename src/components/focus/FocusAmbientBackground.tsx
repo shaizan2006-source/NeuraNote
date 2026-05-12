@@ -15,8 +15,8 @@ export default function FocusAmbientBackground() {
 
     if (!scrollEl) return;
 
-    let targetY  = 0;
-    let currentY = 0;
+    let targetY  = scrollEl.scrollTop;
+    let currentY = scrollEl.scrollTop;
     let rafId    = 0;
     let running  = false;
 
@@ -35,6 +35,7 @@ export default function FocusAmbientBackground() {
       if (Math.abs(targetY - currentY) > 0.1) {
         rafId = requestAnimationFrame(tick);
       } else {
+        currentY = targetY;
         running = false;
       }
     };

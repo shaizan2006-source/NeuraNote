@@ -1,0 +1,83 @@
+/* src/components/focus/ambient-background.css */
+
+.amb-root {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ── Base: solid dark gradient, never moves ── */
+.amb-layer-base {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(165deg, #04060e 0%, #070920 50%, #050610 100%);
+}
+
+/* ── Far bloom: outer = rAF translate target ── */
+.amb-layer-far-wrap {
+  position: absolute;
+  inset: -20% -20%;   /* oversized so translate never clips the edge */
+  will-change: transform;
+}
+
+/* ── Far bloom: inner = CSS breathe animation ── */
+.amb-layer-far-inner {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 85% 65% at 50% 30%,
+    rgba(79, 22, 162, 0.18) 0%,
+    rgba(49, 10, 119, 0.07) 45%,
+    transparent 70%
+  );
+  filter: blur(60px);
+  animation: ambBreathe var(--amb-far-duration, 14s) ease-in-out infinite;
+}
+
+/* ── Mid wash: outer = rAF translate target ── */
+.amb-layer-mid-wrap {
+  position: absolute;
+  inset: -20% -20%;
+  will-change: transform;
+}
+
+/* ── Mid wash: inner = CSS breathe animation ── */
+.amb-layer-mid-inner {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(91, 33, 182, 0.09) 0%, transparent 35%),
+    radial-gradient(
+      ellipse 60% 40% at 50% -10%,
+      rgba(67, 56, 202, 0.11) 0%,
+      transparent 65%
+    );
+  filter: blur(40px);
+  animation: ambBreathe var(--amb-mid-duration, 10s) ease-in-out
+             var(--amb-mid-delay, 3s) infinite;
+}
+
+/* ── Vignette: darkens edges, static ── */
+.amb-layer-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    transparent 35%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+@keyframes ambBreathe {
+  0%, 100% { opacity: 1;    transform: scale(1);     }
+  50%       { opacity: 0.72; transform: scale(1.038); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .amb-layer-far-inner,
+  .amb-layer-mid-inner {
+    animation: none;
+  }
+}

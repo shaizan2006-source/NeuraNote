@@ -25,19 +25,55 @@ function FocusPageContent() {
     focusSessionDocumentId,
     focusSessionDocumentName,
     startFocusSession,
+    restoreFocusSession,
+    clearFocusSession,
   } = useDashboard();
 
   const { activePdf } = useActivePDF(user?.id);
   const { clearSession } = useFocusSession();
 
-  const [sessionState, setSessionState] = useState(
-    () => (focusSessionTasks.length > 0 ? 'active' : 'setup')
-  );
+  const [sessionState, setSessionState] = useState('setup');
   const [generatingForDoc, setGeneratingForDoc] = useState(null); // { id, name }
   const [generatingError, setGeneratingError] = useState(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInitialInput, setChatInitialInput] = useState('');
   const [isMobile, setIsMobile] = useState(false);
+  const [savedSession, setSavedSession] = useState(null);
+  const [showResumeCard, setShowResumeCard] = useState(false);
+  const [resumedTimeLeft, setResumedTimeLeft] = useState(null);
+
+  // Check for a saved active session on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('amn_focus_session');
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      const MAX_AGE_MS = 24 * 60 * 60 * 1000;
+      if (!data?.sessionId || !data?.tasks?.length || Date.now() - data.startedAt > MAX_AGE_MS) {
+        localStorage.removeItem('amn_focus_session');
+        return;
+      }
+      setSavedSession(data);
+      setShowResumeCard(true);
+    } catch {}
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleResumeSession = useCallback(() => {
+    if (!savedSession) return;
+    const elapsed = Math.floor((Date.now() - savedSession.startedAt) / 1000);
+    const remaining = Math.max(1, savedSession.durationSeconds - elapsed);
+    restoreFocusSession(savedSession);
+    setResumedTimeLeft(remaining);
+    setShowResumeCard(false);
+    setSavedSession(null);
+    setSessionState('active');
+  }, [savedSession, restoreFocusSession]);
+
+  const handleDiscardSession = useCallback(() => {
+    try { localStorage.removeItem('amn_focus_session'); } catch {}
+    setShowResumeCard(false);
+    setSavedSession(null);
+  }, []);
 
   // Read weak-topic prefill from ExamCard navigation
   useEffect(() => {
@@ -162,7 +198,7 @@ function FocusPageContent() {
       `}</style>
       <ContextualSidebar />
       <div className="amn-focus-scroll" style={contentContainerStyle}>
-        {sessionState === 'setup' && (
+        {!showResumeCard && sessionState === 'setup' && (
           <FocusSessionSetup
             activePdf={activePdf}
             documents={documents}
@@ -171,25 +207,115 @@ function FocusPageContent() {
             userId={user?.id}
           />
         )}
-        {sessionState === 'generating' && (
+        {!showResumeCard && sessionState === 'generating' && (
           <FocusModeLoader documentName={generatingForDoc?.name} />
         )}
-        {sessionState === 'active' && (
+        {!showResumeCard && sessionState === 'active' && (
           <FocusSessionActive
             tasks={focusSessionTasks}
             setTasks={setFocusSessionTasks}
             durationSeconds={focusSessionDuration}
+            initialTimeLeft={resumedTimeLeft}
             documentId={focusSessionDocumentId}
             documentName={focusSessionDocumentName}
             userId={user?.id}
             onSessionEnd={() => {
               clearSession();
+              clearFocusSession();
+              setResumedTimeLeft(null);
               setSessionState('setup');
             }}
             onAskAI={handleAskAI}
           />
         )}
       </div>
+
+      {/* Resume session card */}
+      <AnimatePresence>
+        {showResumeCard && savedSession && (
+          <motion.div
+            key="resume-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 200,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'rgba(0,0,0,0.55)',
+              backdropFilter: 'blur(6px)',
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.93, y: 18 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.93, y: 18 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+              style={{
+                background: COLORS.bg.card,
+                border: `1px solid ${COLORS.border.light}`,
+                borderRadius: RADIUS.lg,
+                padding: SPACING.xxl,
+                maxWidth: 380,
+                width: '90%',
+                boxShadow: '0 24px 64px rgba(0,0,0,0.55)',
+              }}
+            >
+              <div style={{ fontSize: 28, marginBottom: SPACING.md }}>⚡</div>
+              <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 700, color: COLORS.text.primary, marginBottom: SPACING.sm }}>
+                Resume your session?
+              </div>
+              <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary, marginBottom: SPACING.xl, lineHeight: 1.6 }}>
+                You have an active focus session for{' '}
+                <span style={{ color: COLORS.text.primary, fontWeight: 600 }}>
+                  {savedSession.documentName || 'your document'}
+                </span>
+                .
+              </div>
+              <div style={{ display: 'flex', gap: SPACING.md }}>
+                <button
+                  onClick={handleDiscardSession}
+                  style={{
+                    flex: 1, padding: `${SPACING.md} ${SPACING.lg}`,
+                    background: 'transparent',
+                    border: `1px solid ${COLORS.border.light}`,
+                    borderRadius: RADIUS.md,
+                    color: COLORS.text.secondary,
+                    fontSize: TYPOGRAPHY.sizes.body,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontFamily: TYPOGRAPHY.fontFamily,
+                    transition: 'border-color 0.15s, color 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = COLORS.border.accent; e.currentTarget.style.color = COLORS.text.primary; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = COLORS.border.light; e.currentTarget.style.color = COLORS.text.secondary; }}
+                >
+                  No, new session
+                </button>
+                <button
+                  onClick={handleResumeSession}
+                  style={{
+                    flex: 1, padding: `${SPACING.md} ${SPACING.lg}`,
+                    background: COLORS.accent.cyan,
+                    border: 'none',
+                    borderRadius: RADIUS.md,
+                    color: '#0a0a0f',
+                    fontSize: TYPOGRAPHY.sizes.body,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    fontFamily: TYPOGRAPHY.fontFamily,
+                    transition: 'opacity 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; }}
+                  onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+                >
+                  Resume
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Chat drawer: flex-based (not fixed overlay) */}
       <AnimatePresence>

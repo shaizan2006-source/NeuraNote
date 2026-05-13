@@ -355,6 +355,22 @@ export function DashboardProvider({ children }) {
     setFocusSessionDocumentName(docName);
   }, []);
 
+  const restoreFocusSession = useCallback((savedSession) => {
+    setFocusSessionId(savedSession.sessionId);
+    setFocusSessionTasks(savedSession.tasks);
+    setFocusSessionDuration(savedSession.durationSeconds);
+    setFocusSessionDocumentId(savedSession.documentId);
+    setFocusSessionDocumentName(savedSession.documentName);
+  }, []);
+
+  const clearFocusSession = useCallback(() => {
+    setFocusSessionId(null);
+    setFocusSessionTasks([]);
+    setFocusSessionDuration(1500);
+    setFocusSessionDocumentId(null);
+    setFocusSessionDocumentName(null);
+  }, []);
+
   // ── Analytics ─────────────────────────────────────────────────
   const [analytics, setAnalytics] = useState({ totalCompleted: 0, easy: 0, medium: 0, hard: 0 });
   const [insights, setInsights] = useState([]);
@@ -1418,6 +1434,8 @@ export function DashboardProvider({ children }) {
       focusSessionDocumentName,
       focusSessionId,
       startFocusSession,
+      restoreFocusSession,
+      clearFocusSession,
       analytics, insights, readiness,
       isAnalyticsExpanded, setIsAnalyticsExpanded,
       isInsightsExpanded, setIsInsightsExpanded,

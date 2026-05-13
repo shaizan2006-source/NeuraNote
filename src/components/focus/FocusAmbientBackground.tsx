@@ -51,7 +51,7 @@ export default function FocusAmbientBackground() {
     scrollEl.addEventListener('scroll', onScroll, { passive: true });
 
     return () => {
-      scrollEl.removeEventListener('scroll', onScroll);
+      scrollEl.removeEventListener('scroll', onScroll, { passive: true });
       cancelAnimationFrame(rafId);
     };
   }, []);
@@ -64,6 +64,8 @@ export default function FocusAmbientBackground() {
         '--amb-far-duration': AMBIENT_CONFIG.FAR_BREATHE_DURATION,
         '--amb-mid-duration': AMBIENT_CONFIG.MID_BREATHE_DURATION,
         '--amb-mid-delay':    AMBIENT_CONFIG.MID_BREATHE_DELAY,
+        '--amb-far-opacity':  String(AMBIENT_CONFIG.FAR_OPACITY),
+        '--amb-mid-opacity':  String(AMBIENT_CONFIG.MID_OPACITY),
       } as React.CSSProperties}
     >
       <div className="amb-layer-base" />

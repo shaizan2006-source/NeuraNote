@@ -6,4 +6,6 @@ export const AMBIENT_CONFIG = {
   FAR_BREATHE_DURATION: '14s',
   MID_BREATHE_DURATION: '10s',
   MID_BREATHE_DELAY:    '3s',
+  FAR_OPACITY:          0.18,   // keep under 0.25 for Void feel
+  MID_OPACITY:          0.10,
 } as const;

@@ -2,21 +2,18 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 import ContextualSidebar from '@/components/shared/ContextualSidebar';
 import FocusInlineChat from '@/components/focus/FocusInlineChat';
-import { COLORS, TYPOGRAPHY } from '@/lib/styles';
+import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
 import { DashboardProvider, useDashboard } from '@/context/DashboardContext';
 import { FocusSessionProvider, useFocusSession } from '@/context/FocusSessionContext';
 import { useActivePDF } from '@/hooks/useActivePDF';
 import FocusSessionSetup from '@/components/focus/FocusSessionSetup';
 import FocusModeLoader from '@/components/focus/FocusModeLoader';
 import FocusSessionActive from '@/components/focus/FocusSessionActive';
+import FocusAmbientBackground from '@/components/focus/FocusAmbientBackground';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 function FocusPageContent() {
   const {
@@ -130,7 +127,7 @@ function FocusPageContent() {
   };
 
   const pageStyle = {
-    background: `linear-gradient(160deg, ${COLORS.bg.dark} 0%, ${COLORS.bg.darkGradient} 100%)`,
+    background: '#04060e',   // fallback: matches amb-layer-base before component mounts
     height: '100vh',
     color: COLORS.text.primary,
     fontFamily: TYPOGRAPHY.fontFamily,
@@ -146,12 +143,25 @@ function FocusPageContent() {
     minHeight: 0,
     overflowY: chatOpen ? 'hidden' : 'auto',
     overflowX: 'hidden',
+    // Subtle purple scrollbar on Firefox
+    scrollbarWidth: 'thin',
+    scrollbarColor: 'rgba(139,92,246,0.25) transparent',
+    position: 'relative',
+    zIndex: 1,
   };
 
   return (
     <div style={pageStyle}>
+      <FocusAmbientBackground />
+      {/* Webkit scrollbar for the content scroll area */}
+      <style>{`
+        .amn-focus-scroll::-webkit-scrollbar { width: 4px; }
+        .amn-focus-scroll::-webkit-scrollbar-track { background: transparent; }
+        .amn-focus-scroll::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.25); border-radius: 4px; }
+        .amn-focus-scroll::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.45); }
+      `}</style>
       <ContextualSidebar />
-      <div style={contentContainerStyle}>
+      <div className="amn-focus-scroll" style={contentContainerStyle}>
         {sessionState === 'setup' && (
           <FocusSessionSetup
             activePdf={activePdf}

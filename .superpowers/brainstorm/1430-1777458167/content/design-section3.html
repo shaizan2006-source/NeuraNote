@@ -1,0 +1,171 @@
+<h2>Design: Complete System — All Upgrades Compiled + Section 3</h2>
+<p class="subtitle">Full picture: everything decided so far + Study Plan algorithm, integrations, and smart features.</p>
+
+<!-- ═══════════════════════════════════ COMPILED DECISIONS ═══════════════════════════════════ -->
+<div class="section">
+  <h3>✅ Compiled Design Decisions</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px">
+    <div style="padding:10px 12px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.2);border-radius:6px">
+      <strong style="color:#a78bfa">Schema</strong>
+      <p style="margin:4px 0 0;color:#a1a1aa">ALTER TABLE exams ADD COLUMN subject TEXT (nullable, backward-safe). Subject dropdown added to AddExamModal using existing SUBJECT_MAP keys.</p>
+    </div>
+    <div style="padding:10px 12px;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:6px">
+      <strong style="color:#22d3ee">Architecture</strong>
+      <p style="margin:4px 0 0;color:#a1a1aa">Full modular refactor into ExamCard, WeakTopicsSection, WeakTopicCard, EmptyState, StudySuggestion, StudyPlanModal, AddExamModal (updated).</p>
+    </div>
+    <div style="padding:10px 12px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:6px">
+      <strong style="color:#4ade80">Subject Filtering</strong>
+      <p style="margin:4px 0 0;color:#a1a1aa">Double normalizeSubject() on both sides. Null subject → show all topics with banner. useMemo for filtered list. Top 5 by count.</p>
+    </div>
+    <div style="padding:10px 12px;background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.2);border-radius:6px">
+      <strong style="color:#fb923c">Robustness</strong>
+      <p style="margin:4px 0 0;color:#a1a1aa">Error Boundary, skeleton loaders, retry with backoff, race guards, sessionStorage try/catch, deleted exam reset, invalid date guard.</p>
+    </div>
+    <div style="padding:10px 12px;background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:6px">
+      <strong style="color:#fb7185">Live Data</strong>
+      <p style="margin:4px 0 0;color:#a1a1aa">Extend useRealtimeProgress: add weak_topics to TABLES, pass refetchExam + refetchWeakTopics callbacks. Updates in ~1s. 60s polling fallback.</p>
+    </div>
+    <div style="padding:10px 12px;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.2);border-radius:6px">
+      <strong style="color:#c084fc">Navigation</strong>
+      <p style="margin:4px 0 0;color:#a1a1aa">sessionStorage.setItem('amn_prefill', JSON.stringify({subject, topic})) before router.push. try/catch wrapper. Quiz + Focus + Ask AI all prefilled.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SECTION 3 ═══════════════════════════════════ -->
+<div class="section">
+  <h3>Section 3A — StudySuggestion Component</h3>
+  <div class="mockup">
+    <div class="mockup-header">StudySuggestion.jsx — sits between countdown and weak topics</div>
+    <div class="mockup-body" style="display:flex;flex-direction:column;gap:6px">
+      <p style="margin:0;font-size:9px;color:#71717a;text-transform:uppercase;letter-spacing:0.05em;font-weight:600">Suggested Focus Today</p>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:6px">
+          <span style="font-size:10px;color:#c4b5fd">normalization</span>
+          <span style="font-size:9px;color:#52525b">·</span>
+          <span style="font-size:9px;color:#a78bfa">35%</span>
+          <button style="font-size:8px;padding:2px 7px;background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.3);border-radius:3px;color:#c4b5fd;cursor:pointer">Quick Quiz</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:6px">
+          <span style="font-size:10px;color:#c4b5fd">deadlock</span>
+          <span style="font-size:9px;color:#52525b">·</span>
+          <span style="font-size:9px;color:#a78bfa">52%</span>
+          <button style="font-size:8px;padding:2px 7px;background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.3);border-radius:3px;color:#c4b5fd;cursor:pointer">Quick Quiz</button>
+        </div>
+      </div>
+      <p style="margin:0;font-size:9px;color:#3f3f46">Based on your lowest accuracy topics in DBMS</p>
+    </div>
+  </div>
+  <p class="subtitle" style="margin-top:6px">Logic: take top 2 filteredWeakTopics sorted by lowest accuracy. Show nothing if no weak topics. Each "Quick Quiz" prefills sessionStorage and navigates to /quiz.</p>
+</div>
+
+<div class="section">
+  <h3>Section 3B — Study Plan Calendar (Day-by-Day)</h3>
+  <div class="mockup">
+    <div class="mockup-header">StudyPlanModal.jsx — opens on "Generate Study Plan" button</div>
+    <div class="mockup-body" style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <p style="margin:0;font-size:12px;color:#e4e4e7;font-weight:700">DBMS Exam — 14 days left</p>
+          <p style="margin:2px 0 0;font-size:9px;color:#71717a">4 weak topics · 2–3 topics/day</p>
+        </div>
+        <button style="font-size:9px;padding:4px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;color:#a1a1aa;cursor:pointer">✕ Close</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px;background:rgba(34,197,94,0.05);border-left:3px solid #22c55e;border-radius:4px">
+          <div style="min-width:36px;text-align:center"><p style="margin:0;font-size:9px;color:#4ade80;font-weight:700">Day 1</p><p style="margin:0;font-size:8px;color:#52525b">Apr 30</p></div>
+          <div style="flex:1"><p style="margin:0;font-size:10px;color:#e4e4e7">📘 Learn: normalization, deadlock</p><p style="margin:2px 0 0;font-size:9px;color:#71717a">Focus session + flashcards</p></div>
+          <button style="font-size:8px;padding:3px 8px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);border-radius:3px;color:#4ade80;cursor:pointer">Start</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px;background:rgba(34,197,94,0.05);border-left:3px solid #22c55e;border-radius:4px">
+          <div style="min-width:36px;text-align:center"><p style="margin:0;font-size:9px;color:#4ade80;font-weight:700">Day 2</p><p style="margin:0;font-size:8px;color:#52525b">May 1</p></div>
+          <div style="flex:1"><p style="margin:0;font-size:10px;color:#e4e4e7">📘 Learn: transactions, indexing</p><p style="margin:2px 0 0;font-size:9px;color:#71717a">Focus session + practice questions</p></div>
+          <button style="font-size:8px;padding:3px 8px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);border-radius:3px;color:#4ade80;cursor:pointer">Start</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px;background:rgba(245,158,11,0.05);border-left:3px solid #f59e0b;border-radius:4px">
+          <div style="min-width:36px;text-align:center"><p style="margin:0;font-size:9px;color:#fbbf24;font-weight:700">Day 3</p><p style="margin:0;font-size:8px;color:#52525b">May 2</p></div>
+          <div style="flex:1"><p style="margin:0;font-size:10px;color:#e4e4e7">📝 Practice: normalization quiz</p><p style="margin:2px 0 0;font-size:9px;color:#71717a">Timed practice session</p></div>
+          <button style="font-size:8px;padding:3px 8px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:3px;color:#fbbf24;cursor:pointer">Start</button>
+        </div>
+        <div style="padding:6px;text-align:center;color:#3f3f46;font-size:9px">· · · continues for all 14 days · · ·</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:8px;padding:10px 12px;background:rgba(255,255,255,0.02);border-radius:6px;font-size:11px">
+    <strong style="color:#e4e4e7">Generation algorithm:</strong>
+    <ul style="margin:6px 0 0;padding-left:16px;color:#a1a1aa;line-height:1.8">
+      <li>daysLeft = exam.exam_date − today (guard: min 1)</li>
+      <li>topics = filteredWeakTopics sorted by lowest accuracy</li>
+      <li>topicsPerDay = ceil(topics.length / daysLeft), max 3</li>
+      <li>action = daysLeft > 7 ? "Learn" : daysLeft > 3 ? "Practice" : "Revise"</li>
+      <li>Edge: 0 days → "Exam today — final revision checklist only"</li>
+      <li>Edge: no topics → "No weak areas — general revision schedule"</li>
+      <li>Edge: more days than topics → spread with rest/quiz days between</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Section 3C — Integrations</h3>
+  <div style="display:flex;flex-direction:column;gap:8px;font-size:11px">
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="color:#22d3ee">Quiz Page /quiz</strong>
+        <span style="font-size:9px;padding:2px 8px;background:rgba(34,211,238,0.1);border-radius:4px;color:#22d3ee">sessionStorage prefill</span>
+      </div>
+      <p style="margin:4px 0 0;color:#71717a">Sets amn_prefill = {subject, topic} → navigates to /quiz → quiz page reads + clears on mount → pre-selects PDF matching subject, pre-labels quiz as topic-focused</p>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="color:#a78bfa">Focus Page /focus</strong>
+        <span style="font-size:9px;padding:2px 8px;background:rgba(139,92,246,0.1);border-radius:4px;color:#a78bfa">sessionStorage prefill</span>
+      </div>
+      <p style="margin:4px 0 0;color:#71717a">Sets amn_focus_prefill = {subject, topic} → /focus → focus page reads on mount → generates task list centered on that topic</p>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="color:#34d399">Ask AI /ask-ai</strong>
+        <span style="font-size:9px;padding:2px 8px;background:rgba(52,211,153,0.1);border-radius:4px;color:#34d399">sessionStorage prefill</span>
+      </div>
+      <p style="margin:4px 0 0;color:#71717a">Sets amn_ask_prefill = "Explain [topic] from [subject] in simple terms" → /ask-ai → AskAI section reads on mount, pre-fills the question input (user still clicks send)</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Section 3D — One-Click Recovery (Fix Weak Areas)</h3>
+  <div class="mockup">
+    <div class="mockup-header">Inside ExamCard — shown only when filteredWeakTopics.length > 0</div>
+    <div class="mockup-body" style="display:flex;gap:8px">
+      <button style="flex:1;padding:8px;background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.05));border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#fca5a5;font-size:11px;font-weight:600;cursor:pointer">⚡ Fix Weak Areas</button>
+      <button style="flex:1;padding:8px;background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(139,92,246,0.05));border:1px solid rgba(139,92,246,0.3);border-radius:6px;color:#c4b5fd;font-size:11px;font-weight:600;cursor:pointer">📅 Generate Study Plan</button>
+    </div>
+  </div>
+  <p class="subtitle" style="margin-top:6px">"Fix Weak Areas" prefills sessionStorage with ALL filteredWeakTopics (not just one) and navigates to /quiz — quiz will draw from that topic set. "Generate Study Plan" opens StudyPlanModal inline.</p>
+</div>
+
+<div class="section">
+  <h3>Section 3E — Progress Snapshot</h3>
+  <div class="mockup">
+    <div class="mockup-header">Inside ExamCard — below countdown, above study suggestion</div>
+    <div class="mockup-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <div style="text-align:center;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px">
+        <p style="margin:0;font-size:16px;font-weight:900;color:#22c55e">68%</p>
+        <p style="margin:2px 0 0;font-size:9px;color:#71717a">Avg accuracy</p>
+      </div>
+      <div style="text-align:center;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px">
+        <p style="margin:0;font-size:16px;font-weight:900;color:#a78bfa">3/7</p>
+        <p style="margin:2px 0 0;font-size:9px;color:#71717a">Topics mastered</p>
+      </div>
+      <div style="text-align:center;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px">
+        <p style="margin:0;font-size:16px;font-weight:900;color:#fb923c">2d</p>
+        <p style="margin:2px 0 0;font-size:9px;color:#71717a">Last active</p>
+      </div>
+    </div>
+  </div>
+  <p class="subtitle" style="margin-top:6px">Derived from masteryTopics (filtered by subject) + weakTopics count. Shown only when selectedExam exists. "Last active" from streak/lastActiveDate already in context.</p>
+</div>
+
+<p class="subtitle" style="margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:12px">
+  That's the complete design. All 5 sections covered. Ready to write the spec doc and move to implementation planning?
+</p>

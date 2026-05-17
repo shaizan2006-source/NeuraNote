@@ -1,0 +1,3354 @@
+TAP version 13
+# Subtest: lerpToward
+    # Subtest: moves toward target by factor
+    ok 1 - moves toward target by factor
+      ---
+      duration_ms: 1.6017
+      ...
+    # Subtest: returns unchanged value when already at target
+    ok 2 - returns unchanged value when already at target
+      ---
+      duration_ms: 1.2183
+      ...
+    # Subtest: produces correct step with LERP=0.06 from rest
+    ok 3 - produces correct step with LERP=0.06 from rest
+      ---
+      duration_ms: 0.3775
+      ...
+    # Subtest: never overshoots target over many iterations
+    ok 4 - never overshoots target over many iterations
+      ---
+      duration_ms: 0.4542
+      ...
+    # Subtest: works backwards (scrolling up from mid-page)
+    ok 5 - works backwards (scrolling up from mid-page)
+      ---
+      duration_ms: 0.256
+      ...
+    1..5
+ok 1 - lerpToward
+  ---
+  duration_ms: 8.308
+  type: 'suite'
+  ...
+# Subtest: isSettled
+    # Subtest: returns true when delta is less than threshold
+    ok 1 - returns true when delta is less than threshold
+      ---
+      duration_ms: 0.5295
+      ...
+    # Subtest: returns false when delta exceeds threshold
+    ok 2 - returns false when delta exceeds threshold
+      ---
+      duration_ms: 0.3176
+      ...
+    # Subtest: returns true when exactly equal
+    ok 3 - returns true when exactly equal
+      ---
+      duration_ms: 0.3421
+      ...
+    # Subtest: returns true at exact threshold boundary
+    ok 4 - returns true at exact threshold boundary
+      ---
+      duration_ms: 0.4405
+      ...
+    # Subtest: returns false just past threshold
+    ok 5 - returns false just past threshold
+      ---
+      duration_ms: 0.3015
+      ...
+    1..5
+ok 2 - isSettled
+  ---
+  duration_ms: 2.5428
+  type: 'suite'
+  ...
+# (node:7548) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Shafi/ask-my-notes/src/lib/answerTemplates.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to C:\\Users\\Shafi\\ask-my-notes\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: T-TPL-001: Mark snapping — nearest valid level
+    # Subtest: getTemplate(1) snaps to 2
+    ok 1 - getTemplate(1) snaps to 2
+      ---
+      duration_ms: 2.924
+      ...
+    # Subtest: getTemplate(2) snaps to 2
+    ok 2 - getTemplate(2) snaps to 2
+      ---
+      duration_ms: 0.2241
+      ...
+    # Subtest: getTemplate(3) snaps to 2
+    ok 3 - getTemplate(3) snaps to 2
+      ---
+      duration_ms: 0.1927
+      ...
+    # Subtest: getTemplate(4) snaps to 5
+    ok 4 - getTemplate(4) snaps to 5
+      ---
+      duration_ms: 0.1833
+      ...
+    # Subtest: getTemplate(5) snaps to 5
+    ok 5 - getTemplate(5) snaps to 5
+      ---
+      duration_ms: 0.1791
+      ...
+    # Subtest: getTemplate(7) snaps to 5
+    ok 6 - getTemplate(7) snaps to 5
+      ---
+      duration_ms: 0.2013
+      ...
+    # Subtest: getTemplate(8) snaps to 10
+    ok 7 - getTemplate(8) snaps to 10
+      ---
+      duration_ms: 0.2716
+      ...
+    # Subtest: getTemplate(10) snaps to 10
+    ok 8 - getTemplate(10) snaps to 10
+      ---
+      duration_ms: 2.1223
+      ...
+    # Subtest: getTemplate(12) snaps to 10
+    ok 9 - getTemplate(12) snaps to 10
+      ---
+      duration_ms: 0.4053
+      ...
+    # Subtest: getTemplate(13) snaps to 15
+    ok 10 - getTemplate(13) snaps to 15
+      ---
+      duration_ms: 1.5623
+      ...
+    # Subtest: getTemplate(15) snaps to 15
+    ok 11 - getTemplate(15) snaps to 15
+      ---
+      duration_ms: 0.3852
+      ...
+    # Subtest: getTemplate(17) snaps to 15
+    ok 12 - getTemplate(17) snaps to 15
+      ---
+      duration_ms: 0.1828
+      ...
+    # Subtest: getTemplate(18) snaps to 20
+    ok 13 - getTemplate(18) snaps to 20
+      ---
+      duration_ms: 0.2649
+      ...
+    # Subtest: getTemplate(20) snaps to 20
+    ok 14 - getTemplate(20) snaps to 20
+      ---
+      duration_ms: 0.2139
+      ...
+    # Subtest: getTemplate(25) snaps to 20
+    ok 15 - getTemplate(25) snaps to 20
+      ---
+      duration_ms: 0.3089
+      ...
+    1..15
+ok 3 - T-TPL-001: Mark snapping — nearest valid level
+  ---
+  duration_ms: 14.3503
+  type: 'suite'
+  ...
+# Subtest: T-TPL-002: Return shape — all required fields
+    # Subtest: getTemplate(2, "theory") returns complete shape
+    ok 1 - getTemplate(2, "theory") returns complete shape
+      ---
+      duration_ms: 0.7258
+      ...
+    # Subtest: getTemplate(2) wordRange is a [min, max] tuple
+    ok 2 - getTemplate(2) wordRange is a [min, max] tuple
+      ---
+      duration_ms: 0.301
+      ...
+    # Subtest: getTemplate(2) requiredSections is an array
+    ok 3 - getTemplate(2) requiredSections is an array
+      ---
+      duration_ms: 0.401
+      ...
+    # Subtest: getTemplate(5, "theory") returns complete shape
+    ok 4 - getTemplate(5, "theory") returns complete shape
+      ---
+      duration_ms: 0.2071
+      ...
+    # Subtest: getTemplate(5) wordRange is a [min, max] tuple
+    ok 5 - getTemplate(5) wordRange is a [min, max] tuple
+      ---
+      duration_ms: 0.1925
+      ...
+    # Subtest: getTemplate(5) requiredSections is an array
+    ok 6 - getTemplate(5) requiredSections is an array
+      ---
+      duration_ms: 0.143
+      ...
+    # Subtest: getTemplate(10, "theory") returns complete shape
+    ok 7 - getTemplate(10, "theory") returns complete shape
+      ---
+      duration_ms: 0.1595
+      ...
+    # Subtest: getTemplate(10) wordRange is a [min, max] tuple
+    ok 8 - getTemplate(10) wordRange is a [min, max] tuple
+      ---
+      duration_ms: 0.1268
+      ...
+    # Subtest: getTemplate(10) requiredSections is an array
+    ok 9 - getTemplate(10) requiredSections is an array
+      ---
+      duration_ms: 0.1287
+      ...
+    # Subtest: getTemplate(15, "theory") returns complete shape
+    ok 10 - getTemplate(15, "theory") returns complete shape
+      ---
+      duration_ms: 0.4019
+      ...
+    # Subtest: getTemplate(15) wordRange is a [min, max] tuple
+    ok 11 - getTemplate(15) wordRange is a [min, max] tuple
+      ---
+      duration_ms: 0.2523
+      ...
+    # Subtest: getTemplate(15) requiredSections is an array
+    ok 12 - getTemplate(15) requiredSections is an array
+      ---
+      duration_ms: 0.1422
+      ...
+    # Subtest: getTemplate(20, "theory") returns complete shape
+    ok 13 - getTemplate(20, "theory") returns complete shape
+      ---
+      duration_ms: 0.1327
+      ...
+    # Subtest: getTemplate(20) wordRange is a [min, max] tuple
+    ok 14 - getTemplate(20) wordRange is a [min, max] tuple
+      ---
+      duration_ms: 0.1228
+      ...
+    # Subtest: getTemplate(20) requiredSections is an array
+    ok 15 - getTemplate(20) requiredSections is an array
+      ---
+      duration_ms: 0.1219
+      ...
+    1..15
+ok 4 - T-TPL-002: Return shape — all required fields
+  ---
+  duration_ms: 5.7648
+  type: 'suite'
+  ...
+# Subtest: T-TPL-003: diagramRequired by mark level
+    # Subtest: 2-mark: diagramRequired=false
+    ok 1 - 2-mark: diagramRequired=false
+      ---
+      duration_ms: 0.5539
+      ...
+    # Subtest: 5-mark: diagramRequired=false
+    ok 2 - 5-mark: diagramRequired=false
+      ---
+      duration_ms: 0.2616
+      ...
+    # Subtest: 10-mark: diagramRequired=true
+    ok 3 - 10-mark: diagramRequired=true
+      ---
+      duration_ms: 0.2746
+      ...
+    # Subtest: 15-mark: diagramRequired=true
+    ok 4 - 15-mark: diagramRequired=true
+      ---
+      duration_ms: 0.1831
+      ...
+    # Subtest: 20-mark: diagramRequired=true
+    ok 5 - 20-mark: diagramRequired=true
+      ---
+      duration_ms: 0.3125
+      ...
+    1..5
+ok 5 - T-TPL-003: diagramRequired by mark level
+  ---
+  duration_ms: 2.9563
+  type: 'suite'
+  ...
+# Subtest: T-TPL-004: requiredSections by mark level
+    # Subtest: 2-mark: requiredSections is empty []
+    ok 1 - 2-mark: requiredSections is empty []
+      ---
+      duration_ms: 1.271
+      ...
+    # Subtest: 5-mark: requires Key Points, Applications, Conclusion
+    ok 2 - 5-mark: requires Key Points, Applications, Conclusion
+      ---
+      duration_ms: 0.3371
+      ...
+    # Subtest: 10-mark: requires Definition, Key Characteristics, Working, Diagram, Applications, Conclusion
+    ok 3 - 10-mark: requires Definition, Key Characteristics, Working, Diagram, Applications, Conclusion
+      ---
+      duration_ms: 0.2222
+      ...
+    # Subtest: 15-mark: requires more sections than 10-mark
+    ok 4 - 15-mark: requires more sections than 10-mark
+      ---
+      duration_ms: 0.1715
+      ...
+    # Subtest: 20-mark: requires most sections (≥ 10)
+    ok 5 - 20-mark: requires most sections (≥ 10)
+      ---
+      duration_ms: 0.243
+      ...
+    # Subtest: 20-mark: requires Current Trends, Case Study, and Theoretical Foundation
+    ok 6 - 20-mark: requires Current Trends, Case Study, and Theoretical Foundation
+      ---
+      duration_ms: 0.1748
+      ...
+    1..6
+ok 6 - T-TPL-004: requiredSections by mark level
+  ---
+  duration_ms: 2.7748
+  type: 'suite'
+  ...
+# Subtest: T-TPL-005: wordRange grows with mark level
+    # Subtest: wordRange[0] (min) increases at each mark level
+    ok 1 - wordRange[0] (min) increases at each mark level
+      ---
+      duration_ms: 0.2798
+      ...
+    # Subtest: wordRange[1] (max) increases at each mark level
+    ok 2 - wordRange[1] (max) increases at each mark level
+      ---
+      duration_ms: 0.2133
+      ...
+    1..2
+ok 7 - T-TPL-005: wordRange grows with mark level
+  ---
+  duration_ms: 0.6572
+  type: 'suite'
+  ...
+# Subtest: T-TPL-006: questionType fallback to theory
+    # Subtest: unknown questionType falls back to theory prompt
+    ok 1 - unknown questionType falls back to theory prompt
+      ---
+      duration_ms: 0.2896
+      ...
+    # Subtest: null questionType falls back to theory
+    ok 2 - null questionType falls back to theory
+      ---
+      duration_ms: 0.1656
+      ...
+    # Subtest: 'problem' questionType returns the PROBLEM_TEMPLATE (not theory)
+    ok 3 - 'problem' questionType returns the PROBLEM_TEMPLATE (not theory)
+      ---
+      duration_ms: 0.2468
+      ...
+    # Subtest: 'code' questionType returns code template
+    ok 4 - 'code' questionType returns code template
+      ---
+      duration_ms: 0.17
+      ...
+    # Subtest: 'comparison' questionType returns comparison template
+    ok 5 - 'comparison' questionType returns comparison template
+      ---
+      duration_ms: 0.1774
+      ...
+    1..5
+ok 8 - T-TPL-006: questionType fallback to theory
+  ---
+  duration_ms: 1.3205
+  type: 'suite'
+  ...
+# Subtest: T-TPL-007: Non-theory templates are mark-level invariant
+    # Subtest: "problem" prompt is identical across all mark levels
+    ok 1 - "problem" prompt is identical across all mark levels
+      ---
+      duration_ms: 0.7567
+      ...
+    # Subtest: "code" prompt is identical across all mark levels
+    ok 2 - "code" prompt is identical across all mark levels
+      ---
+      duration_ms: 0.1862
+      ...
+    # Subtest: "comparison" prompt is identical across all mark levels
+    ok 3 - "comparison" prompt is identical across all mark levels
+      ---
+      duration_ms: 0.1194
+      ...
+    # Subtest: "derivation" prompt is identical across all mark levels
+    ok 4 - "derivation" prompt is identical across all mark levels
+      ---
+      duration_ms: 0.1071
+      ...
+    # Subtest: "diagram" prompt is identical across all mark levels
+    ok 5 - "diagram" prompt is identical across all mark levels
+      ---
+      duration_ms: 0.1122
+      ...
+    1..5
+ok 9 - T-TPL-007: Non-theory templates are mark-level invariant
+  ---
+  duration_ms: 1.5667
+  type: 'suite'
+  ...
+# Subtest: T-TPL-008: maxTokens increases with mark level
+    # Subtest: 2-mark maxTokens < 5-mark maxTokens
+    ok 1 - 2-mark maxTokens < 5-mark maxTokens
+      ---
+      duration_ms: 0.418
+      ...
+    # Subtest: 10-mark maxTokens < 15-mark maxTokens
+    ok 2 - 10-mark maxTokens < 15-mark maxTokens
+      ---
+      duration_ms: 0.5895
+      ...
+    # Subtest: 15-mark maxTokens < 20-mark maxTokens
+    ok 3 - 15-mark maxTokens < 20-mark maxTokens
+      ---
+      duration_ms: 0.1515
+      ...
+    1..3
+ok 10 - T-TPL-008: maxTokens increases with mark level
+  ---
+  duration_ms: 1.4763
+  type: 'suite'
+  ...
+# Subtest: T-TPL-009: Integration — classification → template → validateAnswer
+    # Subtest: 2-mark: classification → template → no missing required sections
+    ok 1 - 2-mark: classification → template → no missing required sections
+      ---
+      duration_ms: 1.6909
+      ...
+    # Subtest: 5-mark: classification → template → no missing required sections
+    ok 2 - 5-mark: classification → template → no missing required sections
+      ---
+      duration_ms: 0.8316
+      ...
+    # Subtest: 10-mark: classification → template → no missing required sections
+    ok 3 - 10-mark: classification → template → no missing required sections
+      ---
+      duration_ms: 0.8888
+      ...
+    # Subtest: wrong mark level (10M answer validated against 20M template) → many missing sections
+    ok 4 - wrong mark level (10M answer validated against 20M template) → many missing sections
+      ---
+      duration_ms: 2.6038
+      ...
+    1..4
+ok 11 - T-TPL-009: Integration — classification → template → validateAnswer
+  ---
+  duration_ms: 6.357
+  type: 'suite'
+  ...
+# Subtest: T-TPL-010: Theory prompt content matches requiredSections
+    # Subtest: 5M: each requiredSection appears in the theory prompt
+    ok 1 - 5M: each requiredSection appears in the theory prompt
+      ---
+      duration_ms: 0.4976
+      ...
+    # Subtest: 10M: each requiredSection appears in the theory prompt
+    ok 2 - 10M: each requiredSection appears in the theory prompt
+      ---
+      duration_ms: 0.1475
+      ...
+    # Subtest: 15M: each requiredSection appears in the theory prompt
+    ok 3 - 15M: each requiredSection appears in the theory prompt
+      ---
+      duration_ms: 0.2997
+      ...
+    # Subtest: 20M: each requiredSection appears in the theory prompt
+    ok 4 - 20M: each requiredSection appears in the theory prompt
+      ---
+      duration_ms: 0.1379
+      ...
+    1..4
+ok 12 - T-TPL-010: Theory prompt content matches requiredSections
+  ---
+  duration_ms: 1.3286
+  type: 'suite'
+  ...
+# Subtest: validateEmail
+    # Subtest: accepts standard valid emails
+    ok 1 - accepts standard valid emails
+      ---
+      duration_ms: 1.9795
+      ...
+    # Subtest: accepts email with trailing whitespace (trimmed)
+    ok 2 - accepts email with trailing whitespace (trimmed)
+      ---
+      duration_ms: 0.3416
+      ...
+    # Subtest: rejects empty string
+    ok 3 - rejects empty string
+      ---
+      duration_ms: 0.3833
+      ...
+    # Subtest: rejects null/undefined
+    ok 4 - rejects null/undefined
+      ---
+      duration_ms: 0.2341
+      ...
+    # Subtest: rejects missing @ symbol
+    ok 5 - rejects missing @ symbol
+      ---
+      duration_ms: 0.2775
+      ...
+    # Subtest: rejects missing domain
+    ok 6 - rejects missing domain
+      ---
+      duration_ms: 0.2336
+      ...
+    # Subtest: rejects missing TLD
+    ok 7 - rejects missing TLD
+      ---
+      duration_ms: 0.3442
+      ...
+    # Subtest: rejects missing local part
+    ok 8 - rejects missing local part
+      ---
+      duration_ms: 0.3085
+      ...
+    1..8
+ok 13 - validateEmail
+  ---
+  duration_ms: 6.7945
+  type: 'suite'
+  ...
+# Subtest: validatePassword
+    # Subtest: accepts valid passwords meeting all rules
+    ok 1 - accepts valid passwords meeting all rules
+      ---
+      duration_ms: 0.7955
+      ...
+    # Subtest: rejects null/undefined
+    ok 2 - rejects null/undefined
+      ---
+      duration_ms: 0.2744
+      ...
+    # Subtest: rejects passwords shorter than 8 characters
+    ok 3 - rejects passwords shorter than 8 characters
+      ---
+      duration_ms: 0.1961
+      ...
+    # Subtest: rejects password with no uppercase letter
+    ok 4 - rejects password with no uppercase letter
+      ---
+      duration_ms: 4.2864
+      ...
+    # Subtest: rejects password with no lowercase letter
+    ok 5 - rejects password with no lowercase letter
+      ---
+      duration_ms: 2.0942
+      ...
+    # Subtest: rejects password with no digit
+    ok 6 - rejects password with no digit
+      ---
+      duration_ms: 0.3503
+      ...
+    # Subtest: error messages are descriptive
+    ok 7 - error messages are descriptive
+      ---
+      duration_ms: 0.2359
+      ...
+    1..7
+ok 14 - validatePassword
+  ---
+  duration_ms: 8.8469
+  type: 'suite'
+  ...
+# Subtest: getPasswordStrength
+    # Subtest: returns score 0 for empty input
+    ok 1 - returns score 0 for empty input
+      ---
+      duration_ms: 0.3856
+      ...
+    # Subtest: very short password (< 8 chars) scores 0
+    ok 2 - very short password (< 8 chars) scores 0
+      ---
+      duration_ms: 0.2646
+      ...
+    # Subtest: 8-char all-lowercase password scores 1 (Weak)
+    ok 3 - 8-char all-lowercase password scores 1 (Weak)
+      ---
+      duration_ms: 1.3649
+      ...
+    # Subtest: 8-char password with upper+lower+number scores 3 (Good)
+    ok 4 - 8-char password with upper+lower+number scores 3 (Good)
+      ---
+      duration_ms: 0.2428
+      ...
+    # Subtest: long password with upper+lower+number+special scores Strong (4-5)
+    ok 5 - long password with upper+lower+number+special scores Strong (4-5)
+      ---
+      duration_ms: 0.199
+      ...
+    # Subtest: special characters increase score
+    ok 6 - special characters increase score
+      ---
+      duration_ms: 0.2233
+      ...
+    # Subtest: each score maps to a valid color
+    ok 7 - each score maps to a valid color
+      ---
+      duration_ms: 0.3844
+      ...
+    1..7
+ok 15 - getPasswordStrength
+  ---
+  duration_ms: 3.487
+  type: 'suite'
+  ...
+# Subtest: Rate Limiter
+    # Subtest: first attempt is never blocked
+    ok 1 - first attempt is never blocked
+      ---
+      duration_ms: 0.4744
+      ...
+    # Subtest: allows up to 4 failed attempts without blocking
+    ok 2 - allows up to 4 failed attempts without blocking
+      ---
+      duration_ms: 0.273
+      ...
+    # Subtest: blocks after exactly 5 failed attempts
+    ok 3 - blocks after exactly 5 failed attempts
+      ---
+      duration_ms: 0.2123
+      ...
+    # Subtest: blocked message includes seconds remaining
+    ok 4 - blocked message includes seconds remaining
+      ---
+      duration_ms: 0.3259
+      ...
+    # Subtest: clearRateLimit resets the counter
+    ok 5 - clearRateLimit resets the counter
+      ---
+      duration_ms: 0.335
+      ...
+    # Subtest: different keys are independent
+    ok 6 - different keys are independent
+      ---
+      duration_ms: 0.2495
+      ...
+    1..6
+ok 16 - Rate Limiter
+  ---
+  duration_ms: 2.4455
+  type: 'suite'
+  ...
+# Subtest: safeAuthError
+    # Subtest: maps invalid credentials error
+    ok 1 - maps invalid credentials error
+      ---
+      duration_ms: 0.3775
+      ...
+    # Subtest: maps email not confirmed error
+    ok 2 - maps email not confirmed error
+      ---
+      duration_ms: 0.177
+      ...
+    # Subtest: maps user already registered error
+    ok 3 - maps user already registered error
+      ---
+      duration_ms: 0.1802
+      ...
+    # Subtest: maps rate limit error
+    ok 4 - maps rate limit error
+      ---
+      duration_ms: 0.1604
+      ...
+    # Subtest: maps network error
+    ok 5 - maps network error
+      ---
+      duration_ms: 0.175
+      ...
+    # Subtest: maps timeout error
+    ok 6 - maps timeout error
+      ---
+      duration_ms: 0.4334
+      ...
+    # Subtest: returns generic message for unknown errors
+    ok 7 - returns generic message for unknown errors
+      ---
+      duration_ms: 0.1922
+      ...
+    # Subtest: handles null error gracefully
+    ok 8 - handles null error gracefully
+      ---
+      duration_ms: 0.2288
+      ...
+    1..8
+ok 17 - safeAuthError
+  ---
+  duration_ms: 2.337
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-001: SHA-256 key determinism and format
+    # Subtest: same inputs always produce the same key
+    ok 1 - same inputs always produce the same key
+      ---
+      duration_ms: 1.9494
+      ...
+    # Subtest: key is a valid 64-character lowercase hex string (SHA-256 output)
+    ok 2 - key is a valid 64-character lowercase hex string (SHA-256 output)
+      ---
+      duration_ms: 0.4635
+      ...
+    # Subtest: known input produces the expected SHA-256 digest
+    ok 3 - known input produces the expected SHA-256 digest
+      ---
+      duration_ms: 1.0051
+      ...
+    1..3
+ok 18 - T-CACHE-001: SHA-256 key determinism and format
+  ---
+  duration_ms: 6.8583
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-002: Key uniqueness across different inputs
+    # Subtest: different question → different key
+    ok 1 - different question → different key
+      ---
+      duration_ms: 1.019
+      ...
+    # Subtest: different domain → different key
+    ok 2 - different domain → different key
+      ---
+      duration_ms: 0.3333
+      ...
+    # Subtest: different marks → different key
+    ok 3 - different marks → different key
+      ---
+      duration_ms: 0.2898
+      ...
+    # Subtest: different answerMode → different key
+    ok 4 - different answerMode → different key
+      ---
+      duration_ms: 0.3557
+      ...
+    1..4
+ok 19 - T-CACHE-002: Key uniqueness across different inputs
+  ---
+  duration_ms: 6.6991
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-003: Question normalization before hashing
+    # Subtest: leading and trailing whitespace is trimmed
+    ok 1 - leading and trailing whitespace is trimmed
+      ---
+      duration_ms: 0.4331
+      ...
+    # Subtest: uppercase question produces the same key as lowercase
+    ok 2 - uppercase question produces the same key as lowercase
+      ---
+      duration_ms: 0.3919
+      ...
+    # Subtest: mixed-case with padding produces same key as normalized form
+    ok 3 - mixed-case with padding produces same key as normalized form
+      ---
+      duration_ms: 0.288
+      ...
+    1..3
+ok 20 - T-CACHE-003: Question normalization before hashing
+  ---
+  duration_ms: 1.4752
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-004: All four key components are load-bearing
+    # Subtest: changing question changes the key
+    ok 1 - changing question changes the key
+      ---
+      duration_ms: 0.3122
+      ...
+    # Subtest: changing domain changes the key
+    ok 2 - changing domain changes the key
+      ---
+      duration_ms: 0.3318
+      ...
+    # Subtest: changing marks changes the key
+    ok 3 - changing marks changes the key
+      ---
+      duration_ms: 0.2133
+      ...
+    # Subtest: changing answerMode changes the key
+    ok 4 - changing answerMode changes the key
+      ---
+      duration_ms: 0.2236
+      ...
+    1..4
+ok 21 - T-CACHE-004: All four key components are load-bearing
+  ---
+  duration_ms: 1.4553
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-005: TTL validity — entries inside the 7-day window
+    # Subtest: entry created 1 day ago is valid
+    ok 1 - entry created 1 day ago is valid
+      ---
+      duration_ms: 0.3027
+      ...
+    # Subtest: entry created 6 days ago is valid
+    ok 2 - entry created 6 days ago is valid
+      ---
+      duration_ms: 0.2075
+      ...
+    # Subtest: entry created 1 minute ago is valid
+    ok 3 - entry created 1 minute ago is valid
+      ---
+      duration_ms: 0.1802
+      ...
+    1..3
+ok 22 - T-CACHE-005: TTL validity — entries inside the 7-day window
+  ---
+  duration_ms: 0.9278
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-006: TTL expiry — entries outside the 7-day window
+    # Subtest: entry created 8 days ago is expired
+    ok 1 - entry created 8 days ago is expired
+      ---
+      duration_ms: 0.4651
+      ...
+    # Subtest: entry created exactly 7 days ago is expired (boundary: .gt is strictly greater)
+    ok 2 - entry created exactly 7 days ago is expired (boundary: .gt is strictly greater)
+      ---
+      duration_ms: 0.3159
+      ...
+    # Subtest: entry created 30 days ago is expired
+    ok 3 - entry created 30 days ago is expired
+      ---
+      duration_ms: 0.2254
+      ...
+    1..3
+ok 23 - T-CACHE-006: TTL expiry — entries outside the 7-day window
+  ---
+  duration_ms: 1.2235
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-007: Cache bypass conditions
+    # Subtest: usedContext=false, exportIntent=false → cache IS checked
+    ok 1 - usedContext=false, exportIntent=false → cache IS checked
+      ---
+      duration_ms: 0.2866
+      ...
+    # Subtest: usedContext=true → cache is skipped (PDF context was used)
+    ok 2 - usedContext=true → cache is skipped (PDF context was used)
+      ---
+      duration_ms: 0.193
+      ...
+    # Subtest: exportIntent=true → cache is skipped (export path bypasses cache)
+    ok 3 - exportIntent=true → cache is skipped (export path bypasses cache)
+      ---
+      duration_ms: 0.1761
+      ...
+    # Subtest: both usedContext=true and exportIntent=true → cache skipped
+    ok 4 - both usedContext=true and exportIntent=true → cache skipped
+      ---
+      duration_ms: 0.3216
+      ...
+    1..4
+ok 24 - T-CACHE-007: Cache bypass conditions
+  ---
+  duration_ms: 2.2895
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-008: Cache store conditions (post-stream)
+    # Subtest: usedContext=false + answer >50 chars → answer IS stored
+    ok 1 - usedContext=false + answer >50 chars → answer IS stored
+      ---
+      duration_ms: 0.3792
+      ...
+    # Subtest: usedContext=true → answer is NOT stored (PDF context was used)
+    ok 2 - usedContext=true → answer is NOT stored (PDF context was used)
+      ---
+      duration_ms: 0.1821
+      ...
+    # Subtest: answer ≤50 chars → NOT stored (too short, likely an error or empty response)
+    ok 3 - answer ≤50 chars → NOT stored (too short, likely an error or empty response)
+      ---
+      duration_ms: 0.1822
+      ...
+    # Subtest: exact 50-char answer is NOT stored (boundary: condition is > 50, not >=)
+    ok 4 - exact 50-char answer is NOT stored (boundary: condition is > 50, not >=)
+      ---
+      duration_ms: 0.3886
+      ...
+    # Subtest: 51-char answer IS stored
+    ok 5 - 51-char answer IS stored
+      ---
+      duration_ms: 0.2342
+      ...
+    1..5
+ok 25 - T-CACHE-008: Cache store conditions (post-stream)
+  ---
+  duration_ms: 1.6781
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-009: storeCachedAnswer upsert payload shape
+    # Subtest: payload contains cache_key
+    ok 1 - payload contains cache_key
+      ---
+      duration_ms: 0.3115
+      ...
+    # Subtest: payload contains question verbatim (not normalized)
+    ok 2 - payload contains question verbatim (not normalized)
+      ---
+      duration_ms: 0.1662
+      ...
+    # Subtest: payload flattens domain and marks at top level
+    ok 3 - payload flattens domain and marks at top level
+      ---
+      duration_ms: 0.2681
+      ...
+    # Subtest: payload contains answer_mode (snake_case column name)
+    ok 4 - payload contains answer_mode (snake_case column name)
+      ---
+      duration_ms: 0.2797
+      ...
+    # Subtest: payload embeds full classification object
+    ok 5 - payload embeds full classification object
+      ---
+      duration_ms: 0.8383
+      ...
+    # Subtest: payload contains created_at as ISO string
+    ok 6 - payload contains created_at as ISO string
+      ---
+      duration_ms: 0.3817
+      ...
+    # Subtest: payload has exactly the expected keys (no extra fields)
+    ok 7 - payload has exactly the expected keys (no extra fields)
+      ---
+      duration_ms: 0.6736
+      ...
+    1..7
+ok 26 - T-CACHE-009: storeCachedAnswer upsert payload shape
+  ---
+  duration_ms: 3.326
+  type: 'suite'
+  ...
+# Subtest: T-CACHE-010: End-to-end cache hit/miss with mock DB
+    # Subtest: cache miss: key not in DB returns null
+    ok 1 - cache miss: key not in DB returns null
+      ---
+      duration_ms: 0.5947
+      ...
+    # Subtest: cache hit: same key, fresh entry returns answer + classification
+    ok 2 - cache hit: same key, fresh entry returns answer + classification
+      ---
+      duration_ms: 0.3459
+      ...
+    # Subtest: cache miss: same key but entry is expired (8 days old)
+    ok 3 - cache miss: same key but entry is expired (8 days old)
+      ---
+      duration_ms: 0.2797
+      ...
+    # Subtest: cache miss: key exists but for different question (hash collision impossible)
+    ok 4 - cache miss: key exists but for different question (hash collision impossible)
+      ---
+      duration_ms: 0.2856
+      ...
+    # Subtest: repeat query: second call with identical inputs hits the cache
+    ok 5 - repeat query: second call with identical inputs hits the cache
+      ---
+      duration_ms: 0.3723
+      ...
+    # Subtest: normalized repeat query hits the same cache entry as original
+    ok 6 - normalized repeat query hits the same cache entry as original
+      ---
+      duration_ms: 0.307
+      ...
+    1..6
+ok 27 - T-CACHE-010: End-to-end cache hit/miss with mock DB
+  ---
+  duration_ms: 2.5288
+  type: 'suite'
+  ...
+# (node:7340) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Shafi/ask-my-notes/src/lib/postProcessor.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to C:\\Users\\Shafi\\ask-my-notes\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: T-CBG-001: Complete 10-mark answer → high confidence
+    # Subtest: confidence is 'high' for complete answer
+    ok 1 - confidence is 'high' for complete answer
+      ---
+      duration_ms: 2.7091
+      ...
+    # Subtest: isComplete is true
+    ok 2 - isComplete is true
+      ---
+      duration_ms: 0.5866
+      ...
+    # Subtest: no missing sections
+    ok 3 - no missing sections
+      ---
+      duration_ms: 0.3641
+      ...
+    # Subtest: verifyCount is 0
+    ok 4 - verifyCount is 0
+      ---
+      duration_ms: 0.3674
+      ...
+    # Subtest: diagramMissing is false
+    ok 5 - diagramMissing is false
+      ---
+      duration_ms: 0.3504
+      ...
+    # Subtest: wordCount is within [350, 550]
+    ok 6 - wordCount is within [350, 550]
+      ---
+      duration_ms: 0.468
+      ...
+    1..6
+ok 28 - T-CBG-001: Complete 10-mark answer → high confidence
+  ---
+  duration_ms: 7.9046
+  type: 'suite'
+  ...
+# Subtest: T-CBG-002: Missing 1 required section → medium confidence
+    # Subtest: confidence is 'medium' when one section is missing
+    ok 1 - confidence is 'medium' when one section is missing
+      ---
+      duration_ms: 0.4206
+      ...
+    # Subtest: missingSections contains 'Conclusion'
+    ok 2 - missingSections contains 'Conclusion'
+      ---
+      duration_ms: 0.7307
+      ...
+    # Subtest: isComplete is false when sections are missing
+    ok 3 - isComplete is false when sections are missing
+      ---
+      duration_ms: 2.0822
+      ...
+    1..3
+ok 29 - T-CBG-002: Missing 1 required section → medium confidence
+  ---
+  duration_ms: 4.0319
+  type: 'suite'
+  ...
+# Subtest: T-CBG-003: Missing 2+ required sections → low confidence
+    # Subtest: confidence is 'low' when 2+ sections missing
+    ok 1 - confidence is 'low' when 2+ sections missing
+      ---
+      duration_ms: 1.0756
+      ...
+    # Subtest: missingSections.length >= 2
+    ok 2 - missingSections.length >= 2
+      ---
+      duration_ms: 0.3846
+      ...
+    1..2
+ok 30 - T-CBG-003: Missing 2+ required sections → low confidence
+  ---
+  duration_ms: 1.7533
+  type: 'suite'
+  ...
+# Subtest: T-CBG-004: [Verify] markers affect confidence level
+    # Subtest: 1 [Verify] marker → medium confidence
+    ok 1 - 1 [Verify] marker → medium confidence
+      ---
+      duration_ms: 0.5762
+      ...
+    # Subtest: 2 [Verify] markers → medium confidence
+    ok 2 - 2 [Verify] markers → medium confidence
+      ---
+      duration_ms: 0.3452
+      ...
+    # Subtest: 3 [Verify] markers → low confidence
+    ok 3 - 3 [Verify] markers → low confidence
+      ---
+      duration_ms: 0.3369
+      ...
+    # Subtest: [Verify] count is accurate for 4 markers
+    ok 4 - [Verify] count is accurate for 4 markers
+      ---
+      duration_ms: 0.3364
+      ...
+    1..4
+ok 31 - T-CBG-004: [Verify] markers affect confidence level
+  ---
+  duration_ms: 1.9636
+  type: 'suite'
+  ...
+# Subtest: T-CBG-005: Diagram presence detection
+    # Subtest: answer with ``` block: diagramMissing=false
+    ok 1 - answer with ``` block: diagramMissing=false
+      ---
+      duration_ms: 0.4161
+      ...
+    # Subtest: answer without ``` block + diagramRequired=true: diagramMissing=true
+    ok 2 - answer without ``` block + diagramRequired=true: diagramMissing=true
+      ---
+      duration_ms: 0.3558
+      ...
+    # Subtest: missing diagram alone pushes confidence to 'low'
+    ok 3 - missing diagram alone pushes confidence to 'low'
+      ---
+      duration_ms: 0.4756
+      ...
+    # Subtest: no diagram when diagramRequired=false: diagramMissing=false
+    ok 4 - no diagram when diagramRequired=false: diagramMissing=false
+      ---
+      duration_ms: 0.4058
+      ...
+    1..4
+ok 32 - T-CBG-005: Diagram presence detection
+  ---
+  duration_ms: 2.0775
+  type: 'suite'
+  ...
+# Subtest: T-CBG-006: Word count range
+    # Subtest: word count exactly at min → wordInRange=true
+    ok 1 - word count exactly at min → wordInRange=true
+      ---
+      duration_ms: 0.4396
+      ...
+    # Subtest: word count exactly at max → wordInRange=true
+    ok 2 - word count exactly at max → wordInRange=true
+      ---
+      duration_ms: 0.3524
+      ...
+    # Subtest: word count below min → wordInRange=false
+    ok 3 - word count below min → wordInRange=false
+      ---
+      duration_ms: 0.219
+      ...
+    # Subtest: word count above max → wordInRange=false
+    ok 4 - word count above max → wordInRange=false
+      ---
+      duration_ms: 0.3544
+      ...
+    1..4
+ok 33 - T-CBG-006: Word count range
+  ---
+  duration_ms: 1.6584
+  type: 'suite'
+  ...
+# Subtest: T-CBG-007: scoreAnswer — section scoring (0–4)
+    # Subtest: all 6 required sections present → sectionScore=4
+    ok 1 - all 6 required sections present → sectionScore=4
+      ---
+      duration_ms: 6.2244
+      ...
+    # Subtest: no required sections → sectionScore=4 (default)
+    ok 2 - no required sections → sectionScore=4 (default)
+      ---
+      duration_ms: 0.2594
+      ...
+    # Subtest: 0 out of 6 sections present → sectionScore=0
+    ok 3 - 0 out of 6 sections present → sectionScore=0
+      ---
+      duration_ms: 0.5823
+      ...
+    # Subtest: 3 out of 6 sections → sectionScore=2
+    ok 4 - 3 out of 6 sections → sectionScore=2
+      ---
+      duration_ms: 0.3084
+      ...
+    1..4
+ok 34 - T-CBG-007: scoreAnswer — section scoring (0–4)
+  ---
+  duration_ms: 7.7154
+  type: 'suite'
+  ...
+# Subtest: T-CBG-008: scoreAnswer — diagram scoring (0–2)
+    # Subtest: diagram present, not required → diagramScore=2
+    ok 1 - diagram present, not required → diagramScore=2
+      ---
+      duration_ms: 0.338
+      ...
+    # Subtest: diagram required and present → diagramScore=2
+    ok 2 - diagram required and present → diagramScore=2
+      ---
+      duration_ms: 0.3148
+      ...
+    # Subtest: diagram required but missing → diagramScore=0
+    ok 3 - diagram required but missing → diagramScore=0
+      ---
+      duration_ms: 0.3568
+      ...
+    # Subtest: diagram not required, not present → diagramScore=2
+    ok 4 - diagram not required, not present → diagramScore=2
+      ---
+      duration_ms: 0.4182
+      ...
+    1..4
+ok 35 - T-CBG-008: scoreAnswer — diagram scoring (0–2)
+  ---
+  duration_ms: 1.7201
+  type: 'suite'
+  ...
+# Subtest: T-CBG-009: scoreAnswer — word count scoring (0–2)
+    # Subtest: word count in range → wordScore=2
+    ok 1 - word count in range → wordScore=2
+      ---
+      duration_ms: 0.5745
+      ...
+    # Subtest: word count within 20% below min (range [350,550], 280 words) → wordScore=1
+    ok 2 - word count within 20% below min (range [350,550], 280 words) → wordScore=1
+      ---
+      duration_ms: 0.3917
+      ...
+    # Subtest: word count below 80% of min → wordScore=0
+    ok 3 - word count below 80% of min → wordScore=0
+      ---
+      duration_ms: 0.3467
+      ...
+    # Subtest: word count within 20% above max (range [350,550], 660 words) → wordScore=1
+    ok 4 - word count within 20% above max (range [350,550], 660 words) → wordScore=1
+      ---
+      duration_ms: 0.3214
+      ...
+    # Subtest: word count above 120% of max → wordScore=0
+    ok 5 - word count above 120% of max → wordScore=0
+      ---
+      duration_ms: 0.408
+      ...
+    1..5
+ok 36 - T-CBG-009: scoreAnswer — word count scoring (0–2)
+  ---
+  duration_ms: 2.5366
+  type: 'suite'
+  ...
+# Subtest: T-CBG-010: scoreAnswer — accuracy scoring (0–2)
+    # Subtest: 0 [Verify] markers → accuracyScore=2
+    ok 1 - 0 [Verify] markers → accuracyScore=2
+      ---
+      duration_ms: 0.3698
+      ...
+    # Subtest: 1 [Verify] marker → accuracyScore=1
+    ok 2 - 1 [Verify] marker → accuracyScore=1
+      ---
+      duration_ms: 0.3436
+      ...
+    # Subtest: 2 [Verify] markers → accuracyScore=0
+    ok 3 - 2 [Verify] markers → accuracyScore=0
+      ---
+      duration_ms: 1.422
+      ...
+    # Subtest: 3+ [Verify] markers → accuracyScore=0 (clamped, not negative)
+    ok 4 - 3+ [Verify] markers → accuracyScore=0 (clamped, not negative)
+      ---
+      duration_ms: 0.3301
+      ...
+    1..4
+ok 37 - T-CBG-010: scoreAnswer — accuracy scoring (0–2)
+  ---
+  duration_ms: 2.8978
+  type: 'suite'
+  ...
+# Subtest: T-CBG-011: scoreAnswer — total score bounds
+    # Subtest: complete 10-mark answer scores ≥ 8/10
+    ok 1 - complete 10-mark answer scores ≥ 8/10
+      ---
+      duration_ms: 0.341
+      ...
+    # Subtest: score never exceeds 10
+    ok 2 - score never exceeds 10
+      ---
+      duration_ms: 0.2701
+      ...
+    # Subtest: score never goes below 0
+    ok 3 - score never goes below 0
+      ---
+      duration_ms: 0.2654
+      ...
+    # Subtest: empty answer scores 0 — no content means no score
+    ok 4 - empty answer scores 0 — no content means no score
+      ---
+      duration_ms: 0.28
+      ...
+    # Subtest: score is an integer
+    ok 5 - score is an integer
+      ---
+      duration_ms: 0.2892
+      ...
+    1..5
+ok 38 - T-CBG-011: scoreAnswer — total score bounds
+  ---
+  duration_ms: 1.7353
+  type: 'suite'
+  ...
+# Subtest: T-CBG-012: extractVerifyMarkers
+    # Subtest: extracts single marker with claim
+    ok 1 - extracts single marker with claim
+      ---
+      duration_ms: 0.4767
+      ...
+    # Subtest: extracts multiple markers
+    ok 2 - extracts multiple markers
+      ---
+      duration_ms: 0.1862
+      ...
+    # Subtest: returns empty array when no markers
+    ok 3 - returns empty array when no markers
+      ---
+      duration_ms: 0.9814
+      ...
+    # Subtest: marker object has both marker and claim fields
+    ok 4 - marker object has both marker and claim fields
+      ---
+      duration_ms: 0.3444
+      ...
+    1..4
+ok 39 - T-CBG-012: extractVerifyMarkers
+  ---
+  duration_ms: 2.4746
+  type: 'suite'
+  ...
+# Subtest: T-CBG-013: validateAnswer — defaults when templateMeta omitted
+    # Subtest: does not throw with no templateMeta argument
+    ok 1 - does not throw with no templateMeta argument
+      ---
+      duration_ms: 0.5366
+      ...
+    # Subtest: defaults: missingSections=[], diagramMissing=false
+    ok 2 - defaults: missingSections=[], diagramMissing=false
+      ---
+      duration_ms: 0.1968
+      ...
+    # Subtest: defaults: wordInRange=true (range [0, Infinity])
+    ok 3 - defaults: wordInRange=true (range [0, Infinity])
+      ---
+      duration_ms: 0.1709
+      ...
+    1..3
+ok 40 - T-CBG-013: validateAnswer — defaults when templateMeta omitted
+  ---
+  duration_ms: 1.2876
+  type: 'suite'
+  ...
+# Subtest: T-CBG-014: Required section matching — all heading formats
+    # Subtest: \#\# Definition matches 'Definition' requirement
+    ok 1 - \#\# Definition matches 'Definition' requirement
+      ---
+      duration_ms: 0.2543
+      ...
+    # Subtest: **Definition** matches 'Definition' requirement
+    ok 2 - **Definition** matches 'Definition' requirement
+      ---
+      duration_ms: 0.1738
+      ...
+    # Subtest: **Definition:** matches 'Definition' requirement
+    ok 3 - **Definition:** matches 'Definition' requirement
+      ---
+      duration_ms: 0.1619
+      ...
+    # Subtest: Section matching is case-insensitive
+    ok 4 - Section matching is case-insensitive
+      ---
+      duration_ms: 0.1635
+      ...
+    1..4
+ok 41 - T-CBG-014: Required section matching — all heading formats
+  ---
+  duration_ms: 1.0435
+  type: 'suite'
+  ...
+# (node:24376) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Shafi/ask-my-notes/src/lib/parseAnswerSections.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to C:\\Users\\Shafi\\ask-my-notes\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: T-EDGE-001: Ambiguous bold lines — not treated as headings
+    # Subtest: bold sentence ending with period is not a heading
+    ok 1 - bold sentence ending with period is not a heading
+      ---
+      duration_ms: 3.7656
+      ...
+    # Subtest: bold text with a comma anywhere is not a heading
+    ok 2 - bold text with a comma anywhere is not a heading
+      ---
+      duration_ms: 1.1143
+      ...
+    # Subtest: bold text with 8+ words is not a heading
+    ok 3 - bold text with 8+ words is not a heading
+      ---
+      duration_ms: 0.2831
+      ...
+    # Subtest: bold text starting with lowercase is not a heading
+    ok 4 - bold text starting with lowercase is not a heading
+      ---
+      duration_ms: 6.6594
+      ...
+    # Subtest: bold text mid-paragraph is never a heading
+    ok 5 - bold text mid-paragraph is never a heading
+      ---
+      duration_ms: 0.3569
+      ...
+    # Subtest: inline code is not a heading
+    ok 6 - inline code is not a heading
+      ---
+      duration_ms: 0.2917
+      ...
+    1..6
+ok 42 - T-EDGE-001: Ambiguous bold lines — not treated as headings
+  ---
+  duration_ms: 17.6127
+  type: 'suite'
+  ...
+# Subtest: T-EDGE-002: Extremely short inputs — 2-mark answers
+    # Subtest: short 2-mark answer parses without throwing
+    ok 1 - short 2-mark answer parses without throwing
+      ---
+      duration_ms: 2.5907
+      ...
+    # Subtest: short 2-mark answer validates without throwing
+    ok 2 - short 2-mark answer validates without throwing
+      ---
+      duration_ms: 2.7792
+      ...
+    # Subtest: short 2-mark answer: no required sections → missingSections=[]
+    ok 3 - short 2-mark answer: no required sections → missingSections=[]
+      ---
+      duration_ms: 1.7864
+      ...
+    # Subtest: short 2-mark answer: in word range [30,80]
+    ok 4 - short 2-mark answer: in word range [30,80]
+      ---
+      duration_ms: 0.4293
+      ...
+    # Subtest: single word answer: wordCount=1, wordInRange=false for 2M
+    ok 5 - single word answer: wordCount=1, wordInRange=false for 2M
+      ---
+      duration_ms: 0.4065
+      ...
+    1..5
+ok 43 - T-EDGE-002: Extremely short inputs — 2-mark answers
+  ---
+  duration_ms: 8.7769
+  type: 'suite'
+  ...
+# Subtest: T-EDGE-003: Very long inputs — 20-mark answers
+    # Subtest: 1000-word answer parses without throwing
+    ok 1 - 1000-word answer parses without throwing
+      ---
+      duration_ms: 1.654
+      ...
+    # Subtest: 1000-word answer produces sections for all 20M required sections
+    ok 2 - 1000-word answer produces sections for all 20M required sections
+      ---
+      duration_ms: 0.5049
+      ...
+    # Subtest: 20-mark answer: validateAnswer finds no missing sections
+    ok 3 - 20-mark answer: validateAnswer finds no missing sections
+      ---
+      duration_ms: 1.8902
+      ...
+    # Subtest: 20-mark answer: diagramMissing=false (has code block)
+    ok 4 - 20-mark answer: diagramMissing=false (has code block)
+      ---
+      duration_ms: 0.6494
+      ...
+    # Subtest: 20-mark answer with all sections scores ≥ 6/10
+    ok 5 - 20-mark answer with all sections scores ≥ 6/10
+      ---
+      duration_ms: 1.2011
+      ...
+    1..5
+ok 44 - T-EDGE-003: Very long inputs — 20-mark answers
+  ---
+  duration_ms: 6.5459
+  type: 'suite'
+  ...
+# Subtest: T-EDGE-004: Mixed-domain content — code, math, tables
+    # Subtest: mixed-domain answer parses into correct sections
+    ok 1 - mixed-domain answer parses into correct sections
+      ---
+      duration_ms: 1.7748
+      ...
+    # Subtest: code block is detected as diagram for validateAnswer
+    ok 2 - code block is detected as diagram for validateAnswer
+      ---
+      duration_ms: 0.5154
+      ...
+    # Subtest: table content does not create spurious headings
+    ok 3 - table content does not create spurious headings
+      ---
+      duration_ms: 0.5283
+      ...
+    # Subtest: getSectionMeta for code-domain sections returns correct metadata
+    ok 4 - getSectionMeta for code-domain sections returns correct metadata
+      ---
+      duration_ms: 0.303
+      ...
+    1..4
+ok 45 - T-EDGE-004: Mixed-domain content — code, math, tables
+  ---
+  duration_ms: 3.8049
+  type: 'suite'
+  ...
+# Subtest: T-EDGE-005: [Verify] markers in unusual positions
+    # Subtest: [Verify] inside a code block is still counted
+    ok 1 - [Verify] inside a code block is still counted
+      ---
+      duration_ms: 0.4496
+      ...
+    # Subtest: [Verify] at start of answer counts correctly
+    ok 2 - [Verify] at start of answer counts correctly
+      ---
+      duration_ms: 0.2392
+      ...
+    # Subtest: [Verify] with complex claim text counts correctly
+    ok 3 - [Verify] with complex claim text counts correctly
+      ---
+      duration_ms: 0.447
+      ...
+    # Subtest: case-insensitive [VERIFY] is counted
+    ok 4 - case-insensitive [VERIFY] is counted
+      ---
+      duration_ms: 0.2674
+      ...
+    # Subtest: [Verify] on same line as section heading counts correctly
+    ok 5 - [Verify] on same line as section heading counts correctly
+      ---
+      duration_ms: 0.203
+      ...
+    1..5
+ok 46 - T-EDGE-005: [Verify] markers in unusual positions
+  ---
+  duration_ms: 2.0188
+  type: 'suite'
+  ...
+# Subtest: T-EDGE-006: Malformed Markdown — does not throw
+    # Subtest: parseAnswerSections does not throw: "**Unclosed bold"
+    ok 1 - parseAnswerSections does not throw: "**Unclosed bold"
+      ---
+      duration_ms: 0.5665
+      ...
+    # Subtest: validateAnswer does not throw: "**Unclosed bold"
+    ok 2 - validateAnswer does not throw: "**Unclosed bold"
+      ---
+      duration_ms: 0.5887
+      ...
+    # Subtest: scoreAnswer does not throw: "**Unclosed bold"
+    ok 3 - scoreAnswer does not throw: "**Unclosed bold"
+      ---
+      duration_ms: 1.0487
+      ...
+    # Subtest: parseAnswerSections does not throw: "\#\# "
+    ok 4 - parseAnswerSections does not throw: "\#\# "
+      ---
+      duration_ms: 0.6391
+      ...
+    # Subtest: validateAnswer does not throw: "\#\# "
+    ok 5 - validateAnswer does not throw: "\#\# "
+      ---
+      duration_ms: 0.1754
+      ...
+    # Subtest: scoreAnswer does not throw: "\#\# "
+    ok 6 - scoreAnswer does not throw: "\#\# "
+      ---
+      duration_ms: 0.2242
+      ...
+    # Subtest: parseAnswerSections does not throw: "**"
+    ok 7 - parseAnswerSections does not throw: "**"
+      ---
+      duration_ms: 1.5602
+      ...
+    # Subtest: validateAnswer does not throw: "**"
+    ok 8 - validateAnswer does not throw: "**"
+      ---
+      duration_ms: 0.223
+      ...
+    # Subtest: scoreAnswer does not throw: "**"
+    ok 9 - scoreAnswer does not throw: "**"
+      ---
+      duration_ms: 0.1908
+      ...
+    # Subtest: parseAnswerSections does not throw: "```\\nunclosed code block"
+    ok 10 - parseAnswerSections does not throw: "```\\nunclosed code block"
+      ---
+      duration_ms: 0.3703
+      ...
+    # Subtest: validateAnswer does not throw: "```\\nunclosed code block"
+    ok 11 - validateAnswer does not throw: "```\\nunclosed code block"
+      ---
+      duration_ms: 0.1676
+      ...
+    # Subtest: scoreAnswer does not throw: "```\\nunclosed code block"
+    ok 12 - scoreAnswer does not throw: "```\\nunclosed code block"
+      ---
+      duration_ms: 1.0194
+      ...
+    # Subtest: parseAnswerSections does not throw: "\#\# \\n\#\# \\n\#\# "
+    ok 13 - parseAnswerSections does not throw: "\#\# \\n\#\# \\n\#\# "
+      ---
+      duration_ms: 0.2763
+      ...
+    # Subtest: validateAnswer does not throw: "\#\# \\n\#\# \\n\#\# "
+    ok 14 - validateAnswer does not throw: "\#\# \\n\#\# \\n\#\# "
+      ---
+      duration_ms: 0.1492
+      ...
+    # Subtest: scoreAnswer does not throw: "\#\# \\n\#\# \\n\#\# "
+    ok 15 - scoreAnswer does not throw: "\#\# \\n\#\# \\n\#\# "
+      ---
+      duration_ms: 0.1822
+      ...
+    # Subtest: parseAnswerSections does not throw: "---\\n---\\n---"
+    ok 16 - parseAnswerSections does not throw: "---\\n---\\n---"
+      ---
+      duration_ms: 0.1311
+      ...
+    # Subtest: validateAnswer does not throw: "---\\n---\\n---"
+    ok 17 - validateAnswer does not throw: "---\\n---\\n---"
+      ---
+      duration_ms: 0.1369
+      ...
+    # Subtest: scoreAnswer does not throw: "---\\n---\\n---"
+    ok 18 - scoreAnswer does not throw: "---\\n---\\n---"
+      ---
+      duration_ms: 0.1453
+      ...
+    # Subtest: parseAnswerSections does not throw: "**A**\\n**B**\\n**C**\\n"
+    ok 19 - parseAnswerSections does not throw: "**A**\\n**B**\\n**C**\\n"
+      ---
+      duration_ms: 1.2541
+      ...
+    # Subtest: validateAnswer does not throw: "**A**\\n**B**\\n**C**\\n"
+    ok 20 - validateAnswer does not throw: "**A**\\n**B**\\n**C**\\n"
+      ---
+      duration_ms: 0.1854
+      ...
+    # Subtest: scoreAnswer does not throw: "**A**\\n**B**\\n**C**\\n"
+    ok 21 - scoreAnswer does not throw: "**A**\\n**B**\\n**C**\\n"
+      ---
+      duration_ms: 0.1779
+      ...
+    1..21
+ok 47 - T-EDGE-006: Malformed Markdown — does not throw
+  ---
+  duration_ms: 13.2828
+  type: 'suite'
+  ...
+# Subtest: T-EDGE-007: Unicode content in answers
+    # Subtest: Hindi/Devanagari content does not throw in parseAnswerSections
+    ok 1 - Hindi/Devanagari content does not throw in parseAnswerSections
+      ---
+      duration_ms: 1.2182
+      ...
+    # Subtest: Mathematical symbols in content parse correctly
+    ok 2 - Mathematical symbols in content parse correctly
+      ---
+      duration_ms: 0.2535
+      ...
+    # Subtest: Arrow/diagram characters in content are preserved
+    ok 3 - Arrow/diagram characters in content are preserved
+      ---
+      duration_ms: 0.2039
+      ...
+    # Subtest: word count is correct for Unicode text
+    ok 4 - word count is correct for Unicode text
+      ---
+      duration_ms: 0.5707
+      ...
+    1..4
+ok 48 - T-EDGE-007: Unicode content in answers
+  ---
+  duration_ms: 2.7433
+  type: 'suite'
+  ...
+# Subtest: T-EDGE-008: Cross-module pipeline consistency
+    # Subtest: sections parsed by parseAnswerSections match requiredSections in template
+    ok 1 - sections parsed by parseAnswerSections match requiredSections in template
+      ---
+      duration_ms: 0.3883
+      ...
+    # Subtest: validateAnswer missingSections matches headings absent from parseAnswerSections output
+    ok 2 - validateAnswer missingSections matches headings absent from parseAnswerSections output
+      ---
+      duration_ms: 0.9804
+      ...
+    # Subtest: scoreAnswer sectionScore reflects section coverage seen by parseAnswerSections
+    ok 3 - scoreAnswer sectionScore reflects section coverage seen by parseAnswerSections
+      ---
+      duration_ms: 0.8453
+      ...
+    1..3
+ok 49 - T-EDGE-008: Cross-module pipeline consistency
+  ---
+  duration_ms: 4.3602
+  type: 'suite'
+  ...
+# Subtest: T-EDGE-009: Streaming accumulation — chunked vs full
+    # Subtest: parsing chunk-joined answer equals parsing the full answer
+    ok 1 - parsing chunk-joined answer equals parsing the full answer
+      ---
+      duration_ms: 0.3437
+      ...
+    # Subtest: validateAnswer on accumulated chunks is identical to full
+    ok 2 - validateAnswer on accumulated chunks is identical to full
+      ---
+      duration_ms: 0.7914
+      ...
+    1..2
+ok 50 - T-EDGE-009: Streaming accumulation — chunked vs full
+  ---
+  duration_ms: 1.8954
+  type: 'suite'
+  ...
+# Subtest: T-EDGE-010: Whitespace-only section content is filtered
+    # Subtest: section with only whitespace does not appear in output
+    ok 1 - section with only whitespace does not appear in output
+      ---
+      duration_ms: 0.6329
+      ...
+    # Subtest: answer of only newlines produces no sections
+    ok 2 - answer of only newlines produces no sections
+      ---
+      duration_ms: 0.2808
+      ...
+    1..2
+ok 51 - T-EDGE-010: Whitespace-only section content is filtered
+  ---
+  duration_ms: 1.1102
+  type: 'suite'
+  ...
+# (node:12480) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Shafi/ask-my-notes/src/lib/examUtils.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to C:\\Users\\Shafi\\ask-my-notes\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: deriveAccuracy
+    # Subtest: returns 40 for count=5 (weakest threshold)
+    ok 1 - returns 40 for count=5 (weakest threshold)
+      ---
+      duration_ms: 2.4322
+      ...
+    # Subtest: returns 52 for count=4
+    ok 2 - returns 52 for count=4
+      ---
+      duration_ms: 0.2689
+      ...
+    # Subtest: caps at 0 for very high counts
+    ok 3 - caps at 0 for very high counts
+      ---
+      duration_ms: 0.2588
+      ...
+    # Subtest: caps at 59 for count=0
+    ok 4 - caps at 59 for count=0
+      ---
+      duration_ms: 0.287
+      ...
+    1..4
+ok 52 - deriveAccuracy
+  ---
+  duration_ms: 11.8236
+  type: 'suite'
+  ...
+# Subtest: generateExamStudyPlan
+    # Subtest: returns single final-revision entry when exam is today
+    ok 1 - returns single final-revision entry when exam is today
+      ---
+      duration_ms: 2.3111
+      ...
+    # Subtest: returns empty array when exam has passed
+    ok 2 - returns empty array when exam has passed
+      ---
+      duration_ms: 0.2658
+      ...
+    # Subtest: distributes topics across days — 4 topics, 4 days → 1 per day
+    ok 3 - distributes topics across days — 4 topics, 4 days → 1 per day
+      ---
+      duration_ms: 56.7259
+      ...
+    # Subtest: caps topics per day at 3
+    ok 4 - caps topics per day at 3
+      ---
+      duration_ms: 1.2315
+      ...
+    # Subtest: returns generic schedule when no weak topics
+    ok 5 - returns generic schedule when no weak topics
+      ---
+      duration_ms: 3.281
+      ...
+    # Subtest: uses Learn action for >7 days left
+    ok 6 - uses Learn action for >7 days left
+      ---
+      duration_ms: 6.1252
+      ...
+    # Subtest: uses Revise action for ≤3 days left
+    ok 7 - uses Revise action for ≤3 days left
+      ---
+      duration_ms: 1.067
+      ...
+    1..7
+ok 53 - generateExamStudyPlan
+  ---
+  duration_ms: 72.9499
+  type: 'suite'
+  ...
+# Subtest: isInternalDev — detection
+    # Subtest: returns true for dev account 1
+    ok 1 - returns true for dev account 1
+      ---
+      duration_ms: 2.0559
+      ...
+    # Subtest: returns true for dev account 2
+    ok 2 - returns true for dev account 2
+      ---
+      duration_ms: 0.2517
+      ...
+    # Subtest: returns false for normal free user
+    ok 3 - returns false for normal free user
+      ---
+      duration_ms: 0.224
+      ...
+    # Subtest: returns false for pro-plan user (not internal_dev)
+    ok 4 - returns false for pro-plan user (not internal_dev)
+      ---
+      duration_ms: 0.2316
+      ...
+    # Subtest: returns false for null user
+    ok 5 - returns false for null user
+      ---
+      duration_ms: 0.2141
+      ...
+    # Subtest: returns false for undefined user
+    ok 6 - returns false for undefined user
+      ---
+      duration_ms: 0.2317
+      ...
+    # Subtest: returns false when app_metadata is missing entirely
+    ok 7 - returns false when app_metadata is missing entirely
+      ---
+      duration_ms: 1.3819
+      ...
+    # Subtest: returns false when app_metadata.role is undefined
+    ok 8 - returns false when app_metadata.role is undefined
+      ---
+      duration_ms: 0.2457
+      ...
+    # Subtest: returns false for empty string role
+    ok 9 - returns false for empty string role
+      ---
+      duration_ms: 0.3633
+      ...
+    1..9
+ok 54 - isInternalDev — detection
+  ---
+  duration_ms: 8.3696
+  type: 'suite'
+  ...
+# Subtest: isInternalDev — privilege escalation prevention
+    # Subtest: user_metadata.role='internal_dev' does NOT grant access
+    ok 1 - user_metadata.role='internal_dev' does NOT grant access
+      ---
+      duration_ms: 0.3659
+      ...
+    # Subtest: role must match exactly 'internal_dev' (case sensitive)
+    ok 2 - role must match exactly 'internal_dev' (case sensitive)
+      ---
+      duration_ms: 0.3337
+      ...
+    # Subtest: 'admin' role does not trigger dev bypass
+    ok 3 - 'admin' role does not trigger dev bypass
+      ---
+      duration_ms: 0.2345
+      ...
+    # Subtest: 'school' plan role does not trigger dev bypass
+    ok 4 - 'school' plan role does not trigger dev bypass
+      ---
+      duration_ms: 0.3242
+      ...
+    1..4
+ok 55 - isInternalDev — privilege escalation prevention
+  ---
+  duration_ms: 1.6925
+  type: 'suite'
+  ...
+# Subtest: isInternalDev — kill switch
+    # Subtest: kill switch disables bypass for dev account 1
+    ok 1 - kill switch disables bypass for dev account 1
+      ---
+      duration_ms: 0.306
+      ...
+    # Subtest: kill switch disables bypass for dev account 2
+    ok 2 - kill switch disables bypass for dev account 2
+      ---
+      duration_ms: 0.2523
+      ...
+    # Subtest: kill switch doesn't affect normal user result (still false)
+    ok 3 - kill switch doesn't affect normal user result (still false)
+      ---
+      duration_ms: 0.307
+      ...
+    1..3
+ok 56 - isInternalDev — kill switch
+  ---
+  duration_ms: 1.2668
+  type: 'suite'
+  ...
+# Subtest: canUploadPDF — dev bypass
+    # Subtest: dev account 1 can upload with 0 existing PDFs
+    ok 1 - dev account 1 can upload with 0 existing PDFs
+      ---
+      duration_ms: 0.4258
+      ...
+    # Subtest: dev account 1 can upload even at free plan limit (1)
+    ok 2 - dev account 1 can upload even at free plan limit (1)
+      ---
+      duration_ms: 0.3579
+      ...
+    # Subtest: dev account can upload with 999 PDFs (no cap)
+    ok 3 - dev account can upload with 999 PDFs (no cap)
+      ---
+      duration_ms: 0.2209
+      ...
+    # Subtest: dev bypass response is marked with _devOverride
+    ok 4 - dev bypass response is marked with _devOverride
+      ---
+      duration_ms: 0.2075
+      ...
+    # Subtest: dev account 2 also bypasses
+    ok 5 - dev account 2 also bypasses
+      ---
+      duration_ms: 0.1924
+      ...
+    1..5
+ok 57 - canUploadPDF — dev bypass
+  ---
+  duration_ms: 1.7424
+  type: 'suite'
+  ...
+# Subtest: canUploadPDF — normal user isolation
+    # Subtest: free user is blocked at 1 PDF
+    ok 1 - free user is blocked at 1 PDF
+      ---
+      duration_ms: 0.284
+      ...
+    # Subtest: free user is blocked above limit
+    ok 2 - free user is blocked above limit
+      ---
+      duration_ms: 0.1678
+      ...
+    # Subtest: free user with 0 PDFs is still allowed
+    ok 3 - free user with 0 PDFs is still allowed
+      ---
+      duration_ms: 0.1719
+      ...
+    # Subtest: pro user (not dev) follows normal plan logic
+    ok 4 - pro user (not dev) follows normal plan logic
+      ---
+      duration_ms: 0.1603
+      ...
+    # Subtest: kill switch re-enables limit for dev account
+    ok 5 - kill switch re-enables limit for dev account
+      ---
+      duration_ms: 0.3367
+      ...
+    1..5
+ok 58 - canUploadPDF — normal user isolation
+  ---
+  duration_ms: 1.4789
+  type: 'suite'
+  ...
+# Subtest: canAskQuestion — dev bypass
+    # Subtest: dev account bypasses daily Q&A cap at 0
+    ok 1 - dev account bypasses daily Q&A cap at 0
+      ---
+      duration_ms: 0.3256
+      ...
+    # Subtest: dev account bypasses at daily limit (20)
+    ok 2 - dev account bypasses at daily limit (20)
+      ---
+      duration_ms: 0.1717
+      ...
+    # Subtest: dev account bypasses well above limit (500)
+    ok 3 - dev account bypasses well above limit (500)
+      ---
+      duration_ms: 0.1668
+      ...
+    # Subtest: dev bypass is marked with _devOverride
+    ok 4 - dev bypass is marked with _devOverride
+      ---
+      duration_ms: 0.1766
+      ...
+    1..4
+ok 59 - canAskQuestion — dev bypass
+  ---
+  duration_ms: 1.1095
+  type: 'suite'
+  ...
+# Subtest: canAskQuestion — normal user isolation
+    # Subtest: free user blocked at exactly 20 questions
+    ok 1 - free user blocked at exactly 20 questions
+      ---
+      duration_ms: 0.332
+      ...
+    # Subtest: free user at 19 questions is allowed
+    ok 2 - free user at 19 questions is allowed
+      ---
+      duration_ms: 0.1971
+      ...
+    # Subtest: free user blocked response has upgradeUrl
+    ok 3 - free user blocked response has upgradeUrl
+      ---
+      duration_ms: 0.3244
+      ...
+    # Subtest: null user is not treated as dev
+    ok 4 - null user is not treated as dev
+      ---
+      duration_ms: 0.1861
+      ...
+    1..4
+ok 60 - canAskQuestion — normal user isolation
+  ---
+  duration_ms: 1.3183
+  type: 'suite'
+  ...
+# Subtest: canStartCall — dev bypass
+    # Subtest: dev account bypasses voice call limit at 0 calls
+    ok 1 - dev account bypasses voice call limit at 0 calls
+      ---
+      duration_ms: 0.3515
+      ...
+    # Subtest: dev account bypasses at free limit (2 calls)
+    ok 2 - dev account bypasses at free limit (2 calls)
+      ---
+      duration_ms: 1.2313
+      ...
+    # Subtest: dev bypass response has unlimited school-tier limits
+    ok 3 - dev bypass response has unlimited school-tier limits
+      ---
+      duration_ms: 0.2213
+      ...
+    # Subtest: normal user is blocked at free limit (2 calls)
+    ok 4 - normal user is blocked at free limit (2 calls)
+      ---
+      duration_ms: 0.1566
+      ...
+    # Subtest: normal user at 1 call is still allowed
+    ok 5 - normal user at 1 call is still allowed
+      ---
+      duration_ms: 0.289
+      ...
+    1..5
+ok 61 - canStartCall — dev bypass
+  ---
+  duration_ms: 2.537
+  type: 'suite'
+  ...
+# Subtest: no privilege leakage between users
+    # Subtest: dev session does not affect subsequent normal user call
+    ok 1 - dev session does not affect subsequent normal user call
+      ---
+      duration_ms: 0.5982
+      ...
+    # Subtest: DEV_ALLOWED object is frozen (cannot be mutated by callers)
+    ok 2 - DEV_ALLOWED object is frozen (cannot be mutated by callers)
+      ---
+      duration_ms: 0.6542
+      ...
+    # Subtest: checking isInternalDev does not mutate the user object
+    ok 3 - checking isInternalDev does not mutate the user object
+      ---
+      duration_ms: 0.9162
+      ...
+    1..3
+ok 62 - no privilege leakage between users
+  ---
+  duration_ms: 2.3787
+  type: 'suite'
+  ...
+# Subtest: OCR Trigger Decision (shouldUseOCR)
+    # Subtest: triggers when text is null
+    ok 1 - triggers when text is null
+      ---
+      duration_ms: 1.9884
+      ...
+    # Subtest: triggers when text is undefined
+    ok 2 - triggers when text is undefined
+      ---
+      duration_ms: 0.3455
+      ...
+    # Subtest: triggers when text is empty string
+    ok 3 - triggers when text is empty string
+      ---
+      duration_ms: 0.227
+      ...
+    # Subtest: triggers when text is only whitespace
+    ok 4 - triggers when text is only whitespace
+      ---
+      duration_ms: 0.2418
+      ...
+    # Subtest: triggers when text has fewer than 50 chars
+    ok 5 - triggers when text has fewer than 50 chars
+      ---
+      duration_ms: 0.2673
+      ...
+    # Subtest: does NOT trigger when text has exactly 50 chars
+    ok 6 - does NOT trigger when text has exactly 50 chars
+      ---
+      duration_ms: 0.2366
+      ...
+    # Subtest: does NOT trigger when text exceeds 50 chars
+    ok 7 - does NOT trigger when text exceeds 50 chars
+      ---
+      duration_ms: 0.2477
+      ...
+    # Subtest: OCR_THRESHOLD is 50 (matches route.js constant)
+    ok 8 - OCR_THRESHOLD is 50 (matches route.js constant)
+      ---
+      duration_ms: 0.2608
+      ...
+    1..8
+ok 63 - OCR Trigger Decision (shouldUseOCR)
+  ---
+  duration_ms: 6.7517
+  type: 'suite'
+  ...
+# Subtest: Text Resolution (resolveText)
+    # Subtest: uses OCR text when PDF text is empty
+    ok 1 - uses OCR text when PDF text is empty
+      ---
+      duration_ms: 0.4891
+      ...
+    # Subtest: uses OCR text when PDF text is whitespace only
+    ok 2 - uses OCR text when PDF text is whitespace only
+      ---
+      duration_ms: 0.2666
+      ...
+    # Subtest: uses PDF text when it is long enough
+    ok 3 - uses PDF text when it is long enough
+      ---
+      duration_ms: 0.2184
+      ...
+    # Subtest: prefers PDF text over OCR when both available and PDF is sufficient
+    ok 4 - prefers PDF text over OCR when both available and PDF is sufficient
+      ---
+      duration_ms: 0.3546
+      ...
+    # Subtest: falls back to OCR when PDF text is borderline (49 chars)
+    ok 5 - falls back to OCR when PDF text is borderline (49 chars)
+      ---
+      duration_ms: 1.9635
+      ...
+    1..5
+ok 64 - Text Resolution (resolveText)
+  ---
+  duration_ms: 3.9914
+  type: 'suite'
+  ...
+# Subtest: Text Usability Validation (isTextUsable)
+    # Subtest: empty string is not usable
+    ok 1 - empty string is not usable
+      ---
+      duration_ms: 0.3732
+      ...
+    # Subtest: whitespace only is not usable
+    ok 2 - whitespace only is not usable
+      ---
+      duration_ms: 0.2211
+      ...
+    # Subtest: null is not usable
+    ok 3 - null is not usable
+      ---
+      duration_ms: 0.284
+      ...
+    # Subtest: undefined is not usable
+    ok 4 - undefined is not usable
+      ---
+      duration_ms: 0.2338
+      ...
+    # Subtest: real text content is usable
+    ok 5 - real text content is usable
+      ---
+      duration_ms: 0.394
+      ...
+    1..5
+ok 65 - Text Usability Validation (isTextUsable)
+  ---
+  duration_ms: 2.063
+  type: 'suite'
+  ...
+# Subtest: Topic Parsing Logic
+    # Subtest: strips bullet characters from topic lines
+    ok 1 - strips bullet characters from topic lines
+      ---
+      duration_ms: 0.674
+      ...
+    # Subtest: filters out very short tokens (≤3 chars)
+    ok 2 - filters out very short tokens (≤3 chars)
+      ---
+      duration_ms: 0.3734
+      ...
+    # Subtest: caps output at 20 topics
+    ok 3 - caps output at 20 topics
+      ---
+      duration_ms: 0.4419
+      ...
+    # Subtest: trims whitespace from each topic
+    ok 4 - trims whitespace from each topic
+      ---
+      duration_ms: 0.2485
+      ...
+    # Subtest: handles empty input
+    ok 5 - handles empty input
+      ---
+      duration_ms: 0.9957
+      ...
+    1..5
+ok 66 - Topic Parsing Logic
+  ---
+  duration_ms: 3.0848
+  type: 'suite'
+  ...
+# Subtest: Chunk Count Validation
+    # Subtest: empty chunks array is invalid
+    ok 1 - empty chunks array is invalid
+      ---
+      duration_ms: 0.32
+      ...
+    # Subtest: null is invalid
+    ok 2 - null is invalid
+      ---
+      duration_ms: 0.1747
+      ...
+    # Subtest: non-empty chunks array is valid
+    ok 3 - non-empty chunks array is valid
+      ---
+      duration_ms: 0.2782
+      ...
+    # Subtest: single chunk is valid
+    ok 4 - single chunk is valid
+      ---
+      duration_ms: 0.1804
+      ...
+    1..4
+ok 67 - Chunk Count Validation
+  ---
+  duration_ms: 1.2693
+  type: 'suite'
+  ...
+# (node:27180) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Shafi/ask-my-notes/src/lib/parseAnswerSections.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to C:\\Users\\Shafi\\ask-my-notes\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: T-PSR-001: \#\# heading format
+    # Subtest: extracts heading and content from \#\# line
+    ok 1 - extracts heading and content from \#\# line
+      ---
+      duration_ms: 2.3556
+      ...
+    # Subtest: handles multiple \#\# headings
+    ok 2 - handles multiple \#\# headings
+      ---
+      duration_ms: 0.5116
+      ...
+    # Subtest: \#\# heading strips hash and whitespace from label
+    ok 3 - \#\# heading strips hash and whitespace from label
+      ---
+      duration_ms: 9.4223
+      ...
+    1..3
+ok 68 - T-PSR-001: \#\# heading format
+  ---
+  duration_ms: 14.7535
+  type: 'suite'
+  ...
+# Subtest: T-PSR-002: **Bold** heading format
+    # Subtest: extracts heading from bold-only line
+    ok 1 - extracts heading from bold-only line
+      ---
+      duration_ms: 0.5688
+      ...
+    # Subtest: bold heading with trailing whitespace is still detected
+    ok 2 - bold heading with trailing whitespace is still detected
+      ---
+      duration_ms: 0.4143
+      ...
+    # Subtest: bold text mid-sentence is NOT treated as heading
+    ok 3 - bold text mid-sentence is NOT treated as heading
+      ---
+      duration_ms: 0.2954
+      ...
+    # Subtest: bold text ending with punctuation is NOT treated as heading
+    ok 4 - bold text ending with punctuation is NOT treated as heading
+      ---
+      duration_ms: 0.3171
+      ...
+    # Subtest: bold heading with 8+ words is NOT treated as heading
+    ok 5 - bold heading with 8+ words is NOT treated as heading
+      ---
+      duration_ms: 0.4506
+      ...
+    1..5
+ok 69 - T-PSR-002: **Bold** heading format
+  ---
+  duration_ms: 3.0604
+  type: 'suite'
+  ...
+# Subtest: T-PSR-003: \#\#\# heading format
+    # Subtest: \#\#\# is recognised as a heading
+    ok 1 - \#\#\# is recognised as a heading
+      ---
+      duration_ms: 0.4273
+      ...
+    1..1
+ok 70 - T-PSR-003: \#\#\# heading format
+  ---
+  duration_ms: 0.7019
+  type: 'suite'
+  ...
+# Subtest: T-PSR-004: Flat answer — no headings
+    # Subtest: flat 2-mark answer produces one section with null heading
+    ok 1 - flat 2-mark answer produces one section with null heading
+      ---
+      duration_ms: 0.591
+      ...
+    # Subtest: answer with only paragraph text produces content
+    ok 2 - answer with only paragraph text produces content
+      ---
+      duration_ms: 0.3817
+      ...
+    1..2
+ok 71 - T-PSR-004: Flat answer — no headings
+  ---
+  duration_ms: 1.2358
+  type: 'suite'
+  ...
+# Subtest: T-PSR-005: QUICK SUMMARY section
+    # Subtest: QUICK SUMMARY section is flagged isQuickSummary: true
+    ok 1 - QUICK SUMMARY section is flagged isQuickSummary: true
+      ---
+      duration_ms: 0.5415
+      ...
+    # Subtest: extractQuickSummary separates summary from rest
+    ok 2 - extractQuickSummary separates summary from rest
+      ---
+      duration_ms: 0.461
+      ...
+    # Subtest: extractQuickSummary returns null summary when no QUICK SUMMARY present
+    ok 3 - extractQuickSummary returns null summary when no QUICK SUMMARY present
+      ---
+      duration_ms: 0.284
+      ...
+    1..3
+ok 72 - T-PSR-005: QUICK SUMMARY section
+  ---
+  duration_ms: 1.6944
+  type: 'suite'
+  ...
+# Subtest: T-PSR-006: Edge case inputs
+    # Subtest: empty string returns []
+    ok 1 - empty string returns []
+      ---
+      duration_ms: 1.1576
+      ...
+    # Subtest: null returns []
+    ok 2 - null returns []
+      ---
+      duration_ms: 0.2319
+      ...
+    # Subtest: whitespace-only string returns []
+    ok 3 - whitespace-only string returns []
+      ---
+      duration_ms: 0.2252
+      ...
+    1..3
+ok 73 - T-PSR-006: Edge case inputs
+  ---
+  duration_ms: 1.9961
+  type: 'suite'
+  ...
+# Subtest: T-PSR-007: Real 10-mark API response — section splitting
+    # Subtest: produces 9 or more sections
+    ok 1 - produces 9 or more sections
+      ---
+      duration_ms: 1.8428
+      ...
+    # Subtest: Definition section is present
+    ok 2 - Definition section is present
+      ---
+      duration_ms: 0.6563
+      ...
+    # Subtest: Diagram section is present and contains code block
+    ok 3 - Diagram section is present and contains code block
+      ---
+      duration_ms: 0.4934
+      ...
+    # Subtest: Conclusion section is the last non-empty section
+    ok 4 - Conclusion section is the last non-empty section
+      ---
+      duration_ms: 0.3539
+      ...
+    # Subtest: sections with content have non-empty content
+    ok 5 - sections with content have non-empty content
+      ---
+      duration_ms: 0.3692
+      ...
+    # Subtest: isQuickSummary is false for all sections (no summary in 10M fixture)
+    ok 6 - isQuickSummary is false for all sections (no summary in 10M fixture)
+      ---
+      duration_ms: 0.3025
+      ...
+    1..6
+ok 74 - T-PSR-007: Real 10-mark API response — section splitting
+  ---
+  duration_ms: 4.4618
+  type: 'suite'
+  ...
+# Subtest: T-PSR-008: getSectionMeta — known sections
+    # Subtest: "Definition" returns label="Definition" and icon="📖"
+    ok 1 - "Definition" returns label="Definition" and icon="📖"
+      ---
+      duration_ms: 0.5351
+      ...
+    # Subtest: "Working" returns label="Working" and icon="⚙️"
+    ok 2 - "Working" returns label="Working" and icon="⚙️"
+      ---
+      duration_ms: 0.2364
+      ...
+    # Subtest: "Applications" returns label="Applications" and icon="🌍"
+    ok 3 - "Applications" returns label="Applications" and icon="🌍"
+      ---
+      duration_ms: 0.4126
+      ...
+    # Subtest: "Limitations" returns label="Limitations" and icon="⚠️"
+    ok 4 - "Limitations" returns label="Limitations" and icon="⚠️"
+      ---
+      duration_ms: 0.1846
+      ...
+    # Subtest: "Critical Analysis" returns label="Critical Analysis" and icon="🧠"
+    ok 5 - "Critical Analysis" returns label="Critical Analysis" and icon="🧠"
+      ---
+      duration_ms: 0.151
+      ...
+    # Subtest: "Conclusion" returns label="Conclusion" and icon="🎯"
+    ok 6 - "Conclusion" returns label="Conclusion" and icon="🎯"
+      ---
+      duration_ms: 0.1556
+      ...
+    # Subtest: "Diagram" returns label="Diagram" and icon="📊"
+    ok 7 - "Diagram" returns label="Diagram" and icon="📊"
+      ---
+      duration_ms: 0.1422
+      ...
+    # Subtest: "Code" returns label="Code" and icon="💻"
+    ok 8 - "Code" returns label="Code" and icon="💻"
+      ---
+      duration_ms: 0.1328
+      ...
+    1..8
+ok 75 - T-PSR-008: getSectionMeta — known sections
+  ---
+  duration_ms: 2.4772
+  type: 'suite'
+  ...
+# Subtest: T-PSR-009: getSectionMeta — case insensitivity
+    # Subtest: DEFINITION matches definition entry
+    ok 1 - DEFINITION matches definition entry
+      ---
+      duration_ms: 0.3892
+      ...
+    # Subtest: definition (lowercase) matches
+    ok 2 - definition (lowercase) matches
+      ---
+      duration_ms: 0.1958
+      ...
+    # Subtest: Working/Process variant matches
+    ok 3 - Working/Process variant matches
+      ---
+      duration_ms: 0.1845
+      ...
+    1..3
+ok 76 - T-PSR-009: getSectionMeta — case insensitivity
+  ---
+  duration_ms: 1.0001
+  type: 'suite'
+  ...
+# Subtest: T-PSR-010: getSectionMeta — unknown section fallback
+    # Subtest: unknown heading returns neutral fallback accent \#475569
+    ok 1 - unknown heading returns neutral fallback accent \#475569
+      ---
+      duration_ms: 0.294
+      ...
+    # Subtest: null heading returns fallback with empty label
+    ok 2 - null heading returns fallback with empty label
+      ---
+      duration_ms: 0.2123
+      ...
+    # Subtest: empty string heading returns fallback
+    ok 3 - empty string heading returns fallback
+      ---
+      duration_ms: 0.1882
+      ...
+    1..3
+ok 77 - T-PSR-010: getSectionMeta — unknown section fallback
+  ---
+  duration_ms: 1.0729
+  type: 'suite'
+  ...
+# Subtest: T-PSR-011: Section object shape
+    # Subtest: every section has heading, content, isQuickSummary fields
+    ok 1 - every section has heading, content, isQuickSummary fields
+      ---
+      duration_ms: 0.3537
+      ...
+    # Subtest: heading is either null or a non-empty string
+    ok 2 - heading is either null or a non-empty string
+      ---
+      duration_ms: 0.36
+      ...
+    1..2
+ok 78 - T-PSR-011: Section object shape
+  ---
+  duration_ms: 0.9204
+  type: 'suite'
+  ...
+# Subtest: T-PSR-012: --- divider creates section boundary
+    # Subtest: content before --- and after --- are separate sections
+    ok 1 - content before --- and after --- are separate sections
+      ---
+      duration_ms: 0.8043
+      ...
+    1..1
+ok 79 - T-PSR-012: --- divider creates section boundary
+  ---
+  duration_ms: 1.0164
+  type: 'suite'
+  ...
+# Subtest: PLANS constant
+    # Subtest: all 4 plans are defined
+    ok 1 - all 4 plans are defined
+      ---
+      duration_ms: 1.8909
+      ...
+    # Subtest: free plan has pdf limit of 1 and qa limit of 20
+    ok 2 - free plan has pdf limit of 1 and qa limit of 20
+      ---
+      duration_ms: 0.2938
+      ...
+    # Subtest: student plan has 10 pdf limit and unlimited Q&A
+    ok 3 - student plan has 10 pdf limit and unlimited Q&A
+      ---
+      duration_ms: 0.2504
+      ...
+    # Subtest: pro plan has unlimited pdfs and unlimited Q&A
+    ok 4 - pro plan has unlimited pdfs and unlimited Q&A
+      ---
+      duration_ms: 1.9359
+      ...
+    # Subtest: school plan has unlimited everything
+    ok 5 - school plan has unlimited everything
+      ---
+      duration_ms: 0.2634
+      ...
+    1..5
+ok 80 - PLANS constant
+  ---
+  duration_ms: 7.1272
+  type: 'suite'
+  ...
+# Subtest: PDF Upload Limits
+    # Subtest: free user with 0 PDFs is allowed
+    ok 1 - free user with 0 PDFs is allowed
+      ---
+      duration_ms: 0.7074
+      ...
+    # Subtest: free user is blocked at exactly 1 PDF
+    ok 2 - free user is blocked at exactly 1 PDF
+      ---
+      duration_ms: 0.5343
+      ...
+    # Subtest: free user is blocked above limit (2 PDFs)
+    ok 3 - free user is blocked above limit (2 PDFs)
+      ---
+      duration_ms: 0.6495
+      ...
+    # Subtest: student user is allowed at 9 PDFs
+    ok 4 - student user is allowed at 9 PDFs
+      ---
+      duration_ms: 0.4178
+      ...
+    # Subtest: student user is blocked at exactly 10 PDFs
+    ok 5 - student user is blocked at exactly 10 PDFs
+      ---
+      duration_ms: 0.362
+      ...
+    # Subtest: pro user is allowed regardless of count
+    ok 6 - pro user is allowed regardless of count
+      ---
+      duration_ms: 2.1897
+      ...
+    # Subtest: school user is allowed regardless of count
+    ok 7 - school user is allowed regardless of count
+      ---
+      duration_ms: 0.3838
+      ...
+    # Subtest: blocked response includes upgradeUrl
+    ok 8 - blocked response includes upgradeUrl
+      ---
+      duration_ms: 0.2899
+      ...
+    1..8
+ok 81 - PDF Upload Limits
+  ---
+  duration_ms: 6.5587
+  type: 'suite'
+  ...
+# Subtest: Q&A Daily Limits
+    # Subtest: free user at 0 questions is allowed
+    ok 1 - free user at 0 questions is allowed
+      ---
+      duration_ms: 7.6968
+      ...
+    # Subtest: free user at 19 questions is allowed
+    ok 2 - free user at 19 questions is allowed
+      ---
+      duration_ms: 0.283
+      ...
+    # Subtest: free user is blocked at exactly 20 questions
+    ok 3 - free user is blocked at exactly 20 questions
+      ---
+      duration_ms: 0.4437
+      ...
+    # Subtest: free user is blocked above 20 questions
+    ok 4 - free user is blocked above 20 questions
+      ---
+      duration_ms: 0.2478
+      ...
+    # Subtest: student user has unlimited questions
+    ok 5 - student user has unlimited questions
+      ---
+      duration_ms: 0.5229
+      ...
+    # Subtest: pro user has unlimited questions
+    ok 6 - pro user has unlimited questions
+      ---
+      duration_ms: 6.8684
+      ...
+    # Subtest: blocked response includes upgradeUrl
+    ok 7 - blocked response includes upgradeUrl
+      ---
+      duration_ms: 0.3342
+      ...
+    # Subtest: blocked response reason is user-friendly
+    ok 8 - blocked response reason is user-friendly
+      ---
+      duration_ms: 0.9876
+      ...
+    1..8
+ok 82 - Q&A Daily Limits
+  ---
+  duration_ms: 18.8631
+  type: 'suite'
+  ...
+# Subtest: Plan Expiry Resolution
+    # Subtest: null DB row falls back to free
+    ok 1 - null DB row falls back to free
+      ---
+      duration_ms: 0.3386
+      ...
+    # Subtest: expired plan downgrades to free
+    ok 2 - expired plan downgrades to free
+      ---
+      duration_ms: 0.7759
+      ...
+    # Subtest: active plan returns correct tier
+    ok 3 - active plan returns correct tier
+      ---
+      duration_ms: 0.2474
+      ...
+    # Subtest: plan with no expires_at stays active
+    ok 4 - plan with no expires_at stays active
+      ---
+      duration_ms: 0.2146
+      ...
+    # Subtest: plan with undefined tier falls back to free
+    ok 5 - plan with undefined tier falls back to free
+      ---
+      duration_ms: 0.2092
+      ...
+    # Subtest: plan expiring exactly now is treated as expired
+    ok 6 - plan expiring exactly now is treated as expired
+      ---
+      duration_ms: 0.3909
+      ...
+    1..6
+ok 83 - Plan Expiry Resolution
+  ---
+  duration_ms: 2.7795
+  type: 'suite'
+  ...
+# (node:27900) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Shafi/ask-my-notes/src/lib/progressUtils.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to C:\\Users\\Shafi\\ask-my-notes\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: computeFocusScore
+    # Subtest: returns 100 for perfect inputs
+    ok 1 - returns 100 for perfect inputs
+      ---
+      duration_ms: 4.2797
+      ...
+    # Subtest: returns 0 for all-zero inputs
+    ok 2 - returns 0 for all-zero inputs
+      ---
+      duration_ms: 0.2928
+      ...
+    # Subtest: caps consistency contribution at 7-day streak
+    ok 3 - caps consistency contribution at 7-day streak
+      ---
+      duration_ms: 0.4112
+      ...
+    # Subtest: handles totalTopics === 0 without NaN
+    ok 4 - handles totalTopics === 0 without NaN
+      ---
+      duration_ms: 0.383
+      ...
+    1..4
+ok 84 - computeFocusScore
+  ---
+  duration_ms: 8.0844
+  type: 'suite'
+  ...
+# Subtest: computePeerPercentile
+    # Subtest: clamps minimum to 10
+    ok 1 - clamps minimum to 10
+      ---
+      duration_ms: 0.4416
+      ...
+    # Subtest: clamps maximum to 95
+    ok 2 - clamps maximum to 95
+      ---
+      duration_ms: 0.393
+      ...
+    # Subtest: gives higher percentile for streak > 3
+    ok 3 - gives higher percentile for streak > 3
+      ---
+      duration_ms: 0.4192
+      ...
+    1..3
+ok 85 - computePeerPercentile
+  ---
+  duration_ms: 1.8858
+  type: 'suite'
+  ...
+# Subtest: computeStudyTimeMins
+    # Subtest: uses active_time_seconds when available
+    ok 1 - uses active_time_seconds when available
+      ---
+      duration_ms: 2.9544
+      ...
+    # Subtest: falls back to 20 min per task when active_time_seconds is 0
+    ok 2 - falls back to 20 min per task when active_time_seconds is 0
+      ---
+      duration_ms: 0.4372
+      ...
+    # Subtest: returns 0 for empty array
+    ok 3 - returns 0 for empty array
+      ---
+      duration_ms: 0.278
+      ...
+    1..3
+ok 86 - computeStudyTimeMins
+  ---
+  duration_ms: 6.3468
+  type: 'suite'
+  ...
+# Subtest: computePeakHour
+    # Subtest: returns UTC hour with most sessions (no offset)
+    ok 1 - returns UTC hour with most sessions (no offset)
+      ---
+      duration_ms: 0.5394
+      ...
+    # Subtest: converts to IST (+5.5) correctly
+    ok 2 - converts to IST (+5.5) correctly
+      ---
+      duration_ms: 0.4325
+      ...
+    # Subtest: returns 20 as default when no rows
+    ok 3 - returns 20 as default when no rows
+      ---
+      duration_ms: 0.2439
+      ...
+    # Subtest: ignores rows without created_at
+    ok 4 - ignores rows without created_at
+      ---
+      duration_ms: 0.2377
+      ...
+    1..4
+ok 87 - computePeakHour
+  ---
+  duration_ms: 2.2758
+  type: 'suite'
+  ...
+# Subtest: computeWeeklyChange
+    # Subtest: returns 100 when last week was 0 and this week > 0
+    ok 1 - returns 100 when last week was 0 and this week > 0
+      ---
+      duration_ms: 0.5823
+      ...
+    # Subtest: returns 0 when both weeks are 0
+    ok 2 - returns 0 when both weeks are 0
+      ---
+      duration_ms: 0.491
+      ...
+    # Subtest: calculates 50% increase correctly
+    ok 3 - calculates 50% increase correctly
+      ---
+      duration_ms: 0.4055
+      ...
+    # Subtest: returns 0 when fewer than 14 days of data
+    ok 4 - returns 0 when fewer than 14 days of data
+      ---
+      duration_ms: 0.4689
+      ...
+    1..4
+ok 88 - computeWeeklyChange
+  ---
+  duration_ms: 2.5432
+  type: 'suite'
+  ...
+# Subtest: computeStrongestSubject
+    # Subtest: returns null for empty input
+    ok 1 - returns null for empty input
+      ---
+      duration_ms: 0.3491
+      ...
+    # Subtest: returns subject with highest average mastery
+    ok 2 - returns subject with highest average mastery
+      ---
+      duration_ms: 0.3625
+      ...
+    1..2
+ok 89 - computeStrongestSubject
+  ---
+  duration_ms: 0.9167
+  type: 'suite'
+  ...
+# Subtest: computeStudyPlanProgress
+    # Subtest: counts unique study days
+    ok 1 - counts unique study days
+      ---
+      duration_ms: 0.4185
+      ...
+    # Subtest: caps completionPct at 100
+    ok 2 - caps completionPct at 100
+      ---
+      duration_ms: 0.5022
+      ...
+    1..2
+ok 90 - computeStudyPlanProgress
+  ---
+  duration_ms: 1.1138
+  type: 'suite'
+  ...
+# Subtest: isNearBottom
+    # Subtest: returns true when at exact bottom
+    ok 1 - returns true when at exact bottom
+      ---
+      duration_ms: 1.8324
+      ...
+    # Subtest: returns true when within threshold (100px from bottom)
+    ok 2 - returns true when within threshold (100px from bottom)
+      ---
+      duration_ms: 0.2606
+      ...
+    # Subtest: returns true when at threshold boundary (199px from bottom)
+    ok 3 - returns true when at threshold boundary (199px from bottom)
+      ---
+      duration_ms: 0.2443
+      ...
+    # Subtest: returns false when at exact threshold boundary (200px from bottom)
+    ok 4 - returns false when at exact threshold boundary (200px from bottom)
+      ---
+      duration_ms: 1.334
+      ...
+    # Subtest: returns false when far from bottom (500px from bottom)
+    ok 5 - returns false when far from bottom (500px from bottom)
+      ---
+      duration_ms: 0.2655
+      ...
+    # Subtest: returns true when content is shorter than viewport (no scroll needed)
+    ok 6 - returns true when content is shorter than viewport (no scroll needed)
+      ---
+      duration_ms: 0.2441
+      ...
+    1..6
+ok 91 - isNearBottom
+  ---
+  duration_ms: 7.0414
+  type: 'suite'
+  ...
+# (node:24956) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Shafi/ask-my-notes/src/lib/parseAnswerSections.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to C:\\Users\\Shafi\\ask-my-notes\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: T-ACT-001: Simplify — known section uses meta.label
+    # Subtest: Simplify "Definition" → correct query with label "Definition"
+    ok 1 - Simplify "Definition" → correct query with label "Definition"
+      ---
+      duration_ms: 2.5344
+      ...
+    # Subtest: Simplify "Working" → correct query with label "Working"
+    ok 2 - Simplify "Working" → correct query with label "Working"
+      ---
+      duration_ms: 0.7756
+      ...
+    # Subtest: Simplify "Applications" → correct query with label "Applications"
+    ok 3 - Simplify "Applications" → correct query with label "Applications"
+      ---
+      duration_ms: 0.3588
+      ...
+    # Subtest: Simplify "Limitations" → correct query with label "Limitations"
+    ok 4 - Simplify "Limitations" → correct query with label "Limitations"
+      ---
+      duration_ms: 0.1941
+      ...
+    # Subtest: Simplify "Conclusion" → correct query with label "Conclusion"
+    ok 5 - Simplify "Conclusion" → correct query with label "Conclusion"
+      ---
+      duration_ms: 0.1979
+      ...
+    # Subtest: Simplify "Critical Analysis" → correct query with label "Critical Analysis"
+    ok 6 - Simplify "Critical Analysis" → correct query with label "Critical Analysis"
+      ---
+      duration_ms: 0.2679
+      ...
+    # Subtest: Simplify "Diagram" → correct query with label "Diagram"
+    ok 7 - Simplify "Diagram" → correct query with label "Diagram"
+      ---
+      duration_ms: 0.2971
+      ...
+    1..7
+ok 92 - T-ACT-001: Simplify — known section uses meta.label
+  ---
+  duration_ms: 8.8331
+  type: 'suite'
+  ...
+# Subtest: T-ACT-002: Quiz me — known section uses meta.label
+    # Subtest: Quiz me "Definition" → correct query with label "Definition"
+    ok 1 - Quiz me "Definition" → correct query with label "Definition"
+      ---
+      duration_ms: 0.485
+      ...
+    # Subtest: Quiz me "Working" → correct query with label "Working"
+    ok 2 - Quiz me "Working" → correct query with label "Working"
+      ---
+      duration_ms: 0.3693
+      ...
+    # Subtest: Quiz me "Applications" → correct query with label "Applications"
+    ok 3 - Quiz me "Applications" → correct query with label "Applications"
+      ---
+      duration_ms: 0.2774
+      ...
+    1..3
+ok 93 - T-ACT-002: Quiz me — known section uses meta.label
+  ---
+  duration_ms: 1.6797
+  type: 'suite'
+  ...
+# Subtest: T-ACT-003: Unknown section heading — uses raw heading, not icon
+    # Subtest: Simplify: unknown heading 'Custom Section' appears literally in query
+    ok 1 - Simplify: unknown heading 'Custom Section' appears literally in query
+      ---
+      duration_ms: 0.5757
+      ...
+    # Subtest: Quiz me: unknown heading 'Random Topic' appears literally in query
+    ok 2 - Quiz me: unknown heading 'Random Topic' appears literally in query
+      ---
+      duration_ms: 0.4353
+      ...
+    1..2
+ok 94 - T-ACT-003: Unknown section heading — uses raw heading, not icon
+  ---
+  duration_ms: 1.2346
+  type: 'suite'
+  ...
+# Subtest: T-ACT-004: Null heading → 'this section' fallback
+    # Subtest: Simplify with null heading uses 'this section'
+    ok 1 - Simplify with null heading uses 'this section'
+      ---
+      duration_ms: 0.3512
+      ...
+    # Subtest: Quiz me with null heading uses 'this section'
+    ok 2 - Quiz me with null heading uses 'this section'
+      ---
+      duration_ms: 0.3096
+      ...
+    1..2
+ok 95 - T-ACT-004: Null heading → 'this section' fallback
+  ---
+  duration_ms: 1.2184
+  type: 'suite'
+  ...
+# Subtest: T-ACT-005: No onAction — no throw, returns undefined
+    # Subtest: fireAction with undefined onAction does not throw
+    ok 1 - fireAction with undefined onAction does not throw
+      ---
+      duration_ms: 1.5875
+      ...
+    # Subtest: fireAction with undefined onAction returns undefined
+    ok 2 - fireAction with undefined onAction returns undefined
+      ---
+      duration_ms: 0.4534
+      ...
+    1..2
+ok 96 - T-ACT-005: No onAction — no throw, returns undefined
+  ---
+  duration_ms: 2.4169
+  type: 'suite'
+  ...
+# Subtest: T-ACT-006: Exact query string format
+    # Subtest: Simplify query starts with 'Explain '
+    ok 1 - Simplify query starts with 'Explain '
+      ---
+      duration_ms: 0.408
+      ...
+    # Subtest: Simplify query ends with 'use an everyday analogy'
+    ok 2 - Simplify query ends with 'use an everyday analogy'
+      ---
+      duration_ms: 0.4017
+      ...
+    # Subtest: Simplify query contains 'no jargon'
+    ok 3 - Simplify query contains 'no jargon'
+      ---
+      duration_ms: 0.2929
+      ...
+    # Subtest: Quiz query starts with 'Give me 3 short exam questions'
+    ok 4 - Quiz query starts with 'Give me 3 short exam questions'
+      ---
+      duration_ms: 0.2091
+      ...
+    # Subtest: Quiz query contains '(with answers)'
+    ok 5 - Quiz query contains '(with answers)'
+      ---
+      duration_ms: 1.1866
+      ...
+    # Subtest: section label is wrapped in double quotes in query
+    ok 6 - section label is wrapped in double quotes in query
+      ---
+      duration_ms: 0.3239
+      ...
+    1..6
+ok 97 - T-ACT-006: Exact query string format
+  ---
+  duration_ms: 3.2819
+  type: 'suite'
+  ...
+# Subtest: T-ACT-007: onAction receives a single string argument
+    # Subtest: Simplify: onAction receives one string
+    ok 1 - Simplify: onAction receives one string
+      ---
+      duration_ms: 0.3625
+      ...
+    # Subtest: Quiz me: onAction receives one string
+    ok 2 - Quiz me: onAction receives one string
+      ---
+      duration_ms: 0.5401
+      ...
+    1..2
+ok 98 - T-ACT-007: onAction receives a single string argument
+  ---
+  duration_ms: 1.1355
+  type: 'suite'
+  ...
+# Subtest: T-ACT-008: Unknown action type is ignored
+    # Subtest: unknown action type does not call onAction
+    ok 1 - unknown action type does not call onAction
+      ---
+      duration_ms: 0.3833
+      ...
+    # Subtest: unknown action type does not throw
+    ok 2 - unknown action type does not throw
+      ---
+      duration_ms: 0.2445
+      ...
+    1..2
+ok 99 - T-ACT-008: Unknown action type is ignored
+  ---
+  duration_ms: 0.8283
+  type: 'suite'
+  ...
+# Subtest: T-ACT-009: Real 10-mark section labels — full round-trip
+    # Subtest: Simplify + Quiz generate non-empty queries for "Definition"
+    ok 1 - Simplify + Quiz generate non-empty queries for "Definition"
+      ---
+      duration_ms: 0.926
+      ...
+    # Subtest: Simplify + Quiz generate non-empty queries for "Key Characteristics"
+    ok 2 - Simplify + Quiz generate non-empty queries for "Key Characteristics"
+      ---
+      duration_ms: 0.2879
+      ...
+    # Subtest: Simplify + Quiz generate non-empty queries for "Working"
+    ok 3 - Simplify + Quiz generate non-empty queries for "Working"
+      ---
+      duration_ms: 0.2367
+      ...
+    # Subtest: Simplify + Quiz generate non-empty queries for "Diagram"
+    ok 4 - Simplify + Quiz generate non-empty queries for "Diagram"
+      ---
+      duration_ms: 0.3008
+      ...
+    # Subtest: Simplify + Quiz generate non-empty queries for "Applications"
+    ok 5 - Simplify + Quiz generate non-empty queries for "Applications"
+      ---
+      duration_ms: 0.2033
+      ...
+    # Subtest: Simplify + Quiz generate non-empty queries for "Conclusion"
+    ok 6 - Simplify + Quiz generate non-empty queries for "Conclusion"
+      ---
+      duration_ms: 0.2638
+      ...
+    1..6
+ok 100 - T-ACT-009: Real 10-mark section labels — full round-trip
+  ---
+  duration_ms: 2.6209
+  type: 'suite'
+  ...
+# Subtest: T-ACT-010: Case-insensitive section label in query
+    # Subtest: 'working' (lowercase) resolves to 'Working' label in query
+    ok 1 - 'working' (lowercase) resolves to 'Working' label in query
+      ---
+      duration_ms: 0.3707
+      ...
+    # Subtest: 'DEFINITION' resolves to 'Definition' label in query
+    ok 2 - 'DEFINITION' resolves to 'Definition' label in query
+      ---
+      duration_ms: 0.2915
+      ...
+    1..2
+ok 101 - T-ACT-010: Case-insensitive section label in query
+  ---
+  duration_ms: 0.86
+  type: 'suite'
+  ...
+# Subtest: T-ACT-011: Special characters in heading
+    # Subtest: heading with slash: 'Working / Process' appears in query correctly
+    ok 1 - heading with slash: 'Working / Process' appears in query correctly
+      ---
+      duration_ms: 0.3635
+      ...
+    # Subtest: heading with hyphen: 'Real-World Applications' appears in query
+    ok 2 - heading with hyphen: 'Real-World Applications' appears in query
+      ---
+      duration_ms: 0.1993
+      ...
+    1..2
+ok 102 - T-ACT-011: Special characters in heading
+  ---
+  duration_ms: 0.827
+  type: 'suite'
+  ...
+# Subtest: T-ACT-012: Streaming guard — logic contract
+    # Subtest: isStreaming=true: onAction is not called
+    ok 1 - isStreaming=true: onAction is not called
+      ---
+      duration_ms: 0.4627
+      ...
+    # Subtest: isStreaming=false: onAction is called normally
+    ok 2 - isStreaming=false: onAction is called normally
+      ---
+      duration_ms: 0.2933
+      ...
+    1..2
+ok 103 - T-ACT-012: Streaming guard — logic contract
+  ---
+  duration_ms: 1.084
+  type: 'suite'
+  ...
+# Subtest: T-STR-001: META token detection
+    # Subtest: detects __META__ prefix correctly
+    ok 1 - detects __META__ prefix correctly
+      ---
+      duration_ms: 1.9443
+      ...
+    # Subtest: does NOT treat non-META chunk as metadata
+    ok 2 - does NOT treat non-META chunk as metadata
+      ---
+      duration_ms: 0.2339
+      ...
+    1..2
+ok 104 - T-STR-001: META token detection
+  ---
+  duration_ms: 4.1304
+  type: 'suite'
+  ...
+# Subtest: T-STR-002: META JSON parsing — live stream
+    # Subtest: extracts sources array
+    ok 1 - extracts sources array
+      ---
+      duration_ms: 0.9834
+      ...
+    # Subtest: extracts usedContext boolean
+    ok 2 - extracts usedContext boolean
+      ---
+      duration_ms: 0.1899
+      ...
+    # Subtest: extracts classification and dispatches event
+    ok 3 - extracts classification and dispatches event
+      ---
+      duration_ms: 0.2221
+      ...
+    # Subtest: all four classification fields are present in event
+    ok 4 - all four classification fields are present in event
+      ---
+      duration_ms: 0.2713
+      ...
+    1..4
+ok 105 - T-STR-002: META JSON parsing — live stream
+  ---
+  duration_ms: 2.0293
+  type: 'suite'
+  ...
+# Subtest: T-STR-003: META and answer in same chunk (cache collapse)
+    # Subtest: strips META prefix and returns only the answer text
+    ok 1 - strips META prefix and returns only the answer text
+      ---
+      duration_ms: 0.4042
+      ...
+    # Subtest: classification event still fires when chunks are collapsed
+    ok 2 - classification event still fires when chunks are collapsed
+      ---
+      duration_ms: 0.3031
+      ...
+    1..2
+ok 106 - T-STR-003: META and answer in same chunk (cache collapse)
+  ---
+  duration_ms: 0.9675
+  type: 'suite'
+  ...
+# Subtest: T-STR-004: META in separate chunk, answer spread across chunks
+    # Subtest: accumulates answer correctly across multiple chunks
+    ok 1 - accumulates answer correctly across multiple chunks
+      ---
+      duration_ms: 0.2746
+      ...
+    # Subtest: live stream: META chunk then several OpenAI delta chunks
+    ok 2 - live stream: META chunk then several OpenAI delta chunks
+      ---
+      duration_ms: 0.314
+      ...
+    1..2
+ok 107 - T-STR-004: META in separate chunk, answer spread across chunks
+  ---
+  duration_ms: 0.7351
+  type: 'suite'
+  ...
+# Subtest: T-STR-005: metaHandled prevents re-parsing subsequent chunks
+    # Subtest: second __META__-like chunk is treated as answer text
+    ok 1 - second __META__-like chunk is treated as answer text
+      ---
+      duration_ms: 0.3221
+      ...
+    1..1
+ok 108 - T-STR-005: metaHandled prevents re-parsing subsequent chunks
+  ---
+  duration_ms: 0.4736
+  type: 'suite'
+  ...
+# Subtest: T-STR-006: Malformed META JSON — graceful fallback
+    # Subtest: does not throw on invalid JSON
+    ok 1 - does not throw on invalid JSON
+      ---
+      duration_ms: 0.4909
+      ...
+    # Subtest: on parse failure, raw chunk is appended to accumulated (not lost)
+    ok 2 - on parse failure, raw chunk is appended to accumulated (not lost)
+      ---
+      duration_ms: 0.2004
+      ...
+    # Subtest: stream continues reading after parse failure
+    ok 3 - stream continues reading after parse failure
+      ---
+      duration_ms: 0.2744
+      ...
+    1..3
+ok 109 - T-STR-006: Malformed META JSON — graceful fallback
+  ---
+  duration_ms: 1.1834
+  type: 'suite'
+  ...
+# Subtest: T-STR-007: Cache META vs Live META — frontend-consumed fields are identical
+    # Subtest: both contain sources, usedContext, classification at top level
+    ok 1 - both contain sources, usedContext, classification at top level
+      ---
+      duration_ms: 0.3096
+      ...
+    # Subtest: cache stream always has usedContext=false and sources=[]
+    ok 2 - cache stream always has usedContext=false and sources=[]
+      ---
+      duration_ms: 0.1716
+      ...
+    # Subtest: live stream fromCache field is absent from META
+    ok 3 - live stream fromCache field is absent from META
+      ---
+      duration_ms: 0.1485
+      ...
+    # Subtest: cache stream fromCache field is true in META
+    ok 4 - cache stream fromCache field is true in META
+      ---
+      duration_ms: 0.3089
+      ...
+    1..4
+ok 110 - T-STR-007: Cache META vs Live META — frontend-consumed fields are identical
+  ---
+  duration_ms: 1.1449
+  type: 'suite'
+  ...
+# Subtest: T-STR-008: Accumulated answer parity — cache vs live
+    # Subtest: single-chunk cache stream produces same accumulated as equivalent live stream
+    ok 1 - single-chunk cache stream produces same accumulated as equivalent live stream
+      ---
+      duration_ms: 0.3245
+      ...
+    # Subtest: multi-chunk live stream accumulates to same final answer
+    ok 2 - multi-chunk live stream accumulates to same final answer
+      ---
+      duration_ms: 0.3584
+      ...
+    1..2
+ok 111 - T-STR-008: Accumulated answer parity — cache vs live
+  ---
+  duration_ms: 0.8444
+  type: 'suite'
+  ...
+# Subtest: T-STR-009: fromCache state set correctly from META
+    # Subtest: cache stream: fromCache is true after parsing
+    ok 1 - cache stream: fromCache is true after parsing
+      ---
+      duration_ms: 0.3013
+      ...
+    # Subtest: live stream: fromCache remains false (field absent from META)
+    ok 2 - live stream: fromCache remains false (field absent from META)
+      ---
+      duration_ms: 0.2065
+      ...
+    # Subtest: fromCache resets to false on new ask (cleared before stream starts)
+    ok 3 - fromCache resets to false on new ask (cleared before stream starts)
+      ---
+      duration_ms: 0.1125
+      ...
+    1..3
+ok 112 - T-STR-009: fromCache state set correctly from META
+  ---
+  duration_ms: 0.7718
+  type: 'suite'
+  ...
+# Subtest: T-STR-010: Edge cases
+    # Subtest: META-only stream (no answer) results in empty accumulated
+    ok 1 - META-only stream (no answer) results in empty accumulated
+      ---
+      duration_ms: 0.4687
+      ...
+    # Subtest: empty chunk list produces empty state
+    ok 2 - empty chunk list produces empty state
+      ---
+      duration_ms: 0.1843
+      ...
+    # Subtest: stream with only answer chunks (no META) accumulates normally
+    ok 3 - stream with only answer chunks (no META) accumulates normally
+      ---
+      duration_ms: 0.1415
+      ...
+    # Subtest: classification with missing optional fields does not throw
+    ok 4 - classification with missing optional fields does not throw
+      ---
+      duration_ms: 0.3568
+      ...
+    1..4
+ok 113 - T-STR-010: Edge cases
+  ---
+  duration_ms: 1.3153
+  type: 'suite'
+  ...
+1..113
+# tests 505
+# suites 113
+# pass 505
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 688.0433

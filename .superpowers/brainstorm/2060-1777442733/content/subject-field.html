@@ -1,0 +1,54 @@
+<h2>How should Exams link to Subjects?</h2>
+<p class="subtitle">This is the foundation of the whole filtering system — weak topics are filtered by subject. The current modal only has exam name + date. Which approach should we use?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Add a separate Subject field to the modal</h3>
+      <p>Student enters <strong>Exam Name</strong> (e.g. "JEE Main 2025") and separately picks a <strong>Subject</strong> from a dropdown (Physics, Chemistry, Maths, DBMS, OS, etc). Weak topics are then matched exactly to the chosen subject.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>Precise matching — no guesswork</li><li>Multi-subject exams handled correctly</li><li>Clean subject filtering logic</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Requires DB schema change (add subject column to exams table)</li><li>More fields in the add-exam modal</li></ul></div>
+      </div>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Add Exam Modal — Option A</div>
+        <div class="mockup-body" style="display:flex;flex-direction:column;gap:8px">
+          <input class="mock-input" placeholder="Exam Name (e.g. JEE Main 2025)" readonly>
+          <select class="mock-input" style="color:#a1a1aa;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px;font-size:12px">
+            <option>Select Subject...</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>Mathematics</option>
+            <option>DBMS</option>
+            <option>Operating Systems</option>
+          </select>
+          <input class="mock-input" type="date" readonly>
+          <button class="mock-button">Add Exam</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Derive subject from exam name (current approach + better matching)</h3>
+      <p>Keep the modal as-is (name + date). Improve <code>normalizeSubject()</code> to infer the subject from the exam name. E.g. "JEE Main" → "jee main", "DBMS Mid-term" → "dbms". Weak topics match against the normalized key.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>No schema changes needed</li><li>Modal stays clean — 2 fields only</li><li>Works with existing normalizeSubject() map</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>"JEE Main" doesn't match weak topic subjects like "physics" or "chemistry"</li><li>Multi-subject exams are ambiguous</li><li>Relies on naming conventions</li></ul></div>
+      </div>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Add Exam Modal — Option B (unchanged)</div>
+        <div class="mockup-body" style="display:flex;flex-direction:column;gap:8px">
+          <input class="mock-input" placeholder="Exam Name (e.g. DBMS Mid-term)" readonly>
+          <input class="mock-input" type="date" readonly>
+          <button class="mock-button">Add Exam</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:20px">💡 Note: Current weak topics already have a <code>subject</code> field (e.g. "dbms", "os", "physics"). The question is how we match an exam to that subject.</p>

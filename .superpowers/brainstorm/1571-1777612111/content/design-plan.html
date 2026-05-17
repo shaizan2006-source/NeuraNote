@@ -1,0 +1,112 @@
+<h2>Dashboard Enhancement Design Plan</h2>
+<p class="subtitle">Your codebase is already ~80% there. Here's exactly what changes to make each component pixel-match the image.</p>
+
+<div class="section">
+  <h3>What Already Matches ✅</h3>
+  <ul>
+    <li><strong>DashboardSidebar</strong> — Logo, AskMyNotes, Dashboard/Ask AI nav, Upgrade to Pro card, user profile at bottom</li>
+    <li><strong>AskAIHeroCard</strong> — Dark purple gradient, sparkle decorations, center text, input + send button</li>
+    <li><strong>GreetingRow</strong> — Greeting text, Study/Progress toggle pill</li>
+    <li><strong>BentoGrid layout</strong> — 3-col grid, hero spans 2cols×2rows, correct card positions</li>
+    <li><strong>ExamsCard</strong> — Final sprint badge, countdown, 3-stat row (Syllabus/Subjects/Mock Tests)</li>
+    <li><strong>FocusModeCard</strong> — Clock icon, circular timer ring, 25:00, "Start focus" text</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>Changes Required 🔧</h3>
+
+  <div class="mockup" style="margin-bottom:18px">
+    <div class="mockup-header">1. QuizCard — Add 3D Stacked Cards Visual</div>
+    <div class="mockup-body">
+      <div style="display:flex;gap:24px;align-items:center">
+        <div style="flex:1">
+          <p class="label">Current</p>
+          <div style="background:#0f172a;border-radius:12px;padding:14px;border:1px solid #1e293b">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <span style="color:#f1f5f9;font-weight:700;font-size:13px">Quiz</span>
+              <div style="width:28px;height:28px;background:rgba(139,92,246,0.15);border-radius:7px;display:flex;align-items:center;justify-content:center">📋</div>
+            </div>
+            <div style="padding:12px 0">
+              <p style="margin:0;font-size:22px;font-weight:800;color:#f4f4f5">0</p>
+              <p style="margin:3px 0 0;font-size:10px;color:#6d6d80">cards ready</p>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:24px">→</div>
+        <div style="flex:1">
+          <p class="label">Target (from image)</p>
+          <div style="background:#0f172a;border-radius:12px;padding:14px;border:1px solid #1e293b">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="color:#f1f5f9;font-weight:700;font-size:13px">Quiz</span>
+              <div style="width:28px;height:28px;background:rgba(139,92,246,0.15);border-radius:7px;display:flex;align-items:center;justify-content:center">📋</div>
+            </div>
+            <!-- 3D stacked cards -->
+            <div style="display:flex;justify-content:flex-end;align-items:center;padding:6px 0 10px">
+              <div style="position:relative;width:70px;height:70px">
+                <div style="position:absolute;right:6px;top:6px;width:52px;height:66px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:8px;transform:rotate(8deg);opacity:0.6;display:flex;align-items:center;justify-content:center;font-size:22px;color:rgba(255,255,255,0.4)">?</div>
+                <div style="position:absolute;right:2px;top:2px;width:52px;height:66px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;transform:rotate(3deg);opacity:0.75;display:flex;align-items:center;justify-content:center;font-size:22px;color:rgba(255,255,255,0.5)">?</div>
+                <div style="position:absolute;right:0;top:0;width:52px;height:66px;background:linear-gradient(135deg,#7c3aed,#a855f7);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:26px;color:white;box-shadow:0 4px 16px rgba(124,58,237,0.4)">?</div>
+              </div>
+            </div>
+            <div>
+              <p style="margin:0;font-size:22px;font-weight:800;color:#f4f4f5">0</p>
+              <p style="margin:3px 0 0;font-size:10px;color:#6d6d80">cards ready</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup" style="margin-bottom:18px">
+    <div class="mockup-header">2. CallTutorCard — Scale up the mic orb</div>
+    <div class="mockup-body">
+      <div style="display:flex;gap:24px;align-items:center">
+        <div style="flex:1">
+          <p class="label">Current (54px mic circle)</p>
+          <div style="background:#0f172a;border-radius:12px;padding:14px;border:1px solid #1e293b;min-height:120px;display:flex;align-items:center;justify-content:center">
+            <div style="width:54px;height:54px;border-radius:50%;background:rgba(34,197,94,0.12);border:2px solid rgba(34,197,94,0.35);display:flex;align-items:center;justify-content:center;font-size:18px">🎤</div>
+          </div>
+        </div>
+        <div style="font-size:24px">→</div>
+        <div style="flex:1">
+          <p class="label">Target (80px + pulsing rings span card)</p>
+          <div style="background:#0f172a;border-radius:12px;padding:14px;border:1px solid #1e293b;min-height:120px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+            <div style="position:relative">
+              <div style="position:absolute;inset:-20px;border-radius:50%;border:2px solid rgba(34,197,94,0.15);animation:pulse 2s infinite"></div>
+              <div style="position:absolute;inset:-10px;border-radius:50%;border:2px solid rgba(34,197,94,0.25)"></div>
+              <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(34,197,94,0.2),rgba(34,197,94,0.08));border:2px solid rgba(34,197,94,0.45);display:flex;align-items:center;justify-content:center;font-size:28px">🎤</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">3. Global Card Hover Polish</div>
+    <div class="mockup-body">
+      <p>All 4 small cards get unified hover behavior:</p>
+      <ul>
+        <li><code>scale: 1.04</code>, <code>y: -4px</code> on hover</li>
+        <li><code>scale: 0.97</code> on tap</li>
+        <li>FocusCard glow: <code>rgba(34,211,238,0.25)</code></li>
+        <li>QuizCard glow: <code>rgba(99,102,241,0.25)</code></li>
+        <li>CallTutorCard glow: <code>rgba(34,197,94,0.2)</code></li>
+        <li>ExamsCard: red glow when isFinalSprint, neutral otherwise</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Files to Edit</h3>
+  <ul>
+    <li><code>src/components/dashboard/StudyModeCards.jsx</code> — QuizCard 3D stack + CallTutor orb size + hover states</li>
+    <li><code>src/components/dashboard/AskAIHeroCard.jsx</code> — Minor: ensure hover scale matches spec (currently 1.01, image suggests 1.02)</li>
+    <li>No changes to: BentoGrid, GreetingRow, DashboardSidebar, ExamsCard, FocusModeCard</li>
+  </ul>
+</div>
+
+<p class="subtitle">Does this design plan look right? Reply "yes" to proceed to implementation plan, or tell me what to adjust.</p>

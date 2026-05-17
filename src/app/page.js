@@ -24,30 +24,30 @@ function FadeUp({ children, delay = 0, className = "" }) {
 // ── Feature cards ─────────────────────────────────────────────────
 const FEATURES = [
   {
-    icon: "💬",
-    title: "Ask Your Notes",
-    desc: "Upload any PDF and ask questions in plain language. Get accurate answers from your own material.",
+    icon: "🧠",
+    title: "Remembers your prep",
+    desc: "Knows what you struggled with last month. Surfaces it before your exam. Never lets you forget a weak topic.",
     color: "var(--brand)",
     glow: "var(--brand-glow)",
   },
   {
-    icon: "⚡",
-    title: "Smart Quizzes",
-    desc: "Auto-generated MCQs from your content. Track weak topics and focus where it matters most.",
+    icon: "📐",
+    title: "Speaks your syllabus",
+    desc: "Knows JEE Main 2027 and NEET UG 2027 syllabi. Answers in the language of your exam, not generic AI.",
     color: "var(--amber)",
     glow: "var(--amber-glow)",
   },
   {
-    icon: "🧠",
-    title: "Mastery Tracking",
-    desc: "Visual brain map of every topic. See exactly what you know and what needs revision.",
+    icon: "👥",
+    title: "Cohort intelligence",
+    desc: "See how you rank among JEE 2027 aspirants. Peer percentile, cohort trends, what toppers are revising.",
     color: "var(--green)",
     glow: "var(--green-glow)",
   },
   {
-    icon: "📞",
-    title: "Voice AI Tutor",
-    desc: "Talk to your AI tutor like a real teacher. Ask, explain, and learn — hands free.",
+    icon: "💙",
+    title: "Cares about you",
+    desc: "Notices when you&apos;re tired. Won&apos;t ping you at midnight. Different dashboard at 3pm vs 10am.",
     color: "var(--blue)",
     glow: "var(--blue-glow)",
   },
@@ -62,9 +62,9 @@ const STEPS = [
 
 // ── Testimonials ──────────────────────────────────────────────────
 const QUOTES = [
-  { text: "I cleared my B.Tech finals using Ask My Notes. The quiz feature helped me find gaps I never knew I had.", name: "Arjun S.", tag: "B.Tech CSE" },
-  { text: "Finally an app that actually reads my PDFs and gives real answers. Not generic AI garbage.", name: "Priya M.", tag: "MBBS" },
-  { text: "The mastery map is addictive. I can see myself getting better every day.", name: "Rahul K.", tag: "BCA / IT" },
+  { text: "Finally something that actually knows JEE syllabus. Not ChatGPT with a wrapper — it knows Rotational Mechanics is high-weightage.", name: "Arjun S.", tag: "JEE Main 2027" },
+  { text: "The Brain Map showed me I was weak in Electrochemistry but I had no idea. Fixed it in 3 days.", name: "Priya M.", tag: "NEET UG 2027" },
+  { text: "It didn't ping me at 11pm to keep my streak. I noticed. Small thing but it meant a lot.", name: "Rahul K.", tag: "JEE Advanced 2027" },
 ];
 
 export default function Home() {
@@ -143,7 +143,7 @@ export default function Home() {
             marginBottom: 28, letterSpacing: "0.4px",
           }}
         >
-          🇮🇳 Built for B.Tech · BCA · BSc · BBA · MBBS
+          🇮🇳 Built for JEE · NEET · India&apos;s hardest exams
         </motion.div>
 
         <motion.h1
@@ -162,7 +162,7 @@ export default function Home() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Study smarter with your own notes
+          Your AI study companion for JEE and NEET.
         </motion.h1>
 
         <motion.p
@@ -175,7 +175,7 @@ export default function Home() {
             margin: "0 auto 40px",
           }}
         >
-          Upload your PDFs, ask questions, take AI-generated quizzes, and master every topic — all in one place.
+          A tutor that remembers your prep. Knows your syllabus. Stays with you to exam day.
         </motion.p>
 
         <motion.div
@@ -192,7 +192,7 @@ export default function Home() {
             boxShadow: "0 4px 24px var(--brand-glow)",
             transition: "opacity 0.15s",
           }}>
-            Get Started Free →
+            Start free trial →
           </Link>
           <Link href="/pricing" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
@@ -212,7 +212,7 @@ export default function Home() {
           transition={{ delay: 0.5 }}
           style={{ marginTop: 20, fontSize: 12, color: "var(--text-faint)" }}
         >
-          Free plan available · No credit card needed
+          7-day Pro trial · No credit card needed
         </motion.p>
       </section>
 
@@ -223,7 +223,7 @@ export default function Home() {
             Trusted by students preparing for
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
-            {["B.Tech CSE", "BCA", "BSc IT", "BBA", "MBA", "MBBS"].map((exam) => (
+            {["JEE Main 2027", "JEE Advanced 2027", "NEET UG 2027", "JEE Main 2026", "NEET UG 2026"].map((exam) => (
               <span key={exam} style={{
                 padding: "6px 14px", borderRadius: 20,
                 background: "var(--surface-card)",

@@ -1,0 +1,209 @@
+<h2>FocusModeCard — Alternative Designs</h2>
+<p class="subtitle">Pick the style that excites you most. Each has a live preview below.</p>
+
+<style>
+  .preview-card {
+    background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    min-height: 190px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .card-icon { width:28px;height:28px;background:rgba(34,211,238,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0; }
+  .card-title { margin:0;font-size:12px;font-weight:700;color:#f4f4f5; }
+  .card-sub { margin:0;font-size:9px;color:#6d6d80; }
+
+  @keyframes breathe { 0%,100%{opacity:0.3;transform:scale(1)} 50%{opacity:0.65;transform:scale(1.08)} }
+  @keyframes pulse-ring { 0%{transform:scale(1);opacity:0.4} 100%{transform:scale(1.6);opacity:0} }
+  @keyframes bar-glow { 0%,100%{box-shadow:0 0 8px rgba(34,211,238,0.3)} 50%{box-shadow:0 0 22px rgba(34,211,238,0.7)} }
+  @keyframes dot-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes liquid { 0%,100%{d:path("M0,30 Q25,20 50,30 Q75,40 100,30 L100,60 L0,60 Z")} 50%{d:path("M0,30 Q25,40 50,30 Q75,20 100,30 L100,60 L0,60 Z")} }
+  @keyframes counter-glow { 0%,100%{text-shadow:0 0 20px rgba(34,211,238,0.4)} 50%{text-shadow:0 0 40px rgba(34,211,238,0.9),0 0 60px rgba(34,211,238,0.4)} }
+  @keyframes scanline { 0%{top:-10%} 100%{top:110%} }
+</style>
+
+<div class="cards">
+
+  <!-- OPTION A: Segmented Dot Ring -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d1117;padding:12px;border-radius:12px">
+      <div class="preview-card">
+        <div class="card-header">
+          <div class="card-icon">⏱</div>
+          <div><p class="card-title">Focus Mode</p><p class="card-sub">Pomodoro 25m</p></div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center">
+          <div style="position:relative;width:100px;height:100px">
+            <!-- 36 dot segments around circle -->
+            <svg width="100" height="100" viewBox="0 0 100 100" style="position:absolute;inset:0">
+              <!-- Active dots (cyan) - first 27/36 = 75% filled -->
+              <g>
+                <!-- Generate dots every 10 degrees -->
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="1"   transform="rotate(0 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="1"   transform="rotate(10 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="1"   transform="rotate(20 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="1"   transform="rotate(30 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="1"   transform="rotate(40 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="1"   transform="rotate(50 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="1"   transform="rotate(60 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="1"   transform="rotate(70 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="1"   transform="rotate(80 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.9" transform="rotate(90 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.9" transform="rotate(100 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.8" transform="rotate(110 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.8" transform="rotate(120 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.7" transform="rotate(130 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.7" transform="rotate(140 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.6" transform="rotate(150 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.5" transform="rotate(160 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.4" transform="rotate(170 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="#22d3ee" opacity="0.3" transform="rotate(180 50 50)"/>
+                <!-- inactive dots -->
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(190 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(200 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(210 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(220 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(230 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(240 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(250 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(260 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(270 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(280 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(290 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(300 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(310 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(320 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(330 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(340 50 50)"/>
+                <circle cx="50" cy="8"  r="3" fill="rgba(255,255,255,0.08)" transform="rotate(350 50 50)"/>
+              </g>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <span style="font-size:19px;font-weight:800;color:#f4f4f5;letter-spacing:-0.5px">25:00</span>
+              <span style="font-size:8px;color:#22d3ee;font-weight:600;margin-top:1px">Start focus</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Dot Ring</h3>
+      <p>36 glowing dots fade from cyan → transparent, like an Apple Watch Activity ring. Each second one dot dims out. Super minimal, very premium.</p>
+    </div>
+  </div>
+
+  <!-- OPTION B: Glowing Counter (no ring) -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d1117;padding:12px;border-radius:12px">
+      <div class="preview-card">
+        <div class="card-header">
+          <div class="card-icon">⏱</div>
+          <div><p class="card-title">Focus Mode</p><p class="card-sub">Pomodoro 25m</p></div>
+        </div>
+        <!-- ambient blobs -->
+        <div style="position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:130px;height:80px;background:radial-gradient(ellipse,rgba(34,211,238,0.15) 0%,transparent 70%);pointer-events:none;animation:breathe 3s ease-in-out infinite"></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+          <span style="font-size:38px;font-weight:900;color:#f4f4f5;letter-spacing:-2px;animation:counter-glow 3s ease-in-out infinite;font-variant-numeric:tabular-nums">25:00</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="width:6px;height:6px;border-radius:50%;background:#22d3ee;animation:breathe 1.5s ease-in-out infinite"></div>
+            <span style="font-size:9px;color:#22d3ee;font-weight:600;letter-spacing:1px;text-transform:uppercase">Ready to focus</span>
+          </div>
+          <!-- progress bar -->
+          <div style="width:80%;height:3px;background:rgba(255,255,255,0.06);border-radius:99px;margin-top:8px;overflow:hidden">
+            <div style="width:100%;height:100%;background:linear-gradient(90deg,#22d3ee,#67e8f9);border-radius:99px;animation:bar-glow 3s ease-in-out infinite"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Glowing Counter</h3>
+      <p>No ring. Just a massive 38px timer with a breathing cyan glow, status dot, and thin progress bar below. Bold, modern, and full-bleed.</p>
+    </div>
+  </div>
+
+  <!-- OPTION C: Speedometer Arc -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d1117;padding:12px;border-radius:12px">
+      <div class="preview-card">
+        <div class="card-header">
+          <div class="card-icon">⏱</div>
+          <div><p class="card-title">Focus Mode</p><p class="card-sub">Pomodoro 25m</p></div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center">
+          <div style="position:relative;width:130px;height:75px;overflow:visible">
+            <!-- Speedometer half-arc -->
+            <svg width="130" height="80" viewBox="0 0 130 80" style="overflow:visible">
+              <!-- track -->
+              <path d="M 10 70 A 55 55 0 0 1 120 70" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="8" stroke-linecap="round"/>
+              <!-- gradient fill arc (full = representing 25/25 min) -->
+              <defs>
+                <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#06b6d4"/>
+                  <stop offset="60%" stop-color="#22d3ee"/>
+                  <stop offset="100%" stop-color="#67e8f9"/>
+                </linearGradient>
+              </defs>
+              <path d="M 10 70 A 55 55 0 0 1 120 70" fill="none" stroke="url(#arcGrad)" stroke-width="8" stroke-linecap="round" style="filter:drop-shadow(0 0 8px rgba(34,211,238,0.7))"/>
+              <!-- needle -->
+              <line x1="65" y1="70" x2="65" y2="22" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" style="transform-origin:65px 70px;transform:rotate(0deg)"/>
+              <circle cx="65" cy="70" r="4" fill="#22d3ee"/>
+              <!-- tick marks -->
+              <line x1="10" y1="70" x2="16" y2="65" stroke="rgba(34,211,238,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="27" y1="32" x2="31" y2="37" stroke="rgba(34,211,238,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="65" y1="15" x2="65" y2="21" stroke="rgba(34,211,238,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="103" y1="32" x2="99" y2="37" stroke="rgba(34,211,238,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="120" y1="70" x2="114" y2="65" stroke="rgba(34,211,238,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div style="position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);text-align:center">
+              <span style="font-size:20px;font-weight:800;color:#f4f4f5;letter-spacing:-0.5px">25:00</span><br>
+              <span style="font-size:8px;color:#22d3ee;font-weight:600">Start focus</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Speedometer Arc</h3>
+      <p>Half-circle gauge with gradient arc, needle pointer, and tick marks. Feels like a performance dashboard — high energy and unique.</p>
+    </div>
+  </div>
+
+  <!-- OPTION D: Liquid Wave Fill -->
+  <div class="card" data-choice="d" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d1117;padding:12px;border-radius:12px">
+      <div class="preview-card">
+        <div class="card-header">
+          <div class="card-icon">⏱</div>
+          <div><p class="card-title">Focus Mode</p><p class="card-sub">Pomodoro 25m</p></div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center">
+          <div style="position:relative;width:80px;height:80px;border-radius:16px;overflow:hidden;border:1.5px solid rgba(34,211,238,0.3);background:#0a0f1e">
+            <!-- liquid fill (75% full) -->
+            <div style="position:absolute;bottom:0;left:0;right:0;height:75%;background:linear-gradient(180deg,rgba(34,211,238,0.25) 0%,rgba(34,211,238,0.08) 100%);border-top:2px solid rgba(34,211,238,0.5)">
+              <!-- wave top -->
+              <svg style="position:absolute;top:-8px;left:-10%;width:120%;height:16px" viewBox="0 0 120 16" preserveAspectRatio="none">
+                <path d="M0,8 Q15,2 30,8 Q45,14 60,8 Q75,2 90,8 Q105,14 120,8 L120,16 L0,16 Z" fill="rgba(34,211,238,0.35)"/>
+              </svg>
+            </div>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <span style="font-size:16px;font-weight:800;color:#f4f4f5;z-index:1">25:00</span>
+              <span style="font-size:7px;color:#22d3ee;z-index:1;font-weight:600;margin-top:1px">Start</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>D — Liquid Fill</h3>
+      <p>A rounded square that fills up with a animated wave as time drains. The wave oscillates continuously. Very organic, very different.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle">Click your favourite, then reply in the terminal.</p>

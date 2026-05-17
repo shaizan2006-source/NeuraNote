@@ -1,0 +1,121 @@
+<h2>Design: Full Live Feedback Loop</h2>
+<p class="subtitle">Critical finding: quiz completion currently does NOTHING to the DB. Here's the complete fix.</p>
+
+<div class="section">
+  <h3>What Actually Happens Today vs What Needs to Happen</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div style="padding:14px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px">
+      <div class="label" style="color:#f87171">Current — Dead Loop</div>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:11px">
+        <div style="padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:4px;color:#a1a1aa">1. Student takes quiz on "normalization"</div>
+        <div style="padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:4px;color:#a1a1aa">2. Gets 8/10 correct — performance tracked in local state only</div>
+        <div style="padding:6px 10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:4px;color:#fca5a5">3. handleFinish() → clearSession() → router.push('/dashboard') <br>❌ ZERO API calls. Nothing written to DB.</div>
+        <div style="padding:6px 10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:4px;color:#fca5a5">4. Dashboard loads — "normalization" still shows as weak ❌<br>mastery_topics unchanged ❌<br>weak_topics count unchanged ❌</div>
+      </div>
+    </div>
+    <div style="padding:14px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:8px">
+      <div class="label" style="color:#4ade80">After Fix — Full Live Loop</div>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:11px">
+        <div style="padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:4px;color:#a1a1aa">1. Student takes quiz on "normalization"</div>
+        <div style="padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:4px;color:#a1a1aa">2. Gets 8/10 correct — signals: {topic, correct, total, subject}</div>
+        <div style="padding:6px 10px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:4px;color:#4ade80">3. handleFinish() → POST /api/quiz-results → <br>✅ mastery_topics upserted<br>✅ weak_topics count reduced / removed<br>✅ learning_events logged</div>
+        <div style="padding:6px 10px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:4px;color:#4ade80">4. Supabase Realtime fires on both tables<br>✅ fetchWeakTopics() triggers<br>✅ "normalization" card disappears or accuracy jumps<br>✅ Progress Snapshot updates — live, within ~1s</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>New: POST /api/quiz-results — The Missing Link</h3>
+  <div style="padding:14px;background:rgba(255,255,255,0.02);border-radius:8px;font-size:11px">
+    <strong style="color:#e4e4e7">Input:</strong>
+    <pre style="color:#a1a1aa;margin:6px 0;font-size:10px">{ userId, subject, results: [{ topic, correct, total }] }</pre>
+    <strong style="color:#e4e4e7">Logic per topic:</strong>
+    <ul style="margin:6px 0;padding-left:16px;color:#a1a1aa;line-height:1.8">
+      <li>Call existing <code>updateMastery({ user_id, topic, correct, total })</code></li>
+      <li>accuracy = correct/total * 100</li>
+      <li>If accuracy ≥ 80% → DELETE from weak_topics (topic mastered)</li>
+      <li>If accuracy ≥ 60% → UPDATE weak_topics SET count = max(count - 2, 0), level = "medium"</li>
+      <li>If accuracy &lt; 60% → UPDATE weak_topics SET count = count + 1, level = "hard" (still weak)</li>
+      <li>INSERT into learning_events: { event_type: "quiz_completed", topic, accuracy, subject }</li>
+    </ul>
+    <strong style="color:#e4e4e7">Result:</strong> <span style="color:#4ade80">Realtime fires on mastery_topics + weak_topics → dashboard updates live</span>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Complete Event → Dashboard Update Map</h3>
+  <div style="display:flex;flex-direction:column;gap:6px;font-size:11px">
+
+    <div style="padding:10px 14px;background:rgba(34,211,238,0.04);border:1px solid rgba(34,211,238,0.15);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="color:#22d3ee">Student asks a question</strong>
+        <span style="font-size:9px;color:#52525b">~1s update</span>
+      </div>
+      <p style="margin:3px 0 0;color:#71717a">→ /api/weak-topics POST → weak_topics upsert → Realtime → fetchWeakTopics() → WeakTopicCard appears/count increases</p>
+    </div>
+
+    <div style="padding:10px 14px;background:rgba(139,92,246,0.04);border:1px solid rgba(139,92,246,0.15);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="color:#a78bfa">Student completes quiz</strong>
+        <span style="font-size:9px;color:#52525b">~1s update on return</span>
+      </div>
+      <p style="margin:3px 0 0;color:#71717a">→ /api/quiz-results POST → mastery_topics + weak_topics updated → Realtime → fetchWeakTopics() + fetchMastery() → cards update/disappear, accuracy bar jumps, Progress Snapshot refreshes</p>
+    </div>
+
+    <div style="padding:10px 14px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.15);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="color:#4ade80">Student completes focus task</strong>
+        <span style="font-size:9px;color:#52525b">~1s update</span>
+      </div>
+      <p style="margin:3px 0 0;color:#71717a">→ markTaskDone() already POSTs to /api/focus-progress → focus_progress already in Realtime TABLES → fetchProgressSummary() → Progress Snapshot "last active" updates</p>
+    </div>
+
+    <div style="padding:10px 14px;background:rgba(251,146,60,0.04);border:1px solid rgba(251,146,60,0.15);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="color:#fb923c">Student adds/removes exam</strong>
+        <span style="font-size:9px;color:#52525b">~1s update</span>
+      </div>
+      <p style="margin:3px 0 0;color:#71717a">→ exams already in Realtime TABLES + we add refetchExam callback → ExamCountdownSection + WeakTopicsSection re-filter for new subject instantly</p>
+    </div>
+
+    <div style="padding:10px 14px;background:rgba(244,63,94,0.04);border:1px solid rgba(244,63,94,0.15);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="color:#fb7185">Exam countdown ticks</strong>
+        <span style="font-size:9px;color:#52525b">every second</span>
+      </div>
+      <p style="margin:3px 0 0;color:#71717a">→ setInterval every 1s already in ExamCountdownSection → days/urgency color updates live. On day change → urgency threshold re-evaluates automatically.</p>
+    </div>
+
+    <div style="padding:10px 14px;background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.15);border-radius:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="color:#34d399">Tab comes back to focus</strong>
+        <span style="font-size:9px;color:#52525b">instant</span>
+      </div>
+      <p style="margin:3px 0 0;color:#71717a">→ visibilitychange handler re-fires guardedRefetch() + sets up Realtime channel again → fetchExam + fetchWeakTopics fire immediately → everything syncs on tab return</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Progress Snapshot — What Each Stat Reflects Live</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:11px">
+    <div style="padding:10px;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:6px">
+      <div class="label" style="color:#4ade80">Avg Accuracy</div>
+      <p style="margin:4px 0 0;color:#a1a1aa">Derived from masteryTopics filtered by subject. Updates when mastery_topics Realtime fires after quiz. Formula: avg(mastery_score) for subject topics.</p>
+    </div>
+    <div style="padding:10px;background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.15);border-radius:6px">
+      <div class="label" style="color:#a78bfa">Topics Mastered</div>
+      <p style="margin:4px 0 0;color:#a1a1aa">masteryTopics where mastery_score ≥ 70, filtered by subject. Numerator/denominator both update via Realtime after quiz completion.</p>
+    </div>
+    <div style="padding:10px;background:rgba(251,146,60,0.05);border:1px solid rgba(251,146,60,0.15);border-radius:6px">
+      <div class="label" style="color:#fb923c">Last Active</div>
+      <p style="margin:4px 0 0;color:#a1a1aa">From streak/lastActiveDate already in context. Updates after any session (ask, quiz, focus) via fetchStreak() called in fireTracking().</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:12px">
+  Yes — the page will feel fully alive. Every student action feeds back into the dashboard within ~1 second. The only new piece is <strong style="color:#e4e4e7">/api/quiz-results</strong> — everything else is wired up by extending existing infrastructure. Approve to write the final spec?
+</p>

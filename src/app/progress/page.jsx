@@ -14,6 +14,7 @@ import InsightsPanel             from "@/components/progress/InsightsPanel";
 import StudyPlanCard             from "@/components/progress/StudyPlanCard";
 import ExamCountdownCard         from "@/components/progress/ExamCountdownCard";
 import DashboardSidebar          from "@/components/dashboard/DashboardSidebar";
+import CohortWidget              from "@/components/dashboard/CohortWidget";
 
 // Analytics
 import { useFocusScore }    from "@/hooks/useFocusScore";
@@ -100,6 +101,11 @@ function ProgressInner() {
           </button>
           <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#f4f4f5" }}>Progress</h1>
           {loading && <span style={{ fontSize: 10, color: "#3f3f46" }}>Loading…</span>}
+          {!loading && data && (
+            <div style={{ marginLeft: "auto" }}>
+              <CohortWidget peerPercentile={data.peerPercentile} cohortSize={data.cohortSize} />
+            </div>
+          )}
         </div>
 
         {loading ? <Skeleton isMobile={isMobile} /> : data && data.sessionsCompleted === 0 && data.totalTopics === 0 ? (

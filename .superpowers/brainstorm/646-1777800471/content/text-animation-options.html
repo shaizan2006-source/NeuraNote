@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thinking Animation — Text Style Options</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d0f;
+    color: #e4e4e7;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 32px 24px;
+    min-height: 100vh;
+  }
+
+  h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #f4f4f5; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 36px; }
+
+  /* ── Vortex SVG ─────────────────────────────────── */
+  .vortex-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  /* ── Option cards ────────────────────────────────── */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .option-card {
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px 20px 20px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .option-card:hover {
+    border-color: rgba(124,58,237,0.5);
+    background: rgba(124,58,237,0.05);
+  }
+  .option-card.selected {
+    border-color: #7c3aed;
+    background: rgba(124,58,237,0.1);
+  }
+  .option-card.selected::after {
+    content: '✓ Selected';
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #a78bfa;
+    letter-spacing: 0.5px;
+  }
+  .option-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #52525b;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .option-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #d4d4d8;
+    margin-bottom: 6px;
+  }
+  .option-desc {
+    font-size: 12px;
+    color: #52525b;
+    margin-top: 16px;
+    line-height: 1.5;
+  }
+
+  /* ── Demo area inside each card ─────────────────── */
+  .demo-area {
+    background: rgba(0,0,0,0.35);
+    border-radius: 10px;
+    padding: 16px;
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 56px;
+  }
+
+  /* ── OPTION A: Shimmer sweep ─────────────────────── */
+  .text-shimmer {
+    font-size: 13px;
+    font-weight: 600;
+    background: linear-gradient(
+      90deg,
+      #4a4a5a 0%,
+      #4a4a5a 20%,
+      #c4b5fd 40%,
+      #f0f0f5 55%,
+      #c4b5fd 70%,
+      #4a4a5a 80%,
+      #4a4a5a 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmerSweep 2s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes shimmerSweep {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+
+  /* ── OPTION B: Dotted line / scanning underline ──── */
+  .text-scan-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .text-scan {
+    font-size: 13px;
+    font-weight: 600;
+    color: #a78bfa;
+    opacity: 0.9;
+  }
+  .text-scan-underline {
+    display: block;
+    height: 1.5px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 10%,
+      #a78bfa 40%,
+      #c4b5fd 50%,
+      #a78bfa 60%,
+      transparent 90%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    border-radius: 1px;
+    margin-top: 2px;
+    animation: scanLine 1.8s ease-in-out infinite;
+  }
+  @keyframes scanLine {
+    0%   { background-position: 200% center; opacity: 0.3; }
+    50%  { opacity: 1; }
+    100% { background-position: -200% center; opacity: 0.3; }
+  }
+
+  /* ── OPTION C: Glow pulse (Grok-exact) ──────────── */
+  .text-glow {
+    font-size: 13px;
+    font-weight: 600;
+    color: #a78bfa;
+    animation: glowPulse 1.6s ease-in-out infinite alternate;
+    text-shadow: 0 0 0px rgba(167,139,250,0);
+  }
+  @keyframes glowPulse {
+    from {
+      color: #71717a;
+      text-shadow: 0 0 0px rgba(167,139,250,0);
+    }
+    to {
+      color: #c4b5fd;
+      text-shadow: 0 0 12px rgba(167,139,250,0.5), 0 0 24px rgba(167,139,250,0.2);
+    }
+  }
+
+  /* ── Vortex mini (reused across all 3) ───────────── */
+  .vortex-mini { flex-shrink: 0; }
+  .vortex-b { fill: #ffffff; opacity: 0.07; }
+  .vortex-l { fill: #ffffff; opacity: 0; animation: vortexAnim 2400ms linear infinite both; }
+  @keyframes vortexAnim {
+    0%  { opacity: 0; }
+    4%  { opacity: 1; }
+    26% { opacity: 0.08; }
+    100%{ opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .vortex-l { animation: none; opacity: 0.45; } }
+  .d00,.d11,.d22 { animation-delay: 0ms; }
+  .d01 { animation-delay: 150ms; }
+  .d02,.d21 { animation-delay: 300ms; }
+  .d03 { animation-delay: 450ms; }
+  .d04,.d31 { animation-delay: 600ms; }
+  .d10 { animation-delay: 2250ms; }
+  .d12,.d20 { animation-delay: 2100ms; }
+  .d13,.d40 { animation-delay: 1800ms; }
+  .d14 { animation-delay: 750ms; }
+  .d23,.d42 { animation-delay: 1500ms; }
+  .d24,.d32 { animation-delay: 900ms; }
+  .d30 { animation-delay: 1950ms; }
+  .d33,.d44 { animation-delay: 1200ms; }
+  .d34 { animation-delay: 1050ms; }
+  .d41 { animation-delay: 1650ms; }
+  .d43 { animation-delay: 1350ms; }
+
+  /* text cycling */
+  .cycling-text {
+    display: inline-block;
+    animation: textFadeIn 0.4s ease;
+  }
+  @keyframes textFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .selected-indicator {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124,58,237,0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .selected-indicator.visible { opacity: 1; }
+</style>
+</head>
+<body>
+
+<h2>Which text animation style do you want?</h2>
+<p class="subtitle">Vortex spinner appears immediately. After 3s, text shows — pick the style below. Click a card to select.</p>
+
+<div class="options-grid">
+
+  <!-- OPTION A: Shimmer Sweep -->
+  <div class="option-card" onclick="selectOption('a', this)">
+    <div class="option-label">Option A</div>
+    <div class="option-title">Shimmer Sweep</div>
+    <div class="demo-area">
+      <svg class="vortex-mini" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" width="36" height="36">
+        <defs><circle id="bA" r="2.4" fill="#ffffff" opacity="0.07"/><circle id="lA" r="3.1"/></defs>
+        <use href="#bA" x="6" y="6"/><use href="#bA" x="17" y="6"/><use href="#bA" x="28" y="6"/><use href="#bA" x="39" y="6"/><use href="#bA" x="50" y="6"/>
+        <use href="#bA" x="6" y="17"/><use href="#bA" x="17" y="17"/><use href="#bA" x="28" y="17"/><use href="#bA" x="39" y="17"/><use href="#bA" x="50" y="17"/>
+        <use href="#bA" x="6" y="28"/><use href="#bA" x="17" y="28"/><use href="#bA" x="28" y="28"/><use href="#bA" x="39" y="28"/><use href="#bA" x="50" y="28"/>
+        <use href="#bA" x="6" y="39"/><use href="#bA" x="17" y="39"/><use href="#bA" x="28" y="39"/><use href="#bA" x="39" y="39"/><use href="#bA" x="50" y="39"/>
+        <use href="#bA" x="6" y="50"/><use href="#bA" x="17" y="50"/><use href="#bA" x="28" y="50"/><use href="#bA" x="39" y="50"/><use href="#bA" x="50" y="50"/>
+        <use class="vortex-l d00" href="#lA" x="6" y="6"/><use class="vortex-l d01" href="#lA" x="17" y="6"/><use class="vortex-l d02" href="#lA" x="28" y="6"/>
+        <use class="vortex-l d03" href="#lA" x="39" y="6"/><use class="vortex-l d04" href="#lA" x="50" y="6"/>
+        <use class="vortex-l d10" href="#lA" x="6" y="17"/><use class="vortex-l d11" href="#lA" x="17" y="17"/><use class="vortex-l d12" href="#lA" x="28" y="17"/>
+        <use class="vortex-l d13" href="#lA" x="39" y="17"/><use class="vortex-l d14" href="#lA" x="50" y="17"/>
+        <use class="vortex-l d20" href="#lA" x="6" y="28"/><use class="vortex-l d21" href="#lA" x="17" y="28"/><use class="vortex-l d22" href="#lA" x="28" y="28"/>
+        <use class="vortex-l d23" href="#lA" x="39" y="28"/><use class="vortex-l d24" href="#lA" x="50" y="28"/>
+        <use class="vortex-l d30" href="#lA" x="6" y="39"/><use class="vortex-l d31" href="#lA" x="17" y="39"/><use class="vortex-l d32" href="#lA" x="28" y="39"/>
+        <use class="vortex-l d33" href="#lA" x="39" y="39"/><use class="vortex-l d34" href="#lA" x="50" y="39"/>
+        <use class="vortex-l d40" href="#lA" x="6" y="50"/><use class="vortex-l d41" href="#lA" x="17" y="50"/><use class="vortex-l d42" href="#lA" x="28" y="50"/>
+        <use class="vortex-l d43" href="#lA" x="39" y="50"/><use class="vortex-l d44" href="#lA" x="50" y="50"/>
+      </svg>
+      <span id="textA" class="text-shimmer cycling-text">Structuring answer…</span>
+    </div>
+    <div class="option-desc">Light sweeps left→right across the text like a scanning beam. Clean, modern, matches Grok's "searching" state.</div>
+  </div>
+
+  <!-- OPTION B: Dotted Scan Underline -->
+  <div class="option-card" onclick="selectOption('b', this)">
+    <div class="option-label">Option B</div>
+    <div class="option-title">Scan Underline</div>
+    <div class="demo-area">
+      <svg class="vortex-mini" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" width="36" height="36">
+        <defs><circle id="bB" r="2.4" fill="#ffffff" opacity="0.07"/><circle id="lB" r="3.1"/></defs>
+        <use href="#bB" x="6" y="6"/><use href="#bB" x="17" y="6"/><use href="#bB" x="28" y="6"/><use href="#bB" x="39" y="6"/><use href="#bB" x="50" y="6"/>
+        <use href="#bB" x="6" y="17"/><use href="#bB" x="17" y="17"/><use href="#bB" x="28" y="17"/><use href="#bB" x="39" y="17"/><use href="#bB" x="50" y="17"/>
+        <use href="#bB" x="6" y="28"/><use href="#bB" x="17" y="28"/><use href="#bB" x="28" y="28"/><use href="#bB" x="39" y="28"/><use href="#bB" x="50" y="28"/>
+        <use href="#bB" x="6" y="39"/><use href="#bB" x="17" y="39"/><use href="#bB" x="28" y="39"/><use href="#bB" x="39" y="39"/><use href="#bB" x="50" y="39"/>
+        <use href="#bB" x="6" y="50"/><use href="#bB" x="17" y="50"/><use href="#bB" x="28" y="50"/><use href="#bB" x="39" y="50"/><use href="#bB" x="50" y="50"/>
+        <use class="vortex-l d00" href="#lB" x="6" y="6"/><use class="vortex-l d01" href="#lB" x="17" y="6"/><use class="vortex-l d02" href="#lB" x="28" y="6"/>
+        <use class="vortex-l d03" href="#lB" x="39" y="6"/><use class="vortex-l d04" href="#lB" x="50" y="6"/>
+        <use class="vortex-l d10" href="#lB" x="6" y="17"/><use class="vortex-l d11" href="#lB" x="17" y="17"/><use class="vortex-l d12" href="#lB" x="28" y="17"/>
+        <use class="vortex-l d13" href="#lB" x="39" y="17"/><use class="vortex-l d14" href="#lB" x="50" y="17"/>
+        <use class="vortex-l d20" href="#lB" x="6" y="28"/><use class="vortex-l d21" href="#lB" x="17" y="28"/><use class="vortex-l d22" href="#lB" x="28" y="28"/>
+        <use class="vortex-l d23" href="#lB" x="39" y="28"/><use class="vortex-l d24" href="#lB" x="50" y="28"/>
+        <use class="vortex-l d30" href="#lB" x="6" y="39"/><use class="vortex-l d31" href="#lB" x="17" y="39"/><use class="vortex-l d32" href="#lB" x="28" y="39"/>
+        <use class="vortex-l d33" href="#lB" x="39" y="39"/><use class="vortex-l d34" href="#lB" x="50" y="39"/>
+        <use class="vortex-l d40" href="#lB" x="6" y="50"/><use class="vortex-l d41" href="#lB" x="17" y="50"/><use class="vortex-l d42" href="#lB" x="28" y="50"/>
+        <use class="vortex-l d43" href="#lB" x="39" y="50"/><use class="vortex-l d44" href="#lB" x="50" y="50"/>
+      </svg>
+      <div class="text-scan-wrap">
+        <span id="textB" class="text-scan cycling-text">Structuring answer…</span>
+        <span class="text-scan-underline"></span>
+      </div>
+    </div>
+    <div class="option-desc">Purple scanning line runs under the text. Text stays readable while the underline pulses like a radar sweep.</div>
+  </div>
+
+  <!-- OPTION C: Glow Pulse -->
+  <div class="option-card" onclick="selectOption('c', this)">
+    <div class="option-label">Option C</div>
+    <div class="option-title">Glow Pulse</div>
+    <div class="demo-area">
+      <svg class="vortex-mini" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" width="36" height="36">
+        <defs><circle id="bC" r="2.4" fill="#ffffff" opacity="0.07"/><circle id="lC" r="3.1"/></defs>
+        <use href="#bC" x="6" y="6"/><use href="#bC" x="17" y="6"/><use href="#bC" x="28" y="6"/><use href="#bC" x="39" y="6"/><use href="#bC" x="50" y="6"/>
+        <use href="#bC" x="6" y="17"/><use href="#bC" x="17" y="17"/><use href="#bC" x="28" y="17"/><use href="#bC" x="39" y="17"/><use href="#bC" x="50" y="17"/>
+        <use href="#bC" x="6" y="28"/><use href="#bC" x="17" y="28"/><use href="#bC" x="28" y="28"/><use href="#bC" x="39" y="28"/><use href="#bC" x="50" y="28"/>
+        <use href="#bC" x="6" y="39"/><use href="#bC" x="17" y="39"/><use href="#bC" x="28" y="39"/><use href="#bC" x="39" y="39"/><use href="#bC" x="50" y="39"/>
+        <use href="#bC" x="6" y="50"/><use href="#bC" x="17" y="50"/><use href="#bC" x="28" y="50"/><use href="#bC" x="39" y="50"/><use href="#bC" x="50" y="50"/>
+        <use class="vortex-l d00" href="#lC" x="6" y="6"/><use class="vortex-l d01" href="#lC" x="17" y="6"/><use class="vortex-l d02" href="#lC" x="28" y="6"/>
+        <use class="vortex-l d03" href="#lC" x="39" y="6"/><use class="vortex-l d04" href="#lC" x="50" y="6"/>
+        <use class="vortex-l d10" href="#lC" x="6" y="17"/><use class="vortex-l d11" href="#lC" x="17" y="17"/><use class="vortex-l d12" href="#lC" x="28" y="17"/>
+        <use class="vortex-l d13" href="#lC" x="39" y="17"/><use class="vortex-l d14" href="#lC" x="50" y="17"/>
+        <use class="vortex-l d20" href="#lC" x="6" y="28"/><use class="vortex-l d21" href="#lC" x="17" y="28"/><use class="vortex-l d22" href="#lC" x="28" y="28"/>
+        <use class="vortex-l d23" href="#lC" x="39" y="28"/><use class="vortex-l d24" href="#lC" x="50" y="28"/>
+        <use class="vortex-l d30" href="#lC" x="6" y="39"/><use class="vortex-l d31" href="#lC" x="17" y="39"/><use class="vortex-l d32" href="#lC" x="28" y="39"/>
+        <use class="vortex-l d33" href="#lC" x="39" y="39"/><use class="vortex-l d34" href="#lC" x="50" y="39"/>
+        <use class="vortex-l d40" href="#lC" x="6" y="50"/><use class="vortex-l d41" href="#lC" x="17" y="50"/><use class="vortex-l d42" href="#lC" x="28" y="50"/>
+        <use class="vortex-l d43" href="#lC" x="39" y="50"/><use class="vortex-l d44" href="#lC" x="50" y="50"/>
+      </svg>
+      <span id="textC" class="text-glow cycling-text">Structuring answer…</span>
+    </div>
+    <div class="option-desc">Text breathes in and out with a purple glow — softly pulses between dim gray and bright purple. Closest to Grok's "thinking" mode.</div>
+  </div>
+
+</div>
+
+<div id="sel-indicator" class="selected-indicator"></div>
+
+<script>
+  let selected = null;
+
+  function selectOption(choice, el) {
+    // deselect all
+    document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selected = choice;
+
+    const names = { a: 'Option A — Shimmer Sweep', b: 'Option B — Scan Underline', c: 'Option C — Glow Pulse' };
+    const ind = document.getElementById('sel-indicator');
+    ind.textContent = names[choice] + ' selected';
+    ind.classList.add('visible');
+
+    // record event for claude
+    try {
+      fetch('/__event', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ type: 'click', choice, text: names[choice] })
+      });
+    } catch(e) {}
+  }
+
+  // Cycle the text every 1.8s so all 3 demos animate
+  const textSteps = ['Structuring answer…', 'Checking sources…', 'Parsing equations…', 'Almost ready…'];
+  let stepIdx = 0;
+  setInterval(() => {
+    stepIdx = (stepIdx + 1) % textSteps.length;
+    ['textA','textB','textC'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('cycling-text');
+        void el.offsetWidth;
+        el.textContent = textSteps[stepIdx];
+        el.classList.add('cycling-text');
+      }
+    });
+  }, 1800);
+</script>
+
+</body>
+</html>

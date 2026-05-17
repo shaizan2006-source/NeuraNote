@@ -1,0 +1,40 @@
+<h2>Dashboard Rebuild: Which Approach?</h2>
+<p class="subtitle">Your codebase already has all 5 dashboard cards in JS. How should we get to the pixel-perfect image?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Enhance Existing (Recommended)</h3>
+      <p>Restyle current components in-place — AskAIHeroCard, StudyModeCards, DashboardSidebar, GreetingRow — to pixel-match the image. Keeps all backend wiring (Supabase, DashboardContext, APIs) intact. Fastest path, zero regressions.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>All APIs already wired</li><li>No data migration</li><li>Ship fastest</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>JS, not TS</li><li>Inline styles (no Tailwind)</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Full TypeScript Rebuild</h3>
+      <p>Brand-new .tsx components with Tailwind classes, Zustand store, and typed API calls — replacing the existing .jsx files. Exactly what the spec describes (TypeScript + Tailwind + Zustand).</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>Clean TypeScript</li><li>Tailwind-first</li><li>Zustand state</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Must re-wire all APIs</li><li>Risk of regressions</li><li>Longer timeline</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Hybrid: Keep Logic, New Styles</h3>
+      <p>Keep DashboardContext + API hooks unchanged. Convert just the visual layer — swap inline styles for Tailwind classes, add Framer Motion polish, match the image's glassmorphism system.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>Best visual output</li><li>APIs stay intact</li><li>Tailwind design system</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Requires Tailwind config</li><li>Medium effort</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

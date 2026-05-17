@@ -1,0 +1,138 @@
+<h2>Design: Robust UI States + Error Handling</h2>
+<p class="subtitle">Section 2 of 3 — every state the UI can be in, with crash-proof handling for each.</p>
+
+<div class="section">
+  <h3>All Render States — WeakTopicsSection</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+
+    <div style="padding:12px;border:1px solid rgba(255,255,255,0.08);border-radius:8px">
+      <div class="label">State 1: Loading</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+        <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;width:60%;animation:pulse 1.5s infinite"></div>
+        <div style="height:40px;background:rgba(255,255,255,0.04);border-radius:6px"></div>
+        <div style="height:40px;background:rgba(255,255,255,0.04);border-radius:6px;width:85%"></div>
+        <div style="height:40px;background:rgba(255,255,255,0.04);border-radius:6px;width:70%"></div>
+      </div>
+      <p style="font-size:10px;color:#71717a;margin:8px 0 0">Skeleton loaders — no layout shift</p>
+    </div>
+
+    <div style="padding:12px;border:1px solid rgba(82,82,91,0.3);border-radius:8px">
+      <div class="label">State 2: No Exam Selected</div>
+      <div style="margin-top:8px;text-align:center;padding:16px">
+        <div style="font-size:20px">📚</div>
+        <p style="font-size:11px;color:#a1a1aa;margin:4px 0 0">Add an exam to start tracking weak areas</p>
+        <button class="mock-button" style="margin-top:8px;font-size:10px;padding:6px 12px">+ Add Exam</button>
+      </div>
+    </div>
+
+    <div style="padding:12px;border:1px solid rgba(34,197,94,0.2);border-radius:8px">
+      <div class="label" style="color:#4ade80">State 3: No Weak Topics (Clean!)</div>
+      <div style="margin-top:8px;text-align:center;padding:16px">
+        <div style="font-size:20px">🎉</div>
+        <p style="font-size:11px;color:#e4e4e7;margin:4px 0;font-weight:600">No weak areas detected</p>
+        <p style="font-size:10px;color:#71717a;margin:0">You're doing great in this subject. Keep practicing to stay sharp.</p>
+        <button class="mock-button" style="margin-top:8px;font-size:10px;padding:6px 12px">Start Practice Quiz</button>
+      </div>
+    </div>
+
+    <div style="padding:12px;border:1px solid rgba(239,68,68,0.2);border-radius:8px">
+      <div class="label" style="color:#f87171">State 4: Fetch Error</div>
+      <div style="margin-top:8px;text-align:center;padding:16px">
+        <div style="font-size:20px">⚠️</div>
+        <p style="font-size:11px;color:#fca5a5;margin:4px 0">Couldn't load weak topics</p>
+        <button class="mock-button" style="margin-top:8px;font-size:10px;padding:6px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3)">Retry</button>
+      </div>
+    </div>
+
+    <div style="padding:12px;border:1px solid rgba(139,92,246,0.3);border-radius:8px;grid-column:span 2">
+      <div class="label" style="color:#a78bfa">State 5: Weak Topics Loaded (Happy Path)</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:6px">
+          <div>
+            <p style="margin:0;font-size:11px;color:#e4e4e7;font-weight:600">normalization</p>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:3px">
+              <div style="width:80px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px"><div style="width:35%;height:100%;background:#ef4444;border-radius:2px"></div></div>
+              <span style="font-size:9px;color:#f87171">35% accuracy</span>
+            </div>
+            <p style="margin:2px 0 0;font-size:9px;color:#52525b">Last practiced 3 days ago</p>
+          </div>
+          <button class="mock-button" style="font-size:9px;padding:4px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3)">Practice</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:6px">
+          <div>
+            <p style="margin:0;font-size:11px;color:#e4e4e7;font-weight:600">deadlock</p>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:3px">
+              <div style="width:80px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px"><div style="width:52%;height:100%;background:#f59e0b;border-radius:2px"></div></div>
+              <span style="font-size:9px;color:#fbbf24">52% accuracy</span>
+            </div>
+            <p style="margin:2px 0 0;font-size:9px;color:#52525b">Last practiced 1 day ago</p>
+          </div>
+          <button class="mock-button" style="font-size:9px;padding:4px 10px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3)">Practice</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Urgency Indicator — ExamCountdownSection</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
+    <div style="padding:10px;border:1px solid rgba(34,197,94,0.3);border-radius:8px;text-align:center">
+      <div style="font-size:20px;font-weight:900;color:#22c55e">21</div>
+      <div style="font-size:9px;color:#4ade80">days left</div>
+      <div style="font-size:9px;color:#52525b;margin-top:2px">&gt;14d — Green</div>
+    </div>
+    <div style="padding:10px;border:1px solid rgba(234,179,8,0.3);border-radius:8px;text-align:center">
+      <div style="font-size:20px;font-weight:900;color:#eab308">10</div>
+      <div style="font-size:9px;color:#facc15">days left</div>
+      <div style="font-size:9px;color:#52525b;margin-top:2px">7–14d — Yellow</div>
+    </div>
+    <div style="padding:10px;border:1px solid rgba(239,68,68,0.3);border-radius:8px;text-align:center">
+      <div style="font-size:20px;font-weight:900;color:#ef4444">4</div>
+      <div style="font-size:9px;color:#f87171">days left</div>
+      <div style="font-size:9px;color:#52525b;margin-top:2px">&lt;7d — Red</div>
+    </div>
+    <div style="padding:10px;border:1px solid rgba(239,68,68,0.4);border-radius:8px;text-align:center;background:rgba(239,68,68,0.05)">
+      <div style="font-size:14px;font-weight:900;color:#ef4444">Today!</div>
+      <div style="font-size:9px;color:#f87171;margin-top:2px">🔥 Exam Day</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Crash-Proof: Error Handling Strategy</h3>
+  <div style="display:flex;flex-direction:column;gap:8px;font-size:11px">
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #22d3ee;border-radius:4px">
+      <strong style="color:#e4e4e7">React Error Boundary</strong> <span style="color:#71717a">wraps entire ExamCard — crashes in any child show a graceful fallback, not a blank screen</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #a78bfa;border-radius:4px">
+      <strong style="color:#e4e4e7">Double normalization</strong> <span style="color:#71717a">Both exam.subject and weakTopic.subject run through normalizeSubject() before comparison — handles "DBMS", "dbms", "Database Management" all matching</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #34d399;border-radius:4px">
+      <strong style="color:#e4e4e7">Null-subject fallback</strong> <span style="color:#71717a">Old exams with null subject → show all topics (no filter) with a banner: "Subject not set — showing all weak topics"</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #fb923c;border-radius:4px">
+      <strong style="color:#e4e4e7">sessionStorage try/catch</strong> <span style="color:#71717a">All sessionStorage reads/writes wrapped in try/catch — private browsing mode blocks it silently. Falls back gracefully (quiz opens without prefill)</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #f43f5e;border-radius:4px">
+      <strong style="color:#e4e4e7">Fetch retry with backoff</strong> <span style="color:#71717a">fetchWeakTopics and fetchExam retry up to 2x with exponential backoff before showing the error state with Retry button</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #8b5cf6;border-radius:4px">
+      <strong style="color:#e4e4e7">Race condition guard</strong> <span style="color:#71717a">fetchWeakTopics uses a ref-based in-flight guard (same pattern as fetchProgressSummary already in context) — no double-fetches</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #06b6d4;border-radius:4px">
+      <strong style="color:#e4e4e7">Deleted exam → reset</strong> <span style="color:#71717a">When selectedExam is removed from activeExams, context auto-selects nearest remaining exam or sets null → WeakTopicsSection reacts immediately</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #10b981;border-radius:4px">
+      <strong style="color:#e4e4e7">Invalid date guard</strong> <span style="color:#71717a">If exam_date produces NaN — already handled in ExamCountdownSection. Study plan generation checks daysLeft ≥ 0 before distributing topics</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #f59e0b;border-radius:4px">
+      <strong style="color:#e4e4e7">Study plan edge cases</strong> <span style="color:#71717a">0 days left → "Exam is today, focus on quick revision". 1 day → single-day plan. More topics than days → stack 2–3 topics per day. No topics → show generic revision checklist</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #e879f9;border-radius:4px">
+      <strong style="color:#e4e4e7">Accuracy fallback</strong> <span style="color:#71717a">WeakTopics from DB only have <code>count</code>, not an accuracy %. Accuracy is derived: accuracy = max(0, 100 - (count * 12)) capped at 59% (since threshold=5 means ≥5 errors). Displayed on progress bar.</span>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:8px">Does this robustness strategy cover everything you need? Confirm and I'll present Section 3 (integrations + study plan logic).</p>

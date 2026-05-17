@@ -1,26 +1,20 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { verifyAuth, supabaseAdmin } from "@/lib/serverAuth";
 
 export async function GET(req) {
-  const { searchParams } = new URL(req.url);
-  const user_id = searchParams.get("user_id");
-  if (!user_id) return NextResponse.json([], { status: 400 });
+  const user = await verifyAuth(req);
+  if (!user) return new NextResponse(null, { status: 401 });
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("conversations")
     .select("id, title, created_at, updated_at")
-    .eq("user_id", user_id)
+    .eq("user_id", user.id)
     .order("updated_at", { ascending: false })
     .limit(10);
 
   if (error) {
-    console.error("[/api/conversations] Supabase error:", error.message, error.details, error.hint);
-    return NextResponse.json([], { status: 200 }); // degrade gracefully — sidebar shows empty list
+    console.error("[/api/conversations] Supabase error:", error.message);
+    return NextResponse.json([], { status: 200 });
   }
   return NextResponse.json(data || []);
 }

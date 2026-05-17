@@ -1,58 +1,49 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { verifyAuth, supabaseAdmin } from "@/lib/serverAuth";
 
 export async function GET(req, { params }) {
-  const { id } = await params;
-  if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  const user = await verifyAuth(req);
+  if (!user) return new NextResponse(null, { status: 401 });
 
-  const { data, error } = await supabase
+  const { id } = await params;
+
+  const { data: convo, error: convoErr } = await supabaseAdmin
     .from("conversations")
-    .select("id, title, messages, created_at, updated_at")
+    .select("id, title, created_at, updated_at, user_id")
     .eq("id", id)
     .single();
 
-  if (error || !data) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(data);
-}
+  if (convoErr || !convo) return new NextResponse(null, { status: 404 });
+  if (convo.user_id !== user.id) return new NextResponse(null, { status: 403 });
 
-export async function PATCH(req, { params }) {
-  const { id } = await params;
-  if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  const { data: messages, error: msgErr } = await supabaseAdmin
+    .from("messages")
+    .select("id, role, content, created_at")
+    .eq("conversation_id", id)
+    .order("created_at", { ascending: true });
 
-  const { title, user_id } = await req.json();
-  if (!user_id || !title?.trim()) {
-    return NextResponse.json({ error: "Missing user_id or title" }, { status: 400 });
+  if (msgErr) {
+    console.error("[/api/conversations/[id]] messages error:", msgErr.message);
+    return NextResponse.json({ ...convo, messages: [] });
   }
 
-  const { error } = await supabase
-    .from("conversations")
-    .update({ title: title.trim(), updated_at: new Date().toISOString() })
-    .eq("id", id)
-    .eq("user_id", user_id);
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ ...convo, messages: messages || [] });
 }
 
 export async function DELETE(req, { params }) {
+  const user = await verifyAuth(req);
+  if (!user) return new NextResponse(null, { status: 401 });
+
   const { id } = await params;
-  if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  const { searchParams } = new URL(req.url);
-  const user_id = searchParams.get("user_id");
-  if (!user_id) return NextResponse.json({ error: "Missing user_id" }, { status: 400 });
-
-  const { error } = await supabase
+  const { data: convo } = await supabaseAdmin
     .from("conversations")
-    .delete()
+    .select("id, user_id")
     .eq("id", id)
-    .eq("user_id", user_id);
+    .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+  if (!convo || convo.user_id !== user.id) return new NextResponse(null, { status: 404 });
+
+  await supabaseAdmin.from("conversations").delete().eq("id", id);
+  return NextResponse.json({ deleted: true });
 }

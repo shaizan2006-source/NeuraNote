@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ambient Background Design</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0e1117; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 32px 24px 64px; max-width: 960px; margin: 0 auto; }
+
+  h1 { font-size: 22px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .lead { font-size: 14px; color: #94a3b8; margin-bottom: 40px; line-height: 1.6; }
+
+  .section { margin-bottom: 48px; }
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #7c3aed; margin-bottom: 16px; }
+
+  /* ── Layer diagram ── */
+  .layer-diagram {
+    position: relative;
+    height: 340px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #04060e;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .layer-bloom {
+    position: absolute;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130%;
+    height: 130%;
+    background: radial-gradient(ellipse 85% 65% at 50% 30%,
+      rgba(79,22,162,0.20) 0%,
+      rgba(49,10,119,0.08) 45%,
+      transparent 70%
+    );
+    filter: blur(55px);
+    animation: breathe 14s ease-in-out infinite;
+  }
+  .layer-top-wash {
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    right: -10%;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(91,33,182,0.09) 0%, transparent 100%);
+    filter: blur(30px);
+    animation: breathe 10s ease-in-out 3s infinite;
+  }
+  .layer-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 35%, rgba(0,0,0,0.50) 100%);
+  }
+  @keyframes breathe {
+    0%,100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    50% { opacity: 0.72; transform: translateX(-50%) scale(1.04); }
+  }
+  .layer-content-sim {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 40px;
+    gap: 40px;
+  }
+  .timer-sim {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .timer-ring {
+    width: 100px;
+    height: 100px;
+    border: 2px solid rgba(139,92,246,0.30);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #e2d9f3;
+  }
+  .timer-label { font-size: 11px; color: rgba(148,163,184,0.6); letter-spacing: 0.5px; }
+  .tasks-sim { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .task-row {
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .task-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(139,92,246,0.40); flex-shrink: 0; }
+  .task-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.08); flex: 1; }
+  .task-tag { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: rgba(249,115,22,0.18); color: #f97316; flex-shrink: 0; letter-spacing: 0.3px; }
+
+  /* ── Layer stack diagram ── */
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stack-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+  .stack-swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .stack-info { flex: 1; }
+  .stack-name { font-size: 13px; font-weight: 600; color: #f1f5f9; margin-bottom: 2px; }
+  .stack-desc { font-size: 12px; color: #64748b; line-height: 1.5; }
+  .stack-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .badge-static { background: rgba(100,116,139,0.15); color: #64748b; }
+  .badge-parallax { background: rgba(124,58,237,0.15); color: #a78bfa; }
+  .badge-breathe { background: rgba(34,197,94,0.12); color: #22c55e; }
+  .badge-both { background: rgba(249,115,22,0.12); color: #f97316; }
+
+  /* ── Motion diagram ── */
+  .motion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .motion-card {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .motion-card h4 { font-size: 12px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .motion-card p { font-size: 12px; color: #64748b; line-height: 1.6; }
+  .motion-card .val { font-size: 20px; font-weight: 700; color: #7c3aed; margin: 8px 0; font-variant-numeric: tabular-nums; }
+  .motion-card .sub { font-size: 11px; color: #475569; }
+
+  /* ── Scroll track sim ── */
+  .scroll-sim {
+    position: relative;
+    height: 80px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+  }
+  .scroll-track { position: relative; flex: 1; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+  .scroll-arrow { position: absolute; top: 50%; right: 0; transform: translateY(-50%); font-size: 20px; color: rgba(255,255,255,0.15); }
+  .scroll-label { position: absolute; bottom: -18px; font-size: 10px; color: #475569; white-space: nowrap; }
+  .track-user { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; border-radius: 50%; background: #f1f5f9; box-shadow: 0 0 8px rgba(255,255,255,0.3); animation: slideUser 4s ease-in-out infinite; }
+  .track-far  { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 10px; height: 10px; border-radius: 50%; background: #7c3aed; box-shadow: 0 0 8px rgba(124,58,237,0.5); animation: slideFar 4s ease-in-out infinite; }
+  .track-mid  { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 10px; height: 10px; border-radius: 50%; background: #3b82f6; box-shadow: 0 0 8px rgba(59,130,246,0.4); animation: slideMid 4s ease-in-out infinite; }
+  @keyframes slideUser { 0%,100% { left: 0; } 50% { left: calc(100% - 12px); } }
+  @keyframes slideFar  { 0%,100% { left: 0; } 50% { left: calc(3% * (100% - 10px) / 1%); } }
+  @keyframes slideMid  { 0%,100% { left: 0; } 50% { left: calc(7% * (100% - 10px) / 1%); } }
+
+  /* ── File structure ── */
+  .file-tree {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 12.5px;
+    line-height: 2;
+    color: #94a3b8;
+  }
+  .file-tree .dir { color: #64748b; }
+  .file-tree .new { color: #a78bfa; }
+  .file-tree .edit { color: #22c55e; }
+  .file-tree .unchanged { color: #334155; }
+
+  /* ── Config table ── */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #475569; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #94a3b8; vertical-align: top; }
+  td:first-child { color: #a78bfa; font-family: monospace; font-size: 11.5px; }
+  td:nth-child(2) { color: #22c55e; font-family: monospace; }
+  tr:last-child td { border-bottom: none; }
+
+  .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 48px 0; }
+</style>
+</head>
+<body>
+
+<h1>Cinematic Ambient Background — Design</h1>
+<p class="lead">Approach A: rAF + CSS Variables · Void style · Focus page only<br>
+Scroll 1000px → far glow moves ~30px · mid glow moves ~70px · lerp 0.06 = buttery smooth</p>
+
+<!-- ── SECTION 1: Live preview ── -->
+<div class="section">
+  <div class="section-title">1 · Live Layer Preview</div>
+  <div class="layer-diagram">
+    <div class="layer-bloom"></div>
+    <div class="layer-top-wash"></div>
+    <div class="layer-vignette"></div>
+    <div class="layer-content-sim">
+      <div class="timer-sim">
+        <div class="timer-ring">254:49</div>
+        <div class="timer-label">Est. 255 min session</div>
+      </div>
+      <div class="tasks-sim">
+        <div class="task-row"><div class="task-dot"></div><div class="task-bar" style="width:70%"></div><div class="task-tag">MUST KNOW</div></div>
+        <div class="task-row"><div class="task-dot"></div><div class="task-bar" style="width:85%"></div><div class="task-tag">HIGH YIELD</div></div>
+        <div class="task-row"><div class="task-dot"></div><div class="task-bar" style="width:55%"></div><div class="task-tag">HIGH YIELD</div></div>
+        <div class="task-row"><div class="task-dot"></div><div class="task-bar" style="width:90%"></div><div class="task-tag">MUST KNOW</div></div>
+        <div class="task-row"><div class="task-dot"></div><div class="task-bar" style="width:65%"></div><div class="task-tag">HIGH YIELD</div></div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:#475569;margin-top:8px;text-align:center;">The bloom breathes live above — this is the actual CSS you'll see in the app.</p>
+</div>
+
+<!-- ── SECTION 2: Layer stack ── -->
+<div class="section">
+  <div class="section-title">2 · Layer Stack (bottom → top)</div>
+  <div class="stack">
+    <div class="stack-item">
+      <div class="stack-swatch" style="background:linear-gradient(165deg,#04060e,#070920,#050610)"></div>
+      <div class="stack-info">
+        <div class="stack-name">layer-base</div>
+        <div class="stack-desc">Solid near-black gradient. Never moves. Ensures no white flash on any viewport.</div>
+      </div>
+      <span class="stack-badge badge-static">static</span>
+    </div>
+    <div class="stack-item">
+      <div class="stack-swatch" style="background:radial-gradient(ellipse at center, rgba(79,22,162,0.55) 0%, rgba(49,10,119,0.2) 50%, transparent 75%)"></div>
+      <div class="stack-info">
+        <div class="stack-name">layer-far</div>
+        <div class="stack-desc">Large center bloom, 130% viewport. Parallax 3% — 1000px scroll = 30px shift. Breathing 14s cycle.</div>
+      </div>
+      <span class="stack-badge badge-both">parallax + breathe</span>
+    </div>
+    <div class="stack-item">
+      <div class="stack-swatch" style="background:linear-gradient(to bottom, rgba(91,33,182,0.55), transparent)"></div>
+      <div class="stack-info">
+        <div class="stack-name">layer-mid</div>
+        <div class="stack-desc">Top-edge violet wash + faint indigo crown. Parallax 7% — 1000px = 70px. Breathing 10s, offset 3s.</div>
+      </div>
+      <span class="stack-badge badge-both">parallax + breathe</span>
+    </div>
+    <div class="stack-item">
+      <div class="stack-swatch" style="background:radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%)"></div>
+      <div class="stack-info">
+        <div class="stack-name">layer-vignette</div>
+        <div class="stack-desc">Radial black at all edges. Keeps content readable and makes the center feel lit.</div>
+      </div>
+      <span class="stack-badge badge-static">static</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── SECTION 3: Scroll motion ── -->
+<div class="section">
+  <div class="section-title">3 · Scroll Motion System</div>
+  <div class="motion-grid">
+    <div class="motion-card">
+      <h4>Lerp Factor</h4>
+      <div class="val">0.06</div>
+      <p>Each rAF tick, current position moves 6% toward target. Creates physical lag — the glow feels weighted, not glued to scroll.</p>
+      <p class="sub" style="margin-top:8px;">Range: 0.03 (dreamlike) → 0.12 (snappy)</p>
+    </div>
+    <div class="motion-card">
+      <h4>Far Layer Parallax</h4>
+      <div class="val">3%</div>
+      <p>Scroll 1000px → bloom shifts 30px upward. Atmospheric. You feel the depth without seeing explicit movement.</p>
+      <p class="sub" style="margin-top:8px;">translate3d — GPU only, zero paint</p>
+    </div>
+    <div class="motion-card">
+      <h4>Mid Layer Parallax</h4>
+      <div class="val">7%</div>
+      <p>Slightly more reactive. Scroll 1000px → 70px shift. The difference between far (30px) and mid (70px) creates the depth illusion.</p>
+      <p class="sub" style="margin-top:8px;">2× faster than far = parallax depth</p>
+    </div>
+    <div class="motion-card">
+      <h4>rAF Optimization</h4>
+      <div class="val">idle-stop</div>
+      <p>The rAF loop only runs while scroll is in motion. When delta &lt; 0.1px it cancels itself. Zero CPU while user isn't scrolling.</p>
+      <p class="sub" style="margin-top:8px;">Passive scroll listener throughout</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── SECTION 4: File changes ── -->
+<div class="section">
+  <div class="section-title">4 · Files Created &amp; Modified</div>
+  <div class="file-tree">
+    <span class="dir">src/components/focus/</span><br>
+    &nbsp;&nbsp;<span class="new">+ FocusAmbientBackground.tsx</span>&nbsp;&nbsp;&nbsp;<span style="color:#334155">← new component + rAF hook</span><br>
+    &nbsp;&nbsp;<span class="new">+ ambient-background.css</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#334155">← layer styles + keyframes</span><br>
+    &nbsp;&nbsp;<span class="new">+ ambient-background.config.ts</span>&nbsp;<span style="color:#334155">← all tunable constants</span><br>
+    <br>
+    <span class="dir">src/app/focus/</span><br>
+    &nbsp;&nbsp;<span class="edit">~ page.jsx</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#334155">← remove inline background, add component</span>
+  </div>
+</div>
+
+<!-- ── SECTION 5: Tunable config ── -->
+<div class="section">
+  <div class="section-title">5 · Tunable Configuration</div>
+  <table>
+    <tr>
+      <th>Constant</th>
+      <th>Default</th>
+      <th>Effect</th>
+    </tr>
+    <tr>
+      <td>LERP</td>
+      <td>0.06</td>
+      <td>Interpolation speed. Lower = dreamier, higher = snappier.</td>
+    </tr>
+    <tr>
+      <td>FAR_PARALLAX</td>
+      <td>0.03</td>
+      <td>Far bloom movement ratio. 0.03 = 30px per 1000px scroll.</td>
+    </tr>
+    <tr>
+      <td>MID_PARALLAX</td>
+      <td>0.07</td>
+      <td>Mid wash movement ratio. Higher than far creates depth.</td>
+    </tr>
+    <tr>
+      <td>FAR_BREATHE_DURATION</td>
+      <td>14s</td>
+      <td>Bloom pulse cycle. Longer = more meditative.</td>
+    </tr>
+    <tr>
+      <td>MID_BREATHE_DURATION</td>
+      <td>10s</td>
+      <td>Wash pulse cycle. Offset from far to avoid sync.</td>
+    </tr>
+    <tr>
+      <td>FAR_OPACITY</td>
+      <td>0.18</td>
+      <td>Peak bloom opacity. Keep under 0.25 for Void feel.</td>
+    </tr>
+    <tr>
+      <td>SCROLL_SELECTOR</td>
+      <td>.amn-focus-scroll</td>
+      <td>CSS selector for the scroll container to listen on.</td>
+    </tr>
+  </table>
+</div>
+
+<div class="divider"></div>
+<p style="font-size:12px;color:#475569;text-align:center;">Does this design look right? Let me know in the terminal — any adjustments before I write the spec.</p>
+
+</body>
+</html>

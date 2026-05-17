@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { supabaseAdmin as supabase } from "@/lib/serverAuth";
 
 const PLAN_DURATION = { student: 30, pro: 30 };
 
@@ -81,6 +76,18 @@ export async function POST(req) {
     if (!PLAN_DURATION[plan]) {
       console.warn("Webhook: unknown plan:", plan);
       return NextResponse.json({ received: true, warning: "Unknown plan" });
+    }
+
+    // Idempotency check — Razorpay retries on non-2xx; prevent double activation
+    const { data: existing } = await supabase
+      .from("user_plans")
+      .select("id")
+      .eq("payment_id", paymentId)
+      .maybeSingle();
+
+    if (existing) {
+      console.log("Webhook: duplicate payment_id, skipping activation:", paymentId);
+      return NextResponse.json({ received: true, idempotent: true });
     }
 
     const expiresAt = new Date();

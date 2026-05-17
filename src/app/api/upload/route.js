@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { verifyAuth, supabaseAdmin as supabase } from "@/lib/serverAuth";
 import pdf from "pdf-parse";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import OpenAI from "openai";
@@ -8,16 +8,15 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
 export async function POST(req) {
   try {
+    const user = await verifyAuth(req);
+    if (!user) return new NextResponse(null, { status: 401 });
+
     const formData = await req.formData();
     const file = formData.get("file");
-    const userId = formData.get("userId");
+    // userId from form data is intentionally ignored — always use authenticated user
+    const userId = user.id;
 
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });

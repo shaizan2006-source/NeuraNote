@@ -1,0 +1,53 @@
+<h2>Implementation Approach</h2>
+<p class="subtitle">Three ways to structure the refactor — pick the one that fits how you want to ship.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Full Modular Refactor <span style="font-size:10px;background:rgba(34,197,94,0.15);color:#4ade80;padding:2px 8px;border-radius:4px;margin-left:8px">Recommended</span></h3>
+      <p>Break the ExamsHeroCard into all the components the spec asks for. Each component is focused, reusable, and reads from context directly.</p>
+      <div style="margin-top:10px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:12px;color:#a1a1aa;font-family:monospace">
+        src/components/dashboard/exams/<br>
+        ├── ExamCard.jsx           ← replaces ExamsHeroCard<br>
+        ├── WeakTopicsSection.jsx  ← refactored with subject filter<br>
+        ├── WeakTopicCard.jsx      ← new: individual topic card<br>
+        ├── EmptyState.jsx         ← new: reusable empty states<br>
+        ├── StudySuggestion.jsx    ← new: "Focus Today" strip<br>
+        ├── StudyPlanModal.jsx     ← new: day-by-day calendar modal<br>
+        ├── ExamCountdownSection.jsx ← updated urgency thresholds<br>
+        └── AddExamModal.jsx       ← updated with subject dropdown
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pros</h4><ul><li>Clean separation of concerns</li><li>Easy to extend later</li><li>Matches spec exactly</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>More files to create</li><li>Slightly more upfront work</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Patch-in-place</h3>
+      <p>Keep the existing file structure. Modify ExamsHeroCard.jsx and WeakTopicsSection.jsx directly. Add new features as sections inside those files.</p>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pros</h4><ul><li>Fewer files touched</li><li>Lower risk of regression</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>ExamsHeroCard grows into a god component</li><li>Hard to test individual pieces</li><li>Doesn't match spec structure</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Fix Core Bug Now, Features Later</h3>
+      <p>Ship only the subject-filtering fix and conditional empty states first. Add Study Suggestion, Study Plan, and integrations as a separate pass.</p>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pros</h4><ul><li>Fastest to ship something working</li><li>Lower risk</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Two implementation passes</li><li>Students miss the smart features longer</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">⚡ All approaches include: subject dropdown in AddExamModal, DB schema change, sessionStorage quiz linking, and day-by-day study plan calendar.</p>

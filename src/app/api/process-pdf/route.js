@@ -1,7 +1,7 @@
 import { NextResponse, after } from "next/server";
 import pdf from "pdf-parse";
 import OpenAI from "openai";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin as supabase } from "@/lib/serverAuth";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { canUploadPDF } from "@/lib/planLimits";
 import { extractConcepts } from "@/lib/ingest/extractConcepts";
@@ -14,10 +14,11 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+async function setStatus(docId, status, progress, error = null) {
+  const update = { processing_status: status, processing_progress: progress };
+  if (error) update.processing_error = error;
+  await supabase.from("documents").update(update).eq("id", docId);
+}
 
 export async function POST(req) {
   try {
@@ -206,11 +207,15 @@ export async function POST(req) {
       name: file.name,
       subject: detectedSubject,
       user_id: userId,
+      processing_status: "parsing",
+      processing_progress: 20,
     });
 
     // ===============================
     // 🔥 INSERT CHUNKS
     // ===============================
+    await setStatus(documentId, "embedding", 50);
+
     const rows = chunks.map((chunk, i) => ({
       document_id: documentId,
       content: chunk,
@@ -224,12 +229,14 @@ export async function POST(req) {
       .select("id, page_number");
 
     if (error) {
+      await setStatus(documentId, "failed", 0, error.message);
       console.error(error);
       return NextResponse.json({
         error: "Database insert failed",
       });
     }
 
+    await setStatus(documentId, "extracting_concepts", 80);
     console.log("UPLOAD COMPLETE");
     console.log("PROCESSING DONE");
 
@@ -310,6 +317,8 @@ export async function POST(req) {
             concept_extraction_status: "done",
             concept_extraction_finished_at: new Date().toISOString(),
             concepts_count: persistStats.inserted + persistStats.updated,
+            processing_status: "ready",
+            processing_progress: 100,
           })
           .eq("id", documentId);
 

@@ -1,0 +1,71 @@
+<h2>Focus Mode — Ambient Atmosphere Direction</h2>
+<p class="subtitle">Which background feeling fits the "late-night deep focus" study environment?</p>
+
+<div class="cards">
+
+  <!-- Option A: Slow Aurora -->
+  <div class="card" data-choice="aurora" onclick="toggleSelect(this)">
+    <div class="card-image" style="height:160px;background:#0a0a14;border-radius:8px;overflow:hidden;position:relative;">
+      <div style="position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.22) 0%,transparent 70%);top:-100px;left:-60px;filter:blur(40px);animation:breathe1 8s ease-in-out infinite;"></div>
+      <div style="position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.16) 0%,transparent 70%);bottom:-80px;right:-40px;filter:blur(50px);animation:breathe2 11s ease-in-out infinite;"></div>
+      <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.10) 0%,transparent 70%);top:60px;right:40px;filter:blur(36px);animation:breathe3 14s ease-in-out infinite;"></div>
+      <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div style="width:120px;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;"></div>
+        <div style="width:80px;height:6px;background:rgba(255,255,255,0.07);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Slow Aurora</h3>
+      <p>Three large soft orbs (purple, blue, green tint) that breathe very slowly. Zero distraction. Maximum depth. Like studying under northern lights.</p>
+      <p style="font-size:12px;opacity:0.6;margin-top:8px;">Animation: 8–14 s breathing cycle · GPU only · No particles</p>
+    </div>
+  </div>
+
+  <!-- Option B: Deep Void + Glow Pulse -->
+  <div class="card" data-choice="void" onclick="toggleSelect(this)">
+    <div class="card-image" style="height:160px;background:#070710;border-radius:8px;overflow:hidden;position:relative;">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 110%,rgba(109,40,217,0.30) 0%,transparent 70%);"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 110%,rgba(139,92,246,0.20) 0%,transparent 60%);animation:pulse 5s ease-in-out infinite;"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:160px;height:1px;background:linear-gradient(90deg,transparent,rgba(139,92,246,0.4),transparent);"></div>
+      <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div style="width:120px;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;"></div>
+        <div style="width:80px;height:6px;background:rgba(255,255,255,0.07);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Deep Void</h3>
+      <p>Almost pure black with a single upward purple glow rising from the bottom edge. Pulsing gently. Feels like floating in space. Extremely minimal.</p>
+      <p style="font-size:12px;opacity:0.6;margin-top:8px;">Animation: Single radial pulse · Horizon glow · Near-zero distraction</p>
+    </div>
+  </div>
+
+  <!-- Option C: Mesh + Noise -->
+  <div class="card" data-choice="mesh" onclick="toggleSelect(this)">
+    <div class="card-image" style="height:160px;background:#0d0d1a;border-radius:8px;overflow:hidden;position:relative;">
+      <div style="position:absolute;inset:0;background:
+        radial-gradient(ellipse 50% 50% at 20% 30%,rgba(139,92,246,0.18) 0%,transparent 60%),
+        radial-gradient(ellipse 40% 40% at 80% 70%,rgba(59,130,246,0.14) 0%,transparent 60%),
+        radial-gradient(ellipse 30% 30% at 50% 10%,rgba(236,72,153,0.08) 0%,transparent 60%);
+        filter:blur(1px);"></div>
+      <!-- Subtle grid lines -->
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(139,92,246,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,0.04) 1px,transparent 1px);background-size:32px 32px;"></div>
+      <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div style="width:120px;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;"></div>
+        <div style="width:80px;height:6px;background:rgba(255,255,255,0.07);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Mesh Gradient</h3>
+      <p>Multi-point colour mesh (purple, blue, pink) with a faint grid overlay. Richer texture, still very dark. More "premium tool" than "study room".</p>
+      <p style="font-size:12px;opacity:0.6;margin-top:8px;">Static gradient · Subtle grid lines · No animation needed</p>
+    </div>
+  </div>
+
+</div>
+
+<style>
+@keyframes breathe1 { 0%,100%{opacity:.7;transform:scale(1) translate(0,0)} 50%{opacity:1;transform:scale(1.12) translate(12px,-8px)} }
+@keyframes breathe2 { 0%,100%{opacity:.5;transform:scale(1) translate(0,0)} 50%{opacity:.85;transform:scale(1.08) translate(-10px,6px)} }
+@keyframes breathe3 { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:.7;transform:scale(1.15) translate(6px,10px)} }
+@keyframes pulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+</style>

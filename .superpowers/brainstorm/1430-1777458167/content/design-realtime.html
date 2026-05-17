@@ -1,0 +1,100 @@
+<h2>Design: Live Data + Real-Time Updates</h2>
+<p class="subtitle">The app already has a battle-tested Supabase Realtime hook. We extend it — no new infrastructure needed.</p>
+
+<div class="section">
+  <h3>Current State vs What We Build</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div style="padding:14px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px">
+      <div class="label" style="color:#f87171">Current</div>
+      <div style="margin-top:8px;font-size:11px;color:#a1a1aa;line-height:1.8">
+        <p style="margin:0;color:#e4e4e7;font-weight:600">useRealtimeProgress TABLES:</p>
+        <p style="margin:2px 0;color:#4ade80">✅ exams — subscribed</p>
+        <p style="margin:2px 0;color:#f87171">❌ weak_topics — missing</p>
+        <p style="margin:8px 0 2px;color:#e4e4e7;font-weight:600">When exams changes:</p>
+        <p style="margin:2px 0;color:#f59e0b">⚠️ only calls fetchProgressSummary</p>
+        <p style="margin:2px 0;color:#f87171">❌ does NOT call fetchExam</p>
+        <p style="margin:8px 0 2px;color:#e4e4e7;font-weight:600">weak_topics update triggers:</p>
+        <p style="margin:2px 0;color:#f87171">❌ only after handleAsk() finishes</p>
+      </div>
+    </div>
+    <div style="padding:14px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:8px">
+      <div class="label" style="color:#4ade80">After Our Changes</div>
+      <div style="margin-top:8px;font-size:11px;color:#a1a1aa;line-height:1.8">
+        <p style="margin:0;color:#e4e4e7;font-weight:600">useRealtimeProgress TABLES:</p>
+        <p style="margin:2px 0;color:#4ade80">✅ exams — already there</p>
+        <p style="margin:2px 0;color:#4ade80">✅ weak_topics — ADDED</p>
+        <p style="margin:8px 0 2px;color:#e4e4e7;font-weight:600">When exams changes:</p>
+        <p style="margin:2px 0;color:#4ade80">✅ calls fetchProgressSummary</p>
+        <p style="margin:2px 0;color:#4ade80">✅ calls fetchExam (new callback)</p>
+        <p style="margin:8px 0 2px;color:#e4e4e7;font-weight:600">When weak_topics changes:</p>
+        <p style="margin:2px 0;color:#4ade80">✅ calls fetchWeakTopics (new callback)</p>
+        <p style="margin:2px 0;color:#4ade80">✅ WeakTopicsSection re-renders live</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>What Triggers a Live Update</h3>
+  <div style="display:flex;flex-direction:column;gap:8px;font-size:11px">
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #22d3ee;border-radius:4px">
+      <strong style="color:#e4e4e7">Student asks a question</strong>
+      <span style="color:#71717a"> → /api/weak-topics POST runs → inserts/updates weak_topics in DB → Supabase Realtime fires → debounced fetchWeakTopics() → WeakTopicCards re-render within ~500ms</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #a78bfa;border-radius:4px">
+      <strong style="color:#e4e4e7">Student adds an exam</strong>
+      <span style="color:#71717a"> → /api/exam POST → inserts into exams table → Realtime fires → debounced fetchExam() → ExamCountdownSection + WeakTopicsSection re-filter instantly</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #34d399;border-radius:4px">
+      <strong style="color:#e4e4e7">Exam expires (date passes)</strong>
+      <span style="color:#71717a"> → PATCH to status="completed" → Realtime fires on exams → fetchExam() re-runs → expired exam removed from activeExams → selectedExam auto-resets to nearest valid exam</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #fb923c;border-radius:4px">
+      <strong style="color:#e4e4e7">Student completes a quiz</strong>
+      <span style="color:#71717a"> → quiz results update mastery → weak_topics count may decrease → Realtime fires → fetchWeakTopics() → topic disappears from weak list if below threshold</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #f43f5e;border-radius:4px">
+      <strong style="color:#e4e4e7">Tab hidden → visible again</strong>
+      <span style="color:#71717a"> → existing visibilitychange handler already pauses and resumes → on tab focus, guardedRefetch() fires both fetchExam + fetchWeakTopics immediately</span>
+    </div>
+    <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:3px solid #8b5cf6;border-radius:4px">
+      <strong style="color:#e4e4e7">WebSocket disconnects</strong>
+      <span style="color:#71717a"> → existing fallback kicks in → 60s polling loop calls fetchExam + fetchWeakTopics until Realtime reconnects. Status indicator shows "polling" mode.</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Code Change — Minimal and Safe</h3>
+  <div class="mockup">
+    <div class="mockup-header">useRealtimeProgress.js — only 3 changes</div>
+    <div class="mockup-body" style="font-size:11px;font-family:monospace;color:#a1a1aa;line-height:1.8">
+      <span style="color:#71717a">// 1. Add weak_topics to TABLES array</span><br>
+      <span style="color:#34d399">const TABLES = ["learning_events", "focus_progress",</span><br>
+      <span style="color:#34d399">  "mastery_topics", "study_streaks", "exams",</span><br>
+      <span style="color:#34d399">  "spaced_repetition_cards", "weak_topics"]  // ← added</span><br><br>
+      <span style="color:#71717a">// 2. Accept new callbacks in hook params</span><br>
+      <span style="color:#34d399">export function useRealtimeProgress({</span><br>
+      <span style="color:#34d399">  refetch, refetchDailyPlan,</span><br>
+      <span style="color:#34d399">  refetchExam,        // ← new</span><br>
+      <span style="color:#34d399">  refetchWeakTopics,  // ← new</span><br>
+      <span style="color:#34d399">} = {}) {</span><br><br>
+      <span style="color:#71717a">// 3. In handler, call table-specific refetches</span><br>
+      <span style="color:#34d399">if (table === "exams" && refetchExam) refetchExam();</span><br>
+      <span style="color:#34d399">if (table === "weak_topics" && refetchWeakTopics) refetchWeakTopics();</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Live Update Timeline (Example)</h3>
+  <div style="position:relative;padding-left:20px;border-left:2px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;gap:12px;font-size:11px">
+    <div><span style="color:#22d3ee;font-weight:600">t=0s</span> <span style="color:#a1a1aa">Student asks "explain normalization" in DBMS exam context</span></div>
+    <div><span style="color:#a78bfa;font-weight:600">t=0.3s</span> <span style="color:#a1a1aa">/api/weak-topics POST extracts "normalization", upserts to DB</span></div>
+    <div><span style="color:#34d399;font-weight:600">t=0.4s</span> <span style="color:#a1a1aa">Supabase Realtime fires postgres_changes on weak_topics table</span></div>
+    <div><span style="color:#fb923c;font-weight:600">t=0.9s</span> <span style="color:#a1a1aa">Debounced fetchWeakTopics() fires (500ms debounce)</span></div>
+    <div><span style="color:#4ade80;font-weight:600">t=1.0s</span> <span style="color:#a1a1aa">WeakTopicsSection re-renders — "normalization" card appears/updates live</span></div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:8px">Yes — fully live. Data updates automatically within ~1 second of any change. Does this answer your question? Ready for Section 3 (Study Plan + final integrations)?</p>

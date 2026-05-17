@@ -1,0 +1,83 @@
+<h2>Ambient Layer Visual Style</h2>
+<p class="subtitle">Three directions for the glow system — same dark theme, different atmosphere. Which feels right for the focus timer page?</p>
+
+<div class="cards">
+
+  <!-- Option A: Celestial -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="height:220px;position:relative;overflow:hidden;background:#060910;border-radius:8px;">
+      <!-- Far layer: large top-center violet nebula -->
+      <div style="position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:420px;height:320px;background:radial-gradient(ellipse at center, rgba(91,33,182,0.28) 0%, rgba(49,10,119,0.12) 45%, transparent 70%);filter:blur(40px);border-radius:50%;"></div>
+      <!-- Mid layer: right-side deep indigo -->
+      <div style="position:absolute;top:20px;right:-60px;width:280px;height:200px;background:radial-gradient(ellipse at center, rgba(67,56,202,0.20) 0%, transparent 65%);filter:blur(30px);border-radius:50%;"></div>
+      <!-- Near layer: subtle left blue -->
+      <div style="position:absolute;bottom:10px;left:-40px;width:220px;height:160px;background:radial-gradient(ellipse at center, rgba(59,130,246,0.12) 0%, transparent 65%);filter:blur(25px);border-radius:50%;"></div>
+      <!-- Content sim -->
+      <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:80px;height:80px;border:2px solid rgba(139,92,246,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        <span style="color:#e2d9f3;font-size:13px;font-weight:600;">254:49</span>
+      </div>
+      <div style="position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:5px;">
+        <div style="width:100px;height:7px;background:rgba(255,255,255,0.07);border-radius:4px;"></div>
+        <div style="width:75px;height:7px;background:rgba(255,255,255,0.05);border-radius:4px;"></div>
+        <div style="width:88px;height:7px;background:rgba(255,255,255,0.04);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Celestial</h3>
+      <p>Single large violet nebula anchored at top-center. Deep, diffuse, volumetric. Feels like looking up into a night sky. Movement is near-imperceptible — glow breathes slowly and drifts ~40px on full scroll.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Aurora -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="height:220px;position:relative;overflow:hidden;background:#060910;border-radius:8px;">
+      <!-- Top-right warm violet -->
+      <div style="position:absolute;top:-60px;right:-40px;width:320px;height:260px;background:radial-gradient(ellipse at center, rgba(109,40,217,0.32) 0%, rgba(91,33,182,0.14) 40%, transparent 68%);filter:blur(50px);border-radius:50%;"></div>
+      <!-- Bottom-left deep blue-indigo -->
+      <div style="position:absolute;bottom:-50px;left:-30px;width:280px;height:220px;background:radial-gradient(ellipse at center, rgba(37,99,235,0.22) 0%, rgba(67,56,202,0.10) 45%, transparent 68%);filter:blur(45px);border-radius:50%;"></div>
+      <!-- Center faint wash -->
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:350px;height:160px;background:radial-gradient(ellipse at center, rgba(124,58,237,0.08) 0%, transparent 65%);filter:blur(60px);border-radius:50%;"></div>
+      <!-- Content sim -->
+      <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:80px;height:80px;border:2px solid rgba(139,92,246,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        <span style="color:#e2d9f3;font-size:13px;font-weight:600;">254:49</span>
+      </div>
+      <div style="position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:5px;">
+        <div style="width:100px;height:7px;background:rgba(255,255,255,0.07);border-radius:4px;"></div>
+        <div style="width:75px;height:7px;background:rgba(255,255,255,0.05);border-radius:4px;"></div>
+        <div style="width:88px;height:7px;background:rgba(255,255,255,0.04);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Aurora</h3>
+      <p>Two opposing orbs — violet top-right, blue bottom-left — creating a diagonal tension. The orbs slowly drift toward each other on scroll like converging auroras. More dynamic, slightly more present.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Void -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="height:220px;position:relative;overflow:hidden;background:#04060d;border-radius:8px;">
+      <!-- Very large barely-visible center bloom -->
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:500px;height:380px;background:radial-gradient(ellipse at center, rgba(79,22,162,0.18) 0%, rgba(49,10,119,0.07) 45%, transparent 70%);filter:blur(70px);border-radius:50%;"></div>
+      <!-- Faint edge vignette -->
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%);"></div>
+      <!-- Barely-there top shimmer -->
+      <div style="position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(to bottom, rgba(91,33,182,0.10), transparent);"></div>
+      <!-- Content sim -->
+      <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:80px;height:80px;border:2px solid rgba(139,92,246,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        <span style="color:#e2d9f3;font-size:13px;font-weight:600;">254:49</span>
+      </div>
+      <div style="position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:5px;">
+        <div style="width:100px;height:7px;background:rgba(255,255,255,0.07);border-radius:4px;"></div>
+        <div style="width:75px;height:7px;background:rgba(255,255,255,0.05);border-radius:4px;"></div>
+        <div style="width:88px;height:7px;background:rgba(255,255,255,0.04);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Void</h3>
+      <p>Near-black with a single vast, extremely subtle center bloom. Darkest and most minimal. The glow is almost subliminal — you feel depth without consciously seeing a gradient. Maximum focus, minimum distraction.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px;">Click a card to select it, then let me know in the terminal.</p>

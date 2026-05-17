@@ -1,4 +1,6 @@
 "use client";
+import BriefingPlayer from "@/components/briefings/BriefingPlayer";
+
 export default function MorningMode({ userName, examName, daysLeft, children }) {
   return (
     <div style={{ flex: 1 }}>
@@ -18,6 +20,7 @@ export default function MorningMode({ userName, examName, daysLeft, children }) 
           </p>
         )}
       </div>
+      <BriefingPlayer />
       {children}
     </div>
   );

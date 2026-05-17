@@ -1,0 +1,8 @@
+ALTER TABLE study_streaks
+  ADD COLUMN IF NOT EXISTS freezes_available INT DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS freezes_used INT DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS cumulative_study_days INT DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS last_freeze_earned_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS last_freeze_used_at TIMESTAMPTZ;
+
+ALTER TABLE study_streaks REPLICA IDENTITY FULL;

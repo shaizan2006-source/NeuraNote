@@ -1,4 +1,5 @@
 import { verifyAuth, supabaseAdmin } from "@/lib/serverAuth";
+import { assignCohort } from "@/lib/cohorts/assignment";
 
 export async function POST(req) {
   const user = await verifyAuth(req);
@@ -42,12 +43,9 @@ export async function POST(req) {
     updated_at: new Date().toISOString(),
   }, { onConflict: "id" }).select().maybeSingle();
 
-  // Add cohort member (anonymous)
-  await supabaseAdmin.from("cohort_members").upsert({
-    cohort_id,
-    user_id: user.id,
-    joined_at: new Date().toISOString(),
-  }, { onConflict: "cohort_id,user_id" });
+  // Assign to cohort with anonymous handle (full logic)
+  const cohortResult = await assignCohort(user.id, { exam_type, exam_year, region, class_level })
+    .catch(() => null);
 
   // Activate 7-day Pro trial for new users (idempotent — skip if already on a plan)
   const { data: existing } = await supabaseAdmin

@@ -1,6 +1,7 @@
 // src/app/api/quiz/ai-coach/route.js
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { verifyAuth } from '@/lib/serverAuth';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -8,8 +9,11 @@ const FALLBACK_SUGGESTION =
   'Review the questions you found difficult before moving on.';
 
 export async function POST(req) {
+  const user = await verifyAuth(req);
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
   try {
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const { signals = {}, documentName = 'your study material' } = body;
 
     const safeDocumentName = String(documentName)

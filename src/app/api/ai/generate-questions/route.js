@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { createClient } from '@supabase/supabase-js';
+import { verifyAuth } from '@/lib/serverAuth';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const supabase = createClient(
@@ -61,10 +62,16 @@ ${context}
 
 // ── main handler ───────────────────────────────────────────────────────────
 export async function POST(request) {
+  const authUser = await verifyAuth(request);
+  if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
   try {
     // ── Layer 1: Input Validation ──────────────────────────────────────────
-    const body = await request.json();
-    const { documentId, userId, count = 12, marks = [5, 10, 20] } = body;
+    const body = await request.json().catch(() => null);
+    if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+    const { documentId, count = 12, marks = [5, 10, 20] } = body;
+    // Always use authenticated user — never trust userId from body
+    const userId = authUser.id;
 
     if (!documentId || typeof documentId !== 'string')
       return NextResponse.json({ error: 'Missing documentId' }, { status: 400 });

@@ -54,7 +54,6 @@ export default function SignupPage() {
     if (eErr || pErr || cErr) return;
 
     setLoading(true);
-    console.log("SIGNUP ATTEMPT:", email);
 
     try {
       const { data, error: authError } = await supabase.auth.signUp({
@@ -64,13 +63,11 @@ export default function SignupPage() {
       });
 
       if (authError) {
-        console.log("SIGNUP ERROR:", authError.message);
         setError(safeAuthError(authError));
         setLoading(false);
         return;
       }
 
-      console.log("SIGNUP SUCCESS:", data.user?.email);
 
       if (data.session) {
         // Persist UTM to profile then go to onboarding

@@ -1,13 +1,18 @@
 // src/app/api/ai/evaluate-answer/route.js
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { verifyAuth } from '@/lib/serverAuth';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req) {
+  const user = await verifyAuth(req);
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
   let safeMarks = 10;
   try {
-    const body = await req.json();
+    const body = await req.json().catch(() => null);
+    if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
     const { question, answer, hints = [], totalMarks = 10 } = body;
 
     if (!question || typeof question !== 'string') {

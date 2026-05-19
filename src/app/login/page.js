@@ -44,7 +44,6 @@ export default function LoginPage() {
     if (blocked) { setError(message); return; }
 
     setLoading(true);
-    console.log("LOGIN ATTEMPT:", email);
 
     try {
       const loginPromise = supabase.auth.signInWithPassword({ email: email.trim(), password });
@@ -56,14 +55,12 @@ export default function LoginPage() {
 
       if (authError) {
         recordFailedAttempt(RL_KEY);
-        console.log("LOGIN ERROR:", authError.message);
         setError(safeAuthError(authError));
         setLoading(false);
         return;
       }
 
       clearRateLimit(RL_KEY);
-      console.log("LOGIN SUCCESS:", data.user?.email);
       window.location.href = "/dashboard";
     } catch (err) {
       recordFailedAttempt(RL_KEY);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import {
   validateEmail,
@@ -8,6 +8,7 @@ import {
   getPasswordStrength,
   safeAuthError,
 } from "@/lib/auth";
+import { captureUtm, getStoredUtm, clearStoredUtm, utmToProfileFields } from "@/lib/utmCapture";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -29,6 +30,9 @@ export default function SignupPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const strength = getPasswordStrength(password);
+
+  // Capture UTM params on mount (first-touch attribution)
+  useEffect(() => { captureUtm(); }, []);
 
   const handleEmailBlur  = () => setEmailErr(validateEmail(email) || "");
   const handlePassBlur   = () => setPassErr(validatePassword(password) || "");
@@ -69,7 +73,14 @@ export default function SignupPage() {
       console.log("SIGNUP SUCCESS:", data.user?.email);
 
       if (data.session) {
-        // Email confirmation disabled — logged in immediately
+        // Persist UTM to profile then go to onboarding
+        const utm = getStoredUtm();
+        if (utm.utm_source && data.user) {
+          await supabase.from("profiles").upsert({
+            id: data.user.id,
+            ...utmToProfileFields(utm),
+          }, { onConflict: "id" }).then(() => clearStoredUtm());
+        }
         window.location.href = "/onboarding";
       } else {
         setSuccess("Account created! Check your email to confirm, then log in.");
@@ -84,9 +95,17 @@ export default function SignupPage() {
   async function handleGoogle() {
     setError("");
     setGoogleLoading(true);
+    // Store UTM in sessionStorage before redirect — auth callback will pick it up
+    captureUtm();
+    const utm = getStoredUtm();
+    const redirectUrl = new URL(`${window.location.origin}/auth/callback`);
+    if (utm.utm_source) redirectUrl.searchParams.set("utm_source", utm.utm_source);
+    if (utm.utm_medium) redirectUrl.searchParams.set("utm_medium", utm.utm_medium);
+    if (utm.utm_campaign) redirectUrl.searchParams.set("utm_campaign", utm.utm_campaign);
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: redirectUrl.toString() },
     });
     if (error) {
       setError(safeAuthError(error));

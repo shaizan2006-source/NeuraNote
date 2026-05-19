@@ -1,13 +1,13 @@
 {
   "name": "ask-my-notes",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test tests/unit/auth.test.mjs tests/unit/planLimits.test.mjs tests/unit/internalAccess.test.mjs tests/unit/ocr.test.mjs tests/unit/streaming.test.mjs tests/unit/cache.test.mjs tests/unit/parseAnswerSections.test.mjs tests/unit/confidenceBadge.test.mjs tests/unit/sectionActions.test.mjs tests/unit/answerTemplates.test.mjs tests/unit/edgeCases.test.mjs tests/unit/scrollToBottom.test.mjs tests/unit/progressUtils.test.mjs tests/unit/examUtils.test.mjs tests/unit/ambientLerp.test.mjs",
+    "test": "node --test tests/unit/auth.test.mjs tests/unit/planLimits.test.mjs tests/unit/internalAccess.test.mjs tests/unit/ocr.test.mjs tests/unit/streaming.test.mjs tests/unit/cache.test.mjs tests/unit/parseAnswerSections.test.mjs tests/unit/confidenceBadge.test.mjs tests/unit/sectionActions.test.mjs tests/unit/answerTemplates.test.mjs tests/unit/edgeCases.test.mjs tests/unit/scrollToBottom.test.mjs tests/unit/progressUtils.test.mjs tests/unit/examUtils.test.mjs tests/unit/ambientLerp.test.mjs tests/unit/apiEdgeCases.test.mjs tests/unit/focusTasks.test.mjs",
     "test:unit": "node --test tests/unit/auth.test.mjs tests/unit/planLimits.test.mjs tests/unit/internalAccess.test.mjs tests/unit/ocr.test.mjs tests/unit/streaming.test.mjs tests/unit/cache.test.mjs tests/unit/parseAnswerSections.test.mjs tests/unit/confidenceBadge.test.mjs tests/unit/sectionActions.test.mjs tests/unit/answerTemplates.test.mjs tests/unit/edgeCases.test.mjs tests/unit/scrollToBottom.test.mjs tests/unit/progressUtils.test.mjs tests/unit/examUtils.test.mjs tests/unit/ambientLerp.test.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
@@ -42,6 +42,7 @@
     "recharts": "^3.8.0",
     "remark-gfm": "^4.0.1",
     "tesseract.js": "^7.0.0",
+    "ts-fsrs": "^5.3.3",
     "uuid": "^13.0.0",
     "web-push": "^3.6.7"
   },

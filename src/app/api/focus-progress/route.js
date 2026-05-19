@@ -20,7 +20,7 @@ export async function POST(req) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
+  const body = await req.json().catch(() => null); if (!body) return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   const { task, task_index, difficulty, document_id, document_name, active_time_seconds } = body;
 
   const { data, error } = await supabase.from("focus_progress").insert([
@@ -51,10 +51,17 @@ export async function GET(req) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { searchParams } = new URL(req.url);
+  const days = Math.min(90, Math.max(1, parseInt(searchParams.get("days") ?? "30", 10)));
+  const since = new Date(Date.now() - days * 86_400_000).toISOString();
+
   const { data, error } = await supabase
     .from("focus_progress")
     .select("id, task, task_index, difficulty, completed, document_id, document_name, active_time_seconds, created_at")
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(500);
 
   if (error) {
     console.error('[focus-progress GET]', error);

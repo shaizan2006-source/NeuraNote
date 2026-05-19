@@ -4,7 +4,7 @@ export async function POST(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  const { endpoint } = await req.json();
+  const { endpoint } = await req.json().catch(() => ({}));
   if (!endpoint) return Response.json({ error: "endpoint required" }, { status: 400 });
 
   await supabaseAdmin

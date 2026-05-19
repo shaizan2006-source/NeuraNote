@@ -8,7 +8,7 @@ export async function POST(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  const { role } = await req.json(); // 'child' | 'parent'
+  const { role } = await req.json().catch(() => ({}));
   if (!["child", "parent"].includes(role)) return Response.json({ error: "Invalid role" }, { status: 400 });
 
   // Verify user has family tier

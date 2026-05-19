@@ -6,7 +6,7 @@ export async function POST(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  const { duration_days } = await req.json();
+  const { duration_days } = await req.json().catch(() => ({}));
   if (!VALID_DURATIONS.includes(duration_days)) {
     return Response.json({ error: "duration_days must be 30, 60, or 90" }, { status: 400 });
   }

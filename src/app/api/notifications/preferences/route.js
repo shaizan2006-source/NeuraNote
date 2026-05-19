@@ -39,7 +39,7 @@ export async function PATCH(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  const body = await req.json();
+  const body = await req.json().catch(() => null); if (!body) return Response.json({ error: "Invalid JSON" }, { status: 400 });
   const update = {};
   for (const key of ALLOWED_FIELDS) {
     if (key in body) update[key] = body[key];

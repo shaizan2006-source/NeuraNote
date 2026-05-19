@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
 import { v4 as uuidv4 } from "uuid";
+import { verifyAuth } from "@/lib/serverAuth";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -12,10 +13,24 @@ const RAG_THRESHOLD = parseFloat(process.env.RAG_CONFIDENCE_THRESHOLD || "0.75")
 
 export async function POST(req) {
   try {
-    const { question, user_id, document_id, conversation_id } = await req.json();
-    if (!question || !user_id) {
-      return NextResponse.json({ error: "Missing question or user_id" }, { status: 400 });
+    const authUser = await verifyAuth(req);
+    if (!authUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // user_id from session — body value is ignored to prevent spoofing
+    const user_id = authUser.id;
+
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
     }
+
+    const { question, document_id, conversation_id } = body ?? {};
+    if (!question || typeof question !== "string" || !question.trim()) {
+      return NextResponse.json({ error: "question required" }, { status: 400 });
+    }
+    const safeQuestion = question.slice(0, 2000);
 
     // 1. RAG lookup (only if document_id provided)
     let ragText = "";
@@ -26,7 +41,7 @@ export async function POST(req) {
       try {
         const embRes = await openai.embeddings.create({
           model: "text-embedding-3-small",
-          input: question,
+          input: safeQuestion,
         });
         const embedding = embRes.data[0].embedding;
         const { data: chunks } = await supabase.rpc("match_documents", {
@@ -62,7 +77,7 @@ export async function POST(req) {
         .from("conversations")
         .select("messages")
         .eq("id", conversation_id)
-        .eq("user_id", user_id)
+        .eq("user_id", user_id)  // ownership enforced
         .single();
       priorMessages = conv?.messages ?? [];
     }
@@ -70,7 +85,7 @@ export async function POST(req) {
     const messagesForAI = [
       { role: "system", content: systemPrompt },
       ...priorMessages.slice(-8).map(m => ({ role: m.role, content: m.content })),
-      { role: "user", content: question },
+      { role: "user", content: safeQuestion },
     ];
 
     // 3. Stream from OpenAI
@@ -103,7 +118,7 @@ export async function POST(req) {
           }
 
           // Persist conversation to Supabase after stream completes
-          const newUserMsg = { role: "user", content: question, ts: new Date().toISOString() };
+          const newUserMsg = { role: "user", content: safeQuestion, ts: new Date().toISOString() };
           const newAiMsg   = { role: "assistant", content: accumulated, ts: new Date().toISOString(), used_rag: usedRag };
           const updatedMessages = [...priorMessages, newUserMsg, newAiMsg];
 
@@ -113,7 +128,7 @@ export async function POST(req) {
             await supabase.from("conversations").insert({
               id:       convId,
               user_id,
-              title:    question.slice(0, 60),
+              title:    safeQuestion.slice(0, 60),
               messages: updatedMessages,
             });
           } else {
@@ -132,9 +147,9 @@ export async function POST(req) {
               mode:         "answer",
               threadId:     convId,
               depth:        priorMessages.length,
-              charCount:    question.length,
+              charCount:    safeQuestion.length,
               used_rag:     usedRag,
-              questionText: question.slice(0, 400),
+              questionText: safeQuestion.slice(0, 400),
             },
           }).then(() => {}).catch(() => {});
 

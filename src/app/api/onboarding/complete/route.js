@@ -5,7 +5,7 @@ export async function POST(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  const body = await req.json();
+  const body = await req.json().catch(() => null); if (!body) return Response.json({ error: "Invalid JSON" }, { status: 400 });
   const { exam_type, class_level, exam_date, study_window, region, city } = body;
 
   if (!exam_type) return Response.json({ error: "exam_type required" }, { status: 400 });

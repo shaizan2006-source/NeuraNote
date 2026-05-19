@@ -4,7 +4,7 @@ export async function POST(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  const sub = await req.json();
+  const sub = await req.json().catch(() => null); if (!sub || typeof sub !== "object") return Response.json({ error: "Invalid payload" }, { status: 400 });
   const { endpoint, keys } = sub;
   if (!endpoint || !keys?.p256dh || !keys?.auth) {
     return Response.json({ error: "Invalid subscription payload" }, { status: 400 });

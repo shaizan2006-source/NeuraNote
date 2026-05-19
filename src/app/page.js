@@ -3,8 +3,9 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
+import WaitlistForm from "@/components/marketing/WaitlistForm";
+import FAQAccordion from "@/components/marketing/FAQAccordion";
 
-// ── Reusable fade-up animation wrapper ───────────────────────────
 function FadeUp({ children, delay = 0, className = "" }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
@@ -21,64 +22,87 @@ function FadeUp({ children, delay = 0, className = "" }) {
   );
 }
 
-// ── Feature cards ─────────────────────────────────────────────────
 const FEATURES = [
   {
     icon: "🧠",
-    title: "Remembers your prep",
-    desc: "Knows what you struggled with last month. Surfaces it before your exam. Never lets you forget a weak topic.",
+    title: "Brain Map",
+    tagline: "See your knowledge grow",
+    desc: "Every concept you study connects automatically. Spot gaps before they become exam mistakes.",
     color: "var(--brand)",
     glow: "var(--brand-glow)",
   },
   {
-    icon: "📐",
-    title: "Speaks your syllabus",
-    desc: "Knows JEE Main 2027 and NEET UG 2027 syllabi. Answers in the language of your exam, not generic AI.",
+    icon: "🎙️",
+    title: "Daily Briefing",
+    tagline: "90 seconds. Every morning.",
+    desc: "AI summarises what to review based on your gaps. Listen while you get ready for the day.",
     color: "var(--amber)",
     glow: "var(--amber-glow)",
   },
   {
-    icon: "👥",
-    title: "Cohort intelligence",
-    desc: "See how you rank among JEE 2027 aspirants. Peer percentile, cohort trends, what toppers are revising.",
+    icon: "📝",
+    title: "PYQs + AI Tutor",
+    tagline: "1000+ official questions.",
+    desc: "JEE Main 2018–2024, NEET 2018–2024, JEE Advanced. Ask anything — AI explains from your notes.",
     color: "var(--green)",
     glow: "var(--green-glow)",
   },
-  {
-    icon: "💙",
-    title: "Cares about you",
-    desc: "Notices when you&apos;re tired. Won&apos;t ping you at midnight. Different dashboard at 3pm vs 10am.",
-    color: "var(--blue)",
-    glow: "var(--blue-glow)",
-  },
 ];
 
-// ── How it works steps ────────────────────────────────────────────
 const STEPS = [
   { num: "01", title: "Upload your notes", desc: "Drop in any PDF — textbooks, handwritten scans, lecture slides." },
-  { num: "02", title: "Ask anything",      desc: "Type or speak your question. The AI answers from your exact content." },
-  { num: "03", title: "Track & master",    desc: "Quiz yourself, review weak topics, and watch your readiness score climb." },
+  { num: "02", title: "Ask anything",      desc: "Type or speak your question. AI answers from your exact content." },
+  { num: "03", title: "Track & master",    desc: "Quiz yourself, review weak topics, watch your readiness score climb." },
 ];
 
-// ── Testimonials ──────────────────────────────────────────────────
 const QUOTES = [
   { text: "Finally something that actually knows JEE syllabus. Not ChatGPT with a wrapper — it knows Rotational Mechanics is high-weightage.", name: "Arjun S.", tag: "JEE Main 2027" },
   { text: "The Brain Map showed me I was weak in Electrochemistry but I had no idea. Fixed it in 3 days.", name: "Priya M.", tag: "NEET UG 2027" },
   { text: "It didn't ping me at 11pm to keep my streak. I noticed. Small thing but it meant a lot.", name: "Rahul K.", tag: "JEE Advanced 2027" },
 ];
 
+const PLANS = [
+  {
+    name: "Free",
+    price: "₹0",
+    period: "forever",
+    features: ["5 questions/day", "1 document", "Basic Brain Map"],
+    cta: "Start Free",
+    href: "/signup",
+    highlight: false,
+  },
+  {
+    name: "Student",
+    price: "₹199",
+    period: "/month",
+    features: ["Unlimited questions", "10 documents", "Full Brain Map", "Daily Briefing", "PYQ practice"],
+    cta: "Start 7-day trial",
+    href: "/signup",
+    highlight: true,
+    badge: "Most Popular",
+  },
+  {
+    name: "Pro",
+    price: "₹399",
+    period: "/month",
+    features: ["Everything in Student", "Unlimited documents", "Mock tests", "Cohort rankings", "Priority support"],
+    cta: "Start 7-day trial",
+    href: "/signup",
+    highlight: false,
+  },
+];
+
 export default function Home() {
+
   return (
     <div style={{ background: "var(--surface-base)", minHeight: "100vh", color: "var(--text-primary)", overflowX: "hidden" }}>
 
       {/* ── Nav ──────────────────────────────────────────────────── */}
       <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0,
-        zIndex: 100,
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "12px clamp(16px, 4vw, 32px)",
-        background: "rgba(10,10,10,0.85)",
-        backdropFilter: "blur(12px)",
+        background: "rgba(10,10,10,0.85)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid var(--border-subtle)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -88,10 +112,10 @@ export default function Home() {
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 15, boxShadow: "0 0 14px var(--brand-glow)",
           }}>📚</div>
-          <span style={{ fontWeight: 700, fontSize: 15, color: "var(--text-primary)" }}>Ask My Notes</span>
+          <span style={{ fontWeight: 700, fontSize: 15 }}>Ask My Notes</span>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <Link href="/pricing" style={{ color: "var(--text-muted)", fontSize: 14, textDecoration: "none", fontWeight: 500, display: "none" }} className="hide-mobile-nav">
+          <Link href="/pricing" style={{ color: "var(--text-secondary)", fontSize: 14, textDecoration: "none", fontWeight: 500 }}>
             Pricing
           </Link>
           <Link href="/login" style={{ color: "var(--text-secondary)", fontSize: 14, textDecoration: "none", fontWeight: 500 }}>
@@ -99,12 +123,8 @@ export default function Home() {
           </Link>
           <Link href="/signup" style={{
             background: "linear-gradient(135deg, var(--brand), #4f46e5)",
-            color: "#fff",
-            padding: "8px 18px",
-            borderRadius: 8,
-            fontSize: 13,
-            fontWeight: 600,
-            textDecoration: "none",
+            color: "#fff", padding: "8px 18px", borderRadius: 8,
+            fontSize: 13, fontWeight: 600, textDecoration: "none",
             boxShadow: "0 2px 12px var(--brand-glow)",
           }}>
             Start Free
@@ -119,10 +139,8 @@ export default function Home() {
         alignItems: "center", justifyContent: "center",
         textAlign: "center",
         padding: "clamp(72px, 15vh, 120px) clamp(16px, 4vw, 24px) clamp(40px, 8vh, 80px)",
-        position: "relative",
-        overflow: "hidden",
+        position: "relative", overflow: "hidden",
       }}>
-        {/* Background glow */}
         <div style={{
           position: "absolute", top: "10%", left: "50%", transform: "translateX(-50%)",
           width: 600, height: 400,
@@ -136,8 +154,7 @@ export default function Home() {
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           style={{
             display: "inline-flex", alignItems: "center", gap: 8,
-            background: "rgba(124,58,237,0.12)",
-            border: "1px solid rgba(124,58,237,0.3)",
+            background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.3)",
             borderRadius: 20, padding: "5px 14px",
             fontSize: 12, fontWeight: 600, color: "var(--brand-light)",
             marginBottom: 28, letterSpacing: "0.4px",
@@ -151,18 +168,14 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
           style={{
-            fontSize: "clamp(36px, 6vw, 62px)",
-            fontWeight: 800,
-            lineHeight: 1.1,
-            letterSpacing: "-0.5px",
-            maxWidth: 720,
-            margin: "0 auto 20px",
+            fontSize: "clamp(36px, 6vw, 62px)", fontWeight: 800,
+            lineHeight: 1.1, letterSpacing: "-0.5px",
+            maxWidth: 720, margin: "0 auto 20px",
             background: "linear-gradient(180deg, #f1f5f9 40%, #64748b 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
           }}
         >
-          Your AI study companion for JEE and NEET.
+          Remember everything you study. Ace JEE/NEET.
         </motion.h1>
 
         <motion.p
@@ -171,11 +184,10 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.2 }}
           style={{
             fontSize: "clamp(14px, 3.5vw, 18px)", color: "var(--text-secondary)",
-            maxWidth: 500, lineHeight: 1.7,
-            margin: "0 auto 40px",
+            maxWidth: 520, lineHeight: 1.7, margin: "0 auto 40px",
           }}
         >
-          A tutor that remembers your prep. Knows your syllabus. Stays with you to exam day.
+          AI Brain Map + Daily Briefing + 1000+ official PYQs. Built for Indian competitive exams.
         </motion.p>
 
         <motion.div
@@ -190,20 +202,18 @@ export default function Home() {
             color: "#fff", padding: "14px 28px", borderRadius: 12,
             fontSize: 15, fontWeight: 700, textDecoration: "none",
             boxShadow: "0 4px 24px var(--brand-glow)",
-            transition: "opacity 0.15s",
           }}>
-            Start free trial →
+            Start free 7-day trial →
           </Link>
-          <Link href="/pricing" style={{
+          <a href="#features" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
-            background: "transparent",
-            color: "var(--text-secondary)", padding: "14px 28px", borderRadius: 12,
+            background: "transparent", color: "var(--text-secondary)",
+            padding: "14px 28px", borderRadius: 12,
             fontSize: 15, fontWeight: 600, textDecoration: "none",
             border: "1px solid var(--border-strong)",
-            transition: "border-color 0.15s, color 0.15s",
           }}>
-            View Plans
-          </Link>
+            See how it works
+          </a>
         </motion.div>
 
         <motion.p
@@ -219,48 +229,44 @@ export default function Home() {
       {/* ── Social proof ─────────────────────────────────────────── */}
       <section style={{ padding: "clamp(32px, 6vw, 60px) clamp(16px, 4vw, 24px)", textAlign: "center" }}>
         <FadeUp>
-          <p style={{ fontSize: 13, color: "var(--text-muted)", letterSpacing: "0.5px", textTransform: "uppercase", fontWeight: 600, marginBottom: 32 }}>
-            Trusted by students preparing for
+          <p style={{ fontSize: 13, color: "var(--text-muted)", letterSpacing: "0.5px", textTransform: "uppercase", fontWeight: 600, marginBottom: 16 }}>
+            Beta tested by students in
           </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
-            {["JEE Main 2027", "JEE Advanced 2027", "NEET UG 2027", "JEE Main 2026", "NEET UG 2026"].map((exam) => (
-              <span key={exam} style={{
+          <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+            {["Bangalore", "Delhi", "Mumbai", "Pune", "Hyderabad", "Chennai"].map((city) => (
+              <span key={city} style={{
                 padding: "6px 14px", borderRadius: 20,
-                background: "var(--surface-card)",
-                border: "1px solid var(--border-default)",
+                background: "var(--surface-card)", border: "1px solid var(--border-default)",
                 fontSize: 13, fontWeight: 500, color: "var(--text-secondary)",
               }}>
-                {exam}
+                {city}
               </span>
             ))}
           </div>
+          <p style={{ fontSize: 13, color: "var(--text-faint)", marginTop: 8 }}>
+            Built solo by a JEE/NEET aspirant who needed this themselves.
+          </p>
         </FadeUp>
       </section>
 
       {/* ── Features ─────────────────────────────────────────────── */}
-      <section style={{ padding: "clamp(40px, 8vw, 80px) clamp(16px, 4vw, 24px)", maxWidth: 960, margin: "0 auto" }}>
+      <section id="features" style={{ padding: "clamp(40px, 8vw, 80px) clamp(16px, 4vw, 24px)", maxWidth: 960, margin: "0 auto" }}>
         <FadeUp style={{ textAlign: "center", marginBottom: 48 }}>
           <h2 style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 800, margin: "0 0 12px", letterSpacing: "-0.3px" }}>
-            Everything you need to ace your exam
+            Three things no other study tool does
           </h2>
           <p style={{ color: "var(--text-secondary)", fontSize: 16, maxWidth: 480, margin: "0 auto" }}>
-            One app. All your notes. Instant AI answers.
+            Built specifically for the JEE/NEET grind. Not a generic AI wrapper.
           </p>
         </FadeUp>
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: 16,
-        }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
           {FEATURES.map((f, i) => (
-            <FadeUp key={f.title} delay={i * 0.08}>
+            <FadeUp key={f.title} delay={i * 0.1}>
               <div style={{
-                background: "var(--surface-card)",
-                border: "1px solid var(--border-default)",
-                borderRadius: 16, padding: "24px 20px",
+                background: "var(--surface-card)", border: "1px solid var(--border-default)",
+                borderRadius: 16, padding: "28px 24px", height: "100%",
                 transition: "border-color 0.2s, box-shadow 0.2s",
-                height: "100%",
               }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = f.color;
@@ -279,10 +285,13 @@ export default function Home() {
                 }}>
                   {f.icon}
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 8px", color: "var(--text-primary)" }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: f.color, letterSpacing: "0.6px", textTransform: "uppercase", margin: "0 0 6px" }}>
+                  {f.tagline}
+                </p>
+                <h3 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 10px", color: "var(--text-primary)" }}>
                   {f.title}
                 </h3>
-                <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6, margin: 0 }}>
+                <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, margin: 0 }}>
                   {f.desc}
                 </p>
               </div>
@@ -301,11 +310,10 @@ export default function Home() {
             No setup. No complexity. Just upload and learn.
           </p>
         </FadeUp>
-
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           {STEPS.map((step, i) => (
             <FadeUp key={step.num} delay={i * 0.1}>
-              <div style={{ display: "flex", gap: 24, alignItems: "flex-start", textAlign: "left", marginBottom: 40, position: "relative" }}>
+              <div style={{ display: "flex", gap: 24, alignItems: "flex-start", textAlign: "left", marginBottom: 40 }}>
                 <div style={{ flexShrink: 0 }}>
                   <div style={{
                     width: 48, height: 48, borderRadius: 12,
@@ -318,12 +326,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div style={{ paddingTop: 10 }}>
-                  <h3 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 6px", color: "var(--text-primary)" }}>
-                    {step.title}
-                  </h3>
-                  <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, margin: 0 }}>
-                    {step.desc}
-                  </p>
+                  <h3 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 6px" }}>{step.title}</h3>
+                  <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
                 </div>
               </div>
             </FadeUp>
@@ -338,24 +342,19 @@ export default function Home() {
             Students who use it, swear by it
           </h2>
         </FadeUp>
-
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
           {QUOTES.map((q, i) => (
             <FadeUp key={i} delay={i * 0.08}>
-              <div style={{
-                background: "var(--surface-card)",
-                border: "1px solid var(--border-default)",
-                borderRadius: 16, padding: "24px 20px",
-              }}>
+              <div style={{ background: "var(--surface-card)", border: "1px solid var(--border-default)", borderRadius: 16, padding: "24px 20px" }}>
                 <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.7, margin: "0 0 20px", fontStyle: "italic" }}>
                   "{q.text}"
                 </p>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>{q.name}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600 }}>{q.name}</span>
                   <span style={{
                     fontSize: 11, fontWeight: 600, color: "var(--brand-light)",
                     background: "var(--brand-glow)", border: "1px solid rgba(124,58,237,0.25)",
-                    padding: "3px 9px", borderRadius: 20, letterSpacing: "0.3px",
+                    padding: "3px 9px", borderRadius: 20,
                   }}>
                     {q.tag}
                   </span>
@@ -366,13 +365,92 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Pricing Preview ───────────────────────────────────────── */}
+      <section style={{ padding: "clamp(40px, 8vw, 80px) clamp(16px, 4vw, 24px)", maxWidth: 960, margin: "0 auto" }}>
+        <FadeUp style={{ textAlign: "center", marginBottom: 48 }}>
+          <h2 style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 800, margin: "0 0 12px", letterSpacing: "-0.3px" }}>
+            Simple pricing
+          </h2>
+          <p style={{ color: "var(--text-secondary)", fontSize: 16, maxWidth: 400, margin: "0 auto" }}>
+            7-day free trial. No card required.
+          </p>
+        </FadeUp>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
+          {PLANS.map((plan, i) => (
+            <FadeUp key={plan.name} delay={i * 0.08}>
+              <div style={{
+                background: plan.highlight ? "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,70,229,0.1))" : "var(--surface-card)",
+                border: plan.highlight ? "1px solid rgba(124,58,237,0.5)" : "1px solid var(--border-default)",
+                borderRadius: 16, padding: "28px 24px",
+                position: "relative", height: "100%",
+                display: "flex", flexDirection: "column",
+                boxShadow: plan.highlight ? "0 0 40px rgba(124,58,237,0.15)" : "none",
+              }}>
+                {plan.badge && (
+                  <div style={{
+                    position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)",
+                    background: "linear-gradient(135deg, var(--brand), #4f46e5)",
+                    color: "#fff", fontSize: 11, fontWeight: 700,
+                    padding: "3px 12px", borderRadius: 20, letterSpacing: "0.4px",
+                    whiteSpace: "nowrap",
+                  }}>
+                    {plan.badge}
+                  </div>
+                )}
+                <div style={{ marginBottom: 20 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-muted)", margin: "0 0 8px" }}>{plan.name}</p>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                    <span style={{ fontSize: 36, fontWeight: 800, color: "var(--text-primary)" }}>{plan.price}</span>
+                    <span style={{ fontSize: 13, color: "var(--text-muted)" }}>{plan.period}</span>
+                  </div>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", flex: 1 }}>
+                  {plan.features.map((feat) => (
+                    <li key={feat} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "var(--text-secondary)", marginBottom: 10 }}>
+                      <span style={{ color: "var(--green)", fontWeight: 700, flexShrink: 0 }}>✓</span>
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+                <Link href={plan.href} style={{
+                  display: "block", textAlign: "center",
+                  padding: "11px 0", borderRadius: 10, fontSize: 14, fontWeight: 600,
+                  textDecoration: "none",
+                  background: plan.highlight ? "linear-gradient(135deg, var(--brand), #4f46e5)" : "var(--surface-raised)",
+                  color: plan.highlight ? "#fff" : "var(--text-primary)",
+                  border: plan.highlight ? "none" : "1px solid var(--border-default)",
+                  boxShadow: plan.highlight ? "0 4px 16px var(--brand-glow)" : "none",
+                }}>
+                  {plan.cta}
+                </Link>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+        <FadeUp>
+          <p style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: "var(--text-faint)" }}>
+            Annual plan available · ₹4499/year saves ₹2389 vs monthly Student
+          </p>
+        </FadeUp>
+      </section>
+
+      {/* ── FAQ ──────────────────────────────────────────────────── */}
+      <section style={{ padding: "clamp(40px, 8vw, 80px) clamp(16px, 4vw, 24px)", maxWidth: 720, margin: "0 auto" }}>
+        <FadeUp style={{ textAlign: "center", marginBottom: 48 }}>
+          <h2 style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 800, margin: "0 0 12px", letterSpacing: "-0.3px" }}>
+            Frequently asked
+          </h2>
+        </FadeUp>
+        <FAQAccordion />
+      </section>
+
       {/* ── CTA Banner ───────────────────────────────────────────── */}
       <section style={{ padding: "80px 24px" }}>
         <FadeUp>
           <div style={{
             maxWidth: 640, margin: "0 auto", textAlign: "center",
-            background: "var(--surface-card)",
-            border: "1px solid var(--border-default)",
+            background: "var(--surface-card)", border: "1px solid var(--border-default)",
             borderRadius: 20, padding: "clamp(24px, 5vw, 48px) clamp(16px, 4vw, 32px)",
             boxShadow: "0 0 60px rgba(124,58,237,0.1)",
           }}>
@@ -381,7 +459,7 @@ export default function Home() {
               Ready to study smarter?
             </h2>
             <p style={{ fontSize: 15, color: "var(--text-secondary)", margin: "0 0 32px", lineHeight: 1.6 }}>
-              Join students who are already using AI to master their subjects faster.
+              Join students already using AI to master their subjects faster.
             </p>
             <Link href="/signup" style={{
               display: "inline-flex", alignItems: "center", gap: 8,
@@ -390,7 +468,7 @@ export default function Home() {
               fontSize: 15, fontWeight: 700, textDecoration: "none",
               boxShadow: "0 4px 24px var(--brand-glow)",
             }}>
-              Start for Free →
+              Start free 7-day trial →
             </Link>
             <p style={{ marginTop: 16, fontSize: 12, color: "var(--text-faint)" }}>
               Free plan · No credit card · Start in 30 seconds
@@ -402,19 +480,33 @@ export default function Home() {
       {/* ── Footer ───────────────────────────────────────────────── */}
       <footer style={{
         borderTop: "1px solid var(--border-subtle)",
-        padding: "28px clamp(16px, 4vw, 32px)",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        flexWrap: "wrap", gap: 12,
+        padding: "40px clamp(16px, 4vw, 32px) 28px",
       }}>
-        <span style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 600 }}>Ask My Notes</span>
-        <div style={{ display: "flex", gap: 20 }}>
-          {[["Pricing", "/pricing"], ["Login", "/login"], ["Sign Up", "/signup"]].map(([label, href]) => (
-            <Link key={label} href={href} style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none" }}>
-              {label}
-            </Link>
-          ))}
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          {/* Waitlist */}
+          <div style={{
+            background: "var(--surface-card)", border: "1px solid var(--border-default)",
+            borderRadius: 12, padding: "24px 28px", marginBottom: 32,
+          }}>
+            <p style={{ fontSize: 15, fontWeight: 700, margin: "0 0 4px" }}>Not ready to sign up?</p>
+            <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: "0 0 16px" }}>
+              Get launch updates — we'll email when something good ships.
+            </p>
+            <WaitlistForm />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+            <span style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 600 }}>Ask My Notes</span>
+            <div style={{ display: "flex", gap: 20 }}>
+              {[["Pricing", "/pricing"], ["Login", "/login"], ["Sign Up", "/signup"]].map(([label, href]) => (
+                <Link key={label} href={href} style={{ fontSize: 13, color: "var(--text-muted)", textDecoration: "none" }}>
+                  {label}
+                </Link>
+              ))}
+            </div>
+            <span style={{ fontSize: 12, color: "var(--text-faint)" }}>© 2026 Ask My Notes</span>
+          </div>
         </div>
-        <span style={{ fontSize: 12, color: "var(--text-faint)" }}>© 2025 Ask My Notes</span>
       </footer>
 
     </div>

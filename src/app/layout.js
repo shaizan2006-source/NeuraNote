@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import AIDustLayer from "@/components/AIDust/AIDustLayer";
+import UtmCapture from "@/components/UtmCapture";
 import "@/styles/variables.css";
 import "@/styles/theme-animation.css";
 
@@ -20,12 +21,12 @@ const BASE_URL = "https://askmynotes.in";
 export const metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Ask My Notes — AI Study Planner for University Exams",
+    default: "Ask My Notes — AI Study Planner for JEE & NEET",
     template: "%s | Ask My Notes",
   },
   description:
-    "Upload your notes, ask AI questions, get personalised study plans, track weak topics, and ace your B.Tech, BCA, BSc and other university exams.",
-  keywords: ["university exams", "b.tech study app", "bca study planner", "ai notes app"],
+    "AI-powered study planner for JEE Main, JEE Advanced, and NEET UG. PYQ bank, FSRS flashcards, mock tests, and personalised weak-topic detection.",
+  keywords: ["JEE preparation", "NEET preparation", "JEE Main", "NEET UG", "PYQ bank", "JEE advanced", "b.tech study app", "ai notes app", "spaced repetition", "mock test"],
   authors: [{ name: "Ask My Notes" }],
   openGraph: {
     type: "website",
@@ -42,6 +43,10 @@ export const metadata = {
     images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
+  manifest: "/manifest.json",
+  viewport: { width: "device-width", initialScale: 1, maximumScale: 5 },
+  themeColor: "#8B5CF6",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Ask My Notes" },
 };
 
 export default function RootLayout({ children }) {
@@ -51,6 +56,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
+          <UtmCapture />
           <AIDustLayer />
           {children}
         </ThemeProvider>

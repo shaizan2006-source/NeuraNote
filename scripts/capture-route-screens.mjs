@@ -78,18 +78,25 @@ async function login(page) {
     return false;
   }
   console.log(`  Logging in as ${TEST_EMAIL}…`);
-  try {
-    await page.goto(`${APP_URL}/login`, { waitUntil: "domcontentloaded", timeout: 20000 });
-    await page.fill('input[type="email"]', TEST_EMAIL);
-    await page.fill('input[type="password"]', TEST_PASSWORD);
-    await page.click('button[type="submit"]');
-    await page.waitForURL((url) => !url.pathname.startsWith("/login"), { timeout: 45000 });
-    console.log("  Logged in ✓");
-    return true;
-  } catch (err) {
-    console.warn(`  ⚠ Login failed (${err.message.split("\n")[0]}) — continuing anonymous`);
-    return false;
+  // Two attempts: a click before React hydration completes is silently lost
+  // (cold dev-server compiles can delay hydration well past domcontentloaded).
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      await page.goto(`${APP_URL}/login`, { waitUntil: "domcontentloaded", timeout: 30000 });
+      await page.waitForLoadState("networkidle", { timeout: 20000 }).catch(() => {});
+      await page.waitForTimeout(500); // hydration settle
+      await page.fill('input[type="email"]', TEST_EMAIL);
+      await page.fill('input[type="password"]', TEST_PASSWORD);
+      await page.click('button[type="submit"]');
+      await page.waitForURL((url) => !url.pathname.startsWith("/login"), { timeout: 45000 });
+      console.log("  Logged in ✓");
+      return true;
+    } catch (err) {
+      console.warn(`  ⚠ Login attempt ${attempt} failed (${err.message.split("\n")[0]})`);
+    }
   }
+  console.warn("  ⚠ Continuing anonymous — auth-gated routes will show the login redirect");
+  return false;
 }
 
 function fileNameFor(route, viewport) {

@@ -9,6 +9,8 @@
  */
 
 import { useEffect, useState } from "react";
+import Logo, { LogoMark } from "@/components/brand/Logo";
+import SageMark from "@/components/brand/SageMark";
 
 const COLOR_GROUPS = [
   {
@@ -218,6 +220,33 @@ export default function StyleguidePage() {
             hairline/focus-ring sizes. To revert to the spec hue, swap the three accent values in{" "}
             <span style={styles.mono}>variables.css</span>.
           </p>
+        </Section>
+
+        <Section title="Brand — logo system (Stage 2, §10 art sign-off)">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "stretch" }}>
+            <div style={{ ...styles.card, display: "flex", gap: 24, alignItems: "center" }}>
+              {[16, 28, 64].map((px) => (
+                <div key={px} style={{ textAlign: "center", color: "var(--text-primary)" }}>
+                  <LogoMark size={px} strokeWidth={px <= 20 ? 2 : 1.6} />
+                  <div style={{ ...styles.mono, fontSize: 11, color: "var(--text-secondary)", marginTop: 8 }}>
+                    {px}px
+                  </div>
+                </div>
+              ))}
+              <div style={{ textAlign: "center" }}>
+                <Logo size="md" withWordmark />
+                <div style={{ ...styles.mono, fontSize: 11, color: "var(--text-secondary)", marginTop: 8 }}>
+                  wordmark
+                </div>
+              </div>
+            </div>
+            <div style={{ ...styles.card, background: "var(--bg-inset)", textAlign: "center", padding: 32 }}>
+              <SageMark size={120} />
+              <div style={{ ...styles.mono, fontSize: 11, color: "var(--text-secondary)", marginTop: 8 }}>
+                SageMark — breathing + parallax (move cursor)
+              </div>
+            </div>
+          </div>
         </Section>
 
         <Section title="Color tokens">

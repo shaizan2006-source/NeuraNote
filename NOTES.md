@@ -51,6 +51,14 @@ All in founder's uncommitted WIP; minimal fixes applied so the harness could go 
 - Capture-script login `waitForURL` timeout raised 15s→45s (login + /dashboard compile can exceed 15s on a busy dev server; sessionStorage rate-limit was a red herring — each Playwright run is a fresh context).
 - Committed separately from founder WIP: `layout.js` (themeColor line is inside founder's PWA changes) and `AskAISection.jsx` carry uncommitted founder work — my edits there remain uncommitted alongside it. globals.css carried 4 founder one-line `100dvh` additions into the stage commit (noted in message).
 
+## Stage 2 status (2026-06-12) — logo system built
+
+- `src/components/brand/Logo.jsx` — `MARK` geometry (folded page + upward peak + gold spark), `LogoMark` (raw SVG, currentColor strokes, `var(--accent)` spark), `Logo` (sm=16/md=28/lg=96 or number, optional wordmark). `src/components/brand/SageMark.jsx` — breathing (4.5s, 1↔1.02), spark shimmer, ±6° cursor parallax (springs); disabled by `useReducedMotion()` and coarse pointers.
+- Icons: `node scripts/generate-brand-icons.mjs` (Playwright render of the same geometry) regenerates `public/icons/*` (62% mark; maskable 52%) + `src/app/favicon.ico` (32px rounded PNG-in-ICO). **Gotcha: Next's ICO decoder requires RGBA PNGs** — render with `omitBackground: true` + rounded corners, or the build fails with "The PNG is not in RGBA format!".
+- Sidebar ✦ purple squares → `<LogoMark size={24}/>` (DashboardSidebar.jsx, hex 32→26).
+- **Gotcha: Playwright clicks before React hydration are silently lost** on a cold dev server (this is why capture logins "randomly" failed). `capture-route-screens.mjs` login now waits for networkidle + 500ms and retries once.
+- Verified: gate green (6 files improved), build clean, 32/32 authed screenshots `__screens__/stage-2-brand/`. Logo art itself still needs §10 founder sign-off on `/styleguide`.
+
 ## Environment gotchas (do NOT relearn these the hard way)
 
 1. **Supabase:** only `@supabase/supabase-js` installed → `createClient` only. NEVER `createBrowserClient` / `@supabase/ssr`.

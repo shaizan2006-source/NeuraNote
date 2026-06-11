@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
+import { LogoMark } from "@/components/brand/Logo";
 
 // lucide-react is NOT in the project — use inline SVG icons
 // Sidebar toggle icon — rounded rect split vertically (panel-left symbol)
@@ -50,15 +51,14 @@ function SidebarHeader({ collapsed, onToggle }) {
             }}
           >
             <div style={{ position: "relative", width: 28, height: 28 }}>
-              {/* Gradient logo layer — fades out on hover */}
+              {/* Logo layer — fades out on hover */}
               <div style={{
-                position: "absolute", inset: 0, borderRadius: 7,
-                background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+                position: "absolute", inset: 0,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 13, color: "#fff", fontWeight: 700,
+                color: "var(--text-primary)",
                 opacity:    iconHovered ? 0 : 1,
                 transition: "opacity 180ms ease",
-              }}>✦</div>
+              }}><LogoMark size={24} strokeWidth={1.8} /></div>
               {/* Toggle icon layer — fades in on hover */}
               <div style={{
                 position: "absolute", inset: 0,
@@ -75,11 +75,10 @@ function SidebarHeader({ collapsed, onToggle }) {
         ) : (
           /* Expanded: plain logo mark */
           <div style={{
-            width: 28, height: 28, borderRadius: 7, flexShrink: 0,
-            background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+            width: 28, height: 28, flexShrink: 0,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 13, color: "#fff", fontWeight: 700,
-          }}>✦</div>
+            color: "var(--text-primary)",
+          }}><LogoMark size={24} strokeWidth={1.8} /></div>
         )}
 
         {/* App name — fades in/out */}

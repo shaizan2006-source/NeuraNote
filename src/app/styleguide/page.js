@@ -12,25 +12,34 @@ import { useEffect, useState } from "react";
 
 const COLOR_GROUPS = [
   {
-    title: "Background",
-    tokens: ["--bg-base", "--bg-surface", "--bg-surface-alt", "--bg-surface-alt-2"],
+    title: "Background — obsidian elevation ladder",
+    tokens: ["--bg-inset", "--bg-base", "--bg-elevated", "--bg-surface", "--bg-surface-2", "--bg-surface-3"],
   },
   {
-    title: "Text",
-    tokens: ["--color-text-primary", "--color-text-secondary"],
+    title: "Text — platinum",
+    tokens: ["--text-primary", "--text-secondary", "--text-tertiary", "--text-disabled"],
   },
   {
     title: "Border",
-    tokens: ["--color-border", "--color-border-strong"],
+    tokens: ["--border-hairline", "--border-strong"],
   },
   {
-    title: "Brand / accent",
-    tokens: ["--color-brand", "--color-brand-dark", "--color-brand-light", "--color-ai-signal"],
+    title: "Accent — champagne gold (sparing)",
+    tokens: ["--accent", "--accent-bright", "--accent-dim", "--ai-signal"],
   },
   {
-    title: "Semantic",
-    tokens: ["--color-success", "--color-warning", "--color-error", "--color-info", "--color-tip"],
+    title: "Semantic (state only)",
+    tokens: ["--success", "--warning", "--error", "--info"],
   },
+  {
+    title: "Legacy aliases (must resolve to canonical values)",
+    tokens: ["--color-brand", "--color-ai-signal", "--bg-surface-alt", "--color-border"],
+  },
+];
+
+const GOLD_CANDIDATES = [
+  { token: "--accent", label: "ADJUSTED — ACTIVE" },
+  { token: "--accent-candidate-spec", label: "Spec §7.1 original" },
 ];
 
 const TYPE_SCALE = [
@@ -155,6 +164,9 @@ export default function StyleguidePage() {
         all[t] = cs.getPropertyValue(t).trim();
       })
     );
+    GOLD_CANDIDATES.forEach(({ token }) => {
+      all[token] = cs.getPropertyValue(token).trim();
+    });
     setComputed(all);
     setThemeClass(
       [...root.classList].find((c) => c.startsWith("theme-")) || "(no theme class)"
@@ -166,10 +178,47 @@ export default function StyleguidePage() {
       <div style={styles.shell}>
         <h1 style={styles.h1}>Ask My Notes — Styleguide</h1>
         <p style={styles.sub}>
-          Verification harness (Stage 0). Active theme:{" "}
+          Obsidian &amp; Aurum (Stage 1). Active theme:{" "}
           <span style={styles.mono}>{themeClass || "…"}</span> · tokens from{" "}
           <span style={styles.mono}>src/styles/variables.css</span>
         </p>
+
+        <Section title="Gold decision — founder sign-off (§10)">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+            {GOLD_CANDIDATES.map(({ token, label }) => (
+              <div key={token} style={{ ...styles.card, width: 300 }}>
+                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                  <div style={{ width: 64, height: 64, borderRadius: 12, background: `var(${token})` }} />
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{label}</div>
+                    <div style={{ ...styles.mono, fontSize: 12, color: "var(--text-secondary)", marginTop: 4 }}>
+                      {token} = {computed[token] || "…"}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ marginTop: 16, display: "flex", gap: 8, alignItems: "center" }}>
+                  <button style={{ ...styles.btnBase, background: `var(${token})`, color: "var(--bg-base)" }}>
+                    CTA
+                  </button>
+                  <span style={{ fontSize: 13, color: `var(${token})`, fontWeight: 600 }}>Accent text 13px</span>
+                  <span
+                    style={{
+                      width: 28, height: 28, borderRadius: 8, display: "inline-block",
+                      border: "1px solid var(--border-strong)",
+                      boxShadow: `0 0 0 2px var(${token})`,
+                    }}
+                    title="focus ring"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 12, maxWidth: 640, lineHeight: 1.5 }}>
+            Adjusted ramp is active: hue 40°→38° (warmer, no olive cast), lightness +6% for presence at
+            hairline/focus-ring sizes. To revert to the spec hue, swap the three accent values in{" "}
+            <span style={styles.mono}>variables.css</span>.
+          </p>
+        </Section>
 
         <Section title="Color tokens">
           {COLOR_GROUPS.map((g) => (
@@ -282,8 +331,9 @@ export default function StyleguidePage() {
             <button
               style={{
                 ...styles.btnBase,
-                background: "var(--color-brand)",
-                color: "var(--color-text-primary)",
+                background: "var(--accent-grad)",
+                color: "var(--bg-base)",
+                boxShadow: "var(--accent-glow)",
               }}
             >
               Primary action
@@ -416,8 +466,8 @@ export default function StyleguidePage() {
             <button
               style={{
                 ...styles.btnBase,
-                background: "var(--color-brand)",
-                color: "var(--color-text-primary)",
+                background: "var(--accent-grad)",
+                color: "var(--bg-base)",
               }}
             >
               Upload notes

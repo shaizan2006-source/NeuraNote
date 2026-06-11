@@ -49,8 +49,8 @@ export default function WaitlistForm() {
         disabled={status === "loading"}
         style={{
           padding: "10px 20px", borderRadius: 8, fontSize: 14, fontWeight: 600,
-          background: "linear-gradient(135deg, var(--brand), #4f46e5)",
-          color: "#fff", border: "none", cursor: "pointer",
+          background: "var(--accent-grad)",
+          color: "var(--bg-base)", border: "none", cursor: "pointer",
           opacity: status === "loading" ? 0.7 : 1,
         }}
       >

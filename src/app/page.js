@@ -108,7 +108,7 @@ export default function Home() {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{
             width: 30, height: 30, borderRadius: 9,
-            background: "linear-gradient(135deg, var(--brand), #4f46e5)",
+            background: "var(--accent-grad)",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 15, boxShadow: "0 0 14px var(--brand-glow)",
           }}>📚</div>
@@ -122,8 +122,8 @@ export default function Home() {
             Log in
           </Link>
           <Link href="/signup" style={{
-            background: "linear-gradient(135deg, var(--brand), #4f46e5)",
-            color: "#fff", padding: "8px 18px", borderRadius: 8,
+            background: "var(--accent-grad)",
+            color: "var(--bg-base)", padding: "8px 18px", borderRadius: 8,
             fontSize: 13, fontWeight: 600, textDecoration: "none",
             boxShadow: "0 2px 12px var(--brand-glow)",
           }}>
@@ -198,8 +198,8 @@ export default function Home() {
         >
           <Link href="/signup" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
-            background: "linear-gradient(135deg, var(--brand), #4f46e5)",
-            color: "#fff", padding: "14px 28px", borderRadius: 12,
+            background: "var(--accent-grad)",
+            color: "var(--bg-base)", padding: "14px 28px", borderRadius: 12,
             fontSize: 15, fontWeight: 700, textDecoration: "none",
             boxShadow: "0 4px 24px var(--brand-glow)",
           }}>
@@ -317,9 +317,9 @@ export default function Home() {
                 <div style={{ flexShrink: 0 }}>
                   <div style={{
                     width: 48, height: 48, borderRadius: 12,
-                    background: "linear-gradient(135deg, var(--brand), #4f46e5)",
+                    background: "var(--accent-grad)",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 15, fontWeight: 800, color: "#fff",
+                    fontSize: 15, fontWeight: 800, color: "var(--bg-base)",
                     boxShadow: "0 4px 16px var(--brand-glow)",
                   }}>
                     {step.num}
@@ -390,8 +390,8 @@ export default function Home() {
                 {plan.badge && (
                   <div style={{
                     position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)",
-                    background: "linear-gradient(135deg, var(--brand), #4f46e5)",
-                    color: "#fff", fontSize: 11, fontWeight: 700,
+                    background: "var(--accent-grad)",
+                    color: "var(--bg-base)", fontSize: 11, fontWeight: 700,
                     padding: "3px 12px", borderRadius: 20, letterSpacing: "0.4px",
                     whiteSpace: "nowrap",
                   }}>
@@ -417,8 +417,8 @@ export default function Home() {
                   display: "block", textAlign: "center",
                   padding: "11px 0", borderRadius: 10, fontSize: 14, fontWeight: 600,
                   textDecoration: "none",
-                  background: plan.highlight ? "linear-gradient(135deg, var(--brand), #4f46e5)" : "var(--surface-raised)",
-                  color: plan.highlight ? "#fff" : "var(--text-primary)",
+                  background: plan.highlight ? "var(--accent-grad)" : "var(--surface-raised)",
+                  color: plan.highlight ? "var(--bg-base)" : "var(--text-primary)",
                   border: plan.highlight ? "none" : "1px solid var(--border-default)",
                   boxShadow: plan.highlight ? "0 4px 16px var(--brand-glow)" : "none",
                 }}>
@@ -463,8 +463,8 @@ export default function Home() {
             </p>
             <Link href="/signup" style={{
               display: "inline-flex", alignItems: "center", gap: 8,
-              background: "linear-gradient(135deg, var(--brand), #4f46e5)",
-              color: "#fff", padding: "14px 32px", borderRadius: 12,
+              background: "var(--accent-grad)",
+              color: "var(--bg-base)", padding: "14px 32px", borderRadius: 12,
               fontSize: 15, fontWeight: 700, textDecoration: "none",
               boxShadow: "0 4px 24px var(--brand-glow)",
             }}>

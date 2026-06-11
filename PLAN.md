@@ -3,15 +3,15 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: ✅ Stage 0 complete — awaiting founder approval for Stage 1.**
+**Current stage: ✅ Stage 1 complete (founder approved "adjust gold then proceed") — awaiting approval for Stage 2 (logo system).**
 
 ---
 
 ## Stage checklist
 
-- [x] **Stage 0 — Verification harness** ← DONE (this session)
-- [ ] **Stage 1 — Design tokens + theme foundation** (sub-steps drafted below, NOT started)
-- [ ] **Stage 2 — Brand identity (logo system)**
+- [x] **Stage 0 — Verification harness** — DONE 2026-06-11 (`05864ea`)
+- [x] **Stage 1 — Design tokens + theme foundation** — DONE 2026-06-11 (adjusted gold `#D4AF6E` ramp; values locked in NOTES.md)
+- [ ] **Stage 2 — Brand identity (logo system)** ← NEXT (needs approval)
 - [ ] **Stage 3 — Idle star-field on Sage**
 - [ ] **Stage 4 — Rename ask-ai → Sage**
 - [ ] **Stage 5 — Sage page redesign**

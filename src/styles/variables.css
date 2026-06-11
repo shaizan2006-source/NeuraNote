@@ -1,63 +1,108 @@
 /* src/styles/variables.css */
 
 /**
- * Theme CSS Variables
- * Both gradient (default) and dark (teal) modes defined here
- * Applied via :root class (theme-gradient, theme-dark, theme-light)
+ * Obsidian & Aurum — canonical design tokens (REDESIGN_MASTER_PROMPT.md §7).
+ * THE one place raw hex is allowed (enforced by scripts/grep-gate.mjs).
+ *
+ * Structure:
+ *  1. :root + .theme-gradient + .theme-dark → the single premium-black theme.
+ *     (Class hooks kept so ThemeContext keeps working; both dark modes now
+ *     resolve to Obsidian & Aurum. DEFAULT_THEME = 'gradient'.)
+ *  2. Legacy aliases (--color-*, --bg-surface-alt*) → canonical tokens, so
+ *     existing inline styles keep working during the staged migration.
+ *  3. .theme-light → legacy values, untouched ("coming soon", out of scope).
  */
 
-:root.theme-gradient {
-  /* Gradient Mode (Default - Purple + Cyan) */
-  --color-brand: #8B5CF6;
-  --color-brand-dark: #6D28D9;
-  --color-brand-light: #8B5CF6;
-  --color-ai-signal: #22D3EE;
-  --color-success: #22C55E;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
-
-  --bg-base: linear-gradient(to bottom, #0A0A0A, #1A1A2E);
-  --bg-surface: #111111;
-  --bg-surface-alt: #18181B;
-  --bg-surface-alt-2: #1F1F23;
-
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #E5E7EB;
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-strong: rgba(255, 255, 255, 0.12);
-
-  /* Semantic */
-  --color-info: #3B82F6;
-  --color-tip: #8B5CF6;
-}
-
+:root,
+:root.theme-gradient,
 :root.theme-dark {
-  /* Dark Mode (Teal Accent) */
-  --color-brand: #14B8A6;
-  --color-brand-dark: #0D9488;
-  --color-brand-light: #2DD4BF;
-  --color-ai-signal: #2DD4BF;
-  --color-success: #10B981;
-  --color-warning: #FBBF24;
-  --color-error: #F43F5E;
+  /* ── Base — premium near-black, layered elevation ── */
+  --bg-base:      #08080A; /* app background */
+  --bg-elevated:  #0E0E11; /* page sections */
+  --bg-surface:   #131317; /* cards */
+  --bg-surface-2: #1A1A1F; /* nested / hover */
+  --bg-surface-3: #212127; /* deepest nesting (legacy alt-2 ladder) */
+  --bg-inset:     #050506; /* wells, inputs */
 
-  --bg-base: #050505;
-  --bg-surface: #0F0F0F;
-  --bg-surface-alt: #1A1A1A;
-  --bg-surface-alt-2: #252525;
+  /* ── Hairlines & dividers ── */
+  --border-hairline: rgba(255, 255, 255, 0.06);
+  --border-strong:   rgba(255, 255, 255, 0.12);
 
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #E5E7EB;
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-strong: rgba(255, 255, 255, 0.12);
+  /* ── Text — platinum, never gold for body ── */
+  --text-primary:   #F5F5F4;
+  --text-secondary: #A1A1A6;
+  --text-tertiary:  #6B6B70;
+  --text-disabled:  #46464B;
 
-  /* Semantic */
-  --color-info: #3B82F6;
-  --color-tip: #10B981;
+  /* ── Signature accent — champagne gold (sparing) ──
+     Adjusted from spec #C8A45D: +6% lightness, hue 40°→38° (warmer).
+     Cleaner read on near-black, no olive cast at hairline sizes.
+     10.1:1 with --bg-base text on gold CTAs; 7.9:1 as text on --bg-base. */
+  --accent:        #D4AF6E; /* base gold */
+  --accent-bright: #EACF96; /* hover / highlight / AI shimmer */
+  --accent-dim:    #9A7E44; /* pressed / borders */
+  --accent-grad:   linear-gradient(135deg, #EACF96 0%, #D4AF6E 100%);
+  --accent-glow:        0 0 24px rgba(212, 175, 110, 0.18);
+  --accent-glow-soft:   rgba(212, 175, 110, 0.15);
+  --accent-glow-hard:   rgba(212, 175, 110, 0.30);
+  --accent-candidate-spec: #C8A45D; /* §7.1 original — comparison on /styleguide only */
+
+  /* ── Semantic (state only, sparing) ── */
+  --success: #34D399;
+  --warning: #F5B544;
+  --error:   #F0584F;
+  --info:    #8AA0B4; /* muted steel, NOT bright blue */
+
+  /* ── AI signal — soft gold shimmer (replaces cyan) ── */
+  --ai-signal: var(--accent-bright);
+
+  /* ── Typography (Geist Sans / Geist Mono via layout.js) ── */
+  --fs-12: 12px; --fs-13: 13px; --fs-14: 14px; --fs-16: 16px;
+  --fs-20: 20px; --fs-24: 24px; --fs-32: 32px; --fs-44: 44px;
+  --lh-body: 1.5;
+  --lh-heading: 1.15;
+  --ls-heading: -0.01em;
+
+  /* ── Space / radius ── */
+  --space-4: 4px; --space-8: 8px; --space-12: 12px; --space-16: 16px;
+  --space-20: 20px; --space-24: 24px; --space-32: 32px; --space-48: 48px;
+  --space-64: 64px;
+  --radius-sm: 8px;   /* inputs, chips */
+  --radius-md: 12px;  /* cards */
+  --radius-lg: 16px;  /* modals, hero */
+  --radius-pill: 999px;
+
+  /* ── Elevation — soft and dark, never glowy (gold glow = CTA/hero only) ── */
+  --shadow-card:      0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 32px rgba(0, 0, 0, 0.45);
+  --shadow-card-high: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 16px 48px rgba(0, 0, 0, 0.55);
+
+  /* ── Motion ── */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 280ms;
+  --ease-enter: cubic-bezier(0, 0, 0.2, 1);  /* ease-out */
+  --ease-exit:  cubic-bezier(0.4, 0, 1, 1);  /* ease-in */
+
+  /* ── Legacy aliases — old names resolve to canonical tokens ── */
+  --color-brand:        var(--accent);
+  --color-brand-dark:   var(--accent-dim);
+  --color-brand-light:  var(--accent-bright);
+  --color-ai-signal:    var(--ai-signal);
+  --color-success:      var(--success);
+  --color-warning:      var(--warning);
+  --color-error:        var(--error);
+  --color-info:         var(--info);
+  --color-tip:          var(--accent);
+  --bg-surface-alt:     var(--bg-surface-2);
+  --bg-surface-alt-2:   var(--bg-surface-3);
+  --color-text-primary:   var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border:         var(--border-hairline);
+  --color-border-strong:  var(--border-strong);
 }
 
 :root.theme-light {
-  /* Light Mode (Coming Soon) */
+  /* Light Mode (Coming Soon) — legacy values, untouched; out of redesign scope */
   --color-brand: #8B5CF6;
   --color-brand-dark: #6D28D9;
   --color-brand-light: #8B5CF6;
@@ -76,7 +121,6 @@
   --color-border: rgba(0, 0, 0, 0.06);
   --color-border-strong: rgba(0, 0, 0, 0.12);
 
-  /* Semantic */
   --color-info: #3B82F6;
   --color-tip: #8B5CF6;
 }

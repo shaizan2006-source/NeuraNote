@@ -217,8 +217,8 @@ export default function FocusModeSection() {
                     style={{
                       background: selectedMode.isBreak
                         ? "linear-gradient(135deg, var(--amber), #d97706)"
-                        : "linear-gradient(135deg, var(--brand), #4f46e5)",
-                      color: "#fff", border: "none", borderRadius: 12,
+                        : "var(--accent-grad)",
+                      color: "var(--bg-base)", border: "none", borderRadius: 12,
                       padding: "13px 36px", fontSize: 15, fontWeight: 700,
                       cursor: "pointer",
                       boxShadow: selectedMode.isBreak

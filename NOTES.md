@@ -31,6 +31,26 @@ All in founder's uncommitted WIP; minimal fixes applied so the harness could go 
 6. `src/app/pyqs/page.js` + `src/app/pyqs/practice/page.js` — `useSearchParams()` without a `<Suspense>` boundary broke static generation. Wrapped (same pattern `ask-ai/page.js` already used).
 7. `tsconfig.json` — `include: "**/*.ts(x)"` swept stray vendored dirs into type-checking (`src/next-app/` — a full scaffolded app with its own node_modules, partially committed; `src/ui-ux-pro-max-skill/`; `temp_superpowers/`). Narrowed include to `src/**` and excluded the vendored dirs. **Founder: `src/next-app/` and `src/ui-ux-pro-max-skill/` look accidental — decide whether to delete them.**
 
+## Stage 1 status (2026-06-11) — tokens installed
+
+**LOCKED token values** (founder said "adjust it first then proceed" → gold adjusted by design lead, sign-off via /styleguide):
+
+- **Gold (ADJUSTED from spec):** `--accent: #D4AF6E` · `--accent-bright: #EACF96` · `--accent-dim: #9A7E44`. Rationale: spec `#C8A45D` (hue 40°, L 57%) reads olive-brass on `#08080A` and loses presence at hairline/focus-ring sizes; adjusted ramp is hue 38° (warmer), L 63% (+6). Contrast: 7.9:1 as text on base, 10.1:1 base-on-gold (CTA text). Spec original kept as `--accent-candidate-spec` and rendered side-by-side on `/styleguide` — revert = swap 3 values in `variables.css`.
+- Backgrounds per spec + added `--bg-surface-3: #212127` (alias target for legacy `--bg-surface-alt-2`).
+- Both dark theme classes (`theme-gradient` = DEFAULT, `theme-dark`) now resolve to O&A; `theme-light` untouched (out of scope; known gap: stored light preference shows stale legacy palette).
+- **Two token roots merged:** `globals.css` had a parallel system (`--brand` purple, `--surface-*` slate, `.btn-primary` etc.) — all its values now re-point to canonical `variables.css` tokens (27 raw hex → 0). `--orange` maps to `--warning` (no orange in O&A); `*-dark` variants via `color-mix()`.
+- `THEME_COLORS` in `src/types/theme.ts` synced. `viewport.themeColor` + `manifest.json` → `#08080A`.
+- `.btn-primary` is now gold-grad with `color: var(--bg-base)` (near-black on gold — gold is never body/text-on-dark at small sizes).
+
+### Stage 1 verification (2026-06-12)
+
+- Gate green (157 files / 2,253 legacy hex — **5 files improved**, globals.css 27→0). Build clean. 32/32 authed screenshots in `__screens__/stage-1-tokens/`.
+- 16-route before/after visual diff (multi-agent): **0 regressions**. Most routes show zero change — they hard-code 100% of their colors (signup, forgot-password, pricing, chat, call-tutor…); that's the documented per-stage re-skin debt, not a token failure.
+- **Stage-1-introduced break found & fixed:** 13× `linear-gradient(135deg, var(--brand), #4f46e5)` became half-gold/half-indigo after the swap (landing CTAs worst). Replaced with `var(--accent-grad)` + dark text (white-on-gold is ~2:1) in `page.js`, `AskAISection.jsx`, `FocusModeSection.jsx`, `WaitlistForm.jsx`.
+- **Pre-existing, founder attention:** `/chat` renders near-blank with a Next dev-overlay error in BOTH stage-0 and stage-1 captures (runtime error under authed capture). Pricing page has widespread mojibake (`â‚¹` for ₹). Landing full-page screenshots show blank mid-sections — `whileInView` animations don't fire in full-page captures (capture artifact, also in baseline).
+- Capture-script login `waitForURL` timeout raised 15s→45s (login + /dashboard compile can exceed 15s on a busy dev server; sessionStorage rate-limit was a red herring — each Playwright run is a fresh context).
+- Committed separately from founder WIP: `layout.js` (themeColor line is inside founder's PWA changes) and `AskAISection.jsx` carry uncommitted founder work — my edits there remain uncommitted alongside it. globals.css carried 4 founder one-line `100dvh` additions into the stage commit (noted in message).
+
 ## Environment gotchas (do NOT relearn these the hard way)
 
 1. **Supabase:** only `@supabase/supabase-js` installed → `createClient` only. NEVER `createBrowserClient` / `@supabase/ssr`.

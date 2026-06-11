@@ -83,7 +83,7 @@ async function login(page) {
     await page.fill('input[type="email"]', TEST_EMAIL);
     await page.fill('input[type="password"]', TEST_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL((url) => !url.pathname.startsWith("/login"), { timeout: 15000 });
+    await page.waitForURL((url) => !url.pathname.startsWith("/login"), { timeout: 45000 });
     console.log("  Logged in ✓");
     return true;
   } catch (err) {

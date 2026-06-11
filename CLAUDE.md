@@ -139,3 +139,16 @@ Promise.all([
 - Server routes: always `SUPABASE_SERVICE_ROLE_KEY`
 - Client context: anon key via `createBrowserClient()`
 - Prefer direct Supabase calls over abstraction layers
+
+---
+
+## DESIGN SYSTEM (Obsidian & Aurum redesign — see REDESIGN_MASTER_PROMPT.md, PLAN.md, NOTES.md)
+
+- **Tokens only:** all color/spacing/type/radius/shadow come from CSS variables in `src/styles/variables.css`. NO hard-coded hex in components (gate: `node scripts/grep-gate.mjs` — baseline-aware; exceptions: token file + `src/components/brand/`).
+- **Naming:** the AI Q&A surface is **Sage** (`/sage`; `/ask-ai` permanently redirects). Users "ask Sage".
+- **Palette:** near-black base + platinum text + sparing champagne-gold accent. No violet, no cyan signature. Gold never for body text.
+- **Icons:** inline SVG components only (`DashboardSidebar.jsx` pattern) — `lucide-react` is NOT installed.
+- **No new deps without founder approval.** `framer-motion` OK (installed). No three.js, no UI kits, no icon libs.
+- **Supabase client-side:** `createClient` from `@supabase/supabase-js` ONLY — `createBrowserClient`/`@supabase/ssr` are NOT installed (overrides the older auth-pattern snippet above).
+- **Motion:** 120–280ms, ease-out enters / ease-in exits, hover scale ≤1.01, always respect `prefers-reduced-motion`. Never animate the study surface during reading.
+- **Harness before claims:** a redesign stage is done only when `npm run build` is clean, grep gate green, and `node scripts/capture-route-screens.mjs <stage>` screenshots are captured (dev server running).

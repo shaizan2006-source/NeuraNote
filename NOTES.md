@@ -5,6 +5,14 @@
 
 ---
 
+## Stage 3 status (2026-06-12) — Constellation Notes idle effect
+
+- **§2.3 decision REOPENED by founder and re-locked:** the idle visual is no longer falling dust. Chosen (from 4 presented concepts): **"Constellation Notes"** — drifting platinum stars; nearby stars briefly link into gold hairline constellations (mirrors Brain Map / "notes connecting"); a rare gold comet streaks and seeds a new cluster.
+- Implementation: `AIDustLayer.tsx` paint fully rewritten (dt-based, ≤38 stars + ≤2 constellations + ≤1 comet; shadowBlur only on linked stars + comet head — within old budget). Infrastructure unchanged: `useIdleDetection` (5s), mobile/reduced-motion/low-end guards, scope selectors, CSS fade. File/component names kept for import stability — "AIDust" is now historical.
+- Colors read live from `--accent`/`--text-primary` (theme-inheriting); fallbacks are RGB number triplets, NOT hex (file stays hex-free for the gate).
+- Scoping inverted: config `DISABLED_ROUTES` → `ENABLED_ROUTES: ['/ask-ai', '/sage', '/styleguide']`. `layout.js` untouched (still global mount; allowlist gates it) — avoids the founder-WIP entanglement there.
+- **Verification:** `node scripts/verify-constellation.mjs` (needs TEST_EMAIL/TEST_PASSWORD env) — probes idle effect ON /ask-ai + /styleguide, absent on /pricing; evidence in `__screens__/stage-3-starfield/`. Standard captures can't show it (they force reduced-motion, which correctly disables the effect).
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

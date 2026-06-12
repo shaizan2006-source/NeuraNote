@@ -12,6 +12,7 @@ import MilestoneToast, { checkMilestones } from "@/components/ui/MilestoneToast"
 import { useActivePDF } from "@/hooks/useActivePDF";
 import UserProfileButton from "@/components/ui/UserProfile";
 import { loadSavedChatId } from "@/lib/chatStorage";
+import { LogoMark } from "@/components/brand/Logo";
 
 function AskAIInner() {
   const searchParams = useSearchParams();
@@ -92,7 +93,7 @@ function AskAIInner() {
   return (
     <div style={{
       display: "flex", height: "100vh", overflow: "hidden",
-      background: "linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%)",
+      background: "var(--bg-base)",
     }}>
       <MilestoneToast />
 
@@ -115,22 +116,21 @@ function AskAIInner() {
         {/* Top bar */}
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "14px 24px", borderBottom: "1px solid rgba(255,255,255,0.05)",
-          flexShrink: 0, background: "rgba(17,17,17,0.8)",
+          padding: "14px 24px", borderBottom: "1px solid var(--border-hairline)",
+          flexShrink: 0, background: "color-mix(in srgb, var(--bg-elevated) 85%, transparent)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
-              width: 32, height: 32, borderRadius: "50%",
-              background: "linear-gradient(135deg, #8B5CF6, #4f46e5)",
+              width: 32, height: 32,
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 14, flexShrink: 0,
-            }}>✦</div>
+              color: "var(--text-primary)", flexShrink: 0,
+            }}><LogoMark size={24} strokeWidth={1.7} /></div>
             <div>
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#f4f4f5" }}>Ask AI</p>
-              <p style={{ margin: 0, fontSize: 11, color: "#52525b" }}>
+              <p style={{ margin: 0, fontSize: 14, fontWeight: 600, letterSpacing: "-0.01em", color: "var(--text-primary)" }}>Sage</p>
+              <p style={{ margin: 0, fontSize: 11, color: "var(--text-tertiary)" }}>
                 {activePdf
-                  ? <><span style={{ color: "#22D3EE" }}>◈ {activePdf.name}</span> · Ask anything</>
-                  : "Ask any academic question"
+                  ? <><span style={{ color: "var(--info)" }}>◈ {activePdf.name}</span> · Ask Sage anything</>
+                  : "Your notes that answer back"
                 }
               </p>
             </div>
@@ -143,7 +143,7 @@ function AskAIInner() {
           flex: 1, overflow: "hidden", padding: "0 24px",
           display: "flex", flexDirection: "column",
         }}>
-          <ErrorBoundary label="Ask AI">
+          <ErrorBoundary label="Sage">
             <AskAISection fullPage conversationId={activeConversationId} />
           </ErrorBoundary>
         </div>

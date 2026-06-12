@@ -6,6 +6,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
 import { loadAllChats, registerChat, deleteChat, renameChat } from "@/lib/chatStorage";
+import { clientFetch } from "@/lib/clientFetch";
+import { LogoMark } from "@/components/brand/Logo";
 
 // ── Icons ────────────────────────────────────────────────────────────
 // Sidebar toggle icon — rounded rect split vertically (panel-left symbol)
@@ -30,7 +32,7 @@ function SidebarHeader({ collapsed, onToggle, title, onNewChat }) {
     <div style={{
       display: "flex", alignItems: "center",
       padding: "10px",
-      borderBottom: "1px solid rgba(255,255,255,0.05)",
+      borderBottom: "1px solid var(--border-hairline)",
       minHeight: 52, gap: 6,
     }}>
       {/* Icon: clickable toggle when collapsed, plain mark when expanded */}
@@ -45,29 +47,27 @@ function SidebarHeader({ collapsed, onToggle, title, onNewChat }) {
           <div style={{ position: "relative", width: 28, height: 28 }}>
             <div style={{
               position: "absolute", inset: 0, borderRadius: 7,
-              background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 13, color: "#fff", fontWeight: 700,
+              color: "var(--text-primary)",
               opacity: iconHov ? 0 : 1, transition: "opacity 180ms ease",
-            }}>✦</div>
+            }}><LogoMark size={22} strokeWidth={1.8} /></div>
             <div style={{
               position: "absolute", inset: 0,
               display: "flex", alignItems: "center", justifyContent: "center",
-              color: "rgba(228,228,231,0.9)",
+              color: "var(--text-secondary)",
               opacity: iconHov ? 1 : 0, transition: "opacity 180ms ease",
               pointerEvents: "none",
             }}>
-              <SidebarToggleIcon size={15} color="rgba(228,228,231,0.9)" />
+              <SidebarToggleIcon size={15} color="var(--text-secondary)" />
             </div>
           </div>
         </button>
       ) : (
         <div style={{
           width: 28, height: 28, borderRadius: 7, flexShrink: 0,
-          background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 13, color: "#fff", fontWeight: 700,
-        }}>✦</div>
+          color: "var(--text-primary)",
+        }}><LogoMark size={22} strokeWidth={1.8} /></div>
       )}
 
       {/* Title */}
@@ -77,7 +77,7 @@ function SidebarHeader({ collapsed, onToggle, title, onNewChat }) {
             key="title"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            style={{ fontSize: 13, fontWeight: 700, color: "#f4f4f5", whiteSpace: "nowrap", flex: 1 }}
+            style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", whiteSpace: "nowrap", flex: 1 }}
           >{title}</motion.span>
         )}
       </AnimatePresence>
@@ -96,13 +96,13 @@ function SidebarHeader({ collapsed, onToggle, title, onNewChat }) {
                 onClick={onNewChat}
                 style={{
                   display: "flex", alignItems: "center", gap: 3,
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  border: "1px solid var(--border-strong)",
                   padding: "2px 8px", borderRadius: 5,
-                  background: "transparent", color: "#a1a1aa",
+                  background: "transparent", color: "var(--text-secondary)",
                   fontSize: 9, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
                 }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)"}
-                onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent-dim)"; e.currentTarget.style.color = "var(--text-primary)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border-strong)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
               >
                 <PlusIcon /> New Chat
               </button>
@@ -116,12 +116,12 @@ function SidebarHeader({ collapsed, onToggle, title, onNewChat }) {
                 background: "transparent", border: "none", cursor: "pointer",
                 padding: 4, display: "flex", alignItems: "center", justifyContent: "center",
                 opacity: btnHov ? 1 : 0.45,
-                filter: btnHov ? "drop-shadow(0 0 3px rgba(228,228,231,0.22))" : "none",
+                filter: btnHov ? "drop-shadow(0 0 3px color-mix(in srgb, var(--text-primary) 22%, transparent))" : "none",
                 transition: "opacity 200ms ease, filter 200ms ease",
-                color: "rgba(228,228,231,0.9)",
+                color: "var(--text-secondary)",
               }}
             >
-              <SidebarToggleIcon size={15} color="rgba(228,228,231,0.9)" />
+              <SidebarToggleIcon size={15} color="var(--text-secondary)" />
             </button>
           </motion.div>
         )}
@@ -162,8 +162,8 @@ function Spinner() {
       <style>{`@keyframes amn-sidebar-spin { to { transform: rotate(360deg); } }`}</style>
       <div style={{
         width: 10, height: 10, borderRadius: "50%",
-        border: "1.5px solid rgba(255,255,255,0.08)",
-        borderTopColor: "#22D3EE",
+        border: "1.5px solid var(--border-hairline)",
+        borderTopColor: "var(--ai-signal)",
         animation: "amn-sidebar-spin 0.7s linear infinite",
         flexShrink: 0,
       }} />
@@ -173,7 +173,7 @@ function Spinner() {
 
 const NAV_ITEMS = [
   { icon: GridIcon, label: "Dashboard", href: "/dashboard" },
-  { icon: ChatIcon, label: "Ask AI",    href: "/ask-ai"    },
+  { icon: ChatIcon, label: "Sage",      href: "/sage"      },
 ];
 
 function Tooltip({ label }) {
@@ -183,9 +183,9 @@ function Tooltip({ label }) {
       exit={{ opacity: 0, x: -6 }} transition={{ duration: 0.12 }}
       style={{
         position: "absolute", left: "calc(100% + 10px)", top: "50%",
-        transform: "translateY(-50%)", background: "#1F1F23",
-        border: "1px solid rgba(255,255,255,0.1)", borderRadius: 5,
-        padding: "3px 8px", fontSize: 9, color: "#e4e4e7",
+        transform: "translateY(-50%)", background: "var(--bg-surface-3)",
+        border: "1px solid var(--border-strong)", borderRadius: 5,
+        padding: "3px 8px", fontSize: 9, color: "var(--text-primary)",
         whiteSpace: "nowrap", pointerEvents: "none", zIndex: 300,
       }}
     >{label}</motion.div>
@@ -244,9 +244,9 @@ function MenuItem({ label, danger, icon, onClick }) {
         width: "100%", textAlign: "left",
         padding: "5px 10px", borderRadius: 4, border: "none",
         cursor: "pointer", fontSize: 9,
-        color: danger ? (hovered ? "#fca5a5" : "#f87171") : (hovered ? "#e4e4e7" : "#a1a1aa"),
+        color: danger ? (hovered ? "var(--error)" : "var(--error)") : (hovered ? "var(--text-primary)" : "var(--text-secondary)"),
         background: hovered
-          ? (danger ? "rgba(239,68,68,0.12)" : "rgba(255,255,255,0.06)")
+          ? (danger ? "color-mix(in srgb, var(--error) 12%, transparent)" : "var(--bg-surface-3)")
           : "transparent",
         transition: "background 100ms, color 100ms",
       }}
@@ -299,10 +299,10 @@ function ConversationItem({
             onBlur={() => onRename(conv.id)}
             style={{
               width: "100%", boxSizing: "border-box",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(139,92,246,0.4)",
+              background: "var(--bg-inset)",
+              border: "1px solid color-mix(in srgb, var(--accent) 40%, transparent)",
               borderRadius: 4, padding: "3px 6px",
-              fontSize: 9, color: "#e4e4e7", outline: "none",
+              fontSize: 9, color: "var(--text-primary)", outline: "none",
               fontFamily: "inherit",
             }}
           />
@@ -316,20 +316,20 @@ function ConversationItem({
             width: "100%", textAlign: "left",
             padding: "4px 10px", paddingRight: (hovered || isMenuOpen) ? 28 : 10,
             borderRadius: 4, margin: "2px 0",
-            background: isActive ? "rgba(139,92,246,0.05)" : "transparent",
+            background: isActive ? "var(--bg-surface-2)" : "transparent",
             borderWidth: 0, borderStyle: "solid", borderColor: "transparent",
             borderLeftWidth: 2, borderLeftStyle: "solid",
-            borderLeftColor: isActive ? "#8B5CF6" : "transparent",
+            borderLeftColor: isActive ? "var(--accent-dim)" : "transparent",
             cursor: "pointer",
           }}
         >
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={{
               margin: 0, fontSize: 9,
-              color: isActive ? "#a1a1aa" : "#52525b",
+              color: isActive ? "var(--text-secondary)" : "var(--text-tertiary)",
               whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
             }}>{conv.title || "Untitled"}</p>
-            <p style={{ margin: 0, fontSize: 8, color: "#27272a" }}>{timeAgo(conv.updated_at)}</p>
+            <p style={{ margin: 0, fontSize: 8, color: "var(--text-disabled)" }}>{timeAgo(conv.updated_at)}</p>
           </div>
         </button>
       )}
@@ -351,9 +351,9 @@ function ConversationItem({
             position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
             width: 18, height: 18, padding: 0,
             display: "flex", alignItems: "center", justifyContent: "center",
-            background: isMenuOpen ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)",
+            background: isMenuOpen ? "var(--bg-surface-3)" : "var(--bg-surface-2)",
             border: "none", borderRadius: 3, cursor: "pointer",
-            color: "#71717a", fontSize: 14, letterSpacing: 1,
+            color: "var(--text-tertiary)", fontSize: 14, letterSpacing: 1,
             lineHeight: 1,
           }}
         >···</button>
@@ -370,11 +370,11 @@ function ConversationItem({
             transition={{ duration: 0.1 }}
             style={{
               position: "fixed", bottom: menuPos.bottom, right: menuPos.right,
-              background: "#1A1A1A",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "var(--bg-surface-2)",
+              border: "1px solid var(--border-strong)",
               borderRadius: 6, zIndex: 9999,
               minWidth: 120, padding: 4,
-              boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             <MenuItem
@@ -427,7 +427,7 @@ function PdfListItem({
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 6px", opacity: 0.7 }}>
         <span style={{ fontSize: 10, flexShrink: 0 }}>📄</span>
-        <span style={{ fontSize: 9, color: "#52525b", flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pdf.name}</span>
+        <span style={{ fontSize: 9, color: "var(--text-tertiary)", flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pdf.name}</span>
         <Spinner />
       </div>
     );
@@ -452,10 +452,10 @@ function PdfListItem({
             onBlur={() => onRename(pdf.id)}
             style={{
               width: "100%", boxSizing: "border-box",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(34,211,238,0.4)",
+              background: "var(--bg-inset)",
+              border: "1px solid color-mix(in srgb, var(--info) 40%, transparent)",
               borderRadius: 4, padding: "3px 6px",
-              fontSize: 9, color: "#e4e4e7", outline: "none",
+              fontSize: 9, color: "var(--text-primary)", outline: "none",
               fontFamily: "inherit",
             }}
           />
@@ -468,21 +468,21 @@ function PdfListItem({
             width: "100%", textAlign: "left",
             padding: "4px 6px", paddingRight: (hovered || isMenuOpen) ? 28 : 6,
             borderRadius: 4, margin: "2px 0",
-            background: isActive ? "rgba(34,211,238,0.05)" : "transparent",
+            background: isActive ? "color-mix(in srgb, var(--info) 6%, transparent)" : "transparent",
             border: "none", cursor: "pointer",
           }}
         >
           <span style={{ fontSize: 10, flexShrink: 0 }}>📄</span>
           <span style={{
             fontSize: 9,
-            color: isActive ? "#22D3EE" : "#52525b",
+            color: isActive ? "var(--info)" : "var(--text-tertiary)",
             whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1,
           }}>{pdf.name}</span>
           {isActive && (
             <span style={{
-              fontSize: 8, color: "#22D3EE",
-              background: "rgba(34,211,238,0.08)",
-              border: "1px solid rgba(34,211,238,0.2)",
+              fontSize: 8, color: "var(--info)",
+              background: "color-mix(in srgb, var(--info) 10%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--info) 25%, transparent)",
               borderRadius: 3, padding: "1px 4px", flexShrink: 0,
             }}>Active</span>
           )}
@@ -506,9 +506,9 @@ function PdfListItem({
             position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
             width: 18, height: 18, padding: 0,
             display: "flex", alignItems: "center", justifyContent: "center",
-            background: isMenuOpen ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)",
+            background: isMenuOpen ? "var(--bg-surface-3)" : "var(--bg-surface-2)",
             border: "none", borderRadius: 3, cursor: "pointer",
-            color: "#71717a", fontSize: 14, letterSpacing: 1, lineHeight: 1,
+            color: "var(--text-tertiary)", fontSize: 14, letterSpacing: 1, lineHeight: 1,
           }}
         >···</button>
       )}
@@ -523,11 +523,11 @@ function PdfListItem({
             transition={{ duration: 0.1 }}
             style={{
               position: "fixed", bottom: menuPos.bottom, right: menuPos.right,
-              background: "#1A1A1A",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "var(--bg-surface-2)",
+              border: "1px solid var(--border-strong)",
               borderRadius: 6, zIndex: 9999,
               minWidth: 120, padding: 4,
-              boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             <MenuItem
@@ -651,10 +651,9 @@ export default function AskAISidebar({
     if (!trimmed) return;
     renameChat(convId, trimmed); // updates localStorage + fires askmynotes:chats-updated
     try {
-      await fetch(`/api/conversations/${convId}`, {
-        method:  "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ title: trimmed, user_id: userId }),
+      await clientFetch(`/api/conversations/${convId}`, {
+        method: "PATCH",
+        body:   JSON.stringify({ title: trimmed }),
       });
     } catch {}
   }
@@ -664,9 +663,7 @@ export default function AskAISidebar({
     deleteChat(convId); // updates localStorage + fires askmynotes:chats-updated
     if (activeConversationId === convId) onNewChat?.();
     try {
-      await fetch(`/api/conversations/${convId}?user_id=${encodeURIComponent(userId)}`, {
-        method: "DELETE",
-      });
+      await clientFetch(`/api/conversations/${convId}`, { method: "DELETE" });
     } catch {}
   }
 
@@ -677,10 +674,9 @@ export default function AskAISidebar({
     if (!trimmed) return;
     setPdfs(prev => prev.map(p => p.id === pdfId ? { ...p, name: trimmed } : p));
     try {
-      await fetch("/api/user-pdfs", {
-        method:  "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ id: pdfId, name: trimmed, user_id: userId }),
+      await clientFetch("/api/user-pdfs", {
+        method: "PATCH",
+        body:   JSON.stringify({ id: pdfId, name: trimmed }),
       });
     } catch {}
   }
@@ -690,7 +686,7 @@ export default function AskAISidebar({
     setPdfs(prev => prev.filter(p => p.id !== pdfId));
     if (activePdf?.id === pdfId) onSelectPdf?.(null);
     try {
-      await fetch(`/api/delete-pdf?id=${encodeURIComponent(pdfId)}`, { method: "DELETE" });
+      await clientFetch(`/api/delete-pdf?id=${encodeURIComponent(pdfId)}`, { method: "DELETE" });
     } catch {}
   }
 
@@ -719,8 +715,8 @@ export default function AskAISidebar({
   // ── Fetch user PDFs ──────────────────────────────────────────────
   useEffect(() => {
     if (!userId) return;
-    fetch(`/api/user-pdfs?user_id=${userId}`)
-      .then(r => r.json())
+    clientFetch("/api/user-pdfs")
+      .then(r => r?.json())
       .then(data => setPdfs(Array.isArray(data) ? data : []))
       .catch(() => {});
   }, [userId]);
@@ -789,10 +785,10 @@ export default function AskAISidebar({
           onClick={() => setMobileOpen(true)}
           style={{
             position: "fixed", top: 14, left: 14, zIndex: 20,
-            background: "rgba(17,17,17,0.9)", border: "1px solid rgba(255,255,255,0.08)",
+            background: "color-mix(in srgb, var(--bg-elevated) 90%, transparent)", border: "1px solid var(--border-hairline)",
             borderRadius: 6, width: 36, height: 36, display: "flex",
             alignItems: "center", justifyContent: "center",
-            color: "#a1a1aa", fontSize: 16, cursor: "pointer",
+            color: "var(--text-secondary)", fontSize: 16, cursor: "pointer",
           }}
         >☰</button>
 
@@ -824,8 +820,8 @@ export default function AskAISidebar({
           transition={{ duration: 0.25, ease: "easeOut" }}
           style={{
             position: "fixed", top: 0, left: 0, height: "100vh",
-            width: "72%", maxWidth: 280, background: "#111111",
-            borderRight: "1px solid rgba(255,255,255,0.05)",
+            width: "72%", maxWidth: 280, background: "var(--bg-elevated)",
+            borderRight: "1px solid var(--border-hairline)",
             display: "flex", flexDirection: "column",
             zIndex: 11, overflow: "hidden",
           }}
@@ -833,20 +829,20 @@ export default function AskAISidebar({
           {/* Header */}
           <div style={{
             display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.05)", minHeight: 52, gap: 6,
+            padding: "10px 14px", borderBottom: "1px solid var(--border-hairline)", minHeight: 52, gap: 6,
           }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#f4f4f5", flex: 1 }}>AskMyNotes</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", flex: 1 }}>AskMyNotes</span>
             <button
               onClick={onNewChat}
               style={{
                 display: "flex", alignItems: "center", gap: 3,
-                border: "1px solid rgba(255,255,255,0.1)", padding: "2px 8px", borderRadius: 5,
-                background: "transparent", color: "#a1a1aa",
+                border: "1px solid var(--border-strong)", padding: "2px 8px", borderRadius: 5,
+                background: "transparent", color: "var(--text-secondary)",
                 fontSize: 9, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
               }}
             ><PlusIcon /> New Chat</button>
             <button onClick={() => setMobileOpen(false)}
-              style={{ background: "transparent", border: "none", color: "#52525b", cursor: "pointer", fontSize: 18 }}>✕</button>
+              style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", fontSize: 18 }}>✕</button>
           </div>
 
           {/* Nav */}
@@ -860,12 +856,12 @@ export default function AskAISidebar({
                     display: "flex", alignItems: "center", gap: 10,
                     width: "calc(100% - 12px)", padding: "8px 10px", margin: "0 6px",
                     justifyContent: "flex-start",
-                    background: isActive ? "rgba(139,92,246,0.12)" : "transparent",
+                    background: isActive ? "var(--bg-surface-2)" : "transparent",
                     border: "none", borderRadius: 6, cursor: "pointer",
-                    color: isActive ? "#a78bfa" : "#a1a1aa",
+                    color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
                   }}
                 >
-                  <Icon size={16} color={isActive ? "#a78bfa" : "#a1a1aa"} />
+                  <Icon size={16} color={isActive ? "var(--text-primary)" : "var(--text-secondary)"} />
                   <span style={{ fontSize: 12, fontWeight: isActive ? 600 : 400 }}>{label}</span>
                 </button>
               );
@@ -875,8 +871,8 @@ export default function AskAISidebar({
           {/* Scrollable content */}
           <div style={{ padding: "0 10px", marginTop: 4, flex: 1, overflowY: "auto" }}>
             {/* Recent chats */}
-            <p style={{ fontSize: 9, fontWeight: 700, color: "#3f3f46", textTransform: "uppercase", letterSpacing: "0.05em", padding: "4px 0", margin: 0 }}>Recent</p>
-            {conversations.length === 0 && <p style={{ fontSize: 9, color: "#27272a" }}>No conversations yet</p>}
+            <p style={{ fontSize: 9, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", padding: "4px 0", margin: 0 }}>Recent</p>
+            {conversations.length === 0 && <p style={{ fontSize: 9, color: "var(--text-disabled)" }}>No conversations yet</p>}
             {conversations.map(conv => (
               <ConversationItem
                 key={conv.id}
@@ -893,20 +889,20 @@ export default function AskAISidebar({
 
             {/* Your PDFs */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0", marginTop: 8 }}>
-              <p style={{ fontSize: 9, fontWeight: 700, color: "#3f3f46", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Your PDFs</p>
+              <p style={{ fontSize: 9, fontWeight: 700, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Your PDFs</p>
               <button
                 onClick={() => uploadInputRef.current?.click()}
                 style={{
                   display: "flex", alignItems: "center", gap: 3,
-                  background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+                  background: "transparent", border: "1px solid var(--border-strong)",
                   borderRadius: 4, padding: "2px 6px",
-                  fontSize: 8, fontWeight: 600, color: "#52525b", cursor: "pointer",
+                  fontSize: 8, fontWeight: 600, color: "var(--text-tertiary)", cursor: "pointer",
                 }}
               >
                 <PlusIcon /> Save PDF
               </button>
             </div>
-            {pdfs.length === 0 && <p style={{ fontSize: 9, color: "#27272a" }}>No PDFs saved</p>}
+            {pdfs.length === 0 && <p style={{ fontSize: 9, color: "var(--text-disabled)" }}>No PDFs saved</p>}
             {pdfs.map(pdf => (
               <PdfListItem
                 key={pdf.id}
@@ -932,8 +928,8 @@ export default function AskAISidebar({
       animate={{ width: sidebarCollapsed ? 56 : 220 }}
       transition={{ duration: 0.25, ease: "easeInOut" }}
       style={{
-        height: "100vh", background: "#111111",
-        borderRight: "1px solid rgba(255,255,255,0.05)",
+        height: "100vh", background: "var(--bg-elevated)",
+        borderRight: "1px solid var(--border-hairline)",
         display: "flex", flexDirection: "column",
         overflow: "visible", flexShrink: 0,
         position: "sticky", top: 0, alignSelf: "flex-start",
@@ -964,16 +960,16 @@ export default function AskAISidebar({
           const hasCyanDot = href === "/my-pdfs" && activePdf;
           const isHovered = hoveredItem === href;
           const navBg = isActive && isHovered
-            ? "rgba(139,92,246,0.18)"
+            ? "var(--bg-surface-3)"
             : isActive
-              ? "rgba(139,92,246,0.12)"
+              ? "var(--bg-surface-2)"
               : isHovered
-                ? "rgba(255,255,255,0.05)"
+                ? "var(--bg-surface-2)"
                 : "transparent";
           const navShadow = isActive && isHovered
-            ? "0 0 0 1px rgba(139,92,246,0.22), 0 2px 16px rgba(139,92,246,0.10), inset 0 0 16px rgba(139,92,246,0.06)"
+            ? "var(--shadow-card)"
             : !isActive && isHovered
-              ? "0 0 0 1px rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.12), inset 0 0 12px rgba(34,211,238,0.03)"
+              ? "0 0 0 1px var(--border-strong), 0 2px 12px rgba(0,0,0,0.12)"
               : "none";
           return (
             <div key={href} style={{ position: "relative" }}
@@ -993,18 +989,18 @@ export default function AskAISidebar({
                   boxShadow: navShadow,
                   transform: isHovered ? "scale(1.01)" : "scale(1)",
                   border: "none", borderRadius: 6, cursor: "pointer",
-                  color: isActive ? "#a78bfa" : isHovered ? "#e4e4e7" : "#a1a1aa",
+                  color: isActive ? "var(--text-primary)" : isHovered ? "var(--text-primary)" : "var(--text-secondary)",
                   transition: "background 250ms ease-out, box-shadow 250ms ease-out, transform 200ms ease-out, color 200ms ease-out",
                   margin: "0 6px",
                 }}
               >
                 <span style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
-                  <Icon size={16} color={isActive ? "#a78bfa" : isHovered ? "#e4e4e7" : "#a1a1aa"} />
+                  <Icon size={16} color={isActive ? "var(--text-primary)" : isHovered ? "var(--text-primary)" : "var(--text-secondary)"} />
                   {sidebarCollapsed && isActive && (
-                    <span style={{ position: "absolute", bottom: 2, right: 2, width: 5, height: 5, borderRadius: "50%", background: "#8B5CF6" }} />
+                    <span style={{ position: "absolute", bottom: 2, right: 2, width: 5, height: 5, borderRadius: "50%", background: "var(--accent)" }} />
                   )}
                   {sidebarCollapsed && hasCyanDot && (
-                    <span style={{ position: "absolute", bottom: 2, right: 2, width: 5, height: 5, borderRadius: "50%", background: "#22D3EE" }} />
+                    <span style={{ position: "absolute", bottom: 2, right: 2, width: 5, height: 5, borderRadius: "50%", background: "var(--info)" }} />
                   )}
                 </span>
                 <AnimatePresence>
@@ -1036,7 +1032,7 @@ export default function AskAISidebar({
               style={{
                 display: "flex", alignItems: "center", justifyContent: "space-between",
                 width: "100%", background: "transparent", border: "none",
-                padding: "4px 0", cursor: "pointer", color: "#3f3f46",
+                padding: "4px 0", cursor: "pointer", color: "var(--text-secondary)",
                 fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
               }}
             >
@@ -1053,7 +1049,7 @@ export default function AskAISidebar({
                   style={{ overflow: "hidden" }}
                 >
                   {conversations.length === 0 && (
-                    <p style={{ fontSize: 9, color: "#27272a", padding: "4px 0" }}>No conversations yet</p>
+                    <p style={{ fontSize: 9, color: "var(--text-disabled)", padding: "4px 0" }}>No conversations yet</p>
                   )}
                   {conversations.map(conv => (
                     <ConversationItem
@@ -1090,7 +1086,7 @@ export default function AskAISidebar({
                 style={{
                   display: "flex", alignItems: "center", gap: 4,
                   background: "transparent", border: "none",
-                  cursor: "pointer", color: "#3f3f46",
+                  cursor: "pointer", color: "var(--text-tertiary)",
                   fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
                 }}
               >
@@ -1102,20 +1098,20 @@ export default function AskAISidebar({
                 style={{
                   display: "flex", alignItems: "center", gap: 3,
                   background: "transparent",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  border: "1px solid var(--border-strong)",
                   borderRadius: 4, padding: "2px 6px",
-                  fontSize: 8, fontWeight: 600, color: "#52525b",
+                  fontSize: 8, fontWeight: 600, color: "var(--text-tertiary)",
                   cursor: "pointer",
                   transition: "border-color 0.15s, color 0.15s",
                   whiteSpace: "nowrap",
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)";
-                  e.currentTarget.style.color = "#a78bfa";
+                  e.currentTarget.style.borderColor = "color-mix(in srgb, var(--info) 40%, transparent)";
+                  e.currentTarget.style.color = "var(--info)";
                 }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-                  e.currentTarget.style.color = "#52525b";
+                  e.currentTarget.style.borderColor = "var(--border-strong)";
+                  e.currentTarget.style.color = "var(--text-tertiary)";
                 }}
                 title="Save a PDF"
               >
@@ -1133,7 +1129,7 @@ export default function AskAISidebar({
                   style={{ overflow: "hidden" }}
                 >
                   {pdfs.length === 0 && (
-                    <p style={{ fontSize: 9, color: "#27272a", padding: "4px 0" }}>No PDFs saved</p>
+                    <p style={{ fontSize: 9, color: "var(--text-disabled)", padding: "4px 0" }}>No PDFs saved</p>
                   )}
                   {pdfs.map(pdf => (
                     <PdfListItem

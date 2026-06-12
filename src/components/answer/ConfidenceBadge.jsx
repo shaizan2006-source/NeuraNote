@@ -58,7 +58,7 @@ export default function ConfidenceBadge({ answer, classification, isStreaming })
       {config.label}
       {score !== null && (
         <span style={{
-          background:   "rgba(0,0,0,0.25)",
+          background:   "var(--bg-inset)",
           borderRadius: 10,
           padding:      "1px 6px",
           fontSize:     10,
@@ -69,7 +69,7 @@ export default function ConfidenceBadge({ answer, classification, isStreaming })
       )}
       {verifyCount > 0 && (
         <span style={{
-          background:   "rgba(0,0,0,0.25)",
+          background:   "var(--bg-inset)",
           borderRadius: 10,
           padding:      "1px 6px",
           fontSize:     10,
@@ -85,23 +85,23 @@ const CONFIDENCE_CONFIG = {
   high: {
     icon:   "✓",
     label:  "Complete",
-    color:  "#4ade80",
-    bg:     "rgba(74,222,128,0.1)",
-    border: "rgba(74,222,128,0.3)",
+    color:  "var(--success)",
+    bg:     "color-mix(in srgb, var(--success) 10%, transparent)",
+    border: "color-mix(in srgb, var(--success) 30%, transparent)",
   },
   medium: {
     icon:   "~",
     label:  "Check marked claims",
-    color:  "#fbbf24",
-    bg:     "rgba(251,191,36,0.1)",
-    border: "rgba(251,191,36,0.3)",
+    color:  "var(--warning)",
+    bg:     "color-mix(in srgb, var(--warning) 10%, transparent)",
+    border: "color-mix(in srgb, var(--warning) 30%, transparent)",
   },
   low: {
     icon:   "!",
     label:  "Verify before exam",
-    color:  "#f87171",
-    bg:     "rgba(248,113,113,0.1)",
-    border: "rgba(248,113,113,0.3)",
+    color:  "var(--error)",
+    bg:     "color-mix(in srgb, var(--error) 10%, transparent)",
+    border: "color-mix(in srgb, var(--error) 30%, transparent)",
   },
 };
 

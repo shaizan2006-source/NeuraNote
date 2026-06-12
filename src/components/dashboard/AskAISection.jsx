@@ -7,8 +7,12 @@ import { useDashboard } from "@/context/DashboardContext";
 import ThinkingAnimation from "@/components/ThinkingAnimation";
 import StructuredAnswer from "@/components/answer/StructuredAnswer";
 import DynamicGreeting from "@/components/dashboard/DynamicGreeting";
+import SageMark from "@/components/brand/SageMark";
+import DynamicFollowUps from "@/components/answer/DynamicFollowUps";
+import ConfidenceBadge from "@/components/answer/ConfidenceBadge";
 import { saveChat, loadChat, clearChat } from "@/lib/chatStorage";
 import ModeSwitcher from "@/components/AskAI/ModeSwitcher";
+import { clientFetch } from "@/lib/clientFetch";
 
 function hashQuestion(text) {
   let h = 0;
@@ -18,6 +22,58 @@ function hashQuestion(text) {
 
 // ── Sub-components ───────────────────────────────────────────────
 
+const STARTERS_WITH_PDF = [
+  "Summarise the key concepts in my PDF",
+  "What are the 3 most important topics to focus on?",
+  "Create a 5-question quiz from my notes",
+  "Explain the most complex part in simple terms",
+];
+
+const STARTERS_NO_PDF = [
+  "Explain Newton's laws of motion with examples",
+  "How do I solve integration problems step by step?",
+  "Difference between mitosis and meiosis",
+  "Key reactions in organic chemistry I must know",
+];
+
+function StarterQuestions({ hasPdf, onSelect }) {
+  const starters = hasPdf ? STARTERS_WITH_PDF : STARTERS_NO_PDF;
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", padding: "8px 0 28px" }}>
+      {starters.map((q) => (
+        <button
+          key={q}
+          onClick={() => onSelect(q)}
+          style={{
+            background:   "var(--bg-surface)",
+            color:        "var(--text-secondary)",
+            border:       "1px solid var(--border-hairline)",
+            borderRadius: 999,
+            padding:      "6px 14px",
+            fontSize:     12,
+            cursor:       "pointer",
+            transition:   "background 0.15s, border-color 0.15s",
+            fontFamily:   "inherit",
+            lineHeight:   1.4,
+            textAlign:    "left",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "var(--bg-surface-2)";
+            e.currentTarget.style.borderColor = "var(--border-strong)";
+            e.currentTarget.style.color = "var(--text-primary)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "var(--bg-surface)";
+            e.currentTarget.style.borderColor = "var(--border-hairline)";
+            e.currentTarget.style.color = "var(--text-secondary)";
+          }}
+        >
+          {q}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 function CopyBtn({ text, light = false }) {
   const [copied, setCopied] = useState(false);
@@ -37,7 +93,7 @@ function CopyBtn({ text, light = false }) {
         cursor:       "pointer",
         padding:      "3px 5px",
         borderRadius: 5,
-        color:        copied ? "#22c55e" : light ? "rgba(255,255,255,0.6)" : "var(--text-muted)",
+        color:        copied ? "var(--success)" : light ? "var(--text-secondary)" : "var(--text-tertiary)",
         fontSize:     13,
         lineHeight:   1,
         transition:   "color 0.15s",
@@ -73,15 +129,15 @@ function UserMessage({ text, innerRef, onEdit }) {
     >
       {/* Bubble */}
       <div style={{
-        background:   "rgba(255,255,255,0.07)",
-        color:        "#e4e4e7",
+        background:   "var(--bg-surface-2)",
+        color:        "var(--text-primary)",
         borderRadius: 999,
         padding:      "9px 18px",
         maxWidth:     "72%",
         fontSize:     14,
         lineHeight:   1.6,
         wordBreak:    "break-word",
-        border:       "1px solid rgba(255,255,255,0.10)",
+        border:       "1px solid var(--border-hairline)",
       }}>
         {text}
       </div>
@@ -107,7 +163,7 @@ function UserMessage({ text, innerRef, onEdit }) {
   );
 }
 
-function AIMessage({ msg, onFeedback, onShare, onRegenerate }) {
+function AIMessage({ msg, onFeedback, onShare, onRegenerate, onFollowUp }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
@@ -121,12 +177,12 @@ function AIMessage({ msg, onFeedback, onShare, onRegenerate }) {
         height:         28,
         borderRadius:   "50%",
         flexShrink:     0,
-        background:     "linear-gradient(135deg, var(--brand), #4f46e5)",
+        background:     "var(--accent-grad)",
         display:        "flex",
         alignItems:     "center",
         justifyContent: "center",
         fontSize:       12,
-        color:          "#fff",
+        color:          "var(--bg-base)",
         marginTop:      2,
         fontWeight:     700,
       }}>✦</div>
@@ -151,10 +207,10 @@ function AIMessage({ msg, onFeedback, onShare, onRegenerate }) {
               <div style={{
                 marginTop:    8,
                 padding:      "6px 10px",
-                background:   "var(--surface-raised)",
+                background:   "var(--bg-surface-2)",
                 borderRadius: 8,
                 fontSize:     11,
-                color:        "var(--text-muted)",
+                color:        "var(--text-tertiary)",
               }}>
                 Source: {msg.sources.join(", ")}
               </div>
@@ -162,12 +218,25 @@ function AIMessage({ msg, onFeedback, onShare, onRegenerate }) {
 
             {/* Action bar — every completed message */}
             {msg.done && (
-              <AIMessageActions
-                msg={msg}
-                onFeedback={onFeedback}
-                onShare={onShare}
-                onRegenerate={onRegenerate}
-              />
+              <>
+                <AIMessageActions
+                  msg={msg}
+                  onFeedback={onFeedback}
+                  onShare={onShare}
+                  onRegenerate={onRegenerate}
+                />
+                <div style={{ marginTop: 10 }}>
+                  <ConfidenceBadge
+                    answer={msg.text}
+                    classification={msg.classification}
+                    isStreaming={!msg.done}
+                  />
+                </div>
+                <DynamicFollowUps
+                  classification={msg.classification}
+                  onSelect={onFollowUp}
+                />
+              </>
             )}
           </div>
         )}
@@ -281,7 +350,7 @@ function RegenerateIcon({ size = 14 }) {
 function FileChip({ sf, onRemove, isUploading }) {
   const isPdf   = sf.fileType === "pdf";
   const isImage = sf.fileType === "image";
-  const iconColor = isPdf ? "#a78bfa" : isImage ? "#22D3EE" : "#71717a";
+  const iconColor = isPdf ? "var(--info)" : isImage ? "var(--info)" : "var(--text-tertiary)";
   const [hovered, setHovered] = useState(false);
   return (
     <motion.div
@@ -296,10 +365,10 @@ function FileChip({ sf, onRemove, isUploading }) {
         gap:          6,
         padding:      "5px 7px 5px 9px",
         borderRadius: 8,
-        background:   "rgba(255,255,255,0.05)",
-        border:       "1px solid rgba(255,255,255,0.09)",
+        background:   "var(--bg-surface)",
+        border:       "1px solid var(--border-hairline)",
         fontSize:     12,
-        color:        "#e4e4e7",
+        color:        "var(--text-primary)",
         maxWidth:     220,
         flexShrink:   0,
       }}
@@ -310,7 +379,7 @@ function FileChip({ sf, onRemove, isUploading }) {
           : isPdf ? <PDFFileIcon /> : isImage ? <ImageFileIcon size={13} /> : <DocFileIcon />
         }
       </span>
-      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0, color: "#d4d4d8" }}>
+      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0, color: "var(--text-secondary)" }}>
         {sf.name}
       </span>
       <button
@@ -321,7 +390,7 @@ function FileChip({ sf, onRemove, isUploading }) {
           background:  "transparent",
           border:      "none",
           cursor:      "pointer",
-          color:       hovered ? "#e4e4e7" : "#52525b",
+          color:       hovered ? "var(--text-primary)" : "var(--text-tertiary)",
           padding:     "0 2px",
           lineHeight:  1,
           fontSize:    12,
@@ -353,12 +422,12 @@ function HoverActionBtn({ onClick, title, children }) {
       onMouseEnter={() => setBtnHov(true)}
       onMouseLeave={() => setBtnHov(false)}
       style={{
-        background:     btnHov ? "rgba(255,255,255,0.09)" : "transparent",
+        background:     btnHov ? "var(--bg-surface-2)" : "transparent",
         border:         "none",
         cursor:         "pointer",
         padding:        "4px 5px",
         borderRadius:   6,
-        color:          btnHov ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.38)",
+        color:          btnHov ? "var(--text-secondary)" : "var(--text-tertiary)",
         display:        "flex",
         alignItems:     "center",
         justifyContent: "center",
@@ -381,16 +450,16 @@ function AIMsgBtn({ onClick, title, children, active = false }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        background:     hov || active ? "rgba(255,255,255,0.08)" : "transparent",
+        background:     hov || active ? "var(--bg-surface-2)" : "transparent",
         border:         "none",
         cursor:         "pointer",
         padding:        "5px 6px",
         borderRadius:   6,
         color:          active
-          ? "#a78bfa"
+          ? "var(--accent-bright)"
           : hov
-            ? "rgba(255,255,255,0.72)"
-            : "rgba(255,255,255,0.33)",
+            ? "var(--text-secondary)"
+            : "var(--text-tertiary)",
         display:        "flex",
         alignItems:     "center",
         justifyContent: "center",
@@ -431,7 +500,7 @@ function AIMessageActions({ msg, onFeedback, onShare, onRegenerate }) {
         gap:        2,
         marginTop:  10,
         paddingTop: 8,
-        borderTop:  "1px solid rgba(255,255,255,0.07)",
+        borderTop:  "1px solid var(--border-hairline)",
         alignItems: "center",
       }}
     >
@@ -485,14 +554,14 @@ function AutoScrollButton({ onClick }) {
         width:                36,
         height:               36,
         borderRadius:         "50%",
-        background:           "rgba(28,28,32,0.92)",
-        border:               `1px solid ${hovered ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.12)"}`,
+        background:           "color-mix(in srgb, var(--bg-surface-3) 92%, transparent)",
+        border:               `1px solid ${hovered ? "var(--border-strong)" : "var(--border-hairline)"}`,
         boxShadow:            "0 4px 16px rgba(0,0,0,0.45)",
         display:              "flex",
         alignItems:           "center",
         justifyContent:       "center",
         cursor:               "pointer",
-        color:                "#a1a1aa",
+        color:                "var(--text-secondary)",
         zIndex:               20,
         backdropFilter:       "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
@@ -704,8 +773,8 @@ export default function AskAISection({ fullPage = false, conversationId = null }
     }
 
     // ── 3. Background Supabase fetch (source of truth) ───────────────
-    fetch(`/api/conversations/${conversationId}`)
-      .then(r => r.json())
+    clientFetch(`/api/conversations/${conversationId}`)
+      .then(r => r?.json())
       .then(data => {
         if (!Array.isArray(data.messages) || data.messages.length === 0) return;
         const toLoad = data.messages.map((m, i) => ({
@@ -1033,7 +1102,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
       {/* ── Header — hidden in fullPage mode (page has its own top bar) ── */}
       <div style={{ display: fullPage ? "none" : "flex", alignItems: "center", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
         <span style={{ fontWeight: 700, fontSize: 16, color: "var(--text-primary)", flex: 1 }}>
-          Ask AI
+          Sage
         </span>
         <AnimatePresence>
           {documentId && (
@@ -1067,9 +1136,9 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 fontWeight:    700,
                 padding:       "3px 10px",
                 borderRadius:  20,
-                background:    "rgba(124,58,237,0.12)",
-                color:         "#a78bfa",
-                border:        "1px solid rgba(124,58,237,0.25)",
+                background:    "var(--bg-surface-2)",
+                color:         "var(--text-secondary)",
+                border:        "1px solid var(--border-hairline)",
                 letterSpacing: "0.3px",
               }}
             >
@@ -1090,7 +1159,21 @@ export default function AskAISection({ fullPage = false, conversationId = null }
         marginBottom:  16,
         paddingRight:  4,
       }}>
+        {fullPage && !hasMessages && (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <SageMark size={96} />
+          </div>
+        )}
         <DynamicGreeting isEmptyChat={!hasMessages} />
+
+        {/* ── Starter questions — shown only on empty chat to reduce first-question friction ── */}
+        {!hasMessages && (
+          <StarterQuestions
+            hasPdf={!!documentId}
+            onSelect={(q) => { submitQuestion(q); setQuestion(""); }}
+          />
+        )}
+
         {messages.map((msg, i) => {
           const isLastUser = msg.role === "user" && messages.slice(i + 1).every(m => m.role !== "user");
           return msg.role === "user"
@@ -1106,6 +1189,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 onFeedback={handleFeedback}
                 onShare={handleShare}
                 onRegenerate={handleRegenerate}
+                onFollowUp={(q) => submitQuestion(q)}
               />;
         })}
         {/* Scroll-to-bottom sentinel — zero-height, used as scrollIntoView target */}
@@ -1164,12 +1248,12 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 position:             "absolute",
                 bottom:               "calc(100% + 6px)",
                 left:                 10,
-                background:           "rgba(18,18,20,0.97)",
+                background:           "color-mix(in srgb, var(--bg-elevated) 97%, transparent)",
                 backdropFilter:       "blur(20px)",
                 WebkitBackdropFilter: "blur(20px)",
-                border:               "1px solid rgba(255,255,255,0.08)",
+                border:               "1px solid var(--border-hairline)",
                 borderRadius:         12,
-                boxShadow:            "0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.2)",
+                boxShadow:            "var(--shadow-card)",
                 minWidth:             176,
                 overflow:             "hidden",
                 zIndex:               100,
@@ -1185,19 +1269,19 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                   gap:        10,
                   width:      "100%",
                   padding:    "9px 14px",
-                  background: menuHovered === "files" ? "rgba(255,255,255,0.06)" : "transparent",
+                  background: menuHovered === "files" ? "var(--bg-surface-2)" : "transparent",
                   border:     "none",
                   cursor:     "pointer",
-                  color:      "#e4e4e7",
+                  color:      "var(--text-primary)",
                   fontSize:   13,
                   textAlign:  "left",
                   transition: "background 0.1s",
                 }}
               >
-                <span style={{ color: "#71717a", flexShrink: 0, display: "flex" }}><PaperclipIcon /></span>
+                <span style={{ color: "var(--text-tertiary)", flexShrink: 0, display: "flex" }}><PaperclipIcon /></span>
                 Add files
               </button>
-              <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "0 8px" }} />
+              <div style={{ height: 1, background: "var(--border-hairline)", margin: "0 8px" }} />
               <button
                 onClick={() => { setMenuOpen(false); imageInputRef.current?.click(); }}
                 onMouseEnter={() => setMenuHovered("image")}
@@ -1208,16 +1292,16 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                   gap:        10,
                   width:      "100%",
                   padding:    "9px 14px",
-                  background: menuHovered === "image" ? "rgba(255,255,255,0.06)" : "transparent",
+                  background: menuHovered === "image" ? "var(--bg-surface-2)" : "transparent",
                   border:     "none",
                   cursor:     "pointer",
-                  color:      "#e4e4e7",
+                  color:      "var(--text-primary)",
                   fontSize:   13,
                   textAlign:  "left",
                   transition: "background 0.1s",
                 }}
               >
-                <span style={{ color: "#71717a", flexShrink: 0, display: "flex" }}><ImageFileIcon /></span>
+                <span style={{ color: "var(--text-tertiary)", flexShrink: 0, display: "flex" }}><ImageFileIcon /></span>
                 Add image
               </button>
             </motion.div>
@@ -1241,21 +1325,21 @@ export default function AskAISection({ fullPage = false, conversationId = null }
             borderRadius:         9999,
             overflow:             "hidden",   // THE fix — clips content to pill shape
             background:           isDragging
-              ? "rgba(99,102,241,0.08)"
+              ? "color-mix(in srgb, var(--accent) 8%, transparent)"
               : "rgba(255,255,255,0.04)",
             backdropFilter:       "blur(16px)",
             WebkitBackdropFilter: "blur(16px)",
             border:               `1px solid ${
               isDragging || isFocused
-                ? "rgba(34,211,238,0.5)"
+                ? "color-mix(in srgb, var(--accent) 50%, transparent)"
                 : isHovered
-                  ? "rgba(34,211,238,0.25)"
-                  : "rgba(255,255,255,0.08)"
+                  ? "var(--border-strong)"
+                  : "var(--border-hairline)"
             }`,
             boxShadow:            isDragging || isFocused
-              ? "0 0 0 3px rgba(34,211,238,0.08), 0 8px 32px rgba(0,0,0,0.3)"
+              ? "0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent), 0 8px 32px rgba(0,0,0,0.3)"
               : isHovered
-                ? "0 4px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(34,211,238,0.08)"
+                ? "0 4px 24px rgba(0,0,0,0.25), 0 0 0 1px var(--border-hairline)"
                 : "0 2px 12px rgba(0,0,0,0.2)",
             transform:            isHovered && !isFocused ? "translateY(-1px)" : "translateY(0)",
             transition:           "border-color 0.2s, box-shadow 0.2s, background 0.2s, transform 0.2s",
@@ -1269,11 +1353,11 @@ export default function AskAISection({ fullPage = false, conversationId = null }
               display:        "flex",
               alignItems:     "center",
               justifyContent: "center",
-              background:     "rgba(99,102,241,0.10)",
+              background:     "color-mix(in srgb, var(--accent) 8%, transparent)",
               zIndex:         2,
               pointerEvents:  "none",
             }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "var(--brand)" }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "var(--accent)" }}>
                 Drop PDF here
               </span>
             </div>
@@ -1332,7 +1416,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 fontSize:    20,
                 lineHeight:  1.6,
                 fontWeight:  300,
-                color:       menuOpen || stagedFiles.length > 0 ? "#a78bfa" : "#71717a",
+                color:       menuOpen || stagedFiles.length > 0 ? "var(--accent-bright)" : "var(--text-tertiary)",
                 transition:  "color 0.15s",
               }}
               title="Attach file"
@@ -1348,7 +1432,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                   ? "Add a message about these files…"
                   : chatMode === "coach"
                     ? "Tell me what you want to study…"
-                    : "Ask any academic question"
+                    : "Ask Sage anything…"
               }
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
@@ -1412,13 +1496,15 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 borderRadius:   "50%",
                 border:         "none",
                 background:     asking
-                  ? "linear-gradient(135deg, var(--red), var(--red-dark))"
+                  ? "linear-gradient(135deg, var(--error), color-mix(in srgb, var(--error) 75%, black))"
                   : (!question.trim() && stagedFiles.length === 0)
-                    ? "rgba(255,255,255,0.07)"
-                    : "linear-gradient(135deg, var(--brand), #4f46e5)",
-                color:          !asking && !question.trim() && stagedFiles.length === 0
-                  ? "#3f3f46"
-                  : "#fff",
+                    ? "var(--bg-surface-2)"
+                    : "var(--accent-grad)",
+                color:          asking
+                  ? "var(--text-primary)"
+                  : (!question.trim() && stagedFiles.length === 0)
+                    ? "var(--text-disabled)"
+                    : "var(--bg-base)",
                 fontSize:       14,
                 cursor:         !asking && !question.trim() && stagedFiles.length === 0
                   ? "default"
@@ -1427,7 +1513,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 alignItems:     "center",
                 justifyContent: "center",
                 boxShadow:      asking || question.trim() || stagedFiles.length > 0
-                  ? "0 2px 10px var(--brand-glow)"
+                  ? "0 2px 10px var(--accent-glow-soft)"
                   : "none",
                 transition:     "background 0.18s, box-shadow 0.18s",
               }}
@@ -1450,7 +1536,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
             gap:        5,
             padding:    "5px 16px 0",
             fontSize:   11,
-            color:      "rgba(251,191,36,0.7)",
+            color:      "color-mix(in srgb, var(--warning) 70%, transparent)",
             userSelect: "none",
           }}
         >
@@ -1461,7 +1547,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
       </div>
 
       {queue.length > 0 && (
-        <p style={{ fontSize: 11, color: "var(--text-muted)", margin: "6px 0 0", textAlign: "center" }}>
+        <p style={{ fontSize: 11, color: "var(--text-tertiary)", margin: "6px 0 0", textAlign: "center" }}>
           {queue.length} question{queue.length > 1 ? "s" : ""} queued
         </p>
       )}

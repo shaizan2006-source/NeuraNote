@@ -12,18 +12,18 @@ const MODES = [
     label:  "Answering",
     icon:   "⚡",
     desc:   "Direct, detailed answers",
-    color:  "#a78bfa",
-    bg:     "rgba(139,92,246,0.12)",
-    border: "rgba(139,92,246,0.28)",
+    color:  "var(--ai-signal)",
+    bg:     "color-mix(in srgb, var(--ai-signal) 10%, transparent)",
+    border: "color-mix(in srgb, var(--ai-signal) 28%, transparent)",
   },
   {
     id:     "coach",
     label:  "Coach Mode",
     icon:   "🎯",
     desc:   "Guided questions to deepen learning",
-    color:  "#fbbf24",
-    bg:     "rgba(251,191,36,0.12)",
-    border: "rgba(251,191,36,0.28)",
+    color:  "var(--warning)",
+    bg:     "color-mix(in srgb, var(--warning) 10%, transparent)",
+    border: "color-mix(in srgb, var(--warning) 28%, transparent)",
   },
 ];
 
@@ -133,11 +133,11 @@ export default function ModeSwitcher() {
             right:                pos.right,
             zIndex:               9999,
             minWidth:             220,
-            background:           "rgba(13, 13, 16, 0.98)",
-            border:               "1px solid rgba(255,255,255,0.09)",
+            background:           "var(--bg-elevated)",
+            border:               "1px solid var(--border-hairline)",
             borderRadius:         12,
             padding:              5,
-            boxShadow:            "0 16px 48px rgba(0,0,0,0.65), 0 2px 8px rgba(0,0,0,0.3)",
+            boxShadow:            "var(--shadow-card)",
             backdropFilter:       "blur(24px)",
             WebkitBackdropFilter: "blur(24px)",
             transformOrigin:      "bottom right",
@@ -173,22 +173,29 @@ export default function ModeSwitcher() {
         aria-expanded={open}
         aria-label={`Mode: ${current.label}. Click to switch`}
         onClick={toggleDropdown}
+        onFocus={(e) => {
+          e.currentTarget.style.boxShadow =
+            "0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent)";
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.boxShadow = "none";
+        }}
         style={{
           display:      "flex",
           alignItems:   "center",
           gap:          5,
           padding:      "5px 9px 5px 7px",
           background:   isCoach
-            ? "rgba(251,191,36,0.12)"
-            : "rgba(139,92,246,0.12)",
+            ? "color-mix(in srgb, var(--warning) 10%, transparent)"
+            : "color-mix(in srgb, var(--ai-signal) 10%, transparent)",
           border:       `1px solid ${isCoach
-            ? "rgba(251,191,36,0.3)"
-            : "rgba(139,92,246,0.3)"}`,
+            ? "color-mix(in srgb, var(--warning) 28%, transparent)"
+            : "color-mix(in srgb, var(--ai-signal) 28%, transparent)"}`,
           borderRadius: 9999,
           cursor:       "pointer",
           fontSize:     12,
           fontWeight:   500,
-          color:        isCoach ? "#fbbf24" : "#a78bfa",
+          color:        isCoach ? "var(--warning)" : "var(--ai-signal)",
           lineHeight:   1,
           whiteSpace:   "nowrap",
           userSelect:   "none",
@@ -235,7 +242,7 @@ function DropdownItem({ mode, active, onSelect }) {
         background:   active
           ? mode.bg
           : hovered
-            ? "rgba(255,255,255,0.05)"
+            ? "var(--bg-surface-2)"
             : "transparent",
         border:       `1px solid ${active ? mode.border : "transparent"}`,
         borderRadius: 8,
@@ -254,7 +261,7 @@ function DropdownItem({ mode, active, onSelect }) {
           gap:        6,
           fontSize:   13,
           fontWeight: active ? 600 : 500,
-          color:      active ? mode.color : "#e4e4e7",
+          color:      active ? mode.color : "var(--text-primary)",
           marginBottom: 2,
         }}>
           {mode.label}
@@ -274,7 +281,7 @@ function DropdownItem({ mode, active, onSelect }) {
         </div>
         <div style={{
           fontSize:   11,
-          color:      "#52525b",
+          color:      "var(--text-tertiary)",
           lineHeight: 1.35,
         }}>
           {mode.desc}

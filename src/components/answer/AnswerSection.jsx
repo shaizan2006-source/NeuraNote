@@ -31,7 +31,7 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
       style={{
         padding:      '12px 0 16px',
         position:     'relative',
-        borderBottom: isLast ? 'none' : '1px solid rgba(255,255,255,0.05)',
+        borderBottom: isLast ? 'none' : '1px solid var(--border-hairline)',
       }}
     >
       {/* Section header */}
@@ -46,7 +46,7 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
           <span style={{
             fontSize:      13,
             fontWeight:    700,
-            color:         meta.accent,
+            color:         'var(--text-secondary)',
             letterSpacing: '0.2px',
           }}>
             {meta.label || heading}
@@ -61,7 +61,7 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
               border:       'none',
               cursor:       'pointer',
               fontSize:     11,
-              color:        copied ? '#22c55e' : '#334155',
+              color:        copied ? 'var(--success)' : 'var(--text-tertiary)',
               padding:      '2px 6px',
               borderRadius: 4,
               transition:   'color 0.15s',
@@ -80,25 +80,25 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
         components={{
           // Headings inside section content (shouldn't exist but handle gracefully)
           h2: ({ children }) => (
-            <h2 style={{ color: '#60a5fa', fontSize: 15, fontWeight: 700, margin: '12px 0 6px' }}>
+            <h2 style={{ color: 'var(--text-primary)', fontSize: 15, fontWeight: 700, margin: '12px 0 6px' }}>
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 style={{ color: '#a78bfa', fontSize: 14, fontWeight: 600, margin: '10px 0 4px' }}>
+            <h3 style={{ color: 'var(--text-primary)', fontSize: 14, fontWeight: 600, margin: '10px 0 4px' }}>
               {children}
             </h3>
           ),
           p: ({ children }) => (
-            <p style={{ color: '#cbd5e1', lineHeight: 1.75, marginBottom: 8, fontSize: 14, margin: '0 0 8px' }}>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.75, marginBottom: 8, fontSize: 14, margin: '0 0 8px' }}>
               {children}
             </p>
           ),
           strong: ({ children }) => (
-            <strong style={{ color: '#f1f5f9', fontWeight: 700 }}>{children}</strong>
+            <strong style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{children}</strong>
           ),
           em: ({ children }) => (
-            <em style={{ color: '#94a3b8', fontStyle: 'italic' }}>{children}</em>
+            <em style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>{children}</em>
           ),
           ul: ({ children }) => (
             <ul style={{ margin: '4px 0 8px', paddingLeft: 20, listStyle: 'none' }}>
@@ -112,7 +112,7 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
           ),
           li: ({ children }) => (
             <li style={{
-              color:        '#94a3b8',
+              color:        'var(--text-secondary)',
               lineHeight:   1.65,
               marginBottom: 5,
               fontSize:     14,
@@ -123,7 +123,7 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
                 position:  'absolute',
                 left:      4,
                 top:       9,
-                color:     meta.accent,
+                color:     'var(--accent-dim)',
                 fontSize:  8,
                 lineHeight: 1,
               }}>●</span>
@@ -140,8 +140,8 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
             if (!isBlock) {
               return (
                 <code style={{
-                  background:   '#1e293b',
-                  color:        '#7dd3fc',
+                  background:   'var(--bg-inset)',
+                  color:        'var(--text-primary)',
                   padding:      '2px 6px',
                   borderRadius: 4,
                   fontSize:     12,
@@ -174,11 +174,11 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
               textAlign:     'left',
               fontSize:      11,
               fontWeight:    700,
-              color:         '#64748b',
+              color:         'var(--text-tertiary)',
               letterSpacing: '0.5px',
               textTransform: 'uppercase',
-              borderBottom:  '2px solid #1e293b',
-              background:    '#0a0f18',
+              borderBottom:  '2px solid var(--border-strong)',
+              background:    'var(--bg-inset)',
             }}>
               {children}
             </th>
@@ -187,8 +187,8 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
             <td style={{
               padding:      '9px 12px',
               fontSize:     13,
-              color:        '#94a3b8',
-              borderBottom: '1px solid #1a1f2e',
+              color:        'var(--text-secondary)',
+              borderBottom: '1px solid var(--border-hairline)',
               lineHeight:   1.55,
             }}>
               {children}
@@ -196,17 +196,17 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
           ),
           blockquote: ({ children }) => (
             <blockquote style={{
-              borderLeft:  '3px solid #334155',
+              borderLeft:  '3px solid var(--border-strong)',
               margin:      '8px 0',
               paddingLeft: 14,
-              color:       '#64748b',
+              color:       'var(--text-tertiary)',
               fontStyle:   'italic',
               fontSize:    13,
             }}>
               {children}
             </blockquote>
           ),
-          hr: () => <hr style={{ border: 'none', borderTop: '1px solid #1e293b', margin: '12px 0' }} />,
+          hr: () => <hr style={{ border: 'none', borderTop: '1px solid var(--border-hairline)', margin: '12px 0' }} />,
         }}
       >
         {content}
@@ -218,7 +218,7 @@ export default function AnswerSection({ heading, content, index = 0, isStreaming
           display:        'inline-block',
           width:          2,
           height:         15,
-          background:     meta.accent,
+          background:     'var(--ai-signal)',
           marginLeft:     2,
           verticalAlign:  'middle',
           animation:      'cursorBlink 0.75s step-end infinite',

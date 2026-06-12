@@ -69,7 +69,7 @@ export default function DynamicGreeting({ isEmptyChat }) {
               width: 56,
               height: 56,
               borderRadius: "50%",
-              border: "1.5px solid var(--accent, #6366f1)",
+              border: "1.5px solid var(--accent)",
               marginBottom: 28,
               display: "flex",
               alignItems: "center",
@@ -83,7 +83,7 @@ export default function DynamicGreeting({ isEmptyChat }) {
                 width: 32,
                 height: 32,
                 borderRadius: "50%",
-                background: "var(--accent, #6366f1)",
+                background: "var(--accent)",
                 opacity: 0.15,
               }}
             />
@@ -103,7 +103,7 @@ export default function DynamicGreeting({ isEmptyChat }) {
                 fontWeight: 600,
                 lineHeight: 1.55,
                 maxWidth: 380,
-                background: "linear-gradient(135deg, var(--text-primary, #f1f5f9) 0%, var(--text-secondary, #94a3b8) 100%)",
+                background: "linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -116,12 +116,12 @@ export default function DynamicGreeting({ isEmptyChat }) {
           {/* Subtle sub-hint */}
           <motion.p
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.45 }}
+            animate={{ opacity: 0.9 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             style={{
               margin: "14px 0 0",
               fontSize: 12.5,
-              color: "var(--text-muted, #64748b)",
+              color: "var(--text-secondary)",
               letterSpacing: "0.04em",
               fontWeight: 400,
             }}

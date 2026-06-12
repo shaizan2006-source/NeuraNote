@@ -23,21 +23,21 @@ export default function DynamicFollowUps({ classification, onSelect }) {
           style={{
             padding:      '5px 12px',
             borderRadius: 20,
-            border:       '1px solid #2d3748',
-            background:   '#1e293b',
-            color:        '#94a3b8',
+            border:       '1px solid var(--border-hairline)',
+            background:   'var(--bg-surface)',
+            color:        'var(--text-secondary)',
             fontSize:     11,
             fontWeight:   600,
             cursor:       'pointer',
             transition:   'border-color 0.15s, color 0.15s',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.borderColor = '#7c3aed';
-            e.currentTarget.style.color = '#a78bfa';
+            e.currentTarget.style.borderColor = 'var(--border-strong)';
+            e.currentTarget.style.color = 'var(--text-primary)';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.borderColor = '#2d3748';
-            e.currentTarget.style.color = '#94a3b8';
+            e.currentTarget.style.borderColor = 'var(--border-hairline)';
+            e.currentTarget.style.color = 'var(--text-secondary)';
           }}
         >
           {chip.label}

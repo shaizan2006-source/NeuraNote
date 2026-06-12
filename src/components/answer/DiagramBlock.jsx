@@ -24,8 +24,8 @@ export default function DiagramBlock({ code, language }) {
       <div style={{
         position:     'relative',
         borderRadius: 10,
-        border:       '1px solid #1e293b',
-        background:   '#0d1117',
+        border:       '1px solid var(--border-hairline)',
+        background:   'var(--bg-inset)',
         margin:       '12px 0',
         overflow:     'hidden',
       }}>
@@ -35,10 +35,10 @@ export default function DiagramBlock({ code, language }) {
           alignItems:     'center',
           justifyContent: 'space-between',
           padding:        '6px 14px',
-          borderBottom:   '1px solid #1e293b',
-          background:     '#0a0f18',
+          borderBottom:   '1px solid var(--border-hairline)',
+          background:     'var(--bg-elevated)',
         }}>
-          <span style={{ fontSize: 11, color: '#475569', fontWeight: 600, letterSpacing: '0.5px' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-tertiary)', fontWeight: 600, letterSpacing: '0.5px' }}>
             {isDiagram ? 'DIAGRAM' : (language || 'CODE').toUpperCase()}
           </span>
           <div style={{ display: 'flex', gap: 6 }}>
@@ -54,7 +54,7 @@ export default function DiagramBlock({ code, language }) {
             <button
               onClick={handleCopy}
               title={copied ? 'Copied!' : 'Copy'}
-              style={{ ...iconBtnStyle, color: copied ? '#22c55e' : '#64748b' }}
+              style={{ ...iconBtnStyle, color: copied ? 'var(--success)' : 'var(--text-tertiary)' }}
             >
               {copied ? '✓' : '⧉'}
             </button>
@@ -69,7 +69,7 @@ export default function DiagramBlock({ code, language }) {
           fontFamily:  "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
           fontSize:    13,
           lineHeight:  1.55,
-          color:       isDiagram ? '#94a3b8' : '#7dd3fc',
+          color:       isDiagram ? 'var(--text-secondary)' : 'var(--text-primary)',
           whiteSpace:  'pre',
           tabSize:     2,
         }}>
@@ -95,8 +95,8 @@ export default function DiagramBlock({ code, language }) {
           <div
             onClick={e => e.stopPropagation()}
             style={{
-              background:   '#0d1117',
-              border:       '1px solid #1e293b',
+              background:   'var(--bg-surface-2)',
+              border:       '1px solid var(--border-strong)',
               borderRadius: 14,
               maxWidth:     '90vw',
               maxHeight:    '80vh',
@@ -109,7 +109,7 @@ export default function DiagramBlock({ code, language }) {
               fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
               fontSize:   14,
               lineHeight: 1.6,
-              color:      '#94a3b8',
+              color:      'var(--text-secondary)',
               whiteSpace: 'pre',
             }}>
               <code>{code}</code>
@@ -125,7 +125,7 @@ const iconBtnStyle = {
   background:   'transparent',
   border:       'none',
   cursor:       'pointer',
-  color:        '#64748b',
+  color:        'var(--text-tertiary)',
   fontSize:     13,
   padding:      '2px 6px',
   borderRadius: 4,

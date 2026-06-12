@@ -30,8 +30,8 @@ export default function QuickSummary({ content }) {
     <div style={{
       marginBottom:  16,
       borderRadius:  12,
-      border:        '1px solid rgba(59,130,246,0.25)',
-      background:    'rgba(59,130,246,0.06)',
+      border:        '1px solid var(--border-hairline)',
+      background:    'var(--bg-surface)',
       overflow:      'hidden',
     }}>
       {/* Header row */}
@@ -51,13 +51,13 @@ export default function QuickSummary({ content }) {
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 14 }}>⚡</span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: '#60a5fa', letterSpacing: '0.4px' }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.4px' }}>
             QUICK SUMMARY
           </span>
         </span>
         <span style={{
           fontSize:   11,
-          color:      '#475569',
+          color:      'var(--text-tertiary)',
           transform:  open ? 'rotate(180deg)' : 'rotate(0deg)',
           transition: 'transform 0.2s ease',
           display:    'inline-block',
@@ -92,14 +92,14 @@ export default function QuickSummary({ content }) {
                     </div>
                   )}
                   {parsed.examTip && (
-                    <div style={{ ...summaryRowStyle, background: 'rgba(245,158,11,0.08)', borderColor: 'rgba(245,158,11,0.2)' }}>
-                      <span style={{ ...labelStyle, color: '#fbbf24' }}>Exam tip</span>
+                    <div style={{ ...summaryRowStyle, background: 'color-mix(in srgb, var(--warning) 8%, transparent)', borderColor: 'color-mix(in srgb, var(--warning) 20%, transparent)' }}>
+                      <span style={{ ...labelStyle, color: 'var(--warning)' }}>Exam tip</span>
                       <span style={valueStyle}>{parsed.examTip}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.65, color: '#94a3b8' }}>
+                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.65, color: 'var(--text-secondary)' }}>
                   {content}
                 </p>
               )}
@@ -116,15 +116,15 @@ const summaryRowStyle = {
   gap:          10,
   alignItems:   'flex-start',
   padding:      '8px 10px',
-  background:   'rgba(255,255,255,0.03)',
+  background:   'var(--bg-surface-2)',
   borderRadius: 8,
-  border:       '1px solid rgba(255,255,255,0.05)',
+  border:       '1px solid var(--border-hairline)',
 };
 
 const labelStyle = {
   fontSize:    10,
   fontWeight:  700,
-  color:       '#60a5fa',
+  color:       'var(--text-tertiary)',
   letterSpacing: '0.5px',
   minWidth:    60,
   paddingTop:  2,
@@ -134,6 +134,6 @@ const labelStyle = {
 const valueStyle = {
   fontSize:   13,
   lineHeight: 1.6,
-  color:      '#cbd5e1',
+  color:      'var(--text-secondary)',
   flex:       1,
 };

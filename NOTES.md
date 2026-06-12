@@ -22,6 +22,23 @@
 - Gate gotcha: a `git mv` shows as a NEW file to the baseline — rename the key in `grep-gate.baseline.json` (and write it WITHOUT BOM; PowerShell `-Encoding utf8` adds one and breaks `JSON.parse`).
 - Uncommitted (founder-WIP files): 1-line edits in `AskAISidebar.jsx`, `QuickChatDrawer.jsx`. `next.config.mjs` committed carrying founder's headers/redirects WIP (noted in commit).
 
+## Stage 5 status (2026-06-12) — Sage page redesign
+
+- **Surface fully tokenized** (multi-agent pass, ~182 raw hex removed; all Sage-tree files now 0 hex): page shell, AskAISection (pills, bubbles, avatar, file chips, action bars, attach menu, input pill w/ GOLD focus ring, send/stop, coach indicator), AskAISidebar (both desktop + mobile layouts; LogoMark replaces purple ✦; PDF signals → `--info` steel; conversations active → surface-2 + gold-dim hairline), ModeSwitcher (Answering → `--ai-signal`, Coach → `--warning`, keyboard focus ring added), answer components (AnswerSection markdown, QuickSummary, DiagramBlock, ConfidenceBadge, DynamicFollowUps, ThinkingAnimation → gold shimmer, DynamicGreeting).
+- **Hero:** `SageMark` (breathing + parallax) centered on the empty-chat state. Vocabulary: top bar "Sage / Your notes that answer back", placeholder "Ask Sage anything…". Analytics ids/storage keys/event names untouched.
+- **NEWLY WIRED (was orphaned, named in master prompt):** `ConfidenceBadge` + `DynamicFollowUps` now render under completed AI answers (AIMessage `onFollowUp` → submitQuestion). Note: follow-up chips render under EVERY completed answer — founder may want last-message-only.
+- **Pipeline bug found & fixed (pre-existing founder WIP, NOT re-skin):** `/api/ask` migrated to SSE v2 (`text/event-stream`) but `DashboardContext.jsx` still gated streaming on `text/plain` → every streamed answer crashed into `res.json()` ("Stream error: SyntaxError… 'data: {'"). One-line fix at the `isStreaming` check. **Live-verified:** real question streamed end-to-end on /sage (`scripts/verify-sage-stream.mjs`, evidence `__screens__/stage-5-sage/probe-*.png`).
+- AnswerSection no longer reads `meta.accent` colors (lib `parseAnswerSections.js` untouched — its 160 unit tests pass; SECTION_META hex now unused for color).
+- `ModelSwitcher.jsx` confirmed orphaned (zero importers) — not re-skinned. `AskInput.jsx` orphan stub — untouched.
+- Observation for founder review: `**bold**` key terms in answers render gold (likely via StructuredAnswer emphasis path) — looks intentional-premium, 7.9:1 contrast, but flag if "gold never body text" should apply.
+
+### Stage 5 verification + post-review fixes
+
+- 3-agent visual panel: dashboard side-effects PASS, landing/styleguide side-effects PASS, Sage deep review found 2 mobile majors → **fixed**: hero shrunk 120→96 + chips wrapper bottom padding 28px (4th starter chip no longer clips under the composer); "Type below to begin" hint → `--text-secondary` @ 0.9 opacity; sidebar RECENT/YOUR PDFS micro-headers → `--text-secondary` (AA).
+- **Pre-existing, deferred to Stage 9:** the oversized rounded mobile composer blob (identical in stage-4 captures); landing full-page capture blank zones (whileInView); dev-overlay "1 Issue" badge appears in captures whenever any console error fires.
+- **Uncommitted:** `DashboardContext.jsx` carries a large in-flight founder refactor (~340 lines vs HEAD) — my 2-line SSE-gate fix lives inside it, uncommitted with the rest. AskAISection/AskAISidebar committed carrying whatever founder WIP they held (unavoidable — they are the stage's core files).
+- Stage-5 evidence: `__screens__/stage-5-sage/` incl. `probe-1/2/3` (hero, streaming, settled answer).
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

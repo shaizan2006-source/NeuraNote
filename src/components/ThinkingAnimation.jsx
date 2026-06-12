@@ -66,31 +66,31 @@ export default function ThinkingAnimation({ domain, uploadPending }) {
         style={{ flexShrink: 0 }}
       >
         {/* Background dots — 5×5 grid, dim */}
-        <circle r="2.4" cx="6"  cy="6"  fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="17" cy="6"  fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="28" cy="6"  fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="39" cy="6"  fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="50" cy="6"  fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="6"  cy="17" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="17" cy="17" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="28" cy="17" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="39" cy="17" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="50" cy="17" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="6"  cy="28" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="17" cy="28" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="28" cy="28" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="39" cy="28" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="50" cy="28" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="6"  cy="39" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="17" cy="39" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="28" cy="39" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="39" cy="39" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="50" cy="39" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="6"  cy="50" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="17" cy="50" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="28" cy="50" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="39" cy="50" fill="#fff" opacity="0.07"/>
-        <circle r="2.4" cx="50" cy="50" fill="#fff" opacity="0.07"/>
+        <circle r="2.4" cx="6"  cy="6"  fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="17" cy="6"  fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="28" cy="6"  fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="39" cy="6"  fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="50" cy="6"  fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="6"  cy="17" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="17" cy="17" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="28" cy="17" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="39" cy="17" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="50" cy="17" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="6"  cy="28" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="17" cy="28" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="28" cy="28" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="39" cy="28" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="50" cy="28" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="6"  cy="39" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="17" cy="39" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="28" cy="39" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="39" cy="39" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="50" cy="39" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="6"  cy="50" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="17" cy="50" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="28" cy="50" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="39" cy="50" fill="var(--text-primary)" opacity="0.07"/>
+        <circle r="2.4" cx="50" cy="50" fill="var(--text-primary)" opacity="0.07"/>
 
         {/* Lit dots — animated vortex sweep */}
         <circle className="amn-vl amn-d00" r="3.1" cx="6"  cy="6" />
@@ -129,7 +129,7 @@ export default function ThinkingAnimation({ domain, uploadPending }) {
           fontWeight:             600,
           opacity:                showText ? 1 : 0,
           transition:             "opacity 0.35s ease",
-          background:             "linear-gradient(90deg,#4a4a5a 0%,#4a4a5a 20%,#c4b5fd 40%,#f0f0f5 55%,#c4b5fd 70%,#4a4a5a 80%,#4a4a5a 100%)",
+          background:             "linear-gradient(90deg,var(--text-disabled) 0%,var(--text-disabled) 20%,var(--ai-signal) 40%,var(--text-primary) 55%,var(--ai-signal) 70%,var(--text-disabled) 80%,var(--text-disabled) 100%)",
           backgroundSize:         "200% 100%",
           WebkitBackgroundClip:   "text",
           WebkitTextFillColor:    "transparent",
@@ -146,13 +146,13 @@ export default function ThinkingAnimation({ domain, uploadPending }) {
       <style>{`
         /* Vortex dot animation */
         .amn-thinking-root .amn-vl {
-          fill: #ffffff;
+          fill: var(--ai-signal);
           opacity: 0;
           animation: amnVortex 2400ms linear infinite both;
         }
         @media (prefers-reduced-motion: reduce) {
           .amn-thinking-root .amn-vl { animation: none; opacity: 0.45; }
-          .amn-thinking-root .amn-thinking-text { animation: none !important; background: none; -webkit-text-fill-color: #a78bfa; color: #a78bfa; }
+          .amn-thinking-root .amn-thinking-text { animation: none !important; background: none; -webkit-text-fill-color: var(--ai-signal); color: var(--ai-signal); }
         }
 
         /* Animation delay classes */

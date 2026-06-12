@@ -40,7 +40,7 @@ const ROUTES = [
   { path: "/pricing", auth: false },
   { path: "/styleguide", auth: false },
   { path: "/dashboard", auth: true },
-  { path: "/ask-ai", auth: true },
+  { path: "/sage", auth: true },
   { path: "/chat", auth: true },
   { path: "/call-tutor", auth: true },
   { path: "/quiz/friday", auth: true },

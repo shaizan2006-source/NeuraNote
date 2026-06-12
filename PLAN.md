@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: ✅ Stage 3 complete (Constellation Notes idle effect) — awaiting founder approval for Stage 4 (ask-ai → Sage rename) + §10 logo-art sign-off on /styleguide.**
+**Current stage: ✅ Stage 4 complete (/sage live, /ask-ai 308) — awaiting founder approval for Stage 5 (Sage page redesign) + §10 logo-art sign-off on /styleguide.**
 
 ---
 
@@ -14,7 +14,7 @@
 - [x] **Stage 2 — Brand identity (logo system)** — DONE 2026-06-12 (Logo/SageMark components, icons + favicon regenerated, sidebar swap; art sign-off pending on /styleguide)
 - **Stage 3 ← NEXT (needs approval)**
 - [x] **Stage 3 — Idle effect on Sage** — DONE 2026-06-12 (founder reopened §2.3: dust → **Constellation Notes**; allowlist-scoped to /ask-ai, /sage, /styleguide)
-- [ ] **Stage 4 — Rename ask-ai → Sage**
+- [x] **Stage 4 — Rename ask-ai → Sage** — DONE 2026-06-12 (308 redirect, nav labels, title; /api/ask-ai contract untouched)
 - [ ] **Stage 5 — Sage page redesign**
 - [ ] **Stage 6 — Dashboard bento redesign**
 - [ ] **Stage 7 — Auth pages (Grok-style + custom logo)**

@@ -4,11 +4,46 @@ import { withSentryConfig } from "@sentry/nextjs";
 const nextConfig = {
   reactCompiler: true,
   serverExternalPackages: ["pdf-parse"],
+
+  // Performance: compress responses
+  compress: true,
+
+  // Security headers
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-XSS-Protection", value: "1; mode=block" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=()" },
+        ],
+      },
+      {
+        // Cache static assets aggressively
+        source: "/_next/static/(.*)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+    ];
+  },
+
   async redirects() {
     return [
       { source: "/ai-coach", destination: "/coach", permanent: true },
       { source: "/aicoach",  destination: "/coach", permanent: true },
+      // Sage rename (redesign Stage 4): permanent redirect so old links/bookmarks survive.
+      // NOTE: /api/ask-ai (the non-streaming Q&A API) is intentionally NOT renamed.
+      { source: "/ask-ai", destination: "/sage", permanent: true },
     ];
+  },
+
+  images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 86400,
   },
 };
 
@@ -18,5 +53,4 @@ export default withSentryConfig(nextConfig, {
   silent: true,
   widenClientFileUpload: true,
   hideSourceMaps: true,
-  disableLogger: true,
 });

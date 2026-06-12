@@ -20,8 +20,8 @@ const NAV_ITEMS = [
     activeColor: "#a78bfa",
   },
   {
-    href: "/ask-ai",
-    label: "Ask AI",
+    href: "/sage",
+    label: "Sage",
     icon: (
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v5a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V4z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />

@@ -48,6 +48,6 @@ export const AI_DUST_CONFIG = {
     '[data-dust-scope]',
   ],
   // Allowlist (was DISABLED_ROUTES): the effect is exclusive to the Sage
-  // surface (+ /styleguide for design review). '/sage' ready for Stage 4.
-  ENABLED_ROUTES: ['/ask-ai', '/sage', '/styleguide'],
+  // surface (+ /styleguide for design review).
+  ENABLED_ROUTES: ['/sage', '/styleguide'],
 } as const;

@@ -64,7 +64,7 @@ export default function LibraryItem({ doc, onAsk }) {
 
       {/* Actions */}
       <div style={{ display: "flex", gap: 8 }}>
-        <button onClick={() => router.push(`/ask-ai?doc=${doc.id}`)} style={{
+        <button onClick={() => router.push(`/sage?doc=${doc.id}`)} style={{
           flex: 1, background: "#8B5CF6", color: "#fff", border: "none",
           borderRadius: 6, padding: "7px", fontSize: 12, fontWeight: 600, cursor: "pointer",
         }}>Ask about this</button>

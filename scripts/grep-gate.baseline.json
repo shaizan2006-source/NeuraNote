@@ -8,7 +8,7 @@
     "app/admin/users/page.js": 52,
     "app/api/brain-map/snapshot/route.js": 15,
     "app/api/generate-document/route.js": 8,
-    "app/ask-ai/page.js": 8,
+    "app/sage/page.js": 8,
     "app/brain-map/page.js": 10,
     "app/brain-map/share/page.js": 10,
     "app/call-tutor/page.js": 30,

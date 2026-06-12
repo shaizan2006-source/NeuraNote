@@ -85,7 +85,7 @@ async function main() {
   const loggedIn = await login(page);
   console.log(`  Auth: ${loggedIn ? "logged in" : "anonymous"}`);
 
-  const r1 = await probe(page, "/ask-ai", "ask-ai", true, loggedIn);
+  const r1 = await probe(page, "/sage", "sage", true, loggedIn);
   const r2 = await probe(page, "/styleguide", "styleguide", false, loggedIn);
 
   // Negative check: effect must NOT run off-allowlist (e.g. /pricing)

@@ -13,6 +13,15 @@
 - Scoping inverted: config `DISABLED_ROUTES` → `ENABLED_ROUTES: ['/ask-ai', '/sage', '/styleguide']`. `layout.js` untouched (still global mount; allowlist gates it) — avoids the founder-WIP entanglement there.
 - **Verification:** `node scripts/verify-constellation.mjs` (needs TEST_EMAIL/TEST_PASSWORD env) — probes idle effect ON /ask-ai + /styleguide, absent on /pricing; evidence in `__screens__/stage-3-starfield/`. Standard captures can't show it (they force reduced-motion, which correctly disables the effect).
 
+## Stage 4 status (2026-06-12) — ask-ai → Sage
+
+- `git mv src/app/ask-ai → src/app/sage`; new `src/app/sage/layout.js` sets absolute title "Sage — Ask My Notes" (page is client-side, can't export metadata).
+- `next.config.mjs` redirect `{ /ask-ai → /sage, permanent }` — verified 308 + /sage 200. **`/api/ask-ai` (non-streaming Q&A API) intentionally NOT renamed** — API contracts preserved per §4.
+- Links/labels updated: DashboardSidebar, AskAISidebar, ContextualSidebar (PAGE_META + PERMANENT_HREFS), ExamsSidebar, QuickChatDrawer (`?cid=`), LibraryItem (`?doc=`), ExamCard, notifications copy.js. Nav label is now "Sage". In-page vocabulary ("Ask AI" headers inside AskAISection) is Stage 5 work.
+- AIDust allowlist trimmed to `['/sage', '/styleguide']`; harness scripts updated to probe /sage.
+- Gate gotcha: a `git mv` shows as a NEW file to the baseline — rename the key in `grep-gate.baseline.json` (and write it WITHOUT BOM; PowerShell `-Encoding utf8` adds one and breaks `JSON.parse`).
+- Uncommitted (founder-WIP files): 1-line edits in `AskAISidebar.jsx`, `QuickChatDrawer.jsx`. `next.config.mjs` committed carrying founder's headers/redirects WIP (noted in commit).
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

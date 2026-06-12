@@ -191,7 +191,7 @@ function CalendarIcon({ size = 16, color = "currentColor" }) {
 
 const NAV_ITEMS = [
   { icon: GridIcon, label: "Dashboard", href: "/dashboard" },
-  { icon: ChatIcon, label: "Ask AI",    href: "/ask-ai"    },
+  { icon: ChatIcon, label: "Sage",      href: "/sage"      },
 ];
 
 function Tooltip({ label }) {

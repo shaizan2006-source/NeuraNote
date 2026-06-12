@@ -10,7 +10,7 @@ export const NOTIFICATION_COPY = {
   midday: {
     title: "Quick check-in",
     body: () => "How's the prep going? One question, one concept — keep the momentum.",
-    url: "/ask-ai",
+    url: "/sage",
     type: "midday",
   },
   focus_anchor: {

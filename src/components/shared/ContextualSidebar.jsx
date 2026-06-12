@@ -56,13 +56,13 @@ function ZapIcon({ size = 16 }) {
 
 const PAGE_META = {
   "/dashboard": { label: "Dashboard", Icon: GridIcon  },
-  "/ask-ai":    { label: "Ask AI",    Icon: ChatIcon  },
+  "/sage":      { label: "Sage",      Icon: ChatIcon  },
   "/focus":     { label: "Focus",     Icon: TimerIcon },
   "/quiz":      { label: "Quiz",      Icon: ZapIcon   },
 };
 
 // Always shown, always first — the two permanent navigation anchors
-const PERMANENT_HREFS = ["/dashboard", "/ask-ai"];
+const PERMANENT_HREFS = ["/dashboard", "/sage"];
 
 // Contextual destinations per route.
 // Current page is never listed here so it is never rendered as a nav item.

@@ -32,8 +32,8 @@ function markSvg(sizePx, strokeWidth) {
   return `<svg width="${sizePx}" height="${sizePx}" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M8 26V8a2 2 0 0 1 2-2h9l5 5v9" stroke="${STROKE}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M19 6v5h5" stroke="${STROKE}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M12 26l4-7.5 4 7.5" stroke="${STROKE}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="16" cy="13.75" r="1.7" fill="${SPARK}"/>
+    <path d="M13 25.5 L16 19 L19 25.5" stroke="${STROKE}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="16" cy="16.1" r="1.7" fill="${SPARK}"/>
   </svg>`;
 }
 

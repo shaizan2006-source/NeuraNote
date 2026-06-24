@@ -9,12 +9,15 @@
  * itself is fully token-driven — keep it that way so it inherits theme.
  */
 
+// Geometry refined after the Stage-2 critique panel: the peak is narrowed and
+// the gold spark pulled to the apex so the mark reads as one spark rising off
+// the page — resolving the prior "stick figure" reading at favicon/sidebar sizes.
 export const MARK = {
   viewBox: "0 0 32 32",
   page: "M8 26V8a2 2 0 0 1 2-2h9l5 5v9",
   fold: "M19 6v5h5",
-  peak: "M12 26l4-7.5 4 7.5",
-  spark: { cx: 16, cy: 13.75, r: 1.7 },
+  peak: "M13 25.5 L16 19 L19 25.5",
+  spark: { cx: 16, cy: 16.1, r: 1.7 },
 };
 
 const NAMED_SIZES = { sm: 16, md: 28, lg: 96 };

@@ -112,9 +112,11 @@ export function ConstellationUnderlay() {
     sage: [50, 9], focus: [12.5, 34], exams: [87.5, 34],
     brain: [50, 50], quiz: [12.5, 82], tutor: [50, 82], pyq: [87.5, 82],
   };
+  // Medium intensity (founder-approved): links read clearly as a constellation
+  // while staying calm. Sage's own links are strongest (it is "the spark").
   const links = [
-    ["focus", "sage", 0.34], ["sage", "exams", 0.34], ["sage", "brain", 0.3],
-    ["brain", "quiz", 0.22], ["brain", "pyq", 0.22], ["brain", "tutor", 0.26],
+    ["focus", "sage", 0.52], ["sage", "exams", 0.52], ["sage", "brain", 0.5],
+    ["brain", "quiz", 0.42], ["brain", "pyq", 0.42], ["brain", "tutor", 0.44],
   ];
   const ambient = [[6, 12], [94, 10], [30, 64], [70, 64], [4, 94], [96, 94]];
   return (

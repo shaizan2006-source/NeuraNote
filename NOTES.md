@@ -51,6 +51,12 @@
 - **Windows case-collision:** git indexes both `src/components/Dashboard/` (capital) and `src/components/dashboard/` (lowercase) as distinct paths though they're one physical folder. `git add` must use the exact casing `git status` prints. The Stage-4 `ExamCard.jsx` /ask-ai→/sage fix silently didn't stage then (path-case mismatch) — swept into the Stage 6 commit.
 - Verified: gate green (142 files / 2005 hex; 20 improved), build clean, 32 authed screenshots `__screens__/stage-6-bento/`, desktop + mobile visually confirmed.
 
+## Brand polish (2026-06-25) — §10 logo art SIGNED OFF + constellation intensity locked
+
+- **Logo art §10: APPROVED** (candidate A "Fused Spark"). A 3-lens design-critique panel found the original mark read as a **stick figure** at 16/28px (gold dot = head, wide splayed peak = legs) — concept lens said rework. Fix: peak narrowed (`M13 25.5 L16 19 L19 25.5`) + spark pulled to the apex (`cy 13.75 → 16.1`) so it reads as one spark rising off the page. Founder picked A over B (rising-arrow, rejected: too close to an upload/send ↑). Single source of truth = `MARK` in `src/components/brand/Logo.jsx`; SageMark inherits it; **`scripts/generate-brand-icons.mjs` has the geometry HARD-CODED separately — must be edited in lockstep** (done) and re-run to regenerate `public/icons/*` + `favicon.ico`.
+- Known accepted limitation (dark-only product): the gold spark has low/zero contrast on light + on-gold surfaces. Not fixed — the mark never sits on those surfaces in-product (light theme is out of scope). Revisit if light theme ships.
+- **Constellation line intensity: MEDIUM** (founder-approved, was "subtle"). `ConstellationUnderlay` link opacities 0.22–0.34 → ~0.5 (Sage's links 0.52 strongest, brain-secondary 0.42). Renders clearly as a constellation, still calm. Review harness: `scripts/render-brand-review.mjs`, `scripts/render-logo-candidates.mjs`; evidence in `__screens__/brand-review/`.
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

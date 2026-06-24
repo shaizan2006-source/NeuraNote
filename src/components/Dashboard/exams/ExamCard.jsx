@@ -120,7 +120,7 @@ export default function ExamCard() {
       "amn_ask_prefill",
       `Explain ${topic} from ${selectedExam?.subject ?? "this subject"} in simple terms`
     );
-    router.push("/ask-ai");
+    router.push("/sage");
   }
 
   function handleFixWeakAreas() {

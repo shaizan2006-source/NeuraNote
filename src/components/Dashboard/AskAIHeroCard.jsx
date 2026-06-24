@@ -1,9 +1,12 @@
-// src/components/dashboard/AskAIHeroCard.jsx
+// src/components/Dashboard/AskAIHeroCard.jsx
+// "The spark" — Sage entry tile at the center of the Constellation Grid (Stage 6).
+// Typing a question opens the QuickChat drawer with it (behavior unchanged).
 "use client";
 
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useDrawer } from "@/context/DrawerContext";
+import { LogoMark } from "@/components/brand/Logo";
 
 export default function AskAIHeroCard({ activePdf = null }) {
   const [question, setQuestion] = useState("");
@@ -27,47 +30,34 @@ export default function AskAIHeroCard({ activePdf = null }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      whileHover={{ scale: 1.02, y: -3, boxShadow: "0 0 50px rgba(139,92,246,0.3)" }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ y: -2, boxShadow: "var(--shadow-card), var(--accent-glow)" }}
       onClick={() => inputRef.current?.focus()}
       style={{
         height: "100%",
         minHeight: 0,
-        borderRadius: 20,
-        background: "linear-gradient(160deg, #1a0533 0%, #2d1060 45%, #1a0533 100%)",
-        border: "1px solid rgba(139,92,246,0.3)",
-        boxShadow: "0 8px 40px rgba(124,58,237,0.2), inset 0 1px 0 rgba(255,255,255,0.05)",
+        borderRadius: 16,
+        background: "var(--bg-surface)",
+        border: "1px solid var(--accent-dim)",
+        boxShadow: "var(--shadow-card), 0 0 24px var(--accent-glow-soft)",
         display: "flex",
         flexDirection: "column",
-        padding: "20px",
+        padding: "18px 20px",
         cursor: "text",
         position: "relative",
         overflow: "hidden",
         boxSizing: "border-box",
       }}
     >
-      {/* Ambient glow blob */}
+      {/* Ambient gold halo behind the mark */}
       <div style={{
         position: "absolute",
-        top: "35%",
+        top: "32%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: 280,
-        height: 280,
+        width: 260,
+        height: 260,
         borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(139,92,246,0.18) 0%, transparent 70%)",
-        pointerEvents: "none",
-      }} />
-
-      {/* Arc decoration */}
-      <div style={{
-        position: "absolute",
-        top: 60,
-        right: -20,
-        width: 180,
-        height: 180,
-        borderRadius: "50%",
-        border: "1px solid rgba(139,92,246,0.15)",
+        background: "radial-gradient(circle, var(--accent-glow-soft) 0%, transparent 68%)",
         pointerEvents: "none",
       }} />
 
@@ -80,14 +70,18 @@ export default function AskAIHeroCard({ activePdf = null }) {
         zIndex: 1,
       }}>
         <div>
-          <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#f4f4f5" }}>Ask AI</p>
-          <p style={{ margin: "3px 0 0", fontSize: 11, color: "#6d6d80" }}>Your AI study assistant</p>
+          <span style={{
+            fontSize: 9, fontWeight: 700, letterSpacing: "0.08em",
+            color: "var(--text-secondary)", textTransform: "uppercase",
+          }}>✦ the spark</span>
+          <p style={{ margin: "4px 0 0", fontSize: 16, fontWeight: 600, letterSpacing: "-0.01em", color: "var(--text-primary)" }}>Sage</p>
+          <p style={{ margin: "2px 0 0", fontSize: 11, color: "var(--text-tertiary)" }}>
+            {activePdf ? `Reading: ${activePdf.name}` : "Your notes that answer back"}
+          </p>
         </div>
-        <div style={{ display: "flex", gap: 6, opacity: 0.55 }}>
-          <span style={{ fontSize: 14, color: "#a78bfa" }}>✦</span>
-          <span style={{ fontSize: 10, color: "#a78bfa", alignSelf: "flex-end", marginBottom: 2 }}>✧</span>
-          <span style={{ fontSize: 16, color: "#a78bfa" }}>✦</span>
-        </div>
+        <span style={{ color: "var(--text-primary)" }}>
+          <LogoMark size={30} strokeWidth={1.5} />
+        </span>
       </div>
 
       {/* Center content */}
@@ -98,22 +92,24 @@ export default function AskAIHeroCard({ activePdf = null }) {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        padding: "16px",
+        padding: "10px 16px",
         position: "relative",
         zIndex: 1,
+        minHeight: 0,
       }}>
         <motion.div
-          animate={{ opacity: [0.35, 0.75, 0.35] }}
+          animate={{ opacity: [0.35, 0.8, 0.35] }}
           transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-          style={{ fontSize: 18, marginBottom: 12, letterSpacing: 10, color: "#a78bfa" }}
+          style={{ fontSize: 15, marginBottom: 10, letterSpacing: 10, color: "var(--accent)" }}
         >
           ✦ ✧ ✦
         </motion.div>
         <p style={{
-          margin: "0 0 8px",
+          margin: "0 0 6px",
           fontSize: 15,
-          fontWeight: 700,
-          color: "#f4f4f5",
+          fontWeight: 600,
+          letterSpacing: "-0.01em",
+          color: "var(--text-primary)",
           lineHeight: 1.3,
         }}>
           Ask anything. Get instant answers.
@@ -121,11 +117,11 @@ export default function AskAIHeroCard({ activePdf = null }) {
         <p style={{
           margin: 0,
           fontSize: 11,
-          color: "#6d6d80",
+          color: "var(--text-tertiary)",
           lineHeight: 1.5,
           maxWidth: 260,
         }}>
-          From explanations to study guidance, I&apos;m here to help.
+          From explanations to study guidance, Sage is here to help.
         </p>
       </div>
 
@@ -145,45 +141,46 @@ export default function AskAIHeroCard({ activePdf = null }) {
           value={question}
           onChange={e => setQuestion(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask anything..."
+          placeholder="Ask Sage anything…"
           style={{
             flex: 1,
-            background: "rgba(255,255,255,0.07)",
-            border: "1px solid rgba(139,92,246,0.25)",
-            borderRadius: 10,
-            padding: "9px 12px",
+            background: "var(--bg-inset)",
+            border: "1px solid var(--border-strong)",
+            borderRadius: 999,
+            padding: "9px 14px",
             fontSize: 13,
-            color: "#e4e4e7",
+            color: "var(--text-primary)",
             outline: "none",
             transition: "border-color 200ms ease, box-shadow 200ms ease",
           }}
           onFocus={e => {
-            e.target.style.borderColor = "rgba(139,92,246,0.65)";
-            e.target.style.boxShadow = "0 0 0 3px rgba(139,92,246,0.15)";
+            e.target.style.borderColor = "color-mix(in srgb, var(--accent) 50%, transparent)";
+            e.target.style.boxShadow = "0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent)";
           }}
           onBlur={e => {
-            e.target.style.borderColor = "rgba(139,92,246,0.25)";
+            e.target.style.borderColor = "var(--border-strong)";
             e.target.style.boxShadow = "none";
           }}
         />
         <motion.button
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.06 }}
           whileTap={{ scale: 0.93 }}
           onClick={handleSend}
+          aria-label="Ask Sage"
           style={{
-            width: 40,
-            height: 40,
+            width: 38,
+            height: 38,
             borderRadius: "50%",
-            background: "linear-gradient(135deg, #8B5CF6, #6D28D9)",
+            background: "var(--accent-grad)",
             border: "none",
-            color: "#fff",
-            fontSize: 17,
+            color: "var(--bg-base)",
+            fontSize: 16,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
-            boxShadow: "0 4px 16px rgba(124,58,237,0.45)",
+            boxShadow: "0 2px 12px var(--accent-glow-soft)",
           }}
         >
           ↑

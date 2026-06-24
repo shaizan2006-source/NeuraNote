@@ -39,6 +39,18 @@
 - **Uncommitted:** `DashboardContext.jsx` carries a large in-flight founder refactor (~340 lines vs HEAD) — my 2-line SSE-gate fix lives inside it, uncommitted with the rest. AskAISection/AskAISidebar committed carrying whatever founder WIP they held (unavoidable — they are the stage's core files).
 - Stage-5 evidence: `__screens__/stage-5-sage/` incl. `probe-1/2/3` (hero, streaming, settled answer).
 
+## Stage 6 status (2026-06-12) — Dashboard "Constellation Grid" (Option C)
+
+- **Founder picked Option C** from a 3-way live proposal (harness was `/styleguide/bento`, now deleted; mockups archived in `__screens__/stage-6-proposals/`). Tiles are star-nodes joined by a faint gold SVG underlay; Sage is "the spark" at top-center.
+- `BentoGrid.jsx`: study-mode grid rewritten from 2-col → 12-col × 6-row constellation geometry (Sage 4/10×1/3, Focus 1/4 tall, Exams 10/13 tall, Brain Map 4/10 center, Quiz/Call Tutor/PYQ bottom). `ConstellationUnderlay` = absolute SVG (viewBox 0 0 100 100, preserveAspectRatio none, non-scaling 1px gold strokes, fade-in once, reduced-motion safe). **Mobile (<768px): underlay hidden, tiles stack single-column** with min-heights. Time-mode wrappers + progress-mode + skeleton all still work (skeleton rebuilt to match new geometry).
+- `ConstellationTiles.jsx` (NEW): `PYQBankTile` → /pyqs, `BrainMapTile` → /brain-map (with inline gold mini-graph). Keyboard-reachable, gold focus ring. These are the two NEW entry points §6 asked for.
+- `AskAIHeroCard.jsx`: purple gradient hero → token surface with gold-dim border + halo, LogoMark, "✦ the spark" eyebrow, gold ask-input + send. Behavior (QuickChat drawer handoff via `drawer_initial_question`) unchanged.
+- `DashboardSidebar.jsx`: NAV_ITEMS expanded Dashboard/Sage → + PYQs, Brain Map, Mock Test (new inline-SVG icons).
+- Cards (`StudyModeCards.jsx`) + `GreetingRow.jsx` tokenized by subagent (37→0, 6→0 hex). Card routes (live-verified **200**): Focus→/focus, Quiz→/quiz, CallTutor→/call-tutor, Exams→/exams, PYQ→/pyqs, BrainMap→/brain-map, sidebar Mock Test→/mock-test. **No dead links.** (My earlier brace-glob falsely suggested /focus,/quiz,/exams were missing — the running server returns 200 for all; authoritative.)
+- **Harness gotcha:** the dev server was serving a STALE compile during the first stage-6 capture (showed the old 2-col layout); had to kill it, start fresh `npm run dev`, and re-capture. If a capture looks pre-edit, restart the dev server — Turbopack hot-reload can silently lag behind big multi-file edits.
+- **Windows case-collision:** git indexes both `src/components/Dashboard/` (capital) and `src/components/dashboard/` (lowercase) as distinct paths though they're one physical folder. `git add` must use the exact casing `git status` prints. The Stage-4 `ExamCard.jsx` /ask-ai→/sage fix silently didn't stage then (path-case mismatch) — swept into the Stage 6 commit.
+- Verified: gate green (142 files / 2005 hex; 20 improved), build clean, 32 authed screenshots `__screens__/stage-6-bento/`, desktop + mobile visually confirmed.
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

@@ -7,9 +7,9 @@ import { useDashboard } from "@/context/DashboardContext";
 // ── Shared constants ───────────────────────────────────────────────
 const CARD = {
   borderRadius: 20,
-  background: "linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
+  background: "var(--bg-surface)",
+  border: "1px solid var(--border-hairline)",
+  boxShadow: "var(--shadow-card)",
   padding: "18px",
   display: "flex",
   flexDirection: "column",
@@ -42,27 +42,28 @@ function FocusModeCard() {
   return (
     <motion.div
       {...entry(0.08)}
-      whileHover={{ scale: 1.04, y: -4, boxShadow: "0 0 40px rgba(34,211,238,0.25)" }}
+      whileHover={{ scale: 1.04, y: -4, boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 0 40px var(--accent-glow-soft)" }}
       whileTap={{ scale: 0.97 }}
-      onClick={() => router.push("/focus")}
-      style={{ ...CARD, flexDirection: "column", alignItems: "flex-start", gap: 0 }}
+      // No /focus route exists yet (FocusModeSection is unmounted) — display-only
+      // until the founder picks a destination. Was router.push("/focus") → 404.
+      style={{ ...CARD, flexDirection: "column", alignItems: "flex-start", gap: 0, cursor: "default" }}
     >
       {/* Top: icon + label row */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexShrink: 0 }}>
         <div style={{
           width: 32, height: 32, borderRadius: 9,
-          background: "rgba(34,211,238,0.1)",
+          background: "var(--bg-surface-2)",
           display: "flex", alignItems: "center", justifyContent: "center",
           flexShrink: 0,
         }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2.5" strokeLinecap="round">
             <circle cx="12" cy="12" r="10" />
             <polyline points="12 6 12 12 16 14" />
           </svg>
         </div>
         <div>
-          <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#f4f4f5" }}>Focus Mode</p>
-          <p style={{ margin: "2px 0 0", fontSize: 10, color: "#6d6d80" }}>Pomodoro 25m</p>
+          <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Focus Mode</p>
+          <p style={{ margin: "2px 0 0", fontSize: 10, color: "var(--text-tertiary)" }}>Pomodoro 25m</p>
         </div>
       </div>
 
@@ -76,7 +77,7 @@ function FocusModeCard() {
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             style={{
               position: "absolute", inset: 0, borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(34,211,238,0.14) 0%, transparent 70%)",
+              background: "radial-gradient(circle, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 70%)",
               pointerEvents: "none",
             }}
           />
@@ -86,7 +87,7 @@ function FocusModeCard() {
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
             style={{
               position: "absolute", inset: -14, borderRadius: "50%",
-              border: "1.5px solid rgba(34,211,238,0.15)", pointerEvents: "none",
+              border: "1.5px solid color-mix(in srgb, var(--accent) 15%, transparent)", pointerEvents: "none",
             }}
           />
           {/* Inner pulse */}
@@ -95,7 +96,7 @@ function FocusModeCard() {
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.35 }}
             style={{
               position: "absolute", inset: -6, borderRadius: "50%",
-              border: "1.5px solid rgba(34,211,238,0.22)", pointerEvents: "none",
+              border: "1.5px solid color-mix(in srgb, var(--accent) 22%, transparent)", pointerEvents: "none",
             }}
           />
 
@@ -107,7 +108,7 @@ function FocusModeCard() {
                 <circle key={i}
                   cx={65 + 49 * Math.cos(angle)}
                   cy={65 + 49 * Math.sin(angle)}
-                  r={3} fill="rgba(255,255,255,0.08)"
+                  r={3} fill="var(--border-strong)"
                 />
               );
             })}
@@ -115,7 +116,7 @@ function FocusModeCard() {
 
           {/* Active dots */}
           <svg width="130" height="130" viewBox="0 0 130 130"
-            style={{ position: "absolute", inset: 0, filter: "drop-shadow(0 0 4px #22d3ee)", pointerEvents: "none" }}
+            style={{ position: "absolute", inset: 0, filter: "drop-shadow(0 0 4px var(--accent))", pointerEvents: "none" }}
           >
             {Array.from({ length: 36 }, (_, i) => {
               if (i >= activeDotCount) return null;
@@ -125,7 +126,7 @@ function FocusModeCard() {
                 <circle key={i}
                   cx={65 + 49 * Math.cos(angle)}
                   cy={65 + 49 * Math.sin(angle)}
-                  r={3} fill="#22d3ee" opacity={opacity}
+                  r={3} fill="var(--accent)" opacity={opacity}
                 />
               );
             })}
@@ -137,11 +138,11 @@ function FocusModeCard() {
             display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
           }}>
-            <span style={{ fontSize: 26, fontWeight: 800, color: "#f4f4f5", letterSpacing: "-1px" }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-1px", fontFamily: "var(--font-geist-mono), monospace" }}>
               {mm}:{ss}
             </span>
-            <span style={{ fontSize: 9, color: "#22d3ee", marginTop: 2, fontWeight: 600 }}>
-              Start focus
+            <span style={{ fontSize: 9, color: "var(--text-tertiary)", marginTop: 2, fontWeight: 600 }}>
+              Coming soon
             </span>
           </div>
         </div>
@@ -159,21 +160,21 @@ function QuizCard() {
   return (
     <motion.div
       {...entry(0.16)}
-      whileHover={{ scale: 1.04, y: -4, boxShadow: "0 0 40px rgba(99,102,241,0.25)" }}
+      whileHover={{ scale: 1.04, y: -4, boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 0 40px rgba(0,0,0,0.55)" }}
       whileTap={{ scale: 0.97 }}
-      onClick={() => router.push("/quiz")}
+      onClick={() => router.push("/quiz/friday")}
       style={CARD}
     >
       {/* Header row */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#f4f4f5" }}>Quiz</p>
+        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "var(--text-primary)" }}>Quiz</p>
         <div style={{
           width: 32, height: 32, borderRadius: 9,
-          background: "rgba(139,92,246,0.12)",
-          border: "1px solid rgba(139,92,246,0.2)",
+          background: "var(--bg-surface-2)",
+          border: "1px solid var(--border-hairline)",
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="2" y="7" width="20" height="14" rx="2" />
             <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
             <line x1="12" y1="12" x2="12" y2="16" />
@@ -191,11 +192,11 @@ function QuizCard() {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            style={{ margin: 0, fontSize: 26, fontWeight: 800, color: "#f4f4f5", lineHeight: 1 }}
+            style={{ margin: 0, fontSize: 26, fontWeight: 800, color: "var(--text-primary)", lineHeight: 1, fontFamily: "var(--font-geist-mono), monospace" }}
           >
             {count}
           </motion.p>
-          <p style={{ margin: "4px 0 0", fontSize: 10, color: "#6d6d80" }}>cards ready</p>
+          <p style={{ margin: "4px 0 0", fontSize: 10, color: "var(--text-tertiary)" }}>cards ready</p>
         </div>
 
         {/* 3D stacked flashcards */}
@@ -209,28 +210,28 @@ function QuizCard() {
           <div style={{
             position: "absolute", right: 6, top: 6,
             width: 52, height: 66, borderRadius: 8,
-            background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+            background: "linear-gradient(135deg, var(--bg-surface-2), var(--bg-surface-3))",
             transform: "rotate(8deg)", opacity: 0.6,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 22, color: "rgba(255,255,255,0.4)",
+            fontSize: 22, color: "var(--text-disabled)",
           }}>?</div>
           {/* Mid card */}
           <div style={{
             position: "absolute", right: 2, top: 2,
             width: 52, height: 66, borderRadius: 8,
-            background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+            background: "linear-gradient(135deg, var(--bg-surface-3), var(--text-disabled))",
             transform: "rotate(3deg)", opacity: 0.75,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 22, color: "rgba(255,255,255,0.5)",
+            fontSize: 22, color: "var(--text-tertiary)",
           }}>?</div>
           {/* Front card */}
           <div style={{
             position: "absolute", right: 0, top: 0,
             width: 52, height: 66, borderRadius: 8,
-            background: "linear-gradient(135deg, #7c3aed, #a855f7)",
-            boxShadow: "0 4px 16px rgba(124,58,237,0.4)", opacity: 1,
+            background: "var(--accent-grad)",
+            boxShadow: "0 4px 16px color-mix(in srgb, var(--accent) 35%, transparent)", opacity: 1,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 24, color: "rgba(255,255,255,0.85)", fontWeight: 700,
+            fontSize: 24, color: "var(--bg-base)", fontWeight: 700,
           }}>?</div>
         </motion.div>
       </div>
@@ -245,7 +246,7 @@ function CallTutorCard() {
   return (
     <motion.div
       {...entry(0.24)}
-      whileHover={{ scale: 1.04, y: -4, boxShadow: "0 0 40px rgba(34,197,94,0.2)" }}
+      whileHover={{ scale: 1.04, y: -4, boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 0 40px rgba(0,0,0,0.55)" }}
       whileTap={{ scale: 0.97 }}
       onClick={() => router.push("/call-tutor")}
       style={CARD}
@@ -254,10 +255,10 @@ function CallTutorCard() {
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
         <div style={{
           width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-          background: "rgba(34,197,94,0.1)",
+          background: "color-mix(in srgb, var(--success) 10%, transparent)",
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round">
             <rect x="9" y="2" width="6" height="11" rx="3" />
             <path d="M5 10a7 7 0 0 0 14 0" />
             <line x1="12" y1="19" x2="12" y2="22" />
@@ -265,17 +266,17 @@ function CallTutorCard() {
           </svg>
         </div>
         <div>
-          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#f4f4f5" }}>Call Tutor</p>
-          <p style={{ margin: "1px 0 0", fontSize: 9, color: "#6d6d80" }}>Speak to learn</p>
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "var(--text-primary)" }}>Call Tutor</p>
+          <p style={{ margin: "1px 0 0", fontSize: 9, color: "var(--text-tertiary)" }}>Speak to learn</p>
         </div>
       </div>
 
       {/* Beta badge */}
       <div style={{
         display: "inline-block", padding: "2px 8px",
-        background: "rgba(34,197,94,0.1)",
-        border: "1px solid rgba(34,197,94,0.22)",
-        borderRadius: 20, fontSize: 8, color: "#22c55e", fontWeight: 700,
+        background: "color-mix(in srgb, var(--success) 10%, transparent)",
+        border: "1px solid color-mix(in srgb, var(--success) 22%, transparent)",
+        borderRadius: 20, fontSize: 8, color: "var(--success)", fontWeight: 700,
         marginBottom: 6, alignSelf: "flex-start",
       }}>
         Beta
@@ -290,7 +291,7 @@ function CallTutorCard() {
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
             style={{
               position: "absolute", inset: -18, borderRadius: "50%",
-              border: "2px solid rgba(34,197,94,0.3)", pointerEvents: "none",
+              border: "2px solid color-mix(in srgb, var(--success) 30%, transparent)", pointerEvents: "none",
             }}
           />
           {/* Inner pulse */}
@@ -299,17 +300,17 @@ function CallTutorCard() {
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.35 }}
             style={{
               position: "absolute", inset: -8, borderRadius: "50%",
-              border: "2px solid rgba(34,197,94,0.4)", pointerEvents: "none",
+              border: "2px solid color-mix(in srgb, var(--success) 40%, transparent)", pointerEvents: "none",
             }}
           />
           {/* Orb */}
           <div style={{
             width: 80, height: 80, borderRadius: "50%",
-            background: "linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.08))",
-            border: "2px solid rgba(34,197,94,0.45)",
+            background: "linear-gradient(135deg, color-mix(in srgb, var(--success) 20%, transparent), color-mix(in srgb, var(--success) 8%, transparent))",
+            border: "2px solid color-mix(in srgb, var(--success) 45%, transparent)",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2" strokeLinecap="round">
               <rect x="9" y="2" width="6" height="11" rx="3" />
               <path d="M5 10a7 7 0 0 0 14 0" />
               <line x1="12" y1="19" x2="12" y2="22" />
@@ -323,18 +324,18 @@ function CallTutorCard() {
       <button
         onClick={e => { e.stopPropagation(); router.push("/call-tutor"); }}
         style={{
-          width: "100%", padding: "7px", background: "transparent",
-          border: "1px solid rgba(34,197,94,0.22)", borderRadius: 9,
-          color: "#22c55e", fontSize: 11, fontWeight: 600, cursor: "pointer",
+          width: "100%", padding: "7px", background: "var(--accent-grad)",
+          border: "1px solid var(--accent-dim)", borderRadius: 9,
+          color: "var(--bg-base)", fontSize: 11, fontWeight: 600, cursor: "pointer",
           marginTop: 6, transition: "all 200ms ease",
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.background = "rgba(34,197,94,0.08)";
-          e.currentTarget.style.borderColor = "rgba(34,197,94,0.4)";
+          e.currentTarget.style.background = "var(--accent-bright)";
+          e.currentTarget.style.borderColor = "var(--accent-bright)";
         }}
         onMouseLeave={e => {
-          e.currentTarget.style.background = "transparent";
-          e.currentTarget.style.borderColor = "rgba(34,197,94,0.22)";
+          e.currentTarget.style.background = "var(--accent-grad)";
+          e.currentTarget.style.borderColor = "var(--accent-dim)";
         }}
       >
         Start a session →
@@ -366,18 +367,18 @@ function ExamsCard() {
       {...entry(0.32)}
       whileHover={{ scale: 1.04, y: -4 }}
       whileTap={{ scale: 0.97 }}
-      onClick={() => router.push("/exams")}
+      onClick={() => router.push("/mock-test")}
       style={{
         ...CARD,
         background: isFinalSprint
-          ? "linear-gradient(135deg, rgba(239,68,68,0.1), rgba(15,23,42,0.95))"
-          : "linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+          ? "linear-gradient(135deg, color-mix(in srgb, var(--error) 10%, transparent), var(--bg-surface))"
+          : "var(--bg-surface)",
         border: isFinalSprint
-          ? "1px solid rgba(239,68,68,0.2)"
-          : "1px solid rgba(255,255,255,0.08)",
+          ? "1px solid color-mix(in srgb, var(--error) 20%, transparent)"
+          : "1px solid var(--border-hairline)",
         boxShadow: isFinalSprint
-          ? "0 8px 40px rgba(239,68,68,0.12)"
-          : "0 8px 30px rgba(0,0,0,0.3)",
+          ? "0 8px 40px color-mix(in srgb, var(--error) 12%, transparent)"
+          : "var(--shadow-card)",
       }}
     >
       {/* Header */}
@@ -388,10 +389,10 @@ function ExamsCard() {
         <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
           <div style={{
             width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-            background: "rgba(239,68,68,0.1)",
+            background: "var(--bg-surface-2)",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round">
               <rect x="3" y="4" width="18" height="18" rx="2" />
               <line x1="16" y1="2" x2="16" y2="6" />
               <line x1="8" y1="2" x2="8" y2="6" />
@@ -399,8 +400,8 @@ function ExamsCard() {
             </svg>
           </div>
           <div>
-            <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#f4f4f5" }}>Exams</p>
-            <p style={{ margin: "2px 0 0", fontSize: 9, color: "#6d6d80", lineHeight: 1.3 }}>
+            <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "var(--text-primary)" }}>Exams</p>
+            <p style={{ margin: "2px 0 0", fontSize: 9, color: "var(--text-tertiary)", lineHeight: 1.3 }}>
               Track upcoming exams and focus on weak areas
             </p>
           </div>
@@ -412,11 +413,11 @@ function ExamsCard() {
             animate={{ scale: 1, opacity: 1 }}
             style={{
               padding: "2px 8px",
-              background: "rgba(239,68,68,0.12)",
-              border: "1px solid rgba(239,68,68,0.28)",
+              background: "color-mix(in srgb, var(--error) 12%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--error) 28%, transparent)",
               borderRadius: 20,
               fontSize: 9,
-              color: "#ef4444",
+              color: "var(--error)",
               fontWeight: 700,
               whiteSpace: "nowrap",
               flexShrink: 0,
@@ -430,8 +431,8 @@ function ExamsCard() {
       {/* Exam countdown row */}
       {nextExam ? (
         <div style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.06)",
+          background: "var(--bg-surface-2)",
+          border: "1px solid var(--border-hairline)",
           borderRadius: 9,
           padding: "8px 12px",
           marginBottom: 12,
@@ -440,20 +441,21 @@ function ExamsCard() {
           justifyContent: "space-between",
         }}>
           <div>
-            <p style={{ margin: 0, fontSize: 9, color: "#6d6d80" }}>
+            <p style={{ margin: 0, fontSize: 9, color: "var(--text-tertiary)" }}>
               {nextExam.name || "Exam"}
             </p>
             <p style={{
               margin: "2px 0 0", fontSize: 22, fontWeight: 800, lineHeight: 1,
-              color: isFinalSprint ? "#ef4444" : "#f4f4f5",
+              color: isFinalSprint ? "var(--error)" : "var(--text-primary)",
+              fontFamily: "var(--font-geist-mono), monospace",
             }}>
               {daysLeft <= 0 ? "Today!" : daysLeft}
             </p>
           </div>
           <div style={{ textAlign: "right" }}>
-            <p style={{ margin: 0, fontSize: 9, color: "#6d6d80" }}>days left</p>
+            <p style={{ margin: 0, fontSize: 9, color: "var(--text-tertiary)" }}>days left</p>
             {isFinalSprint && (
-              <p style={{ margin: "2px 0 0", fontSize: 9, color: "#ef4444", fontWeight: 600 }}>
+              <p style={{ margin: "2px 0 0", fontSize: 9, color: "var(--error)", fontWeight: 600 }}>
                 Final sprint!
               </p>
             )}
@@ -461,14 +463,14 @@ function ExamsCard() {
         </div>
       ) : (
         <div style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.06)",
+          background: "var(--bg-surface-2)",
+          border: "1px solid var(--border-hairline)",
           borderRadius: 9,
           padding: "10px 12px",
           marginBottom: 8,
           textAlign: "center",
         }}>
-          <p style={{ margin: 0, fontSize: 10, color: "#52525b" }}>
+          <p style={{ margin: 0, fontSize: 10, color: "var(--text-tertiary)" }}>
             No upcoming exams — add one on the Exams page
           </p>
         </div>
@@ -477,23 +479,23 @@ function ExamsCard() {
       {/* Stats row */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
         {[
-          { value: nextExam ? `${syllabus}%` : "—", label: "Syllabus", color: "#22c55e" },
+          { value: nextExam ? `${syllabus}%` : "—", label: "Syllabus", color: "var(--success)" },
           {
             value: nextExam && totalSubjects > 0 ? `${subjectsDone}/${totalSubjects}` : "—",
             label: "Subjects",
-            color: "#a78bfa",
+            color: "var(--text-primary)",
           },
-          { value: "—", label: "Mock Tests", color: "#71717a" },
+          { value: "—", label: "Mock Tests", color: "var(--text-tertiary)" },
         ].map(({ value, label, color }) => (
           <div key={label} style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.05)",
+            background: "var(--bg-surface-2)",
+            border: "1px solid var(--border-hairline)",
             borderRadius: 7,
             padding: "6px 8px",
             textAlign: "center",
           }}>
-            <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color }}>{value}</p>
-            <p style={{ margin: "2px 0 0", fontSize: 8, color: "#52525b" }}>{label}</p>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color, fontFamily: "var(--font-geist-mono), monospace" }}>{value}</p>
+            <p style={{ margin: "2px 0 0", fontSize: 8, color: "var(--text-tertiary)" }}>{label}</p>
           </div>
         ))}
       </div>

@@ -189,9 +189,41 @@ function CalendarIcon({ size = 16, color = "currentColor" }) {
   );
 }
 
+function BookIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+  );
+}
+function NetworkIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="5" cy="18" r="2.2"/>
+      <circle cx="12" cy="6" r="2.2"/>
+      <circle cx="19" cy="16" r="2.2"/>
+      <line x1="6.6" y1="16.4" x2="10.6" y2="7.8"/>
+      <line x1="13.7" y1="7.4" x2="17.6" y2="14.5"/>
+    </svg>
+  );
+}
+function ClipboardIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="4" width="14" height="18" rx="2"/>
+      <path d="M9 4a3 3 0 0 1 6 0"/>
+      <path d="M9 12l2 2 4-4"/>
+    </svg>
+  );
+}
+
 const NAV_ITEMS = [
-  { icon: GridIcon, label: "Dashboard", href: "/dashboard" },
-  { icon: ChatIcon, label: "Sage",      href: "/sage"      },
+  { icon: GridIcon,      label: "Dashboard", href: "/dashboard"  },
+  { icon: ChatIcon,      label: "Sage",      href: "/sage"       },
+  { icon: BookIcon,      label: "PYQs",      href: "/pyqs"       },
+  { icon: NetworkIcon,   label: "Brain Map", href: "/brain-map"  },
+  { icon: ClipboardIcon, label: "Mock Test", href: "/mock-test"  },
 ];
 
 function Tooltip({ label }) {

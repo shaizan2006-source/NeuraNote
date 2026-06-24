@@ -33,10 +33,10 @@ export default function GreetingRow() {
       marginBottom: 20,
     }}>
       <div>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#f4f4f5", lineHeight: 1.2 }}>
+        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.2 }}>
           {heading}
         </h1>
-        <p style={{ margin: 0, fontSize: 10, fontWeight: 400, color: "#71717a", marginTop: 2 }}>
+        <p style={{ margin: 0, fontSize: 10, fontWeight: 400, color: "var(--text-tertiary)", marginTop: 2 }}>
           {subtext}
         </p>
       </div>
@@ -53,8 +53,8 @@ export default function GreetingRow() {
             display: "flex",
             alignItems: "center",
             gap: 0,
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(139,92,246,0.3)",
+            background: "var(--bg-surface)",
+            border: "1px solid var(--border-hairline)",
             borderRadius: 20,
             padding: 2,
             cursor: "pointer",
@@ -62,12 +62,12 @@ export default function GreetingRow() {
             height: 32,
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.08)";
-            e.currentTarget.style.borderColor = "rgba(139,92,246,0.5)";
+            e.currentTarget.style.background = "var(--bg-surface)";
+            e.currentTarget.style.borderColor = "var(--border-strong)";
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-            e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)";
+            e.currentTarget.style.background = "var(--bg-surface)";
+            e.currentTarget.style.borderColor = "var(--border-hairline)";
           }}
         >
           {/* Study label */}
@@ -76,8 +76,8 @@ export default function GreetingRow() {
               padding: "6px 12px",
               fontSize: 11,
               fontWeight: 600,
-              color: dashboardMode === "study" ? "#f4f4f5" : "#71717a",
-              background: dashboardMode === "study" ? "rgba(139,92,246,0.2)" : "transparent",
+              color: dashboardMode === "study" ? "var(--text-primary)" : "var(--text-tertiary)",
+              background: dashboardMode === "study" ? "var(--bg-surface-2)" : "transparent",
               borderRadius: 18,
               transition: "all 150ms ease",
             }}
@@ -91,8 +91,8 @@ export default function GreetingRow() {
               padding: "6px 12px",
               fontSize: 11,
               fontWeight: 600,
-              color: dashboardMode === "progress" ? "#f4f4f5" : "#71717a",
-              background: dashboardMode === "progress" ? "rgba(139,92,246,0.2)" : "transparent",
+              color: dashboardMode === "progress" ? "var(--text-primary)" : "var(--text-tertiary)",
+              background: dashboardMode === "progress" ? "var(--bg-surface-2)" : "transparent",
               borderRadius: 18,
               transition: "all 150ms ease",
             }}

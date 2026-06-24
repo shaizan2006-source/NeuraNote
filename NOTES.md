@@ -57,6 +57,14 @@
 - Known accepted limitation (dark-only product): the gold spark has low/zero contrast on light + on-gold surfaces. Not fixed — the mark never sits on those surfaces in-product (light theme is out of scope). Revisit if light theme ships.
 - **Constellation line intensity: MEDIUM** (founder-approved, was "subtle"). `ConstellationUnderlay` link opacities 0.22–0.34 → ~0.5 (Sage's links 0.52 strongest, brain-secondary 0.42). Renders clearly as a constellation, still calm. Review harness: `scripts/render-brand-review.mjs`, `scripts/render-logo-candidates.mjs`; evidence in `__screens__/brand-review/`.
 
+## Stage 7 status (2026-06-25) — Auth pages (Grok-style split)
+
+- New `src/components/auth/AuthShell.jsx`: `AuthSplitLayout` (left brand/ambient panel = Logo+wordmark + tagline + static constellation + ghosted LogoMark watermark + gold glow; right form panel) + shared `authStyles` (token-based) + `Divider`/`Spinner`/`EyeIcon` (SVG, replaces 🙈/👁️ emoji). **Mobile <860px: brand panel collapses to a slim logo header** (tagline/sub/foot hidden) via injected scoped `<style>` (inline styles can't do media queries). **Gold focus rings** via scoped CSS (`.auth-panel input:focus`) — no per-input edits.
+- All 4 pages (login = reference by me; signup/forgot/reset via 3-agent workflow) now import the shell, deleted their local `styles`/Divider/Spinner/GoogleIcon, wrapped EVERY return branch (incl. state screens: forgot "sent", reset "done"/"verifying") in `<AuthSplitLayout>`. Hex removed: login + signup 40 + forgot 20 + reset 22 → all 0.
+- **Gate gotcha:** the Google "G" brand colors (#EA4335 etc.) are mandated by Google and can't be tokenized → moved `GoogleIcon` to `src/components/brand/GoogleIcon.jsx` (the gate's brand-folder exception covers it) and re-exported from AuthShell. Don't inline Google's hex outside brand/.
+- **Auth logic untouched** (presentation only): validateEmail/validatePassword/getPasswordStrength, checkRateLimit/recordFailedAttempt/clearRateLimit, safeAuthError, signInWithPassword (10s timeout race), signInWithOAuth Google, signUp + UTM persistence, resetPasswordForEmail, onAuthStateChange PASSWORD_RECOVERY + updateUser. Acceptance probe `scripts/verify-auth-flow.mjs`: login→/dashboard ✓, forgot→"check inbox" ✓, signup renders ✓. (`scripts/shot.mjs` = generic 1-route desktop+mobile capture helper.)
+- Verified: gate green (138 files / 1895 hex), build clean, all 4 pages captured desktop+mobile `__screens__/stage-7-auth/`.
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

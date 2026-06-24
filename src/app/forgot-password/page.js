@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { validateEmail } from "@/lib/auth";
+import { AuthSplitLayout, authStyles as styles } from "@/components/auth/AuthShell";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -39,43 +40,40 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div style={styles.page}>
-        <div style={styles.card}>
-          <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: 48, margin: "0 0 12px" }}>📬</p>
-            <h2 style={{ color: "white", margin: "0 0 10px" }}>Check your inbox</h2>
-            <p style={{ color: "#9ca3af", fontSize: 14, lineHeight: 1.6 }}>
-              If <strong style={{ color: "white" }}>{email}</strong> is registered, you&apos;ll receive a password reset link shortly.
-            </p>
-            <p style={{ color: "#6b7280", fontSize: 12, marginTop: 16 }}>
-              Didn&apos;t get it? Check spam, or{" "}
-              <button
-                onClick={() => setSent(false)}
-                style={{ background: "none", border: "none", color: "#3b82f6", cursor: "pointer", fontSize: 12 }}
-              >
-                try again
-              </button>.
-            </p>
-            <a href="/login" style={{ display: "block", marginTop: 24, color: "#3b82f6", fontSize: 14 }}>
-              ← Back to Login
-            </a>
-          </div>
+      <AuthSplitLayout>
+        <div style={{ textAlign: "center" }}>
+          <p style={{ fontSize: 48, margin: "0 0 12px" }}>📬</p>
+          <h2 style={styles.title}>Check your inbox</h2>
+          <p style={{ color: "var(--text-secondary)", fontSize: 14, lineHeight: 1.6 }}>
+            If <strong style={{ color: "var(--text-primary)" }}>{email}</strong> is registered, you&apos;ll receive a password reset link shortly.
+          </p>
+          <p style={{ color: "var(--text-tertiary)", fontSize: 12, marginTop: 16 }}>
+            Didn&apos;t get it? Check spam, or{" "}
+            <button
+              onClick={() => setSent(false)}
+              style={{ background: "none", border: "none", color: "var(--accent)", cursor: "pointer", fontSize: 12 }}
+            >
+              try again
+            </button>.
+          </p>
+          <a href="/login" style={{ display: "block", marginTop: 24, color: "var(--text-tertiary)", fontSize: 14 }}>
+            ← Back to Login
+          </a>
         </div>
-      </div>
+      </AuthSplitLayout>
     );
   }
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <p style={{ fontSize: 36, margin: "0 0 10px" }}>🔑</p>
+    <AuthSplitLayout>
+      <div>
+        <div style={{ marginBottom: 28 }}>
           <h1 style={styles.title}>Forgot password?</h1>
           <p style={styles.subtitle}>Enter your email and we&apos;ll send a reset link.</p>
         </div>
 
         <form onSubmit={handleSubmit} noValidate>
-          <div style={{ marginBottom: 16 }}>
+          <div style={styles.fieldWrap}>
             <label style={styles.label}>Email address</label>
             <input
               type="email"
@@ -84,13 +82,15 @@ export default function ForgotPasswordPage() {
               onBlur={() => setEmailErr(validateEmail(email) || "")}
               placeholder="you@gmail.com"
               autoComplete="email"
-              style={{ ...styles.input, borderColor: emailErr ? "#ef4444" : "#2d3748" }}
+              style={{ ...styles.input, borderColor: emailErr ? "var(--error)" : "var(--border-strong)" }}
             />
             {emailErr && <p style={styles.fieldErr}>{emailErr}</p>}
           </div>
 
           {error && (
-            <div style={styles.errorBox}>⚠️ {error}</div>
+            <div style={styles.errorBox}>
+              <span style={{ marginRight: 6 }}>⚠️</span>{error}
+            </div>
           )}
 
           <button
@@ -102,22 +102,10 @@ export default function ForgotPasswordPage() {
           </button>
         </form>
 
-        <p style={{ textAlign: "center", marginTop: 20 }}>
-          <a href="/login" style={{ color: "#6b7280", fontSize: 14 }}>← Back to Login</a>
+        <p style={styles.switchText}>
+          <a href="/login" style={styles.link}>← Back to Login</a>
         </p>
       </div>
-    </div>
+    </AuthSplitLayout>
   );
 }
-
-const styles = {
-  page: { minHeight: "100vh", background: "#0a0a0a", display: "flex", alignItems: "center", justifyContent: "center", padding: 20, fontFamily: "Arial" },
-  card: { background: "#111827", border: "1px solid #1f2937", borderRadius: 20, padding: "36px 32px", width: "100%", maxWidth: 400, boxShadow: "0 24px 48px rgba(0,0,0,0.5)" },
-  title: { color: "white", fontSize: 22, fontWeight: 700, margin: "0 0 6px" },
-  subtitle: { color: "#9ca3af", fontSize: 14, margin: 0 },
-  label: { display: "block", color: "#9ca3af", fontSize: 13, fontWeight: 600, marginBottom: 6 },
-  input: { width: "100%", background: "#1a2332", border: "1.5px solid #2d3748", borderRadius: 9, padding: "11px 14px", color: "white", fontSize: 14, outline: "none", boxSizing: "border-box" },
-  fieldErr: { color: "#f87171", fontSize: 12, margin: "4px 0 0" },
-  errorBox: { background: "#2d1515", border: "1px solid #7f1d1d", borderRadius: 8, padding: "10px 14px", color: "#fca5a5", fontSize: 13, marginBottom: 14 },
-  primaryBtn: { width: "100%", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", color: "white", border: "none", borderRadius: 10, padding: "13px", fontSize: 15, fontWeight: 700, cursor: "pointer" },
-};

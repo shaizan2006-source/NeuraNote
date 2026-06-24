@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: ✅ Stage 6 complete + brand polish done (logo art signed off, constellation lines → medium) — Stage 7 (auth pages) approved, starting next.**
+**Current stage: ✅ Stage 7 complete (auth pages — Grok-style split). Next: Stage 8 (per-feature page upgrades, sub-staged 8a–8h) — needs approval per sub-stage.**
 
 ---
 
@@ -17,7 +17,7 @@
 - [x] **Stage 4 — Rename ask-ai → Sage** — DONE 2026-06-12 (308 redirect, nav labels, title; /api/ask-ai contract untouched)
 - [x] **Stage 5 — Sage page redesign** — DONE 2026-06-12 (SageMark hero, full token re-skin, ConfidenceBadge + DynamicFollowUps wired, SSE streaming bug fixed + live-verified)
 - [x] **Stage 6 — Dashboard bento redesign** — DONE 2026-06-12 (founder picked **Option C — Constellation Grid**: tiles as star-nodes linked by a gold SVG underlay, Sage = "the spark" center; new PYQ Bank + Brain Map entry tiles; sidebar nav expanded)
-- [ ] **Stage 7 — Auth pages (Grok-style + custom logo)**
+- [x] **Stage 7 — Auth pages (Grok-style + custom logo)** — DONE 2026-06-25 (shared `AuthShell` split layout; login/signup/forgot/reset re-skinned; auth logic intact, probe-verified)
 - [ ] **Stage 8 — Per-feature page upgrades** (8a–8h, one route-cluster per approval)
 - [ ] **Stage 9 — Wire-up audit + polish**
 

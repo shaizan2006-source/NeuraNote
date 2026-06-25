@@ -2,13 +2,7 @@
 import { useCallback, useMemo } from "react";
 import ReactFlow, { Background, Controls, MiniMap, useNodesState, useEdgesState } from "reactflow";
 import "reactflow/dist/style.css";
-
-const MASTERY_COLOR = (score) => {
-  if (score >= 0.8) return "#10B981";
-  if (score >= 0.6) return "#F59E0B";
-  if (score >= 0.3) return "#8B5CF6";
-  return "#6B7280";
-};
+import { masteryColor, masteryTextColor } from "@/lib/masteryColor";
 
 function toFlowNodes(nodes) {
   const cols = Math.ceil(Math.sqrt(nodes.length));
@@ -17,8 +11,8 @@ function toFlowNodes(nodes) {
     data: { label: n.label, mastery: n.mastery_score, subject: n.subject },
     position: n.x != null ? { x: n.x, y: n.y } : { x: (i % cols) * 180, y: Math.floor(i / cols) * 100 },
     style: {
-      background: MASTERY_COLOR(n.mastery_score ?? 0),
-      color: "#fff",
+      background: masteryColor(n.mastery_score ?? 0),
+      color: masteryTextColor(n.mastery_score ?? 0),
       border: "none",
       borderRadius: 8,
       fontSize: 12,
@@ -53,7 +47,7 @@ export default function BrainMapGraph({ nodes: rawNodes, edges: rawEdges, onNode
 
   if (!rawNodes?.length) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#6B7280" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-tertiary)" }}>
         <p>Upload a PDF, ask a question, take a quiz — concepts will start appearing here.</p>
       </div>
     );
@@ -73,7 +67,7 @@ export default function BrainMapGraph({ nodes: rawNodes, edges: rawEdges, onNode
       <Background color="rgba(255,255,255,0.05)" gap={24} />
       <Controls />
       <MiniMap
-        nodeColor={(n) => MASTERY_COLOR(n.data?.mastery ?? 0)}
+        nodeColor={(n) => masteryColor(n.data?.mastery ?? 0)}
         style={{ background: "rgba(0,0,0,0.4)" }}
       />
     </ReactFlow>

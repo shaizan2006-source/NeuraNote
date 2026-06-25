@@ -1,9 +1,10 @@
-"use client";
+﻿"use client";
 import { useEffect, useState, useMemo } from "react";
-import { createBrowserClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import BrainMapGraph from "@/components/brain-map/BrainMapGraph";
 import ConceptSidePanel from "@/components/brain-map/ConceptSidePanel";
 import FilterChips from "@/components/brain-map/FilterChips";
+import { MASTERY_TIERS } from "@/lib/masteryColor";
 
 export default function BrainMapPage() {
   const [data, setData] = useState({ nodes: [], edges: [], stats: {} });
@@ -14,7 +15,7 @@ export default function BrainMapPage() {
 
   async function load(subject, minMastery) {
     setLoading(true);
-    const supabase = createBrowserClient(
+    const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     );
@@ -49,26 +50,26 @@ export default function BrainMapPage() {
       display: "flex",
       flexDirection: "column",
       height: "100vh",
-      background: "linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%)",
-      color: "#F9FAFB",
+      background: "var(--bg-base)",
+      color: "var(--text-primary)",
     }}>
       {/* Header */}
       <div style={{
         padding: "16px 20px",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        borderBottom: "1px solid var(--border-hairline)",
         display: "flex",
         alignItems: "center",
         gap: 16,
       }}>
-        <a href="/dashboard" style={{ color: "#6B7280", textDecoration: "none", fontSize: 14 }}>← Dashboard</a>
+        <a href="/dashboard" style={{ color: "var(--text-tertiary)", textDecoration: "none", fontSize: 14 }}>← Dashboard</a>
         <h1 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>Your Brain Map</h1>
         {stats.total > 0 && (
           <div style={{ display: "flex", gap: 12, marginLeft: "auto", fontSize: 12 }}>
             {[
-              { label: "Mastered", count: stats.mastered, color: "#10B981" },
-              { label: "Strong", count: stats.strong, color: "#F59E0B" },
-              { label: "Shaky", count: stats.shaky, color: "#8B5CF6" },
-              { label: "Unknown", count: stats.unknown, color: "#6B7280" },
+              { label: "Mastered", count: stats.mastered, color: `rgb(${MASTERY_TIERS[0].rgb.join(",")})` },
+              { label: "Strong", count: stats.strong, color: `rgb(${MASTERY_TIERS[1].rgb.join(",")})` },
+              { label: "Shaky", count: stats.shaky, color: `rgb(${MASTERY_TIERS[2].rgb.join(",")})` },
+              { label: "Unknown", count: stats.unknown, color: `rgb(${MASTERY_TIERS[3].rgb.join(",")})` },
             ].map(({ label, count, color }) => (
               <span key={label} style={{ color }}>
                 {count} {label}
@@ -89,7 +90,7 @@ export default function BrainMapPage() {
       {/* Graph area */}
       <div style={{ flex: 1, position: "relative" }}>
         {loading ? (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#6B7280" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-tertiary)" }}>
             Loading your concepts…
           </div>
         ) : (

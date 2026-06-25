@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: 🔄 Stage 8 in progress — ✅ 8a, 8b, 8c done. Next: 8d (/brain-map + share) — needs approval.**
+**Current stage: 🔄 Stage 8 in progress — ✅ 8a, 8b, 8c, 8d done. Next: 8e (/cohort) — needs approval.**
 
 ---
 
@@ -22,7 +22,8 @@
   - [x] **8a — /pyqs, /pyqs/[slug], /pyqs/practice** — DONE 2026-06-25 (token re-skin; list empty/loading/error states; MCQ + practice flow intact). NOTE: `/api/pyqs/search` 500s locally — `pyqs` table not in the connected Supabase (migration `20260517000011_pyqs.sql` unapplied); detail page unverifiable without data.
   - [x] **8b — /mock-test, /quiz/friday** — DONE 2026-06-25 (token re-skin; mock-test setup/running/result + friday verified via mocked data — `mock_tests` table also unprovisioned). NOTE: `/quiz` index (page.jsx) deferred — uses a separate `@/lib/styles` COLORS system + shared TopBar/Button/ContextualSidebar; needs a coordinated pass (Stage 9 or dedicated).
   - [x] **8c — /call-tutor** — DONE 2026-06-25 (voice orb refactored PHASE_CFG hex→rgb-triplet+helpers; phases mapped to O&A palette: idle=gold, listening=success, thinking/connecting=warning, speaking/greeting=info, ended=tertiary, summary=success; orb/glow/animation logic intact).
-  - [ ] 8d /brain-map(+share) · 8e /cohort · 8f /pricing(visuals only) · 8g onboarding/welcome-back/exam-transition/post-exam/trial · 8h / landing (hero direction needs founder pick §10)
+  - [x] **8d — /brain-map (+share)** — DONE 2026-06-25 (5 files + shared `lib/masteryColor.js`; **mastered = gold** per §2.2 "gold-standard mastery", strong=success, shaky=warning, unknown=tertiary; reactflow nodes/minimap/stats/panel consistent via rgb helper).
+  - [ ] 8e /cohort · 8f /pricing(visuals only) · 8g onboarding/welcome-back/exam-transition/post-exam/trial · 8h / landing (hero direction needs founder pick §10)
 - [ ] **Stage 9 — Wire-up audit + polish**
 
 ---

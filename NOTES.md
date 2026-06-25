@@ -85,6 +85,12 @@
 - All animation math, the rAF tick, MediaRecorder/VAD, `/api/voice/*` fetches, phase state machine, timers untouched. End-call button stays red (var(--error) gradient — universal hang-up convention). Static hex → tokens.
 - Verified: gate green (1708 hex), build clean, captured `__screens__/stage-8c-calltutor/` — idle orb renders GOLD with gold glow + gold-active language pill + token error box (capture is unauthenticated → "log in" error, expected). Non-idle phase colors verified by code review.
 
+## Stage 8d status (2026-06-25) — brain-map cluster
+
+- New `src/lib/masteryColor.js` centralizes the mastery ramp (was duplicated across graph/stats/panel). **Mastered = GOLD** (`--accent`) — on-narrative (§2.2 gold = gold-standard mastery); Strong=success, Shaky=warning, Unknown=tertiary. Returns **rgb() strings** (not var(--token)) because the reactflow MiniMap renders SVG `fill` attributes where CSS vars don't resolve — same lesson as the call-tutor orb.
+- 5 files re-skinned (page 10→0, BrainMapGraph 6→0, ConceptSidePanel 11→0, FilterChips 7→0, share 10→0), all importing the helper. Node text = `masteryTextColor` (dark on light gold/green/amber, light on gray unknown). Subject chip = `--info`; filter chips active = gold; CTAs (Review now / Share Image) = gold. Two mojibake strings fixed (`←`, `…`).
+- Logic intact: reactflow hooks/fitView/minimap, /api/brain-map + /snapshot fetches, filters, router.push(/focus?topic=), navigator.share. Verified: gate green (1664 hex), build clean, mocked graph capture shows gold mastered nodes + matching stats/panel `__screens__/stage-8d-brainmap/`.
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

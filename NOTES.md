@@ -91,6 +91,11 @@
 - 5 files re-skinned (page 10→0, BrainMapGraph 6→0, ConceptSidePanel 11→0, FilterChips 7→0, share 10→0), all importing the helper. Node text = `masteryTextColor` (dark on light gold/green/amber, light on gray unknown). Subject chip = `--info`; filter chips active = gold; CTAs (Review now / Share Image) = gold. Two mojibake strings fixed (`←`, `…`).
 - Logic intact: reactflow hooks/fitView/minimap, /api/brain-map + /snapshot fetches, filters, router.push(/focus?topic=), navigator.share. Verified: gate green (1664 hex), build clean, mocked graph capture shows gold mastered nodes + matching stats/panel `__screens__/stage-8d-brainmap/`.
 
+## Stage 8e status (2026-06-25) — /cohort leaderboard
+
+- Single file (`cohort/page.js`) re-skinned to tokens. "You" identity = gold (my-row: color-mix accent 9% bg + accent-dim left border + accent-bright handle; "You: handle" gold). Top-3 ranks → gold (achievement; medals are emoji); other ranks → tertiary. "● N studying now" → success. Logic intact (useCohortPresence, /api/cohort/leaderboard fetch, scroll-to-my-row, cold-start <30 guard).
+- Verified: gate green (1649 hex), build clean; cold-start state captured live + populated leaderboard via mock (`scripts/verify-cohort-mock.mjs`) — `__screens__/stage-8e-cohort/`.
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

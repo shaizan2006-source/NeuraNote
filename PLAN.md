@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: 🔄 Stage 8 in progress — ✅ 8a (PYQs) done. Next sub-stage: 8b (mock-test + quiz/friday) — needs approval.**
+**Current stage: 🔄 Stage 8 in progress — ✅ 8a (PYQs), 8b (mock-test + quiz/friday) done. Next: 8c (/call-tutor) — needs approval.**
 
 ---
 
@@ -20,7 +20,8 @@
 - [x] **Stage 7 — Auth pages (Grok-style + custom logo)** — DONE 2026-06-25 (shared `AuthShell` split layout; login/signup/forgot/reset re-skinned; auth logic intact, probe-verified)
 - [ ] **Stage 8 — Per-feature page upgrades** (8a–8h, one route-cluster per approval)
   - [x] **8a — /pyqs, /pyqs/[slug], /pyqs/practice** — DONE 2026-06-25 (token re-skin; list empty/loading/error states; MCQ + practice flow intact). NOTE: `/api/pyqs/search` 500s locally — `pyqs` table not in the connected Supabase (migration `20260517000011_pyqs.sql` unapplied); detail page unverifiable without data.
-  - [ ] 8b /mock-test, /quiz/friday · 8c /call-tutor · 8d /brain-map(+share) · 8e /cohort · 8f /pricing(visuals only) · 8g onboarding/welcome-back/exam-transition/post-exam/trial · 8h / landing (hero direction needs founder pick §10)
+  - [x] **8b — /mock-test, /quiz/friday** — DONE 2026-06-25 (token re-skin; mock-test setup/running/result + friday verified via mocked data — `mock_tests` table also unprovisioned). NOTE: `/quiz` index (page.jsx) deferred — uses a separate `@/lib/styles` COLORS system + shared TopBar/Button/ContextualSidebar; needs a coordinated pass (Stage 9 or dedicated).
+  - [ ] 8c /call-tutor · 8d /brain-map(+share) · 8e /cohort · 8f /pricing(visuals only) · 8g onboarding/welcome-back/exam-transition/post-exam/trial · 8h / landing (hero direction needs founder pick §10)
 - [ ] **Stage 9 — Wire-up audit + polish**
 
 ---

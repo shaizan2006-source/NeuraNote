@@ -73,6 +73,12 @@
 - **FOUNDER / env flag:** `/api/pyqs/search` returns **500 locally** — the API is clean code; the `pyqs` table is missing in the connected Supabase (migration `20260517000011_pyqs.sql` is untracked/unapplied). So list shows the new empty state, practice can't load questions, and `/pyqs/[slug]` can't be captured. Apply the pyqs migration + seed to fully exercise these pages. Not a redesign defect.
 - `scripts/shot.mjs` gained a 4th arg `<stageDir>` (was hardcoded to stage-7-auth). Verified: gate green, build clean, captures `__screens__/stage-8a-pyqs/` (list empty state + practice setup, desktop+mobile).
 
+## Stage 8b status (2026-06-25) — mock-test + quiz/friday
+
+- `mock-test/page.js` (52→0 hex) + `quiz/friday/page.js` (15→0) re-skinned to tokens, logic intact (timer/auto-submit, create/submit/generate fetches, scoring, all views). Accent map same as 8a: CTAs/active-question/rank = gold; selections neutral (surface-2+border-strong); subject-tab active = platinum + gold underline; score/difficulty/breakdown = semantic. EXAMS rainbow (purple/amber/green per-exam) dropped → selected exam card = bg-surface-2 + accent-dim edge.
+- **/quiz index (page.jsx) deliberately NOT in 8b:** it uses a separate `@/lib/styles` COLORS/TYPOGRAPHY/SPACING token system + shared `TopBar`/`Button`/`ContextualSidebar`/`QuizSkeleton` components. Re-skinning means migrating `lib/styles` + those shared components (used on other routes) — a cross-cutting change. Deferred to a coordinated pass (Stage 9 or dedicated sub-stage) to keep 8b's blast radius contained.
+- **Env flag (same as 8a):** `mock_tests` table unprovisioned (same migration), so /api/mock-test/create & /submit and /api/quiz/friday/generate fail live. Verified via `scripts/verify-mocktest-mock.mjs` (mocks all three): mock-test setup/running/result + friday graded states all render correctly. Gate green (1738 hex), build clean, captures `__screens__/stage-8b-quiz/`.
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

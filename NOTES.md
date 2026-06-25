@@ -65,6 +65,14 @@
 - **Auth logic untouched** (presentation only): validateEmail/validatePassword/getPasswordStrength, checkRateLimit/recordFailedAttempt/clearRateLimit, safeAuthError, signInWithPassword (10s timeout race), signInWithOAuth Google, signUp + UTM persistence, resetPasswordForEmail, onAuthStateChange PASSWORD_RECOVERY + updateUser. Acceptance probe `scripts/verify-auth-flow.mjs`: login→/dashboard ✓, forgot→"check inbox" ✓, signup renders ✓. (`scripts/shot.mjs` = generic 1-route desktop+mobile capture helper.)
 - Verified: gate green (138 files / 1895 hex), build clean, all 4 pages captured desktop+mobile `__screens__/stage-7-auth/`.
 
+## Stage 8a status (2026-06-25) — PYQs cluster
+
+- Re-skinned `pyqs/page.js`, `pyqs/[slug]/page.js` (server component — data logic untouched), `pyqs/[slug]/TryYourselfClient.js`, `pyqs/practice/page.js` to tokens (17/24/6/43 → 0 hex). Accent map: PRIMARY actions (Start Practice, Check Answer, etc.) = gold; CATEGORY/subject labels = `--info` (gold stays sparing); selected-pending MCQ = neutral surface-2; difficulty/correct/wrong = success/warning/error. Gold focus rings on chips/selects/buttons.
+- Added a token empty state to the list (`results.length === 0` → "No questions match these filters") — the list previously rendered blank.
+- **Logic intact:** /api/pyqs/search fetch, filters, pagination, MCQ check, practice set builder/shuffle/score, slug data fetch, generateMetadata/schemaOrg/notFound — all preserved.
+- **FOUNDER / env flag:** `/api/pyqs/search` returns **500 locally** — the API is clean code; the `pyqs` table is missing in the connected Supabase (migration `20260517000011_pyqs.sql` is untracked/unapplied). So list shows the new empty state, practice can't load questions, and `/pyqs/[slug]` can't be captured. Apply the pyqs migration + seed to fully exercise these pages. Not a redesign defect.
+- `scripts/shot.mjs` gained a 4th arg `<stageDir>` (was hardcoded to stage-7-auth). Verified: gate green, build clean, captures `__screens__/stage-8a-pyqs/` (list empty state + practice setup, desktop+mobile).
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

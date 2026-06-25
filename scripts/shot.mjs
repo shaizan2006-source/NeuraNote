@@ -1,8 +1,9 @@
-// Quick one-route screenshot: node scripts/shot.mjs <route> <slug> [mobile]
+// Quick one-route screenshot: node scripts/shot.mjs <route> <slug> [stageDir]
 import { chromium } from "@playwright/test";
 import path from "path"; import fs from "fs"; import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUT = path.resolve(__dirname, "..", "__screens__", "stage-7-auth");
+const STAGE = process.argv[4] || "stage-7-auth";
+const OUT = path.resolve(__dirname, "..", "__screens__", STAGE);
 fs.mkdirSync(OUT, { recursive: true });
 const route = process.argv[2] || "/login";
 const slug = process.argv[3] || "login";

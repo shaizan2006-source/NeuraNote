@@ -21,17 +21,21 @@ const LANGUAGES = [
   { code: "fr", label: "Français" },
 ];
 
-// glow = "rgba(r,g,b," — append opacity + ")" to form a valid color
+// Obsidian & Aurum phase palette — rgb triplets mirror src/styles/variables.css tokens.
+// Build color strings via rgb()/rgba() helpers below (CSS vars can't take appended alpha).
 const PHASE_CFG = {
-  idle:       { color: "#8b5cf6", glow: "rgba(139,92,246,",  status: "Your AI Tutor",       hint: "Tap the orb to begin your session"     },
-  connecting: { color: "#f59e0b", glow: "rgba(245,158,11,",  status: "Connecting…",         hint: "Setting up your session"               },
-  greeting:   { color: "#60a5fa", glow: "rgba(96,165,250,",  status: "Greeting you…",       hint: ""                                      },
-  listening:  { color: "#34d399", glow: "rgba(52,211,153,",  status: "Listening…",          hint: "Speak your doubt clearly"              },
-  thinking:   { color: "#fbbf24", glow: "rgba(251,191,36,",  status: "Thinking…",           hint: "Processing your question"              },
-  speaking:   { color: "#60a5fa", glow: "rgba(96,165,250,",  status: "Speaking…",           hint: "Tap orb to interrupt"                  },
-  ended:      { color: "#6b7280", glow: "rgba(107,114,128,", status: "Call Ended",          hint: ""                                      },
-  summary:    { color: "#34d399", glow: "rgba(52,211,153,",  status: "Session Complete",    hint: ""                                      },
+  idle:       { rgb: [212,175,110], status: "Your AI Tutor",       hint: "Tap the orb to begin your session"     }, // --accent (gold — resting)
+  connecting: { rgb: [245,181,68],  status: "Connecting…",         hint: "Setting up your session"               }, // --warning
+  greeting:   { rgb: [138,160,180], status: "Greeting you…",       hint: ""                                      }, // --info steel (AI speaking)
+  listening:  { rgb: [52,211,153],  status: "Listening…",          hint: "Speak your doubt clearly"              }, // --success (capturing user)
+  thinking:   { rgb: [245,181,68],  status: "Thinking…",           hint: "Processing your question"              }, // --warning
+  speaking:   { rgb: [138,160,180], status: "Speaking…",           hint: "Tap orb to interrupt"                  }, // --info steel (AI speaking)
+  ended:      { rgb: [107,107,112], status: "Call Ended",          hint: ""                                      }, // --text-tertiary
+  summary:    { rgb: [52,211,153],  status: "Session Complete",    hint: ""                                      }, // --success
 };
+
+const rgb  = (c) => `rgb(${c[0]},${c[1]},${c[2]})`;
+const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -546,7 +550,7 @@ export default function CallTutorPage() {
       <div style={{
         position:        "fixed",
         inset:           0,
-        background:      "#07070f",
+        background:      "var(--bg-base)",
         display:         "flex",
         flexDirection:   "column",
         alignItems:      "center",
@@ -561,7 +565,7 @@ export default function CallTutorPage() {
         <div style={{
           position:      "absolute",
           inset:         0,
-          background:    `radial-gradient(ellipse 62% 56% at 50% 44%, ${cfg.glow}0.1) 0%, transparent 68%)`,
+          background:    `radial-gradient(ellipse 62% 56% at 50% 44%, ${rgba(cfg.rgb, 0.1)} 0%, transparent 68%)`,
           transition:    "background 1.4s ease",
           pointerEvents: "none",
           zIndex:        0,
@@ -570,7 +574,7 @@ export default function CallTutorPage() {
         <div style={{
           position:      "absolute",
           inset:         0,
-          background:    `radial-gradient(ellipse 90% 70% at 50% 50%, ${cfg.glow}0.04) 0%, transparent 100%)`,
+          background:    `radial-gradient(ellipse 90% 70% at 50% 50%, ${rgba(cfg.rgb, 0.04)} 0%, transparent 100%)`,
           transition:    "background 1.4s ease",
           pointerEvents: "none",
           zIndex:        0,
@@ -597,7 +601,7 @@ export default function CallTutorPage() {
               border:       "1px solid rgba(255,255,255,0.08)",
               borderRadius: 24,
               padding:      "8px 17px",
-              color:        "#64748b",
+              color:        "var(--text-tertiary)",
               fontSize:     13,
               fontWeight:   500,
               display:      "flex",
@@ -611,7 +615,7 @@ export default function CallTutorPage() {
 
           {/* Title */}
           <span style={{
-            color:         "#cbd5e1",
+            color:         "var(--text-secondary)",
             fontSize:      15,
             fontWeight:    700,
             letterSpacing: 0.3,
@@ -624,7 +628,7 @@ export default function CallTutorPage() {
           {isActive ? (
             <div style={{ textAlign: "right", minWidth: 72 }}>
               <div style={{
-                color:         cfg.color,
+                color:         rgb(cfg.rgb),
                 fontSize:      10,
                 fontWeight:    800,
                 letterSpacing: 2.5,
@@ -634,7 +638,7 @@ export default function CallTutorPage() {
                 ● LIVE
               </div>
               <div style={{
-                color:      "#2d3748",
+                color:      "var(--text-tertiary)",
                 fontSize:   14,
                 fontWeight: 600,
                 fontFamily: "monospace",
@@ -666,9 +670,9 @@ export default function CallTutorPage() {
                   borderRadius: 20,
                   fontSize:     12,
                   fontWeight:   600,
-                  border:       `1px solid ${language === l.code ? cfg.color : "rgba(255,255,255,0.07)"}`,
-                  background:   language === l.code ? `${cfg.color}1e` : "transparent",
-                  color:        language === l.code ? cfg.color : "#475569",
+                  border:       `1px solid ${language === l.code ? rgb(cfg.rgb) : "rgba(255,255,255,0.07)"}`,
+                  background:   language === l.code ? rgba(cfg.rgb, 0.12) : "transparent",
+                  color:        language === l.code ? rgb(cfg.rgb) : "var(--text-tertiary)",
                   transition:   "border-color 0.3s, background 0.3s, color 0.3s",
                 }}
               >
@@ -697,7 +701,7 @@ export default function CallTutorPage() {
               width:        292,
               height:       292,
               borderRadius: "50%",
-              border:       `1px solid ${cfg.color}`,
+              border:       `1px solid ${rgb(cfg.rgb)}`,
               opacity:      0.1,
               transition:   "border-color 1.3s ease",
               pointerEvents: "none",
@@ -714,7 +718,7 @@ export default function CallTutorPage() {
               width:        222,
               height:       222,
               borderRadius: "50%",
-              border:       `1.5px solid ${cfg.color}`,
+              border:       `1.5px solid ${rgb(cfg.rgb)}`,
               opacity:      0.18,
               transition:   "border-color 1.3s ease",
               pointerEvents: "none",
@@ -732,8 +736,8 @@ export default function CallTutorPage() {
                 height:         196,
                 borderRadius:   "50%",
                 border:         "2px solid transparent",
-                borderTopColor: cfg.color,
-                borderRightColor: `${cfg.color}55`,
+                borderTopColor: rgb(cfg.rgb),
+                borderRightColor: rgba(cfg.rgb, 0.33),
                 opacity:        0.75,
                 pointerEvents:  "none",
               }}
@@ -750,11 +754,11 @@ export default function CallTutorPage() {
               width:           170,
               height:          170,
               borderRadius:    "50%",
-              background:      `radial-gradient(circle at 33% 28%, ${cfg.color}f2 0%, ${cfg.color}9a 30%, ${cfg.color}52 62%, ${cfg.color}15 100%)`,
+              background:      `radial-gradient(circle at 33% 28%, ${rgba(cfg.rgb, 0.95)} 0%, ${rgba(cfg.rgb, 0.6)} 30%, ${rgba(cfg.rgb, 0.32)} 62%, ${rgba(cfg.rgb, 0.08)} 100%)`,
               boxShadow:       [
-                `0 0 36px ${cfg.glow}0.48)`,
-                `0 0 72px ${cfg.glow}0.24)`,
-                `0 0 130px ${cfg.glow}0.09)`,
+                `0 0 36px ${rgba(cfg.rgb, 0.48)}`,
+                `0 0 72px ${rgba(cfg.rgb, 0.24)}`,
+                `0 0 130px ${rgba(cfg.rgb, 0.09)}`,
                 "inset 0 2px 4px rgba(255,255,255,0.28)",
               ].join(", "),
               cursor:          !isActive ? "pointer" : phase === "speaking" ? "pointer" : "default",
@@ -807,7 +811,7 @@ export default function CallTutorPage() {
                   width:        4,
                   height:       4,
                   borderRadius: 3,
-                  background:   cfg.color,
+                  background:   rgb(cfg.rgb),
                   opacity:      0.22,
                   transition:   "background 1.3s ease",
                   willChange:   "height, opacity",
@@ -832,7 +836,7 @@ export default function CallTutorPage() {
           <p
             className="ct-status-txt"
             style={{
-              color:         "#e2e8f0",
+              color:         "var(--text-primary)",
               fontSize:      21,
               fontWeight:    600,
               margin:        0,
@@ -846,7 +850,7 @@ export default function CallTutorPage() {
 
           {/* Dynamic hint / live transcript preview */}
           <p style={{
-            color:      "#2d3a4a",
+            color:      "var(--text-tertiary)",
             fontSize:   13,
             margin:     "9px 0 0",
             maxWidth:   300,
@@ -859,7 +863,7 @@ export default function CallTutorPage() {
 
           {/* Exchange counter */}
           {isActive && messages.length > 1 && (
-            <p style={{ color: "#1a2030", fontSize: 11, margin: "8px 0 0" }}>
+            <p style={{ color: "var(--text-disabled)", fontSize: 11, margin: "8px 0 0" }}>
               {Math.floor(messages.length / 2)} exchange{Math.floor(messages.length / 2) !== 1 ? "s" : ""}
             </p>
           )}
@@ -870,11 +874,11 @@ export default function CallTutorPage() {
           <div className="ct-fade-in" style={{
             position:     "relative",
             zIndex:       10,
-            background:   "#160808",
-            border:       "1px solid rgba(127,29,29,0.7)",
+            background:   "color-mix(in srgb, var(--error) 14%, var(--bg-base))",
+            border:       "1px solid color-mix(in srgb, var(--error) 45%, transparent)",
             borderRadius: 12,
             padding:      "11px 18px",
-            color:        "#fca5a5",
+            color:        "var(--error)",
             fontSize:     13,
             textAlign:    "center",
             maxWidth:     "min(300px, calc(100vw - 48px))",
@@ -887,7 +891,7 @@ export default function CallTutorPage() {
             {error.toLowerCase().includes("limit") && (
               <a
                 href="/pricing"
-                style={{ display: "block", color: "#60a5fa", marginTop: 5, fontSize: 12 }}
+                style={{ display: "block", color: "var(--accent)", marginTop: 5, fontSize: 12 }}
               >
                 Upgrade plan →
               </a>
@@ -918,9 +922,9 @@ export default function CallTutorPage() {
                   width:           54,
                   height:          54,
                   borderRadius:    "50%",
-                  border:          `1.5px solid ${isMuted ? "rgba(239,68,68,0.38)" : "rgba(255,255,255,0.09)"}`,
-                  background:      isMuted ? "rgba(239,68,68,0.1)" : "rgba(255,255,255,0.04)",
-                  color:           isMuted ? "#ef4444" : "#475569",
+                  border:          `1.5px solid ${isMuted ? "color-mix(in srgb, var(--error) 38%, transparent)" : "rgba(255,255,255,0.09)"}`,
+                  background:      isMuted ? "color-mix(in srgb, var(--error) 10%, transparent)" : "rgba(255,255,255,0.04)",
+                  color:           isMuted ? "var(--error)" : "var(--text-tertiary)",
                   display:         "flex",
                   alignItems:      "center",
                   justifyContent:  "center",
@@ -956,7 +960,7 @@ export default function CallTutorPage() {
                   height:          68,
                   borderRadius:    "50%",
                   border:          "none",
-                  background:      "linear-gradient(145deg, #dc2626, #991b1b)",
+                  background:      "linear-gradient(145deg, var(--error), color-mix(in srgb, var(--error) 55%, black))",
                   color:           "white",
                   display:         "flex",
                   alignItems:      "center",
@@ -986,7 +990,7 @@ export default function CallTutorPage() {
                 borderRadius:   50,
                 border:         "1px solid rgba(255,255,255,0.1)",
                 background:     "rgba(255,255,255,0.05)",
-                color:          "#94a3b8",
+                color:          "var(--text-secondary)",
                 fontSize:       14,
                 fontWeight:     600,
                 backdropFilter: "blur(8px)",
@@ -1020,8 +1024,8 @@ export default function CallTutorPage() {
           }}
         >
           <div style={{
-            background:   "#05110a",
-            border:       "1px solid #14532d",
+            background:   "color-mix(in srgb, var(--success) 8%, var(--bg-base))",
+            border:       "1px solid color-mix(in srgb, var(--success) 35%, transparent)",
             borderRadius: 20,
             padding:      "28px 24px",
             maxWidth:     440,
@@ -1031,7 +1035,7 @@ export default function CallTutorPage() {
             boxShadow:    "0 0 60px rgba(52,211,153,0.13)",
           }}>
             <p style={{
-              color:      "#86efac",
+              color:      "var(--success)",
               fontWeight: 700,
               margin:     "0 0 14px",
               fontSize:   15,
@@ -1039,7 +1043,7 @@ export default function CallTutorPage() {
               📋 Session Summary
             </p>
             <div style={{
-              color:        "#d1fae5",
+              color:        "var(--text-secondary)",
               fontSize:     14,
               lineHeight:   1.82,
               whiteSpace:   "pre-wrap",
@@ -1055,8 +1059,8 @@ export default function CallTutorPage() {
                 padding:      "13px",
                 borderRadius: 12,
                 border:       "none",
-                background:   "linear-gradient(135deg, #16a34a, #15803d)",
-                color:        "white",
+                background:   "linear-gradient(135deg, var(--success), color-mix(in srgb, var(--success) 70%, black))",
+                color:        "var(--bg-base)",
                 fontWeight:   700,
                 fontSize:     14,
                 boxShadow:    "0 0 22px rgba(22,163,74,0.28)",

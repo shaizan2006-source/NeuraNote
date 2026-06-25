@@ -79,6 +79,12 @@
 - **/quiz index (page.jsx) deliberately NOT in 8b:** it uses a separate `@/lib/styles` COLORS/TYPOGRAPHY/SPACING token system + shared `TopBar`/`Button`/`ContextualSidebar`/`QuizSkeleton` components. Re-skinning means migrating `lib/styles` + those shared components (used on other routes) — a cross-cutting change. Deferred to a coordinated pass (Stage 9 or dedicated sub-stage) to keep 8b's blast radius contained.
 - **Env flag (same as 8a):** `mock_tests` table unprovisioned (same migration), so /api/mock-test/create & /submit and /api/quiz/friday/generate fail live. Verified via `scripts/verify-mocktest-mock.mjs` (mocks all three): mock-test setup/running/result + friday graded states all render correctly. Gate green (1738 hex), build clean, captures `__screens__/stage-8b-quiz/`.
 
+## Stage 8c status (2026-06-25) — /call-tutor voice orb
+
+- The orb's identity is its per-phase color, baked into gradients/glows with APPENDED HEX ALPHA (`${cfg.color}f2`, `${cfg.glow}0.48)`) — CSS vars can't do that. Refactored `PHASE_CFG` from hex `color`+rgba-prefix `glow` → **`rgb: [r,g,b]` triplets + `rgb()`/`rgba()` helpers** (same pattern as `AIDustLayer`). Phase→O&A palette: idle=gold[212,175,110], connecting/thinking=warning[245,181,68], greeting/speaking=info-steel[138,160,180], listening/summary=success[52,211,153], ended=tertiary[107,107,112]. RGB number arrays pass the gate (only `#hex` is flagged). 30→0 hex.
+- All animation math, the rAF tick, MediaRecorder/VAD, `/api/voice/*` fetches, phase state machine, timers untouched. End-call button stays red (var(--error) gradient — universal hang-up convention). Static hex → tokens.
+- Verified: gate green (1708 hex), build clean, captured `__screens__/stage-8c-calltutor/` — idle orb renders GOLD with gold glow + gold-active language pill + token error box (capture is unauthenticated → "log in" error, expected). Non-idle phase colors verified by code review.
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

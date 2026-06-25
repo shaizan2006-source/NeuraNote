@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { createBrowserClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { REGIONS, CITIES_BY_REGION } from "@/lib/india-locations";
 
 function getSupabase() {
-  return createBrowserClient(
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
@@ -39,7 +39,7 @@ const EXAM_DATES = {
   neet_ug_2026: "2026-05-04",
 };
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 const STORAGE_KEY = "onboarding_v2";
 
 export default function OnboardingPage() {
@@ -52,9 +52,13 @@ export default function OnboardingPage() {
   const [studyWindow, setStudyWindow] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [parentPhoneNumber, setParentPhoneNumber] = useState("");
+  const [isRepeatAspirant, setIsRepeatAspirant] = useState(null); // null = unanswered
   const [saving, setSaving] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
 
-  // ── Complete onboarding ───────────────────────────────────────
+  // ── Complete onboarding ──────────────────────────────────────────
   const handleFinish = async () => {
     setSaving(true);
     try {
@@ -64,7 +68,17 @@ export default function OnboardingPage() {
       const res = await fetch("/api/onboarding/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ exam_type: examType, class_level: classLevel, exam_date: examDate, study_window: studyWindow, region, city }),
+        body: JSON.stringify({
+          exam_type: examType,
+          class_level: classLevel,
+          exam_date: examDate,
+          study_window: studyWindow,
+          region,
+          city,
+          phone_number: phoneNumber ? `+91${phoneNumber}` : null,
+          parent_phone_number: parentPhoneNumber ? `+91${parentPhoneNumber}` : null,
+          is_repeat_aspirant: isRepeatAspirant ?? false,
+        }),
       });
       if (res.ok) { router.push("/dashboard"); return; }
     } catch (_) {
@@ -75,13 +89,27 @@ export default function OnboardingPage() {
     router.push("/dashboard");
   };
 
-  // ── Progress dots ─────────────────────────────────────────────
+  // ── Phone validation ─────────────────────────────────────────────
+  const validatePhone = (val) => {
+    if (!val) return "Phone number is required to receive study reminders.";
+    if (!/^[6-9]\d{9}$/.test(val)) return "Enter a valid 10-digit Indian mobile number.";
+    return "";
+  };
+
+  const handlePhoneContinue = () => {
+    const err = validatePhone(phoneNumber);
+    if (err) { setPhoneError(err); return; }
+    setPhoneError("");
+    handleFinish();
+  };
+
+  // -- Progress dots --------------------------------------------
   const StepDots = () => (
     <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 32 }}>
       {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
         <div key={i} style={{
           width: i === step ? 20 : 8, height: 8, borderRadius: 4,
-          background: i === step ? "#8B5CF6" : i < step ? "#6D28D9" : "rgba(255,255,255,0.12)",
+          background: i === step ? "var(--accent)" : i < step ? "var(--accent-dim)" : "var(--bg-surface-2)",
           transition: "all 0.3s ease",
         }} />
       ))}
@@ -89,18 +117,42 @@ export default function OnboardingPage() {
   );
 
   const BackBtn = () => step > 0 ? (
-    <button onClick={() => setStep(s => s - 1)} style={{ background: "none", border: "none", color: "#6B7280", fontSize: 13, cursor: "pointer", marginBottom: 8 }}>
+    <button onClick={() => setStep(s => s - 1)} style={{ background: "none", border: "none", color: "var(--text-tertiary)", fontSize: 13, cursor: "pointer", marginBottom: 8 }}>
       ← Back
     </button>
   ) : null;
 
   const cities = region ? [...(CITIES_BY_REGION[region] ?? []), "Other"] : [];
 
-  // ────────────────────────────────────────────────────────────
+  const inputStyle = {
+    width: "100%",
+    background: "var(--bg-surface-2)",
+    border: "2px solid var(--border-strong)",
+    borderRadius: 10,
+    padding: "12px 14px",
+    color: "var(--text-primary)",
+    fontSize: 16,
+    boxSizing: "border-box",
+  };
+
+  const primaryBtn = (disabled) => ({
+    width: "100%",
+    background: disabled ? "var(--bg-surface-2)" : "var(--accent-grad)",
+    color: disabled ? "var(--text-disabled)" : "var(--bg-base)",
+    border: "none",
+    borderRadius: 10,
+    padding: "13px",
+    fontSize: 15,
+    fontWeight: 600,
+    cursor: disabled ? "not-allowed" : "pointer",
+    marginBottom: 10,
+  });
+
+  // ---------------------------------------------------------------
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%)",
+      background: "var(--bg-base)",
       display: "flex", alignItems: "center", justifyContent: "center",
       padding: "24px 16px",
     }}>
@@ -116,121 +168,103 @@ export default function OnboardingPage() {
           transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
         >
 
-        {/* ── STEP 0: Exam type ── */}
+        {/* -- STEP 0: Exam type -- */}
         {step === 0 && (
           <>
-            <h2 style={{ color: "#F9FAFB", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>
+            <h2 style={{ color: "var(--text-primary)", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>
               Which exam are you preparing for?
             </h2>
-            <p style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 24, textAlign: "center" }}>
+            <p style={{ color: "var(--text-tertiary)", fontSize: 14, marginBottom: 24, textAlign: "center" }}>
               We&apos;ll personalise everything around your exam.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 24 }}>
               {EXAM_OPTIONS.map((opt) => (
                 <button key={opt.value} onClick={() => setExamType(opt.value)} style={{
-                  background: examType === opt.value ? "rgba(139,92,246,0.2)" : "rgba(255,255,255,0.04)",
-                  border: `2px solid ${examType === opt.value ? "#8B5CF6" : "rgba(255,255,255,0.08)"}`,
+                  background: examType === opt.value ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "var(--bg-surface)",
+                  border: `2px solid ${examType === opt.value ? "var(--accent-dim)" : "var(--border-hairline)"}`,
                   borderRadius: 10, padding: "14px 12px",
-                  color: examType === opt.value ? "#A78BFA" : "#E5E7EB",
+                  color: examType === opt.value ? "var(--accent-bright)" : "var(--text-secondary)",
                   cursor: "pointer", textAlign: "center", fontSize: 13,
                   fontWeight: examType === opt.value ? 600 : 400, transition: "all 0.15s",
                 }}>{opt.label}</button>
               ))}
             </div>
-            <button disabled={!examType} onClick={() => setStep(1)} style={{
-              width: "100%", background: examType ? "#8B5CF6" : "rgba(255,255,255,0.06)",
-              color: examType ? "#fff" : "#6B7280", border: "none", borderRadius: 10,
-              padding: "13px", fontSize: 15, fontWeight: 600,
-              cursor: examType ? "pointer" : "not-allowed",
-            }}>Continue →</button>
+            <button disabled={!examType} onClick={() => setStep(1)} style={primaryBtn(!examType)}>Continue →</button>
           </>
         )}
 
-        {/* ── STEP 1: Class / Year ── */}
+        {/* -- STEP 1: Class / Year -- */}
         {step === 1 && (
           <>
             <BackBtn />
-            <h2 style={{ color: "#F9FAFB", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>What year are you in?</h2>
-            <p style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 24, textAlign: "center" }}>Helps us calibrate revision intensity.</p>
+            <h2 style={{ color: "var(--text-primary)", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>What year are you in?</h2>
+            <p style={{ color: "var(--text-tertiary)", fontSize: 14, marginBottom: 24, textAlign: "center" }}>Helps us calibrate revision intensity.</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 24 }}>
               {CLASS_OPTIONS.map((opt) => (
                 <button key={opt} onClick={() => setClassLevel(opt)} style={{
-                  background: classLevel === opt ? "rgba(139,92,246,0.2)" : "rgba(255,255,255,0.04)",
-                  border: `2px solid ${classLevel === opt ? "#8B5CF6" : "rgba(255,255,255,0.08)"}`,
+                  background: classLevel === opt ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "var(--bg-surface)",
+                  border: `2px solid ${classLevel === opt ? "var(--accent-dim)" : "var(--border-hairline)"}`,
                   borderRadius: 10, padding: "14px 12px",
-                  color: classLevel === opt ? "#A78BFA" : "#E5E7EB",
+                  color: classLevel === opt ? "var(--accent-bright)" : "var(--text-secondary)",
                   cursor: "pointer", fontSize: 13, fontWeight: classLevel === opt ? 600 : 400, transition: "all 0.15s",
                 }}>{opt}</button>
               ))}
             </div>
-            <button disabled={!classLevel} onClick={() => setStep(2)} style={{
-              width: "100%", background: classLevel ? "#8B5CF6" : "rgba(255,255,255,0.06)",
-              color: classLevel ? "#fff" : "#6B7280", border: "none", borderRadius: 10,
-              padding: "13px", fontSize: 15, fontWeight: 600,
-              cursor: classLevel ? "pointer" : "not-allowed", marginBottom: 10,
-            }}>Continue →</button>
-            <button onClick={() => setStep(2)} style={{ width: "100%", background: "none", border: "none", color: "#6B7280", fontSize: 13, cursor: "pointer" }}>Skip</button>
+            <button disabled={!classLevel} onClick={() => setStep(2)} style={primaryBtn(!classLevel)}>Continue →</button>
+            <button onClick={() => setStep(2)} style={{ width: "100%", background: "none", border: "none", color: "var(--text-tertiary)", fontSize: 13, cursor: "pointer" }}>Skip</button>
           </>
         )}
 
-        {/* ── STEP 2: Exam date ── */}
+        {/* -- STEP 2: Exam date -- */}
         {step === 2 && (
           <>
             <BackBtn />
-            <h2 style={{ color: "#F9FAFB", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>When is your exam?</h2>
-            <p style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 24, textAlign: "center" }}>We&apos;ll build your countdown around this.</p>
+            <h2 style={{ color: "var(--text-primary)", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>When is your exam?</h2>
+            <p style={{ color: "var(--text-tertiary)", fontSize: 14, marginBottom: 24, textAlign: "center" }}>We&apos;ll build your countdown around this.</p>
             <input type="date" value={examDate || EXAM_DATES[examType] || ""} onChange={e => setExamDate(e.target.value)}
-              style={{ width: "100%", background: "rgba(255,255,255,0.06)", border: "2px solid rgba(255,255,255,0.12)", borderRadius: 10, padding: "12px 14px", color: "#F9FAFB", fontSize: 16, marginBottom: 24, boxSizing: "border-box" }} />
-            <button onClick={() => setStep(3)} style={{
-              width: "100%", background: "#8B5CF6", color: "#fff", border: "none", borderRadius: 10,
-              padding: "13px", fontSize: 15, fontWeight: 600, cursor: "pointer", marginBottom: 10,
-            }}>Continue →</button>
-            <button onClick={() => setStep(3)} style={{ width: "100%", background: "none", border: "none", color: "#6B7280", fontSize: 13, cursor: "pointer" }}>Skip</button>
+              style={{ ...inputStyle, marginBottom: 24 }} />
+            <button onClick={() => setStep(3)} style={primaryBtn(false)}>Continue →</button>
+            <button onClick={() => setStep(3)} style={{ width: "100%", background: "none", border: "none", color: "var(--text-tertiary)", fontSize: 13, cursor: "pointer" }}>Skip</button>
           </>
         )}
 
-        {/* ── STEP 3: Study window ── */}
+        {/* -- STEP 3: Study window -- */}
         {step === 3 && (
           <>
             <BackBtn />
-            <h2 style={{ color: "#F9FAFB", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>When do you study best?</h2>
-            <p style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 24, textAlign: "center" }}>We&apos;ll schedule reviews during your peak window.</p>
+            <h2 style={{ color: "var(--text-primary)", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>When do you study best?</h2>
+            <p style={{ color: "var(--text-tertiary)", fontSize: 14, marginBottom: 24, textAlign: "center" }}>We&apos;ll schedule reviews during your peak window.</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 24 }}>
               {STUDY_WINDOW_OPTIONS.map((opt) => (
                 <button key={opt.id} onClick={() => setStudyWindow(opt.id)} style={{
-                  background: studyWindow === opt.id ? "rgba(139,92,246,0.2)" : "rgba(255,255,255,0.04)",
-                  border: `2px solid ${studyWindow === opt.id ? "#8B5CF6" : "rgba(255,255,255,0.08)"}`,
+                  background: studyWindow === opt.id ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "var(--bg-surface)",
+                  border: `2px solid ${studyWindow === opt.id ? "var(--accent-dim)" : "var(--border-hairline)"}`,
                   borderRadius: 10, padding: "14px 12px", cursor: "pointer", textAlign: "center",
                 }}>
-                  <div style={{ fontSize: 13, color: studyWindow === opt.id ? "#A78BFA" : "#E5E7EB", fontWeight: studyWindow === opt.id ? 600 : 400 }}>{opt.label}</div>
-                  <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{opt.sub}</div>
+                  <div style={{ fontSize: 13, color: studyWindow === opt.id ? "var(--accent-bright)" : "var(--text-secondary)", fontWeight: studyWindow === opt.id ? 600 : 400 }}>{opt.label}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 2 }}>{opt.sub}</div>
                 </button>
               ))}
             </div>
-            <button disabled={!studyWindow} onClick={() => setStep(4)} style={{
-              width: "100%", background: studyWindow ? "#8B5CF6" : "rgba(255,255,255,0.06)",
-              color: studyWindow ? "#fff" : "#6B7280", border: "none", borderRadius: 10,
-              padding: "13px", fontSize: 15, fontWeight: 600,
-              cursor: studyWindow ? "pointer" : "not-allowed", marginBottom: 10,
-            }}>Continue →</button>
-            <button onClick={() => setStep(4)} style={{ width: "100%", background: "none", border: "none", color: "#6B7280", fontSize: 13, cursor: "pointer" }}>Skip</button>
+            <button disabled={!studyWindow} onClick={() => setStep(4)} style={primaryBtn(!studyWindow)}>Continue →</button>
+            <button onClick={() => setStep(4)} style={{ width: "100%", background: "none", border: "none", color: "var(--text-tertiary)", fontSize: 13, cursor: "pointer" }}>Skip</button>
           </>
         )}
 
-        {/* ── STEP 4: Location ── */}
+        {/* -- STEP 4: Location -- */}
         {step === 4 && (
           <>
             <BackBtn />
-            <h2 style={{ color: "#F9FAFB", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>Where are you based?</h2>
-            <p style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 20, textAlign: "center" }}>Matches you with students in your region.</p>
+            <h2 style={{ color: "var(--text-primary)", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>Where are you based?</h2>
+            <p style={{ color: "var(--text-tertiary)", fontSize: 14, marginBottom: 20, textAlign: "center" }}>Matches you with students in your region.</p>
             <div style={{ marginBottom: 14 }}>
-              <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 6 }}>Region</div>
+              <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginBottom: 6 }}>Region</div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
                 {REGIONS.map((r) => (
                   <button key={r} onClick={() => { setRegion(r); setCity(""); }} style={{
-                    background: region === r ? "rgba(139,92,246,0.2)" : "rgba(255,255,255,0.04)",
-                    border: `2px solid ${region === r ? "#8B5CF6" : "rgba(255,255,255,0.08)"}`,
-                    borderRadius: 8, padding: "8px", color: region === r ? "#A78BFA" : "#E5E7EB",
+                    background: region === r ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "var(--bg-surface)",
+                    border: `2px solid ${region === r ? "var(--accent-dim)" : "var(--border-hairline)"}`,
+                    borderRadius: 8, padding: "8px", color: region === r ? "var(--accent-bright)" : "var(--text-secondary)",
                     fontSize: 12, cursor: "pointer",
                   }}>{r}</button>
                 ))}
@@ -238,24 +272,104 @@ export default function OnboardingPage() {
             </div>
             {region && (
               <div style={{ marginBottom: 24 }}>
-                <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 6 }}>City</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginBottom: 6 }}>City</div>
                 <select value={city} onChange={e => setCity(e.target.value)} style={{
-                  width: "100%", background: "rgba(255,255,255,0.06)", border: "2px solid rgba(255,255,255,0.12)",
-                  borderRadius: 10, padding: "10px 12px", color: "#F9FAFB", fontSize: 14,
+                  width: "100%", background: "var(--bg-surface-2)", border: "2px solid var(--border-strong)",
+                  borderRadius: 10, padding: "10px 12px", color: "var(--text-primary)", fontSize: 14,
                 }}>
                   <option value="">Select city…</option>
                   {cities.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
             )}
-            <button onClick={handleFinish} disabled={saving} style={{
-              width: "100%", background: "#8B5CF6", color: "#fff", border: "none", borderRadius: 10,
-              padding: "13px", fontSize: 15, fontWeight: 600,
-              cursor: saving ? "not-allowed" : "pointer", opacity: saving ? 0.7 : 1, marginBottom: 10,
-            }}>{saving ? "Setting up…" : "Let's go →"}</button>
-            <button onClick={handleFinish} disabled={saving} style={{ width: "100%", background: "none", border: "none", color: "#6B7280", fontSize: 13, cursor: "pointer" }}>Skip location</button>
+            <button onClick={() => setStep(5)} style={primaryBtn(false)}>Continue →</button>
+            <button onClick={() => setStep(5)} style={{ width: "100%", background: "none", border: "none", color: "var(--text-tertiary)", fontSize: 13, cursor: "pointer" }}>Skip location</button>
           </>
         )}
+
+        {/* -- STEP 5: Phone + parent + repeat aspirant -- */}
+        {step === 5 && (
+          <>
+            <BackBtn />
+            <h2 style={{ color: "var(--text-primary)", marginTop: 0, marginBottom: 8, fontSize: 22, textAlign: "center" }}>
+              Stay on track
+            </h2>
+            <p style={{ color: "var(--text-tertiary)", fontSize: 14, marginBottom: 24, textAlign: "center" }}>
+              Hum tumhe study reminders WhatsApp pe bhejenge. Required.
+            </p>
+
+            {/* Phone number */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginBottom: 6 }}>Your WhatsApp number *</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{
+                  background: "var(--bg-surface-2)", border: "2px solid var(--border-strong)",
+                  borderRadius: 10, padding: "12px 14px", color: "var(--text-tertiary)", fontSize: 16, whiteSpace: "nowrap",
+                }}>+91</div>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  placeholder="10-digit mobile"
+                  value={phoneNumber}
+                  maxLength={10}
+                  onChange={e => {
+                    setPhoneNumber(e.target.value.replace(/\D/g, "").slice(0, 10));
+                    setPhoneError("");
+                  }}
+                  style={{ ...inputStyle }}
+                />
+              </div>
+              {phoneError && (
+                <p style={{ color: "var(--error)", fontSize: 12, marginTop: 6 }}>{phoneError}</p>
+              )}
+            </div>
+
+            {/* Parent phone */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginBottom: 6 }}>Parent&apos;s WhatsApp (optional)</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{
+                  background: "var(--bg-surface-2)", border: "2px solid var(--border-strong)",
+                  borderRadius: 10, padding: "12px 14px", color: "var(--text-tertiary)", fontSize: 16, whiteSpace: "nowrap",
+                }}>+91</div>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  placeholder="Apne parents ko bhi updates?"
+                  value={parentPhoneNumber}
+                  maxLength={10}
+                  onChange={e => setParentPhoneNumber(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                  style={{ ...inputStyle }}
+                />
+              </div>
+            </div>
+
+            {/* Repeat aspirant */}
+            <div style={{ marginBottom: 28 }}>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 10 }}>Is this your first attempt at JEE / NEET?</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                {[
+                  { label: "First attempt", value: false },
+                  { label: "Repeat / Dropper", value: true },
+                ].map(({ label, value }) => (
+                  <button key={label} onClick={() => setIsRepeatAspirant(value)} style={{
+                    background: isRepeatAspirant === value ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "var(--bg-surface)",
+                    border: `2px solid ${isRepeatAspirant === value ? "var(--accent-dim)" : "var(--border-hairline)"}`,
+                    borderRadius: 10, padding: "12px",
+                    color: isRepeatAspirant === value ? "var(--accent-bright)" : "var(--text-secondary)",
+                    cursor: "pointer", fontSize: 13, fontWeight: isRepeatAspirant === value ? 600 : 400,
+                    transition: "all 0.15s",
+                  }}>{label}</button>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={handlePhoneContinue} style={primaryBtn(false)}>Continue →</button>
+          </>
+        )}
+
+        {/* -- STEP 6 (handled by handleFinish redirect after step 5 validation) -- */}
+        {/* Step 5 Continue calls handlePhoneContinue which validates then calls handleFinish */}
 
         </motion.div>
         </AnimatePresence>

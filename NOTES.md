@@ -102,6 +102,15 @@
 - **Payment logic untouched + VERIFIED directly** (not trusting the agent, which mis-narrated): PRICING paise, buildPlans price math + A/B variant, create-order/verify/signature, loadRazorpayScript all byte-identical. ONLY change in handlePlanClick: `theme.color` now reads `getComputedStyle(...).getPropertyValue("--accent")` (Razorpay SDK needs a concrete color, not a CSS var). The unused hex `color`/`border` data fields removed from buildPlans. No stray `plan.color`/`plan.border` refs remain.
 - Fully verifiable WITHOUT DB (public page). Gate green (1610 hex), 39→0 on the file; captured `__screens__/stage-8f-pricing/`.
 
+## Stage 8g status (2026-06-25) — onboarding + trial cluster
+
+- 16 files re-skinned (onboarding hub + 6 steps, welcome-back, exam-transition, post-exam, trial decision+DecisionPage+OptionsSheet+ParentReferralButton, trial lapsed+success). Onboarding single-select options = accent-tint + accent-dim edge + accent-bright text; nav/primary CTAs = gold-grad + bg-base; progress dots active = gold; success/"Welcome to Pro"/win moments = gold; mojibake (en-dashes, arrows) fixed. ~205 hex removed (gate 1610→1405).
+- **6/7 render clean** (verified): onboarding, welcome-back, exam-transition, post-exam, trial-success, trial-lapsed. Captures `__screens__/stage-8g-onboarding/`.
+- **FOUNDER — 2 pre-existing bugs (NOT the re-skin):**
+  1. `/trial/decision` **crashes** at runtime: it's a `"use client"` component that transitively imports `@/lib/telemetry/events.js` → `@/lib/serverAuth.js`, whose top-level `createClient(url, SUPABASE_SERVICE_ROLE_KEY)` runs in the browser where the (non-NEXT_PUBLIC) service key is undefined → "supabaseKey is required." Fix = keep serverAuth out of the client path (make telemetry client-safe or split the import). Same class as /chat. Trial/decision re-skin is code-verified + gate-green but render-blocked.
+  2. `/exam-transition` shows "in **undefined** days" when no exam date is set — a data-fallback copy bug.
+- Build clean, gate green (1405 hex).
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

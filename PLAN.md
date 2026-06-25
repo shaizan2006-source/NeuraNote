@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: 🔄 Stage 8 in progress — ✅ 8a–8e done. Next: 8f (/pricing, visuals only) — needs approval.**
+**Current stage: 🔄 Stage 8 in progress — ✅ 8a–8f done. Next: 8g (onboarding/welcome-back/exam-transition/post-exam/trial) — needs approval.**
 
 ---
 
@@ -24,7 +24,8 @@
   - [x] **8c — /call-tutor** — DONE 2026-06-25 (voice orb refactored PHASE_CFG hex→rgb-triplet+helpers; phases mapped to O&A palette: idle=gold, listening=success, thinking/connecting=warning, speaking/greeting=info, ended=tertiary, summary=success; orb/glow/animation logic intact).
   - [x] **8d — /brain-map (+share)** — DONE 2026-06-25 (5 files + shared `lib/masteryColor.js`; **mastered = gold** per §2.2 "gold-standard mastery", strong=success, shaky=warning, unknown=tertiary; reactflow nodes/minimap/stats/panel consistent via rgb helper).
   - [x] **8e — /cohort** — DONE 2026-06-25 (leaderboard re-skin; "you" row + handle = gold identity, top-3 ranks gold, "studying now" success; cold-start + populated states verified).
-  - [ ] 8f /pricing(visuals only) · 8g onboarding/welcome-back/exam-transition/post-exam/trial · 8h / landing (hero direction needs founder pick §10)
+  - [x] **8f — /pricing** — DONE 2026-06-25 (visuals only; Pro = gold hero card, gold annual toggle, success callout/checks; **mojibake fixed incl. ₹ rupee symbol**; Razorpay theme reads computed --accent; payment/plan logic untouched + verified).
+  - [ ] 8g onboarding/welcome-back/exam-transition/post-exam/trial · 8h / landing (hero direction needs founder pick §10)
 - [ ] **Stage 9 — Wire-up audit + polish**
 
 ---

@@ -96,6 +96,12 @@
 - Single file (`cohort/page.js`) re-skinned to tokens. "You" identity = gold (my-row: color-mix accent 9% bg + accent-dim left border + accent-bright handle; "You: handle" gold). Top-3 ranks → gold (achievement; medals are emoji); other ranks → tertiary. "● N studying now" → success. Logic intact (useCohortPresence, /api/cohort/leaderboard fetch, scroll-to-my-row, cold-start <30 guard).
 - Verified: gate green (1649 hex), build clean; cold-start state captured live + populated leaderboard via mock (`scripts/verify-cohort-mock.mjs`) — `__screens__/stage-8e-cohort/`.
 
+## Stage 8f status (2026-06-25) — /pricing (visuals only)
+
+- Re-skin: Pro = the single gold hero card (gold border + accent-8% bg + gold CTA); Student/Pro+/Free CTAs neutral; annual toggle active = gold; success callout/checkmarks; Family/Institute neutral. **Fixed the pricing mojibake the founder flagged in Stage 1** — `â‚¹`→₹ (rupee/price symbol!), ✦/✅/≈/·/✓/🔒/📧/↩/← all corrected. One residual C1 control char (mojibake byte the Read tool hid) showed as a tofu box next to the back-arrow → stripped via `node` replace of /[-�]/ (safe: valid glyphs are all > U+009F).
+- **Payment logic untouched + VERIFIED directly** (not trusting the agent, which mis-narrated): PRICING paise, buildPlans price math + A/B variant, create-order/verify/signature, loadRazorpayScript all byte-identical. ONLY change in handlePlanClick: `theme.color` now reads `getComputedStyle(...).getPropertyValue("--accent")` (Razorpay SDK needs a concrete color, not a CSS var). The unused hex `color`/`border` data fields removed from buildPlans. No stray `plan.color`/`plan.border` refs remain.
+- Fully verifiable WITHOUT DB (public page). Gate green (1610 hex), 39→0 on the file; captured `__screens__/stage-8f-pricing/`.
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

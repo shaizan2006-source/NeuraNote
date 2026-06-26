@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: 🔄 Stage 9 in progress (audit done, plan founder-signed-off 2026-06-26). Sub-stages: ✅ 9a, ✅ 9b, ✅ 9e, ✅ 9c, ✅ 9d, ✅ 9f. NEXT: 9g.**
+**Current stage: 🔄 Stage 9 in progress (audit done, plan founder-signed-off 2026-06-26). Sub-stages: ✅ 9a, ✅ 9b, ✅ 9e, ✅ 9c, ✅ 9d, ✅ 9f, ✅ 9g. NEXT: 9h (final harness).**
 
 ---
 
@@ -34,7 +34,7 @@
   - [x] **9d — mobile fixes** — DONE 2026-06-26. ExamsSidebar now collapses to a hamburger + slide-in drawer ≤768px (mirrors DashboardSidebar). Responsive grids (isMobile ? 1fr : …): /exams (1fr1fr), /quiz active + QuizSkeleton (3fr2fr), /focus FocusSessionActive (1fr1fr + TimerRing 220→160). /pricing Family/Institute → auto-fit (stack). **Caught+fixed a 9e regression**: ExamsSidebar NavItem active bg/border used `activeColor.replace(")"…)` string hacks that broke once activeColor became hex (`rgba(D4AF6E`/`D4AF6E22` invalid) → color-mix. Build clean, gate green, /pricing mobile verified (cards stack).
   - [x] **9e — full re-skin 5 pages** — DONE 2026-06-26. Central `lib/styles.js` COLORS/SHADOWS → literal O&A gold (literal, not var, because consumed in canvas e.g. TimerRing) + TimerRing track gold. Fanned out 37 components (356 literals) across /exams (+ExamsSidebar +5 dashboard/exams cards +ExamsHeroCard), /study, /focus (+5 focus comps), /progress (+13 progress cards +CohortWidget), /quiz (+shared ContextualSidebar/Card/Buttons/QuizSkeleton +quiz comps). 4 files use literal gold for canvas/SVG (ExamsSidebar, FocusScoreCard, Celebration, ProgressRing). Gate green (hex 1352→1024, −328), build clean, all 5 routes HTTP 200. **Authenticated visual sweep deferred to 9h** (no test creds in .env.local; `scripts/shot-9e.mjs` ready once creds provided).
   - [x] **9f — a11y finish + dead-code deletion** — DONE 2026-06-26. a11y: Sage icon buttons (HoverActionBtn/AIMsgBtn shared + attach/send-stop/copy/remove) now `aria-label`'d; Sage textarea labelled; 4 auth pages label↔input `htmlFor`/`id` (8 pairs); FAQ accordion `aria-expanded`/`aria-controls`/`aria-hidden`. **Deleted 10 verified-orphan dead-code files** (grep-confirmed zero live/dynamic imports): dashboard/{BrainSection,AnalyticsSection,QuizSection,ExamReadinessShareCard}, qa/{FollowUpCTAs,SourceChips,ConceptChip}, answer/{SessionCallout,AnswerRating}, AskAI/ModelSwitcher. parseAnswerSections: removed 43 dead `accent` hex (AnswerSection only consumes icon+label; 135 unit tests pass). Hex 1024→812. Build clean, gate green.
-  - [ ] 9g — wire orphan routes + admin pass
+  - [x] **9g — wire orphan routes + admin pass** — DONE 2026-06-26. DashboardSidebar NAV_ITEMS gained **Exams** (CalendarIcon), **Progress** (new ProgressIcon), **Review→/study** (new ReviewIcon) — the 3 zero-inbound orphans are now reachable from the main app nav. /chat→/sage redirect already in 9a. Admin not-broken pass: /admin, /admin/{users,metrics,pyqs,trial-segments} all HTTP 200 (render, don't crash; don't import serverAuth in client → not the trial/decision class). **Deferred (need product logic, risk of breakage — flagged for founder):** lifecycle entry gates (/welcome-back, /exam-transition, /post-exam) and /brain-map/share Share button (needs snapshot-generation flow). Admin pages keep old palette (internal, out of approved re-skin scope). Build clean.
   - [ ] 9h — final harness + sign-off
 
 ---

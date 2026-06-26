@@ -217,6 +217,24 @@ function ClipboardIcon({ size = 16, color = "currentColor" }) {
     </svg>
   );
 }
+function ProgressIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <line x1="4" y1="20" x2="20" y2="20"/>
+      <line x1="7" y1="20" x2="7" y2="13"/>
+      <line x1="12" y1="20" x2="12" y2="8"/>
+      <line x1="17" y1="20" x2="17" y2="15"/>
+    </svg>
+  );
+}
+function ReviewIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="13" height="16" rx="2"/>
+      <path d="M8 3h11a2 2 0 0 1 2 2v13"/>
+    </svg>
+  );
+}
 
 const NAV_ITEMS = [
   { icon: GridIcon,      label: "Dashboard", href: "/dashboard"  },
@@ -224,6 +242,9 @@ const NAV_ITEMS = [
   { icon: BookIcon,      label: "PYQs",      href: "/pyqs"       },
   { icon: NetworkIcon,   label: "Brain Map", href: "/brain-map"  },
   { icon: ClipboardIcon, label: "Mock Test", href: "/mock-test"  },
+  { icon: CalendarIcon,  label: "Exams",     href: "/exams"      },
+  { icon: ProgressIcon,  label: "Progress",  href: "/progress"   },
+  { icon: ReviewIcon,    label: "Review",    href: "/study"      },
 ];
 
 function Tooltip({ label }) {

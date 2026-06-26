@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: 🔄 Stage 9 in progress (audit done, plan founder-signed-off 2026-06-26). Sub-stages: ✅ 9a. NEXT: 9b.**
+**Current stage: 🔄 Stage 9 in progress (audit done, plan founder-signed-off 2026-06-26). Sub-stages: ✅ 9a, ✅ 9b. NEXT: 9e.**
 
 ---
 
@@ -29,7 +29,7 @@
   - [x] **8h — / landing** — DONE 2026-06-26 (founder picked **Hero A — Constellation Hero**: gold star-field backdrop + gold radial glow, centered LogoMark, gold-dot badge, headline "Your notes that **answer back.**" with gold accent; cleaned all residual `rgba(124,58,237,…)` purple literals + slate headline gradient hex; rupee symbols verified; full page social-proof/features/steps/testimonials/pricing/FAQ/CTA/waitlist all O&A. 🇮🇳 flag emoji removed — broke on Windows/Chromium → gold-dot SVG). Verified desktop + mobile.
 - [ ] **Stage 9 — Wire-up audit + polish** (audit: 53 findings; founder sign-off 2026-06-26 — P0 via /api/telemetry, full re-skin all 5 pages, wire orphans + delete dead-code)
   - [x] **9a — P0 + a11y foundation + dead links** — DONE 2026-06-26. `/trial/decision` blank-crash fixed (telemetry/events.js now client-safe — server branch dynamic-imports serverAuth, client branch POSTs new `/api/telemetry`); app-wide gold `:focus-visible` ring + `prefers-reduced-motion` guard in globals.css; globals violet rgba(124,58,237) → accent color-mix; dead links: /welcome-back /library→/dashboard + dropped dead reset fetch; next.config /ai-coach,/aicoach→/sage (was missing /coach) + /chat→/sage redirect. Verified: build clean, gate green, /trial/decision renders (auth gate, no crash).
-  - [ ] 9b — palette regressions on finished pages
+  - [x] **9b — palette regressions on finished pages** — DONE 2026-06-26. 8 shared comps re-skinned (~84 literals, parallel workflow): QuickChatDrawer (26), QuickChatVortex (2), DashboardSidebar (11, +1 legit gold hex in SVG attr), UserProfile (7), ProgressLayout (7), MorningMode (5), BriefingPlayer (11), EmptyState (15). All banned violet/cyan → O&A tokens/color-mix. Gate green (1352 hex, −51 net), build clean. Visual capture of auth-gated /dashboard + /sage deferred to 9h full-route sweep.
   - [ ] 9c — state coverage (error/empty/retry) + exams prop bug
   - [ ] 9d — mobile fixes
   - [ ] 9e — full re-skin 5 pages (lib/styles.js + /quiz /focus /study /progress /exams)

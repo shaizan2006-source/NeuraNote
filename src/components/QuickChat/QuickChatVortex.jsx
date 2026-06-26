@@ -108,7 +108,7 @@ export default function QuickChatVortex() {
           fontWeight:             600,
           opacity:                showText ? 1 : 0,
           transition:             "opacity 0.35s ease",
-          background:             "linear-gradient(90deg,#4a4a5a 0%,#4a4a5a 20%,#c4b5fd 40%,#f0f0f5 55%,#c4b5fd 70%,#4a4a5a 80%,#4a4a5a 100%)",
+          background:             "linear-gradient(90deg,#4a4a5a 0%,#4a4a5a 20%,var(--accent) 40%,#f0f0f5 55%,var(--accent) 70%,#4a4a5a 80%,#4a4a5a 100%)",
           backgroundSize:         "200% 100%",
           WebkitBackgroundClip:   "text",
           WebkitTextFillColor:    "transparent",

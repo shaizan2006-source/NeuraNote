@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useDrawer } from "@/context/DrawerContext";
 import { useDashboard } from "@/context/DashboardContext";
+import { parseSseStream } from "@/lib/sseParser";
 import QuickChatVortex from "./QuickChatVortex";
 
 const CURSOR_CSS = `
@@ -19,7 +20,7 @@ function BlinkingCursor() {
   return (
     <span style={{
       display: "inline-block", width: 2, height: "1em",
-      background: "#22D3EE", marginLeft: 2, verticalAlign: "text-bottom",
+      background: "var(--accent)", marginLeft: 2, verticalAlign: "text-bottom",
       animation: "blink 1s step-end infinite",
     }} />
   );
@@ -30,8 +31,8 @@ function UserBubble({ text }) {
   return (
     <div style={{ display: "flex", justifyContent: "flex-end", minWidth: 0 }}>
       <div style={{
-        background:     "rgba(139,92,246,0.12)",
-        color:          "#c4b5fd",
+        background:     "color-mix(in srgb, var(--accent) 12%, transparent)",
+        color:          "var(--accent)",
         borderRadius:   6,
         padding:        "5px 8px",
         maxWidth:       "80%",
@@ -49,12 +50,12 @@ function UserBubble({ text }) {
 function AIBubble({ text, isStreaming = false }) {
   return (
     <div style={{
-      borderLeft:   "2px solid rgba(34,211,238,0.35)",
+      borderLeft:   "2px solid color-mix(in srgb, var(--accent) 30%, transparent)",
       padding:      "5px 8px",
       borderRadius: "0 6px 6px 0",
-      background:   "rgba(34,211,238,0.02)",
+      background:   "color-mix(in srgb, var(--accent) 3%, transparent)",
       fontSize:     9,
-      color:        "#a1a1aa",
+      color:        "var(--text-secondary)",
       lineHeight:   1.5,
       minHeight:    20,
       // overflow containment
@@ -153,33 +154,19 @@ export default function QuickChatDrawer({ userId }) {
         throw new Error(errData.error || "Request failed");
       }
 
-      const reader  = res.body.getReader();
-      const decoder = new TextDecoder();
-      let raw = "";
+      let accumulated = "";
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        raw += decoder.decode(value, { stream: true });
-
-        // Visible text is everything before the __CONV__ marker (if it arrived yet)
-        const sep = raw.indexOf("\n__CONV__");
-        const visible = sep !== -1 ? raw.slice(0, sep) : raw;
-
-        setMessages(prev => {
-          const msgs = [...prev];
-          msgs[msgs.length - 1] = { role: "assistant", content: visible, streaming: true };
-          return msgs;
-        });
-      }
-
-      // Parse conversation metadata appended at end of stream
-      const sep = raw.indexOf("\n__CONV__");
-      if (sep !== -1) {
-        try {
-          const meta = JSON.parse(raw.slice(sep + 9)); // 9 === "\n__CONV__".length
-          if (meta.conversation_id) setConversationId(meta.conversation_id);
-        } catch {}
+      for await (const event of parseSseStream(res)) {
+        if (event.type === "token") {
+          accumulated += event.text;
+          setMessages(prev => {
+            const msgs = [...prev];
+            msgs[msgs.length - 1] = { role: "assistant", content: accumulated, streaming: true };
+            return msgs;
+          });
+        } else if (event.type === "conv") {
+          if (event.conversation_id) setConversationId(event.conversation_id);
+        }
       }
 
       // Mark last message as done (remove streaming cursor)
@@ -243,8 +230,8 @@ export default function QuickChatDrawer({ userId }) {
               right:         0,
               height:        "100vh",
               width:         "clamp(320px, 40vw, 600px)",
-              background:    "#111111",
-              borderLeft:    "1px solid rgba(255,255,255,0.05)",
+              background:    "var(--bg-elevated)",
+              borderLeft:    "1px solid var(--border-hairline)",
               zIndex:        10,
               display:       "flex",
               flexDirection: "column",
@@ -253,33 +240,33 @@ export default function QuickChatDrawer({ userId }) {
             {/* Header */}
             <div style={{
               padding:        "8px 12px",
-              borderBottom:   "1px solid rgba(255,255,255,0.05)",
+              borderBottom:   "1px solid var(--border-hairline)",
               display:        "flex",
               alignItems:     "center",
               justifyContent: "space-between",
               flexShrink:     0,
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: "#f4f4f5" }}>◈ Quick Ask</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>◈ Quick Ask</span>
                 {effectivePdfName ? (
                   <span style={{
-                    fontSize: 9, color: "#22D3EE",
-                    background: "rgba(34,211,238,0.08)",
-                    border: "1px solid rgba(34,211,238,0.2)",
+                    fontSize: 9, color: "var(--accent)",
+                    background: "color-mix(in srgb, var(--accent) 8%, transparent)",
+                    border: "1px solid color-mix(in srgb, var(--accent) 28%, transparent)",
                     borderRadius: 4, padding: "1px 5px",
                   }}>{effectivePdfName}</span>
                 ) : (
                   <span style={{
-                    fontSize: 9, color: "#52525b",
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    fontSize: 9, color: "var(--text-tertiary)",
+                    background: "var(--bg-surface-2)",
+                    border: "1px solid var(--border-strong)",
                     borderRadius: 4, padding: "1px 5px",
                   }}>No PDF</span>
                 )}
               </div>
               <button onClick={closeDrawer} style={{
                 background: "transparent", border: "none",
-                color: "#52525b", cursor: "pointer", fontSize: 14,
+                color: "var(--text-tertiary)", cursor: "pointer", fontSize: 14,
               }}>✕</button>
             </div>
 
@@ -294,7 +281,7 @@ export default function QuickChatDrawer({ userId }) {
               minHeight: 0,          // CRITICAL: allows overflow: auto to work in flex container
             }}>
               {messages.length === 0 && (
-                <p style={{ color: "#3f3f46", fontSize: 9, textAlign: "center", marginTop: 20 }}>
+                <p style={{ color: "var(--text-tertiary)", fontSize: 9, textAlign: "center", marginTop: 20 }}>
                   Ask anything about your study material
                 </p>
               )}
@@ -309,7 +296,7 @@ export default function QuickChatDrawer({ userId }) {
             {/* Input area */}
             <div style={{
               padding:       "7px 12px",
-              borderTop:     "1px solid rgba(255,255,255,0.05)",
+              borderTop:     "1px solid var(--border-hairline)",
               display:       "flex",
               flexDirection: "column",
               gap:           4,
@@ -328,12 +315,12 @@ export default function QuickChatDrawer({ userId }) {
                   rows={1}
                   style={{
                     flex:         1,
-                    background:   "rgba(255,255,255,0.04)",
-                    border:       "1px solid rgba(255,255,255,0.08)",
+                    background:   "var(--bg-surface-2)",
+                    border:       "1px solid var(--border-strong)",
                     borderRadius: 5,
                     padding:      "4px 8px",
                     fontSize:     9,
-                    color:        "#e4e4e7",
+                    color:        "var(--text-primary)",
                     outline:      "none",
                     resize:       "none",
                     overflowY:    "hidden",
@@ -346,10 +333,10 @@ export default function QuickChatDrawer({ userId }) {
                   disabled={loading || !input.trim()}
                   style={{
                     width: 20, height: 20, flexShrink: 0,
-                    background:   "linear-gradient(135deg, #8B5CF6, #6D28D9)",
+                    background:   "var(--accent-grad)",
                     border:       "none",
                     borderRadius: 5,
-                    color:        "#fff",
+                    color:        "var(--bg-base)",
                     fontSize:     9,
                     cursor:       loading ? "not-allowed" : "pointer",
                     display:      "flex", alignItems: "center", justifyContent: "center",
@@ -375,11 +362,11 @@ export default function QuickChatDrawer({ userId }) {
                       } catch {} // sessionStorage unavailable (private mode / quota)
                     }
                     closeDrawer();
-                    router.push(`/ask-ai?cid=${conversationId}`);
+                    router.push(`/sage?cid=${conversationId}`);
                   }}
                   style={{
                     background: "transparent", border: "none",
-                    color: "#22D3EE", fontSize: 8,
+                    color: "var(--accent)", fontSize: 8,
                     cursor: "pointer", textAlign: "right",
                     padding: 0, alignSelf: "flex-end",
                   }}

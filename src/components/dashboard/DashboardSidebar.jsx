@@ -271,7 +271,7 @@ function UserSection({ user, collapsed }) {
   const avatar = (
     <div style={{
       width: 30, height: 30, borderRadius: "50%", flexShrink: 0,
-      background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+      background: "var(--accent-grad)",
       display: "flex", alignItems: "center", justifyContent: "center",
       fontSize: 11, fontWeight: 700, color: "#fff",
     }}>
@@ -331,8 +331,8 @@ function UpgradePro({ router, collapsed }) {
     <div style={{
       margin: "0 8px 8px",
       padding: "12px",
-      background: "rgba(139,92,246,0.07)",
-      border: "1px solid rgba(139,92,246,0.18)",
+      background: "color-mix(in srgb, var(--accent) 8%, transparent)",
+      border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)",
       borderRadius: 10,
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
@@ -347,7 +347,7 @@ function UpgradePro({ router, collapsed }) {
         style={{
           width: "100%",
           padding: "7px",
-          background: "linear-gradient(135deg, #8B5CF6, #6D28D9)",
+          background: "var(--accent-grad)",
           border: "none",
           borderRadius: 7,
           color: "#fff",
@@ -376,16 +376,16 @@ function NavItems({ pathname, router, sidebarCollapsed, hoveredItem, setHoveredI
         const isActive = pathname === href || pathname.startsWith(href + "/");
         const isHovered = hoveredItem === href;
         const btnBg = isActive && isHovered
-          ? "rgba(139,92,246,0.18)"
+          ? "color-mix(in srgb, var(--accent) 14%, transparent)"
           : isActive
-            ? "rgba(139,92,246,0.12)"
+            ? "color-mix(in srgb, var(--accent) 10%, transparent)"
             : isHovered
               ? "rgba(255,255,255,0.05)"
               : "transparent";
         const btnShadow = isActive && isHovered
-          ? "0 0 0 1px rgba(139,92,246,0.22), 0 2px 16px rgba(139,92,246,0.10), inset 0 0 16px rgba(139,92,246,0.06)"
+          ? "0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent), 0 2px 16px var(--accent-glow-soft), inset 0 0 16px color-mix(in srgb, var(--accent) 8%, transparent)"
           : !isActive && isHovered
-            ? "0 0 0 1px rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.12), inset 0 0 12px rgba(34,211,238,0.03)"
+            ? "0 0 0 1px rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.12)"
             : "none";
         return (
           <div
@@ -407,15 +407,15 @@ function NavItems({ pathname, router, sidebarCollapsed, hoveredItem, setHoveredI
                 boxShadow: btnShadow,
                 transform: isHovered ? "scale(1.01)" : "scale(1)",
                 border: "none", borderRadius: 6, cursor: "pointer",
-                color: isActive ? "#a78bfa" : isHovered ? "#e4e4e7" : "#a1a1aa",
+                color: isActive ? "var(--accent)" : isHovered ? "#e4e4e7" : "#a1a1aa",
                 transition: "background 250ms ease-out, box-shadow 250ms ease-out, transform 200ms ease-out, color 200ms ease-out",
                 margin: "0 6px",
               }}
             >
               <span style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
-                <Icon size={16} color={isActive ? "#a78bfa" : isHovered ? "#e4e4e7" : "#a1a1aa"} />
+                <Icon size={16} color={isActive ? "#D4AF6E" : isHovered ? "#e4e4e7" : "#a1a1aa"} />
                 {sidebarCollapsed && isActive && (
-                  <span style={{ position: "absolute", bottom: 2, right: 2, width: 5, height: 5, borderRadius: "50%", background: "#8B5CF6" }} />
+                  <span style={{ position: "absolute", bottom: 2, right: 2, width: 5, height: 5, borderRadius: "50%", background: "var(--accent)" }} />
                 )}
               </span>
               <AnimatePresence>

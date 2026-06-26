@@ -148,7 +148,7 @@ function DropdownItem({ icon, label, onClick, danger = false, badge }) {
       {badge && (
         <span style={{
           fontSize: 10, fontWeight: 600, padding: "1px 6px", borderRadius: 10,
-          background: "rgba(139,92,246,0.2)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.3)",
+          background: "color-mix(in srgb, var(--accent) 14%, transparent)", color: "var(--accent)", border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)",
         }}>{badge}</span>
       )}
     </button>
@@ -370,13 +370,13 @@ function ProfileModal({ user, avatarUrl, onClose, onSaved }) {
                 disabled={saving}
                 style={{
                   padding: "8px 18px", borderRadius: 8, border: "none",
-                  background: saving ? "rgba(139,92,246,0.5)" : "rgba(139,92,246,0.85)",
+                  background: saving ? "var(--accent-dim)" : "var(--accent)",
                   color: "#fff", fontSize: 13, fontWeight: 600,
                   cursor: saving ? "not-allowed" : "pointer",
                   transition: "background 150ms",
                 }}
-                onMouseEnter={e => { if (!saving) e.currentTarget.style.background = "rgba(139,92,246,1)"; }}
-                onMouseLeave={e => { if (!saving) e.currentTarget.style.background = "rgba(139,92,246,0.85)"; }}
+                onMouseEnter={e => { if (!saving) e.currentTarget.style.background = "var(--accent-bright)"; }}
+                onMouseLeave={e => { if (!saving) e.currentTarget.style.background = "var(--accent)"; }}
               >
                 {saving ? "Saving…" : "Save"}
               </button>
@@ -405,7 +405,7 @@ function Field({ label, value, onChange, placeholder }) {
           width: "100%", boxSizing: "border-box",
           padding: "9px 12px", borderRadius: 8,
           background: "rgba(255,255,255,0.05)",
-          border: `1px solid ${focused ? "rgba(139,92,246,0.5)" : "rgba(255,255,255,0.1)"}`,
+          border: `1px solid ${focused ? "color-mix(in srgb, var(--accent) 50%, transparent)" : "rgba(255,255,255,0.1)"}`,
           color: "#f4f4f5", fontSize: 13, outline: "none",
           transition: "border-color 150ms",
           fontFamily: "inherit",

@@ -44,8 +44,8 @@ export default function BriefingPlayer() {
 
   return (
     <div style={{
-      background: "rgba(139,92,246,0.08)",
-      border: "1px solid rgba(139,92,246,0.2)",
+      background: "var(--bg-surface)",
+      border: "1px solid var(--border-hairline)",
       borderRadius: 12,
       padding: "14px 16px",
       marginBottom: 16,
@@ -62,18 +62,18 @@ export default function BriefingPlayer() {
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <button onClick={togglePlay} style={{
           width: 36, height: 36, borderRadius: 18,
-          background: "#8B5CF6", border: "none", cursor: "pointer",
+          background: "var(--accent)", border: "none", cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 14, color: "#fff", flexShrink: 0,
+          fontSize: 14, color: "var(--bg-base)", flexShrink: 0,
         }}>
           {playing ? "⏸" : "▶"}
         </button>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#E5E7EB" }}>Your Morning Briefing</div>
-          <div style={{ fontSize: 11, color: "#6B7280" }}>{duration}</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Your Morning Briefing</div>
+          <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{duration}</div>
         </div>
         <button onClick={() => setExpanded(e => !e)} style={{
-          background: "none", border: "none", color: "#6B7280", cursor: "pointer", fontSize: 11,
+          background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", fontSize: 11,
         }}>
           {expanded ? "Hide" : "Read"}
         </button>
@@ -81,14 +81,14 @@ export default function BriefingPlayer() {
 
       {/* Progress bar */}
       {playing && (
-        <div style={{ height: 3, background: "rgba(255,255,255,0.08)", borderRadius: 2, marginTop: 10 }}>
-          <div style={{ height: "100%", width: `${progress * 100}%`, background: "#8B5CF6", borderRadius: 2, transition: "width 0.5s linear" }} />
+        <div style={{ height: 3, background: "var(--bg-surface-2)", borderRadius: 2, marginTop: 10 }}>
+          <div style={{ height: "100%", width: `${progress * 100}%`, background: "var(--accent)", borderRadius: 2, transition: "width 0.5s linear" }} />
         </div>
       )}
 
       {/* Transcript */}
       {expanded && briefing.transcript && (
-        <div style={{ marginTop: 12, fontSize: 13, color: "#9CA3AF", lineHeight: 1.7, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 12 }}>
+        <div style={{ marginTop: 12, fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.7, borderTop: "1px solid var(--border-hairline)", paddingTop: 12 }}>
           {briefing.transcript}
         </div>
       )}

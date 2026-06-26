@@ -16,11 +16,8 @@ export default function WelcomeBackPage() {
   }, []);
 
   function handlePickUp() { router.push("/dashboard"); }
-  function handleFresh() {
-    fetch("/api/study-plan/reset", { method: "POST" }).catch(() => {});
-    router.push("/dashboard");
-  }
-  function handleLooking() { router.push("/library"); }
+  function handleFresh() { router.push("/dashboard"); }
+  function handleLooking() { router.push("/dashboard"); }
 
   return (
     <div style={{

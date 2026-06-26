@@ -33,11 +33,15 @@ const nextConfig = {
 
   async redirects() {
     return [
-      { source: "/ai-coach", destination: "/coach", permanent: true },
-      { source: "/aicoach",  destination: "/coach", permanent: true },
+      // /coach was never built; the AI surface is Sage. Repoint stale links there.
+      { source: "/ai-coach", destination: "/sage", permanent: true },
+      { source: "/aicoach",  destination: "/sage", permanent: true },
       // Sage rename (redesign Stage 4): permanent redirect so old links/bookmarks survive.
       // NOTE: /api/ask-ai (the non-streaming Q&A API) is intentionally NOT renamed.
       { source: "/ask-ai", destination: "/sage", permanent: true },
+      // /chat is superseded by /sage (orphaned, no inbound links). Redirect so any
+      // old URL resolves to the live chat surface instead of a dead/broken route.
+      { source: "/chat", destination: "/sage", permanent: true },
     ];
   },
 

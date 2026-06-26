@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: ✅ Stage 8 COMPLETE (8a–8h done). NEXT: Stage 9 (wire-up audit + polish) — needs founder sign-off to start.**
+**Current stage: 🔄 Stage 9 in progress (audit done, plan founder-signed-off 2026-06-26). Sub-stages: ✅ 9a. NEXT: 9b.**
 
 ---
 
@@ -27,7 +27,15 @@
   - [x] **8f — /pricing** — DONE 2026-06-25 (visuals only; Pro = gold hero card, gold annual toggle, success callout/checks; **mojibake fixed incl. ₹ rupee symbol**; Razorpay theme reads computed --accent; payment/plan logic untouched + verified).
   - [x] **8g — onboarding + welcome-back + exam-transition + post-exam + trial** — DONE 2026-06-25 (16 files re-skinned; onboarding single-select = gold-edge, CTAs gold, success/win moments gold; mojibake fixed). 6/7 pages render clean. **2 PRE-EXISTING bugs flagged (not re-skin):** /trial/decision crashes (client comp imports serverAuth via telemetry/events — server-only SERVICE_ROLE_KEY undefined in browser); exam-transition shows "in undefined days" with no exam date set.
   - [x] **8h — / landing** — DONE 2026-06-26 (founder picked **Hero A — Constellation Hero**: gold star-field backdrop + gold radial glow, centered LogoMark, gold-dot badge, headline "Your notes that **answer back.**" with gold accent; cleaned all residual `rgba(124,58,237,…)` purple literals + slate headline gradient hex; rupee symbols verified; full page social-proof/features/steps/testimonials/pricing/FAQ/CTA/waitlist all O&A. 🇮🇳 flag emoji removed — broke on Windows/Chromium → gold-dot SVG). Verified desktop + mobile.
-- [ ] **Stage 9 — Wire-up audit + polish**
+- [ ] **Stage 9 — Wire-up audit + polish** (audit: 53 findings; founder sign-off 2026-06-26 — P0 via /api/telemetry, full re-skin all 5 pages, wire orphans + delete dead-code)
+  - [x] **9a — P0 + a11y foundation + dead links** — DONE 2026-06-26. `/trial/decision` blank-crash fixed (telemetry/events.js now client-safe — server branch dynamic-imports serverAuth, client branch POSTs new `/api/telemetry`); app-wide gold `:focus-visible` ring + `prefers-reduced-motion` guard in globals.css; globals violet rgba(124,58,237) → accent color-mix; dead links: /welcome-back /library→/dashboard + dropped dead reset fetch; next.config /ai-coach,/aicoach→/sage (was missing /coach) + /chat→/sage redirect. Verified: build clean, gate green, /trial/decision renders (auth gate, no crash).
+  - [ ] 9b — palette regressions on finished pages
+  - [ ] 9c — state coverage (error/empty/retry) + exams prop bug
+  - [ ] 9d — mobile fixes
+  - [ ] 9e — full re-skin 5 pages (lib/styles.js + /quiz /focus /study /progress /exams)
+  - [ ] 9f — a11y finish + dead-code deletion
+  - [ ] 9g — wire orphan routes + admin pass
+  - [ ] 9h — final harness + sign-off
 
 ---
 

@@ -119,6 +119,25 @@
 - **Badge:** dropped 🇮🇳 flag emoji (Windows/Chromium render it as "IN"/tofu — Windows has no flag-emoji font) → 6px gold-dot SVG. (NOTE: one decorative 🚀 remains in the CTA banner — renders fine cross-platform; left as marketing flourish.)
 - Verified: build clean, gate green (none introduced, `page.js` 15→0), rupee symbols correct, desktop + mobile hero + full-page captured (`__screens__/stage-8h-landing/`). Landing's `useInView`/FadeUp sections need a scroll-capture (`scripts/shot-landing.mjs`) — plain full-page shots render them blank.
 
+## Stage 9 audit (2026-06-26) — multi-agent, 6 dimensions, 53 findings
+
+Ran a 9-agent workflow (render-safety, dead-links, states, palette, a11y, mobile + P0 verify). Inventory by priority:
+
+**P0 — verified crash (1 root cause, 3 facets):** `/trial/decision` renders **blank**. `src/lib/telemetry/events.js:1` top-level imports `supabaseAdmin` from `@/lib/serverAuth` (top-level `createClient(url, SUPABASE_SERVICE_ROLE_KEY)`); the 3 client comps (DecisionPage/OptionsSheet/ParentReferralButton) pull it into the browser bundle → `@supabase/supabase-js` throws "supabaseKey is required" at module eval (verified against installed lib `dist/index.cjs:363`). **`/chat` is NOT a render crash** (uses ANON key correctly; its failure is a runtime API/data error — missing auth header to /api/chat/history + chat_messages table). One fix (make events.js client-safe) covers all 3.
+
+**P1 — visible regressions / broken primary paths:**
+- *Palette on FINISHED pages (banned violet/cyan leaking via shared comps):* QuickChatDrawer + QuickChatVortex (/dashboard), DashboardSidebar (/dashboard,/progress), UserProfile (/sage), ProgressLayout (/sage), MorningMode + BriefingPlayer (/dashboard morning), EmptyState (/dashboard new-user).
+- *Dead links:* /welcome-back "just looking around" → `/library` (404, should be /dashboard); Sage FollowUpCTAs "Add to review deck" → POST `/api/cards` (404, shows "Saved" anyway) — **verify FollowUpCTAs is actually rendered (palette agent says qa/* is orphaned).**
+- *States:* /progress blank on error; /exams WeakTopicsSection prop mismatch (`weakTopics` vs `topics`+`selectedExam` → permanent wrong empty state; same in ExamsHeroCard.jsx); /quiz/friday blank+stuck on gen failure; /mock-test no catch → stuck buttons + blank running view.
+- *a11y:* NO global `:focus-visible` gold ring anywhere except auth (AuthShell). Sage icon buttons use `title=` but no `aria-label`.
+- *Mobile:* ExamsSidebar fixed 220px, no drawer; /exams 1fr1fr grid; /quiz active 3fr2fr; /focus active 1fr1fr — all no responsive fallback.
+
+**P2 — polish + re-skin remaining user pages:** central `src/lib/styles.js` COLORS bakes violet/cyan (feeds /quiz, /focus, shared TopBar/Button/ContextualSidebar — single highest-leverage fix). Then full re-skin: /exams (L: +5 child comps +ExamsSidebar), /study (M), /focus children (L), /progress cards (L), /quiz (L). State P2: /pyqs, /pyqs/practice, /exams error states. a11y P2: reduced-motion global guard (~37 unguarded files), sage textarea aria-label, auth `htmlFor`, FAQ aria-expanded. Mobile P2: pricing family/institute grid. globals.css `.upload-zone`/`.badge-brand` rgba(124,58,237) violet.
+
+**P3 — cleanup/internal:** orphan unimported violet comps (qa/*, BrainSection, AnalyticsSection, QuizSection, ExamReadinessShareCard, answer/SessionCallout+AnswerRating, ModelSwitcher) → delete or sweep; parseAnswerSections dead accent config; next.config `/coach` redirect → missing route; lifecycle-page entry wiring (/welcome-back, /exam-transition, /post-exam, /brain-map/share have zero inbound); admin/dev pages still old palette; /pyqs/[slug] DB-error boundary; focus scrollbar violet; orphan routes /study /exams /progress (no nav) /chat (superseded by /sage).
+
+Full finding objects: `tasks/wjf8wvf8d.output` (workflow run wf_2cdb5872-948).
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

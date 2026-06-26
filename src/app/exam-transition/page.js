@@ -27,6 +27,12 @@ const PHASE_UI = {
     icon: "★",
     subtitle: "exam day",
   },
+  post_exam: {
+    gradient: "var(--bg-base)",
+    accent: "var(--success)",
+    icon: "✓",
+    subtitle: "exam done",
+  },
 };
 
 export default function ExamTransitionPage() {
@@ -52,6 +58,13 @@ export default function ExamTransitionPage() {
 
   const ui = PHASE_UI[phase.phase] ?? PHASE_UI.t7;
   const config = phase.config ?? {};
+  const examName = phase.exam_type ? phase.exam_type.replace(/_/g, " ").toUpperCase() : "Your exam";
+  const days = Number(phase.days_left);
+  const hasDays = Number.isFinite(days);
+  let timing = "";
+  if (phase.phase === "t0") timing = "— Today";
+  else if (phase.phase === "post_exam") timing = "— Done";
+  else if (hasDays && days > 0) timing = `in ${days} day${days === 1 ? "" : "s"}`;
 
   return (
     <div style={{ minHeight: "100vh", background: ui.gradient, color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -63,7 +76,7 @@ export default function ExamTransitionPage() {
         </div>
 
         <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>
-          {phase.exam_type?.replace(/_/g, " ").toUpperCase()} {phase.phase === "t0" ? "— Today" : `in ${phase.days_left} day${phase.days_left === 1 ? "" : "s"}`}
+          {examName}{timing ? ` ${timing}` : ""}
         </h1>
 
         {config.banner && (

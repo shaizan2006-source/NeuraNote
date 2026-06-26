@@ -16,8 +16,8 @@ const NAV_ITEMS = [
         <rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.3" />
       </svg>
     ),
-    glow: "rgba(139,92,246,0.35)",
-    activeColor: "#a78bfa",
+    glow: "rgba(212,175,110,0.30)",
+    activeColor: "#D4AF6E",
   },
   {
     href: "/sage",
@@ -27,8 +27,8 @@ const NAV_ITEMS = [
         <path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v5a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V4z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
       </svg>
     ),
-    glow: "rgba(34,211,238,0.35)",
-    activeColor: "#22D3EE",
+    glow: "rgba(212,175,110,0.30)",
+    activeColor: "#D4AF6E",
   },
   {
     href: "/focus",
@@ -40,8 +40,8 @@ const NAV_ITEMS = [
         <line x1="8" y1="1.5" x2="8" y2="3.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
       </svg>
     ),
-    glow: "rgba(124,58,237,0.35)",
-    activeColor: "#8B5CF6",
+    glow: "rgba(212,175,110,0.30)",
+    activeColor: "#D4AF6E",
   },
   {
     href: "/quiz",
@@ -53,8 +53,8 @@ const NAV_ITEMS = [
         <circle cx="8" cy="11" r="0.6" fill="currentColor" />
       </svg>
     ),
-    glow: "rgba(34,211,238,0.35)",
-    activeColor: "#22D3EE",
+    glow: "rgba(212,175,110,0.30)",
+    activeColor: "#D4AF6E",
   },
   {
     href: "/call-tutor",
@@ -68,8 +68,8 @@ const NAV_ITEMS = [
         <path d="M12 9v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
       </svg>
     ),
-    glow: "rgba(245,158,11,0.35)",
-    activeColor: "#F59E0B",
+    glow: "rgba(245,181,68,0.30)",
+    activeColor: "#F5B544",
   },
 ];
 
@@ -101,13 +101,13 @@ function NavItem({ href, label, icon, glow, activeColor, isActive }) {
           : "1px solid transparent",
         boxShadow: hovered && !isActive ? `0 0 16px ${glow}` : "none",
         transform: hovered ? "translateX(2px)" : "translateX(0)",
-        color: isActive ? activeColor : hovered ? "#e4e4e7" : "#71717a",
+        color: isActive ? activeColor : hovered ? "var(--text-primary)" : "var(--text-tertiary)",
       }}>
         <span style={{
           display: "flex",
           alignItems: "center",
           flexShrink: 0,
-          color: isActive ? activeColor : hovered ? "#e4e4e7" : "#52525b",
+          color: isActive ? activeColor : hovered ? "var(--text-primary)" : "var(--text-tertiary)",
           transition: "color 180ms ease",
         }}>
           {icon}
@@ -143,7 +143,7 @@ export default function ExamsSidebar() {
       width: 220,
       minWidth: 220,
       height: "100vh",
-      background: "#0c0c0c",
+      background: "var(--bg-elevated)",
       borderRight: "1px solid rgba(255,255,255,0.05)",
       display: "flex",
       flexDirection: "column",
@@ -163,18 +163,18 @@ export default function ExamsSidebar() {
           width: 28,
           height: 28,
           borderRadius: 7,
-          background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+          background: "var(--accent-grad)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: 13,
-          color: "#fff",
+          color: "var(--bg-base)",
           fontWeight: 700,
           flexShrink: 0,
         }}>
           ✦
         </div>
-        <span style={{ fontSize: 13, fontWeight: 600, color: "#e4e4e7", letterSpacing: "0.01em" }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "0.01em" }}>
           AskMyNotes
         </span>
       </div>
@@ -184,7 +184,7 @@ export default function ExamsSidebar() {
         margin: "4px 16px 6px",
         fontSize: 10,
         fontWeight: 600,
-        color: "#3f3f46",
+        color: "var(--text-tertiary)",
         textTransform: "uppercase",
         letterSpacing: "0.08em",
       }}>
@@ -207,7 +207,7 @@ export default function ExamsSidebar() {
         padding: "12px 16px 0",
         borderTop: "1px solid rgba(255,255,255,0.05)",
       }}>
-        <p style={{ margin: 0, fontSize: 10, color: "#3f3f46" }}>
+        <p style={{ margin: 0, fontSize: 10, color: "var(--text-disabled)" }}>
           AskMyNotes • Study Smarter
         </p>
       </div>

@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: 🔄 Stage 9 in progress (audit done, plan founder-signed-off 2026-06-26). Sub-stages: ✅ 9a, ✅ 9b. NEXT: 9e.**
+**Current stage: 🔄 Stage 9 in progress (audit done, plan founder-signed-off 2026-06-26). Sub-stages: ✅ 9a, ✅ 9b, ✅ 9e. NEXT: 9c.**
 
 ---
 
@@ -32,7 +32,7 @@
   - [x] **9b — palette regressions on finished pages** — DONE 2026-06-26. 8 shared comps re-skinned (~84 literals, parallel workflow): QuickChatDrawer (26), QuickChatVortex (2), DashboardSidebar (11, +1 legit gold hex in SVG attr), UserProfile (7), ProgressLayout (7), MorningMode (5), BriefingPlayer (11), EmptyState (15). All banned violet/cyan → O&A tokens/color-mix. Gate green (1352 hex, −51 net), build clean. Visual capture of auth-gated /dashboard + /sage deferred to 9h full-route sweep.
   - [ ] 9c — state coverage (error/empty/retry) + exams prop bug
   - [ ] 9d — mobile fixes
-  - [ ] 9e — full re-skin 5 pages (lib/styles.js + /quiz /focus /study /progress /exams)
+  - [x] **9e — full re-skin 5 pages** — DONE 2026-06-26. Central `lib/styles.js` COLORS/SHADOWS → literal O&A gold (literal, not var, because consumed in canvas e.g. TimerRing) + TimerRing track gold. Fanned out 37 components (356 literals) across /exams (+ExamsSidebar +5 dashboard/exams cards +ExamsHeroCard), /study, /focus (+5 focus comps), /progress (+13 progress cards +CohortWidget), /quiz (+shared ContextualSidebar/Card/Buttons/QuizSkeleton +quiz comps). 4 files use literal gold for canvas/SVG (ExamsSidebar, FocusScoreCard, Celebration, ProgressRing). Gate green (hex 1352→1024, −328), build clean, all 5 routes HTTP 200. **Authenticated visual sweep deferred to 9h** (no test creds in .env.local; `scripts/shot-9e.mjs` ready once creds provided).
   - [ ] 9f — a11y finish + dead-code deletion
   - [ ] 9g — wire orphan routes + admin pass
   - [ ] 9h — final harness + sign-off

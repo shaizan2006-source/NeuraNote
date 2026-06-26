@@ -163,7 +163,7 @@ function FocusPageContent() {
   };
 
   const pageStyle = {
-    background: '#04060e',   // fallback: matches amb-layer-base before component mounts
+    background: 'var(--bg-base)',   // fallback: matches amb-layer-base before component mounts
     height: '100vh',
     color: COLORS.text.primary,
     fontFamily: TYPOGRAPHY.fontFamily,
@@ -179,9 +179,9 @@ function FocusPageContent() {
     minHeight: 0,
     overflowY: chatOpen ? 'hidden' : 'auto',
     overflowX: 'hidden',
-    // Subtle purple scrollbar on Firefox
+    // Subtle accent scrollbar on Firefox
     scrollbarWidth: 'thin',
-    scrollbarColor: 'rgba(139,92,246,0.25) transparent',
+    scrollbarColor: 'color-mix(in srgb, var(--accent) 25%, transparent) transparent',
     position: 'relative',
     zIndex: 1,
   };
@@ -193,8 +193,8 @@ function FocusPageContent() {
       <style>{`
         .amn-focus-scroll::-webkit-scrollbar { width: 4px; }
         .amn-focus-scroll::-webkit-scrollbar-track { background: transparent; }
-        .amn-focus-scroll::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.25); border-radius: 4px; }
-        .amn-focus-scroll::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.45); }
+        .amn-focus-scroll::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--accent) 25%, transparent); border-radius: 4px; }
+        .amn-focus-scroll::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--accent) 45%, transparent); }
       `}</style>
       <ContextualSidebar />
       <div className="amn-focus-scroll" style={contentContainerStyle}>
@@ -299,7 +299,7 @@ function FocusPageContent() {
                     background: COLORS.accent.cyan,
                     border: 'none',
                     borderRadius: RADIUS.md,
-                    color: '#0a0a0f',
+                    color: 'var(--bg-base)',
                     fontSize: TYPOGRAPHY.sizes.body,
                     fontWeight: 700,
                     cursor: 'pointer',

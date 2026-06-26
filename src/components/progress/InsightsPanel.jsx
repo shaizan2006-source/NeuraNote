@@ -11,16 +11,16 @@ import { generateInsights } from "@/lib/analytics/generateInsights";
  */
 
 const TYPE_BG = {
-  timing:   "rgba(34,211,238,0.07)",
-  positive: "rgba(34,197,94,0.07)",
-  warning:  "rgba(245,158,11,0.07)",
-  nudge:    "rgba(139,92,246,0.07)",
+  timing:   "color-mix(in srgb, var(--info) 7%, transparent)",
+  positive: "color-mix(in srgb, var(--success) 7%, transparent)",
+  warning:  "color-mix(in srgb, var(--warning) 7%, transparent)",
+  nudge:    "color-mix(in srgb, var(--accent) 7%, transparent)",
 };
 const TYPE_BORDER = {
-  timing:   "rgba(34,211,238,0.15)",
-  positive: "rgba(34,197,94,0.15)",
-  warning:  "rgba(245,158,11,0.15)",
-  nudge:    "rgba(139,92,246,0.15)",
+  timing:   "color-mix(in srgb, var(--info) 25%, transparent)",
+  positive: "color-mix(in srgb, var(--success) 25%, transparent)",
+  warning:  "color-mix(in srgb, var(--warning) 25%, transparent)",
+  nudge:    "color-mix(in srgb, var(--accent) 25%, transparent)",
 };
 
 export default function InsightsPanel({
@@ -59,10 +59,10 @@ export default function InsightsPanel({
   if (!insights || insights.length === 0) {
     return (
       <section style={{ marginTop: 16 }}>
-        <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+        <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
           Smart Insights
         </p>
-        <p style={{ margin: 0, fontSize: 11, color: "#52525b" }}>
+        <p style={{ margin: 0, fontSize: 11, color: "var(--text-disabled)" }}>
           Start studying to see insights
         </p>
       </section>
@@ -71,7 +71,7 @@ export default function InsightsPanel({
 
   return (
     <section style={{ marginTop: 16 }}>
-      <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+      <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
         Smart Insights
       </p>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -84,7 +84,7 @@ export default function InsightsPanel({
             maxWidth: "100%",
           }}>
             <span style={{ fontSize: 14, flexShrink: 0 }}>{icon}</span>
-            <span style={{ fontSize: 11, color: "#d4d4d8", lineHeight: 1.4, overflowWrap: "break-word", minWidth: 0 }}>{message}</span>
+            <span style={{ fontSize: 11, color: "var(--text-secondary)", lineHeight: 1.4, overflowWrap: "break-word", minWidth: 0 }}>{message}</span>
           </div>
         ))}
       </div>

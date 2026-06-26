@@ -10,8 +10,8 @@ export function PrimaryButton({ children, onClick, style = {}, ...props }) {
       style={{
         position:       "relative",
         overflow:       "hidden",
-        background:     "linear-gradient(135deg, #8B5CF6, #6D28D9)",
-        color:          "#fff",
+        background:     "var(--accent-grad)",
+        color:          "var(--bg-base)",
         padding:        "9px 18px",
         borderRadius:   8,
         fontSize:       11,
@@ -50,8 +50,8 @@ export function SecondaryButton({ children, onClick, style = {}, ...props }) {
       {...props}
       style={{
         background:   "transparent",
-        color:        "#a1a1aa",
-        border:       "1px solid rgba(255,255,255,0.12)",
+        color:        "var(--text-secondary)",
+        border:       "1px solid var(--border-strong)",
         padding:      "8px 16px",
         borderRadius: 8,
         fontSize:     11,
@@ -62,13 +62,13 @@ export function SecondaryButton({ children, onClick, style = {}, ...props }) {
         ...style,
       }}
       onMouseEnter={e => !props.disabled && (() => {
-        e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)";
-        e.currentTarget.style.color = "#c4b5fd";
+        e.currentTarget.style.borderColor = "color-mix(in srgb, var(--accent) 32%, transparent)";
+        e.currentTarget.style.color = "var(--accent)";
         e.currentTarget.style.transform = "translateY(-1px)";
       })()}
       onMouseLeave={e => !props.disabled && (() => {
-        e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
-        e.currentTarget.style.color = "#a1a1aa";
+        e.currentTarget.style.borderColor = "var(--border-strong)";
+        e.currentTarget.style.color = "var(--text-secondary)";
         e.currentTarget.style.transform = "translateY(0)";
       })()}
       onMouseDown={e => !props.disabled && (e.currentTarget.style.opacity = "0.7")}
@@ -87,8 +87,8 @@ export function CompactButton({ children, onClick, style = {}, ...props }) {
       {...props}
       style={{
         background:   "transparent",
-        color:        "#a1a1aa",
-        border:       "1px solid rgba(255,255,255,0.10)",
+        color:        "var(--text-secondary)",
+        border:       "1px solid var(--border-hairline)",
         padding:      "4px 10px",
         borderRadius: 6,
         fontSize:     10,
@@ -102,12 +102,12 @@ export function CompactButton({ children, onClick, style = {}, ...props }) {
         ...style,
       }}
       onMouseEnter={e => !props.disabled && (() => {
-        e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
-        e.currentTarget.style.color = "#e4e4e7";
+        e.currentTarget.style.borderColor = "var(--border-strong)";
+        e.currentTarget.style.color = "var(--text-primary)";
       })()}
       onMouseLeave={e => !props.disabled && (() => {
-        e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)";
-        e.currentTarget.style.color = "#a1a1aa";
+        e.currentTarget.style.borderColor = "var(--border-hairline)";
+        e.currentTarget.style.color = "var(--text-secondary)";
       })()}
       onMouseDown={e => !props.disabled && (e.currentTarget.style.opacity = "0.7")}
       onMouseUp={e => !props.disabled && (e.currentTarget.style.opacity = "1")}

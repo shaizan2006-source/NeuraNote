@@ -102,7 +102,7 @@ export default function QuizSkeleton() {
                   <SkLine width="80px" height="11px" mb="0" />
                   <div style={{
                     width: '48px', height: '22px', flexShrink: 0,
-                    background: 'rgba(139,92,246,0.1)',
+                    background: 'color-mix(in srgb, var(--accent) 10%, transparent)',
                     border: `1px solid ${COLORS.border.accent}`,
                     borderRadius: RADIUS.sm,
                   }} />
@@ -125,7 +125,7 @@ export default function QuizSkeleton() {
               <div style={{ display: 'flex', gap: SPACING.md, ...pulseStyle(300) }}>
                 <div style={{ height: '38px', flex: 1, background: COLORS.bg.card, borderRadius: RADIUS.md, border: `1px solid ${COLORS.border.lighter}` }} />
                 <div style={{ height: '38px', flex: 1, background: COLORS.bg.card, borderRadius: RADIUS.md, border: `1px solid ${COLORS.border.lighter}` }} />
-                <div style={{ height: '38px', flex: 2, background: 'rgba(139,92,246,0.08)', borderRadius: RADIUS.md, border: `1px solid ${COLORS.border.accent}` }} />
+                <div style={{ height: '38px', flex: 2, background: 'color-mix(in srgb, var(--accent) 8%, transparent)', borderRadius: RADIUS.md, border: `1px solid ${COLORS.border.accent}` }} />
               </div>
             </div>
 

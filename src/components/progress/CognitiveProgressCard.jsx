@@ -4,9 +4,9 @@ import AnimatedNumber from "./AnimatedNumber";
 import ArtifactModal from "@/components/artifacts/ArtifactModal";
 
 function getCellColor(score) {
-  if (!score || score === 0) return "#27272a";
-  if (score < 50) return `rgba(245,158,11,${(0.35 + (score / 49) * 0.3).toFixed(2)})`;
-  return "#22C55E";
+  if (!score || score === 0) return "var(--bg-surface-3)";
+  if (score < 50) return `rgba(245,181,68,${(0.35 + (score / 49) * 0.3).toFixed(2)})`;
+  return "var(--success)";
 }
 
 export default function CognitiveProgressCard({
@@ -30,22 +30,22 @@ export default function CognitiveProgressCard({
 
   return (
     <div style={{
-      background:    "linear-gradient(135deg, rgba(139,92,246,0.14), rgba(20,10,40,0.6))",
-      border:        "1px solid rgba(139,92,246,0.28)",
+      background:    "linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), var(--bg-surface))",
+      border:        "1px solid color-mix(in srgb, var(--accent) 28%, transparent)",
       borderRadius:  16,
       padding:       "22px 24px",
       display:       "flex",
       flexDirection: "column",
       height:        "100%",
       boxSizing:     "border-box",
-      boxShadow:     "0 0 40px rgba(139,92,246,0.10)",
+      boxShadow:     "var(--accent-glow)",
     }}>
-      <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#71717a", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+      <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
         Cognitive Progress
       </p>
-      <p style={{ margin: "4px 0 0", fontSize: 22, fontWeight: 800, color: "#f4f4f5" }}>
+      <p style={{ margin: "4px 0 0", fontSize: 22, fontWeight: 800, color: "var(--text-primary)" }}>
         <AnimatedNumber to={topicsMastered} />
-        <span style={{ fontSize: 13, fontWeight: 400, color: "#71717a" }}> / {totalTopics} mastered</span>
+        <span style={{ fontSize: 13, fontWeight: 400, color: "var(--text-tertiary)" }}> / {totalTopics} mastered</span>
       </p>
 
       <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(4, 12px)", gap: 3 }}>
@@ -60,14 +60,14 @@ export default function CognitiveProgressCard({
 
       <div style={{ marginTop: 14, display: "flex", gap: 20 }}>
         <div>
-          <p style={{ margin: 0, fontSize: 9, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Accuracy</p>
-          <p style={{ margin: "2px 0 0", fontSize: 18, fontWeight: 700, color: "#22C55E" }}>
+          <p style={{ margin: 0, fontSize: 9, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Accuracy</p>
+          <p style={{ margin: "2px 0 0", fontSize: 18, fontWeight: 700, color: "var(--success)" }}>
             <AnimatedNumber to={avgAccuracy} suffix="%" />
           </p>
         </div>
         <div>
-          <p style={{ margin: 0, fontSize: 9, color: "#52525b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Retention</p>
-          <p style={{ margin: "2px 0 0", fontSize: 18, fontWeight: 700, color: "#8B5CF6" }}>
+          <p style={{ margin: 0, fontSize: 9, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Retention</p>
+          <p style={{ margin: "2px 0 0", fontSize: 18, fontWeight: 700, color: "var(--accent)" }}>
             <AnimatedNumber to={retentionScore} suffix="%" />
           </p>
         </div>
@@ -76,11 +76,11 @@ export default function CognitiveProgressCard({
       {peerPercentile > 0 && (
         <div style={{
           marginTop: 12, display: "inline-flex", alignItems: "center", gap: 5,
-          background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)",
+          background: "color-mix(in srgb, var(--warning) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--warning) 20%, transparent)",
           borderRadius: 20, padding: "4px 10px", alignSelf: "flex-start",
         }}>
           <span style={{ fontSize: 10 }}>⚡</span>
-          <span style={{ fontSize: 10, color: "#F59E0B", fontWeight: 600 }}>
+          <span style={{ fontSize: 10, color: "var(--warning)", fontWeight: 600 }}>
             Ahead of {peerPercentile}% of students
           </span>
         </div>
@@ -89,7 +89,7 @@ export default function CognitiveProgressCard({
       {/* Semantic weak-topic clusters — Phase 2 */}
       {weakTopicClusters.length > 0 && (
         <div style={{ marginTop: 14 }}>
-          <p style={{ margin: "0 0 6px", fontSize: 9, fontWeight: 600, color: "#52525b", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <p style={{ margin: "0 0 6px", fontSize: 9, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Knowledge Gaps
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
@@ -99,8 +99,8 @@ export default function CognitiveProgressCard({
                 onClick={() => openModal(cluster)}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "space-between",
-                  background: token ? "rgba(139, 92, 246, 0.08)" : "rgba(239,68,68,0.07)",
-                  border: token ? "1px solid rgba(139, 92, 246, 0.15)" : "1px solid rgba(239,68,68,0.15)",
+                  background: token ? "color-mix(in srgb, var(--accent) 8%, transparent)" : "color-mix(in srgb, var(--error) 7%, transparent)",
+                  border: token ? "1px solid color-mix(in srgb, var(--accent) 15%, transparent)" : "1px solid color-mix(in srgb, var(--error) 15%, transparent)",
                   borderRadius: 8, padding: "5px 10px",
                   cursor: token ? "pointer" : "default",
                   transition: token ? "all 0.2s" : "none",
@@ -109,22 +109,22 @@ export default function CognitiveProgressCard({
                 }}
                 onMouseEnter={(e) => {
                   if (token) {
-                    e.currentTarget.style.background = "rgba(139, 92, 246, 0.15)";
+                    e.currentTarget.style.background = "color-mix(in srgb, var(--accent) 15%, transparent)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (token) {
-                    e.currentTarget.style.background = "rgba(139, 92, 246, 0.08)";
+                    e.currentTarget.style.background = "color-mix(in srgb, var(--accent) 8%, transparent)";
                   }
                 }}
               >
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <span style={{ fontSize: 11, color: "#f4f4f5", fontWeight: 600, display: "block",
+                  <span style={{ fontSize: 11, color: "var(--text-primary)", fontWeight: 600, display: "block",
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {cluster.label}
                   </span>
                   {cluster.topics.length > 1 && (
-                    <span style={{ fontSize: 9, color: "#71717a" }}>
+                    <span style={{ fontSize: 9, color: "var(--text-tertiary)" }}>
                       + {cluster.topics.length - 1} related topic{cluster.topics.length > 2 ? "s" : ""}
                     </span>
                   )}
@@ -132,7 +132,7 @@ export default function CognitiveProgressCard({
                 <div style={{
                   flexShrink: 0, marginLeft: 8, display: "flex", alignItems: "center", gap: 6,
                   fontSize: 11, fontWeight: 700,
-                  color: cluster.avgScore < 30 ? "#EF4444" : "#F59E0B",
+                  color: cluster.avgScore < 30 ? "var(--error)" : "var(--warning)",
                 }}>
                   <span>{cluster.avgScore}%</span>
                   {token && <span style={{ fontSize: 10, opacity: 0.6 }}>→</span>}

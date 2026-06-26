@@ -77,7 +77,7 @@ function ProgressInner() {
   }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "linear-gradient(180deg, #0A0A0A 0%, #1A1A2E 100%)" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "linear-gradient(180deg, var(--bg-base) 0%, var(--bg-surface) 100%)" }}>
       <DashboardSidebar />
       <main style={{
         flex: 1,
@@ -91,7 +91,7 @@ function ProgressInner() {
             onClick={() => router.push("/dashboard")}
             style={{
               background: "none", border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 8, padding: "4px 12px", color: "#71717a",
+              borderRadius: 8, padding: "4px 12px", color: "var(--text-tertiary)",
               fontSize: 11, cursor: "pointer", transition: "border-color 0.2s",
             }}
             onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"}
@@ -99,8 +99,8 @@ function ProgressInner() {
           >
             ← Dashboard
           </button>
-          <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#f4f4f5" }}>Progress</h1>
-          {loading && <span style={{ fontSize: 10, color: "#3f3f46" }}>Loading…</span>}
+          <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "var(--text-primary)" }}>Progress</h1>
+          {loading && <span style={{ fontSize: 10, color: "var(--text-disabled)" }}>Loading…</span>}
           {!loading && data && (
             <div style={{ marginLeft: "auto" }}>
               <CohortWidget peerPercentile={data.peerPercentile} cohortSize={data.cohortSize} />
@@ -114,18 +114,18 @@ function ProgressInner() {
             justifyContent: "center", padding: "64px 24px", gap: 14, textAlign: "center",
           }}>
             <span style={{ fontSize: 36 }}>📊</span>
-            <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#f4f4f5" }}>
+            <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
               Your analytics will appear here
             </p>
-            <p style={{ margin: 0, fontSize: 12, color: "#52525b", maxWidth: 280 }}>
+            <p style={{ margin: 0, fontSize: 12, color: "var(--text-tertiary)", maxWidth: 280 }}>
               Complete study sessions and add topics — your Focus Score, Accuracy, and Insights will populate automatically.
             </p>
             <button
               onClick={() => router.push("/dashboard")}
               style={{
                 marginTop: 4, padding: "9px 20px",
-                background: "linear-gradient(135deg, #8B5CF6, #7C3AED)",
-                border: "none", borderRadius: 8, color: "#fff",
+                background: "var(--accent-grad)",
+                border: "none", borderRadius: 8, color: "var(--bg-base)",
                 fontSize: 12, fontWeight: 600, cursor: "pointer",
               }}
             >

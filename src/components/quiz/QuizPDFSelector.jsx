@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Button from '@/components/shared/Button';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
+import { clientFetch } from '@/lib/clientFetch';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -49,11 +50,9 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
     setUploading(true);
     setUploadError(null);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('userId', session?.user?.id || userId || '');
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const res = await clientFetch('/api/upload', { method: 'POST', body: formData });
       let data;
       try {
         data = await res.json();
@@ -101,7 +100,7 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
     padding: `${SPACING.md} ${SPACING.lg}`,
     borderRadius: RADIUS.md,
     border: `1px solid ${isActive ? COLORS.border.accent : COLORS.border.light}`,
-    background: isActive ? 'rgba(139,92,246,0.06)' : 'transparent',
+    background: isActive ? 'color-mix(in srgb, var(--accent) 8%, transparent)' : 'transparent',
     cursor: 'pointer',
     transition: 'background 0.15s',
   });
@@ -134,7 +133,7 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
             </div>
             <span style={{
               fontSize: TYPOGRAPHY.sizes.small,
-              background: 'rgba(139,92,246,0.15)',
+              background: 'color-mix(in srgb, var(--accent) 12%, transparent)',
               color: COLORS.text.accent,
               padding: `2px ${SPACING.sm}`,
               borderRadius: RADIUS.sm,
@@ -157,7 +156,7 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
           </div>
 
           {errorText && (
-            <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: '#f87171' }}>{errorText}</div>
+            <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: 'var(--error)' }}>{errorText}</div>
           )}
         </div>
       </div>
@@ -188,7 +187,7 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
                 {doc.id === activePdf?.id && (
                   <span style={{
                     fontSize: TYPOGRAPHY.sizes.small,
-                    background: 'rgba(139,92,246,0.15)',
+                    background: 'color-mix(in srgb, var(--accent) 12%, transparent)',
                     color: COLORS.text.accent,
                     padding: `2px ${SPACING.sm}`,
                     borderRadius: RADIUS.sm,
@@ -207,7 +206,7 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
           </div>
 
           {errorText && (
-            <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: '#f87171' }}>{errorText}</div>
+            <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: 'var(--error)' }}>{errorText}</div>
           )}
         </div>
       </div>
@@ -232,7 +231,7 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
         </div>
 
         {errorText && (
-          <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: '#f87171' }}>{errorText}</div>
+          <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: 'var(--error)' }}>{errorText}</div>
         )}
       </div>
     </div>

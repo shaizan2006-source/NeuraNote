@@ -9,20 +9,20 @@ const supabase = createClient(
 );
 
 const TYPE_COLOR = {
-  definition:   "#8B5CF6",
-  theorem:      "#22D3EE",
-  procedure:    "#F59E0B",
-  formula:      "#10B981",
-  argument:     "#EF4444",
-  case:         "#EC4899",
-  relationship: "#6B7280",
+  definition:   "#D4AF6E",
+  theorem:      "#EACF96",
+  procedure:    "#F5B544",
+  formula:      "#34D399",
+  argument:     "#F0584F",
+  case:         "#9A7E44",
+  relationship: "#6B6B70",
 };
 
 const RATINGS = [
-  { id: "again", label: "Again",  color: "#EF4444", key: "1" },
-  { id: "hard",  label: "Hard",   color: "#F59E0B", key: "2" },
-  { id: "good",  label: "Good",   color: "#22D3EE", key: "3" },
-  { id: "easy",  label: "Easy",   color: "#10B981", key: "4" },
+  { id: "again", label: "Again",  color: "#F0584F", key: "1" },
+  { id: "hard",  label: "Hard",   color: "#F5B544", key: "2" },
+  { id: "good",  label: "Good",   color: "#8AA0B4", key: "3" },
+  { id: "easy",  label: "Easy",   color: "#34D399", key: "4" },
 ];
 
 export default function StudyPage() {
@@ -98,13 +98,13 @@ export default function StudyPage() {
 
   const card    = queue[idx];
   const concept = card.concept ?? {};
-  const typeColor = TYPE_COLOR[concept.type] ?? "#6B7280";
+  const typeColor = TYPE_COLOR[concept.type] ?? "#6B6B70";
   const remaining = queue.length - idx;
 
   return (
     <div style={{
       minHeight:  "100vh",
-      background: "linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%)",
+      background: "linear-gradient(135deg, var(--bg-base) 0%, var(--bg-surface-2) 50%, var(--bg-elevated) 100%)",
       display:    "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -115,7 +115,7 @@ export default function StudyPage() {
     }}>
       {/* Progress bar */}
       <div style={{ width: "100%", maxWidth: 640 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", color: "#888", fontSize: 13, marginBottom: 8 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-tertiary)", fontSize: 13, marginBottom: 8 }}>
           <span>{reviewed} reviewed</span>
           <span>{remaining} left</span>
         </div>
@@ -123,7 +123,7 @@ export default function StudyPage() {
           <div style={{
             height: "100%",
             width:  `${(reviewed / queue.length) * 100}%`,
-            background: "linear-gradient(90deg, #8B5CF6, #22D3EE)",
+            background: "var(--accent-grad)",
             borderRadius: 2,
             transition: "width 0.3s ease",
           }} />
@@ -164,9 +164,9 @@ export default function StudyPage() {
             {concept.type ?? card.type}
           </span>
           {concept.difficulty && (
-            <span style={{ fontSize: 11, color: "#555" }}>d{concept.difficulty}</span>
+            <span style={{ fontSize: 11, color: "var(--text-disabled)" }}>d{concept.difficulty}</span>
           )}
-          <span style={{ marginLeft: "auto", fontSize: 11, color: "#444" }}>
+          <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--text-disabled)" }}>
             {flipped ? "answer" : "question · click to reveal"}
           </span>
         </div>
@@ -176,7 +176,7 @@ export default function StudyPage() {
           flex: 1,
           fontSize: flipped ? 15 : 18,
           fontWeight: flipped ? 400 : 600,
-          color: flipped ? "#ccc" : "#fff",
+          color: flipped ? "var(--text-secondary)" : "var(--text-primary)",
           lineHeight: 1.6,
           whiteSpace: "pre-wrap",
         }}>
@@ -184,8 +184,8 @@ export default function StudyPage() {
         </div>
 
         {!flipped && (
-          <div style={{ fontSize: 12, color: "#444", textAlign: "center" }}>
-            Press <kbd style={{ background: "#222", padding: "1px 6px", borderRadius: 4, border: "1px solid #333" }}>Space</kbd> to flip
+          <div style={{ fontSize: 12, color: "var(--text-disabled)", textAlign: "center" }}>
+            Press <kbd style={{ background: "var(--bg-surface-2)", padding: "1px 6px", borderRadius: 4, border: "1px solid var(--border-strong)" }}>Space</kbd> to flip
           </div>
         )}
       </div>
@@ -225,7 +225,7 @@ export default function StudyPage() {
       )}
 
       {/* Concept title footer */}
-      <div style={{ color: "#444", fontSize: 12 }}>
+      <div style={{ color: "var(--text-disabled)", fontSize: 12 }}>
         {concept.title && `Concept: ${concept.title}`}
       </div>
     </div>
@@ -238,7 +238,7 @@ function Shell({ children }) {
   return (
     <div style={{
       minHeight:      "100vh",
-      background:     "linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%)",
+      background:     "linear-gradient(135deg, var(--bg-base) 0%, var(--bg-surface-2) 50%, var(--bg-elevated) 100%)",
       display:        "flex",
       alignItems:     "center",
       justifyContent: "center",
@@ -250,17 +250,17 @@ function Shell({ children }) {
 }
 
 function Spinner() {
-  return <div style={{ color: "#888", fontSize: 14 }}>Loading cards…</div>;
+  return <div style={{ color: "var(--text-tertiary)", fontSize: 14 }}>Loading cards…</div>;
 }
 
 function ErrorMsg() {
   return (
-    <div style={{ textAlign: "center", color: "#EF4444" }}>
+    <div style={{ textAlign: "center", color: "var(--error)" }}>
       <div style={{ fontSize: 18, marginBottom: 8 }}>Could not load cards</div>
-      <div style={{ fontSize: 13, color: "#888" }}>
+      <div style={{ fontSize: 13, color: "var(--text-tertiary)" }}>
         Make sure you&apos;re signed in and have uploaded documents.
       </div>
-      <a href="/dashboard" style={{ color: "#8B5CF6", fontSize: 13, marginTop: 16, display: "block" }}>
+      <a href="/dashboard" style={{ color: "var(--accent)", fontSize: 13, marginTop: 16, display: "block" }}>
         ← Back to dashboard
       </a>
     </div>
@@ -269,10 +269,10 @@ function ErrorMsg() {
 
 function DoneScreen({ reviewed, total }) {
   return (
-    <div style={{ textAlign: "center", color: "#fff" }}>
+    <div style={{ textAlign: "center", color: "var(--text-primary)" }}>
       <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
       <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Session complete</div>
-      <div style={{ fontSize: 14, color: "#888", marginBottom: 32 }}>
+      <div style={{ fontSize: 14, color: "var(--text-tertiary)", marginBottom: 32 }}>
         {reviewed > 0
           ? `Reviewed ${reviewed} of ${total} cards`
           : "No cards due right now — check back later"}
@@ -281,8 +281,8 @@ function DoneScreen({ reviewed, total }) {
         display:      "inline-block",
         padding:      "12px 32px",
         borderRadius: 12,
-        background:   "linear-gradient(135deg, #8B5CF6, #22D3EE)",
-        color:        "#fff",
+        background:   "var(--accent-grad)",
+        color:        "var(--bg-base)",
         fontWeight:   600,
         fontSize:     14,
         textDecoration: "none",

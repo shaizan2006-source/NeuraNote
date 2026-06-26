@@ -38,14 +38,14 @@ export default function ProgressQuestionsPanel({ token }) {
 
   return (
     <div style={{
-      background: "linear-gradient(135deg, #2d2d2d, #1f1f1f)",
+      background: "linear-gradient(135deg, var(--bg-surface-2), var(--bg-surface))",
       borderRadius: 12,
       padding: 16,
-      border: "1px solid #3a3a3a",
+      border: "1px solid var(--border-hairline)",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
         <span style={{ fontSize: 18 }}>💬</span>
-        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#f4f4f5" }}>
+        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
           Ask About Your Progress
         </h3>
       </div>
@@ -55,7 +55,7 @@ export default function ProgressQuestionsPanel({ token }) {
           <p style={{
             margin: "0 0 12px 0",
             fontSize: 12,
-            color: "#71717a",
+            color: "var(--text-tertiary)",
           }}>
             Ask about your weak areas, study patterns, or progress trends
           </p>
@@ -72,19 +72,19 @@ export default function ProgressQuestionsPanel({ token }) {
                 flex: 1,
                 padding: "10px 12px",
                 background: "rgba(255,255,255,0.04)",
-                border: "1px solid #3a3a3a",
+                border: "1px solid var(--border-hairline)",
                 borderRadius: 6,
-                color: "#f4f4f5",
+                color: "var(--text-primary)",
                 fontSize: 12,
                 outline: "none",
                 transition: "all 0.2s",
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = "#8b5cf6";
-                e.target.style.background = "rgba(139,92,246,0.08)";
+                e.target.style.borderColor = "var(--accent)";
+                e.target.style.background = "color-mix(in srgb, var(--accent) 8%, transparent)";
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = "#3a3a3a";
+                e.target.style.borderColor = "var(--border-hairline)";
                 e.target.style.background = "rgba(255,255,255,0.04)";
               }}
             />
@@ -93,8 +93,8 @@ export default function ProgressQuestionsPanel({ token }) {
               disabled={!question.trim() || loading || !token}
               style={{
                 padding: "10px 16px",
-                background: !question.trim() || !token ? "#3a3a3a" : loading ? "#5b8ef6" : "#3b82f6",
-                color: "#fff",
+                background: !question.trim() || !token ? "var(--bg-surface-3)" : loading ? "var(--accent-dim)" : "var(--accent)",
+                color: "var(--bg-base)",
                 border: "none",
                 borderRadius: 6,
                 fontSize: 12,
@@ -112,11 +112,11 @@ export default function ProgressQuestionsPanel({ token }) {
             <div style={{
               marginTop: 10,
               padding: 10,
-              background: "rgba(239, 68, 68, 0.1)",
-              borderLeft: "3px solid #ef4444",
+              background: "color-mix(in srgb, var(--error) 10%, transparent)",
+              borderLeft: "3px solid var(--error)",
               borderRadius: 4,
             }}>
-              <p style={{ margin: 0, fontSize: 11, color: "#fca5a5" }}>{error}</p>
+              <p style={{ margin: 0, fontSize: 11, color: "var(--error)" }}>{error}</p>
             </div>
           )}
         </>
@@ -133,14 +133,14 @@ export default function ProgressQuestionsPanel({ token }) {
               margin: "0 0 8px 0",
               fontSize: 12,
               fontWeight: 600,
-              color: "#8b5cf6",
+              color: "var(--accent)",
             }}>
               Your question:
             </p>
             <p style={{
               margin: 0,
               fontSize: 12,
-              color: "#f4f4f5",
+              color: "var(--text-primary)",
               lineHeight: 1.5,
             }}>
               {response.metadata.question || Object.keys(response)[0]}
@@ -148,8 +148,8 @@ export default function ProgressQuestionsPanel({ token }) {
           </div>
 
           <div style={{
-            background: "rgba(139, 92, 246, 0.08)",
-            border: "1px solid rgba(139, 92, 246, 0.15)",
+            background: "color-mix(in srgb, var(--accent) 8%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)",
             borderRadius: 8,
             padding: 12,
             marginBottom: 12,
@@ -158,7 +158,7 @@ export default function ProgressQuestionsPanel({ token }) {
               margin: "0 0 8px 0",
               fontSize: 11,
               fontWeight: 600,
-              color: "#71717a",
+              color: "var(--text-tertiary)",
               textTransform: "uppercase",
               letterSpacing: "0.05em",
             }}>
@@ -167,7 +167,7 @@ export default function ProgressQuestionsPanel({ token }) {
             <p style={{
               margin: 0,
               fontSize: 12,
-              color: "#f4f4f5",
+              color: "var(--text-primary)",
               lineHeight: 1.6,
             }}>
               {response.answer}
@@ -181,7 +181,7 @@ export default function ProgressQuestionsPanel({ token }) {
                 margin: "0 0 8px 0",
                 fontSize: 11,
                 fontWeight: 600,
-                color: "#71717a",
+                color: "var(--text-tertiary)",
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
               }}>
@@ -195,8 +195,8 @@ export default function ProgressQuestionsPanel({ token }) {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 4,
-                      background: "rgba(100, 200, 255, 0.1)",
-                      color: "#64c8ff",
+                      background: "color-mix(in srgb, var(--accent) 10%, transparent)",
+                      color: "var(--accent)",
                       padding: "4px 10px",
                       borderRadius: 12,
                       fontSize: 11,
@@ -221,8 +221,8 @@ export default function ProgressQuestionsPanel({ token }) {
             style={{
               width: "100%",
               padding: 10,
-              background: "#3a3a3a",
-              color: "#f4f4f5",
+              background: "var(--bg-surface-3)",
+              color: "var(--text-primary)",
               border: "none",
               borderRadius: 6,
               fontSize: 12,
@@ -231,10 +231,10 @@ export default function ProgressQuestionsPanel({ token }) {
               transition: "all 0.2s",
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = "#4a4a4a";
+              e.target.style.background = "var(--bg-surface-2)";
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = "#3a3a3a";
+              e.target.style.background = "var(--bg-surface-3)";
             }}
           >
             Ask Another Question

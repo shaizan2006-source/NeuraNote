@@ -23,7 +23,7 @@ const CHAT_CSS = `
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 48px;
-  background: linear-gradient(to bottom, transparent, #0f0f12);
+  background: linear-gradient(to bottom, transparent, var(--bg-elevated));
   pointer-events: none;
   border-radius: 0 0 6px 6px;
 }
@@ -33,7 +33,7 @@ function BlinkingCursor() {
   return (
     <span style={{
       display: 'inline-block', width: 2, height: '1em',
-      background: '#22D3EE', marginLeft: 2, verticalAlign: 'text-bottom',
+      background: 'var(--accent)', marginLeft: 2, verticalAlign: 'text-bottom',
       animation: 'blink 1s step-end infinite',
     }} />
   );
@@ -44,7 +44,7 @@ function UserBubble({ text }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end', minWidth: 0 }}>
       <div style={{
-        background: 'rgba(139,92,246,0.12)', color: '#c4b5fd',
+        background: 'color-mix(in srgb, var(--accent) 12%, transparent)', color: 'var(--accent)',
         borderRadius: 8, padding: '7px 10px', maxWidth: '85%',
         fontSize: TYPOGRAPHY.sizes.caption, lineHeight: 1.55, wordBreak: 'break-word',
         overflowWrap: 'anywhere', whiteSpace: 'pre-wrap',
@@ -75,9 +75,9 @@ function AIBubble({ messageId, text, isStreaming = false, isExpanded, onToggle, 
 
   return (
     <div style={{
-      borderLeft: '2px solid rgba(34,211,238,0.35)',
+      borderLeft: '2px solid color-mix(in srgb, var(--accent) 35%, transparent)',
       borderRadius: '0 8px 8px 0',
-      background: 'rgba(34,211,238,0.03)',
+      background: 'color-mix(in srgb, var(--accent) 4%, transparent)',
       minWidth: 0,
       position: 'relative',
     }}>
@@ -89,9 +89,9 @@ function AIBubble({ messageId, text, isStreaming = false, isExpanded, onToggle, 
           style={{
             position: 'absolute', top: 6, right: 6,
             background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            border: '1px solid var(--border-strong)',
             borderRadius: 4,
-            color: '#52525b',
+            color: 'var(--text-tertiary)',
             cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             width: 20, height: 20,
@@ -100,11 +100,11 @@ function AIBubble({ messageId, text, isStreaming = false, isExpanded, onToggle, 
             zIndex: 1,
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.color = '#22D3EE';
-            e.currentTarget.style.background = 'rgba(34,211,238,0.08)';
+            e.currentTarget.style.color = 'var(--accent)';
+            e.currentTarget.style.background = 'color-mix(in srgb, var(--accent) 8%, transparent)';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.color = '#52525b';
+            e.currentTarget.style.color = 'var(--text-tertiary)';
             e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
           }}
         >
@@ -117,7 +117,7 @@ function AIBubble({ messageId, text, isStreaming = false, isExpanded, onToggle, 
         className={`fic-answer-body ${isDone ? (isExpanded ? 'expanded' : 'compressed') : 'expanded'}`}
         style={{
           padding: '7px 30px 7px 10px',
-          fontSize: TYPOGRAPHY.sizes.caption, color: '#a1a1aa', lineHeight: 1.6,
+          fontSize: TYPOGRAPHY.sizes.caption, color: 'var(--text-secondary)', lineHeight: 1.6,
           minHeight: 24,
           overflowX: 'hidden', wordBreak: 'break-word',
           overflowWrap: 'anywhere', whiteSpace: 'pre-wrap',
@@ -236,7 +236,7 @@ export default function FocusInlineChat({
     width: isMobile ? '100%' : 'clamp(320px, 40vw, 600px)',
     background: isMobile
       ? `linear-gradient(160deg, ${COLORS.bg.dark} 0%, ${COLORS.bg.darkGradient} 100%)`
-      : '#0f0f12',
+      : 'var(--bg-elevated)',
     borderLeft: isMobile ? 'none' : `1px solid ${COLORS.border.light}`,
     display: 'flex',
     flexDirection: 'column',
@@ -254,18 +254,18 @@ export default function FocusInlineChat({
           borderBottom: `1px solid ${COLORS.border.light}`,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           flexShrink: 0,
-          background: 'rgba(34,211,238,0.02)',
+          background: 'color-mix(in srgb, var(--accent) 3%, transparent)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
             <span style={{ fontSize: 14 }}>✦</span>
-            <span style={{ fontSize: TYPOGRAPHY.sizes.label, fontWeight: 600, color: '#f4f4f5', whiteSpace: 'nowrap' }}>
+            <span style={{ fontSize: TYPOGRAPHY.sizes.label, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
               Ask AI
             </span>
             {documentName && (
               <span style={{
-                fontSize: TYPOGRAPHY.sizes.small, color: '#22D3EE',
-                background: 'rgba(34,211,238,0.08)',
-                border: '1px solid rgba(34,211,238,0.2)',
+                fontSize: TYPOGRAPHY.sizes.small, color: 'var(--accent)',
+                background: 'color-mix(in srgb, var(--accent) 8%, transparent)',
+                border: '1px solid color-mix(in srgb, var(--accent) 28%, transparent)',
                 borderRadius: RADIUS.sm, padding: `${SPACING.xs} ${SPACING.sm}`,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
@@ -280,13 +280,13 @@ export default function FocusInlineChat({
             aria-label="Close AI assistant"
             style={{
               background: 'transparent', border: 'none',
-              color: '#52525b', cursor: 'pointer', fontSize: 16,
+              color: 'var(--text-tertiary)', cursor: 'pointer', fontSize: 16,
               padding: `${SPACING.sm}`, borderRadius: RADIUS.sm,
               transition: 'color 0.15s',
               flexShrink: 0,
             }}
-            onMouseEnter={e => e.currentTarget.style.color = '#a1a1aa'}
-            onMouseLeave={e => e.currentTarget.style.color = '#52525b'}
+            onMouseEnter={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-tertiary)'}
           >✕</button>
         </div>
 
@@ -304,7 +304,7 @@ export default function FocusInlineChat({
             {messages.length === 0 && (
               <div style={{ textAlign: 'center', marginTop: 40 }}>
                 <div style={{ fontSize: 28, marginBottom: SPACING.md }}>✦</div>
-                <p style={{ color: '#3f3f46', fontSize: TYPOGRAPHY.sizes.caption, lineHeight: 1.6 }}>
+                <p style={{ color: 'var(--text-disabled)', fontSize: TYPOGRAPHY.sizes.caption, lineHeight: 1.6 }}>
                   Ask anything about your<br />current task or material
                 </p>
               </div>
@@ -320,7 +320,7 @@ export default function FocusInlineChat({
                     isStreaming={!!m.streaming}
                     isExpanded={expandedIds.has(m.id)}
                     onToggle={toggleExpand}
-                    panelBg={isMobile ? COLORS.bg.dark : '#0f0f12'}
+                    panelBg={isMobile ? COLORS.bg.dark : 'var(--bg-elevated)'}
                   />
                 )
             ))}
@@ -351,13 +351,13 @@ export default function FocusInlineChat({
                 background: 'rgba(255,255,255,0.04)',
                 border: `1px solid rgba(255,255,255,0.08)`,
                 borderRadius: RADIUS.sm, padding: `${SPACING.md} ${SPACING.lg}`,
-                fontSize: TYPOGRAPHY.sizes.caption, color: '#e4e4e7',
+                fontSize: TYPOGRAPHY.sizes.caption, color: 'var(--text-primary)',
                 outline: 'none', resize: 'none',
                 overflowY: 'hidden', lineHeight: 1.5,
                 fontFamily: 'inherit',
                 transition: 'border-color 0.15s',
               }}
-              onFocus={e => e.currentTarget.style.borderColor = 'rgba(34,211,238,0.3)'}
+              onFocus={e => e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent) 30%, transparent)'}
               onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}
             />
             <button
@@ -366,9 +366,9 @@ export default function FocusInlineChat({
               aria-label="Send message"
               style={{
                 width: 36, height: 36, flexShrink: 0,
-                background: 'linear-gradient(135deg, #8B5CF6, #6D28D9)',
+                background: 'var(--accent-grad)',
                 border: 'none', borderRadius: RADIUS.sm,
-                color: '#fff', fontSize: TYPOGRAPHY.sizes.label,
+                color: 'var(--bg-base)', fontSize: TYPOGRAPHY.sizes.label,
                 cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 opacity: loading || !input.trim() ? 0.4 : 1,
@@ -376,7 +376,7 @@ export default function FocusInlineChat({
               }}
             >↑</button>
           </div>
-          <p style={{ margin: 0, fontSize: TYPOGRAPHY.sizes.small, color: '#3f3f46', textAlign: 'right' }}>
+          <p style={{ margin: 0, fontSize: TYPOGRAPHY.sizes.small, color: 'var(--text-disabled)', textAlign: 'right' }}>
             Enter to send · Shift+Enter for new line
           </p>
         </div>

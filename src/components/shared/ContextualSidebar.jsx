@@ -85,12 +85,12 @@ function Tooltip({ label }) {
         left:         "calc(100% + 10px)",
         top:          "50%",
         transform:    "translateY(-50%)",
-        background:   "#1F1F23",
-        border:       "1px solid rgba(255,255,255,0.1)",
+        background:   "var(--bg-surface-3)",
+        border:       "1px solid var(--border-strong)",
         borderRadius: 5,
         padding:      "3px 8px",
         fontSize:     9,
-        color:        "#e4e4e7",
+        color:        "var(--text-primary)",
         whiteSpace:   "nowrap",
         pointerEvents:"none",
         zIndex:       300,
@@ -112,13 +112,13 @@ function NavItem({ href, collapsed, pathname, router, onItemClick, showTooltip, 
   const [hov, setHov] = useState(false);
 
   const bg =
-    isActive && hov ? "rgba(139,92,246,0.18)" :
-    isActive        ? "rgba(139,92,246,0.12)" :
+    isActive && hov ? "color-mix(in srgb, var(--accent) 18%, transparent)" :
+    isActive        ? "color-mix(in srgb, var(--accent) 12%, transparent)" :
     hov             ? "rgba(255,255,255,0.05)" :
                       "transparent";
 
   const shadow =
-    isActive && hov  ? "0 0 0 1px rgba(139,92,246,0.22), 0 2px 16px rgba(139,92,246,0.10), inset 0 0 16px rgba(139,92,246,0.06)" :
+    isActive && hov  ? "0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent), 0 2px 16px var(--accent-glow-soft), inset 0 0 16px color-mix(in srgb, var(--accent) 6%, transparent)" :
     !isActive && hov ? "0 0 0 1px rgba(255,255,255,0.08), 0 2px 12px rgba(0,0,0,0.12)" :
                        "none";
 
@@ -145,7 +145,7 @@ function NavItem({ href, collapsed, pathname, router, onItemClick, showTooltip, 
           border:               "none",
           borderRadius:         6,
           cursor:               "pointer",
-          color:                isActive ? "#a78bfa" : hov ? "#a1a1aa" : "#52525b",
+          color:                isActive ? "var(--accent)" : hov ? "var(--text-secondary)" : "var(--text-tertiary)",
           margin:               "0 6px",
           transition:           "background 250ms ease-out, box-shadow 250ms ease-out, transform 200ms ease-out, color 200ms ease-out",
         }}
@@ -168,7 +168,7 @@ function NavItem({ href, collapsed, pathname, router, onItemClick, showTooltip, 
               width:        5,
               height:       5,
               borderRadius: "50%",
-              background:   "#8B5CF6",
+              background:   "var(--accent)",
             }} />
           )}
         </span>
@@ -209,7 +209,7 @@ function SidebarHeader({ collapsed, onToggle }) {
       alignItems:     "center",
       justifyContent: "space-between",
       padding:        "10px",
-      borderBottom:   "1px solid rgba(255,255,255,0.05)",
+      borderBottom:   "1px solid var(--border-hairline)",
       minHeight:      52,
     }}>
       {/* Left cluster: icon mark + app name */}
@@ -232,9 +232,9 @@ function SidebarHeader({ collapsed, onToggle }) {
               {/* Gradient logo layer — fades out on hover */}
               <div style={{
                 position: "absolute", inset: 0, borderRadius: 7,
-                background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+                background: "var(--accent-grad)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 13, color: "#fff", fontWeight: 700,
+                fontSize: 13, color: "var(--bg-base)", fontWeight: 700,
                 opacity:    iconHovered ? 0 : 1,
                 transition: "opacity 180ms ease",
               }}>✦</div>
@@ -242,7 +242,7 @@ function SidebarHeader({ collapsed, onToggle }) {
               <div style={{
                 position: "absolute", inset: 0,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                color: "rgba(228,228,231,0.9)",
+                color: "var(--text-primary)",
                 opacity:    iconHovered ? 1 : 0,
                 transition: "opacity 180ms ease",
                 pointerEvents: "none",
@@ -255,9 +255,9 @@ function SidebarHeader({ collapsed, onToggle }) {
           /* Expanded: plain logo mark */
           <div style={{
             width: 28, height: 28, borderRadius: 7, flexShrink: 0,
-            background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+            background: "var(--accent-grad)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 13, color: "#fff", fontWeight: 700,
+            fontSize: 13, color: "var(--bg-base)", fontWeight: 700,
           }}>✦</div>
         )}
 
@@ -270,7 +270,7 @@ function SidebarHeader({ collapsed, onToggle }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              style={{ fontSize: 13, fontWeight: 700, color: "#f4f4f5", whiteSpace: "nowrap" }}
+              style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", whiteSpace: "nowrap" }}
             >
               AskMyNotes
             </motion.span>
@@ -298,9 +298,9 @@ function SidebarHeader({ collapsed, onToggle }) {
                 background: "transparent", border: "none", cursor: "pointer",
                 padding: 4, display: "flex", alignItems: "center", justifyContent: "center",
                 opacity:    btnHovered ? 1 : 0.45,
-                filter:     btnHovered ? "drop-shadow(0 0 3px rgba(228,228,231,0.22))" : "none",
+                filter:     btnHovered ? "drop-shadow(0 0 3px rgba(245,245,244,0.22))" : "none",
                 transition: "opacity 200ms ease, filter 200ms ease",
-                color:      "rgba(228,228,231,0.9)",
+                color:      "var(--text-primary)",
               }}
             >
               <SidebarToggleIcon size={15} />
@@ -317,7 +317,7 @@ function SidebarHeader({ collapsed, onToggle }) {
 function SectionDivider({ collapsed }) {
   return (
     <div style={{ padding: "6px 12px 2px" }}>
-      <div style={{ height: 1, background: "rgba(255,255,255,0.05)" }} />
+      <div style={{ height: 1, background: "var(--border-hairline)" }} />
       <AnimatePresence>
         {!collapsed && (
           <motion.div
@@ -329,7 +329,7 @@ function SectionDivider({ collapsed }) {
               paddingTop:    4,
               fontSize:      9,
               letterSpacing: "0.8px",
-              color:         "#3f3f46",
+              color:         "var(--text-disabled)",
               fontWeight:    600,
               textTransform: "uppercase",
             }}
@@ -414,8 +414,8 @@ export default function ContextualSidebar() {
       <div style={{
         width:       56,
         flexShrink:  0,
-        background:  "#111111",
-        borderRight: "1px solid rgba(255,255,255,0.05)",
+        background:  "var(--bg-elevated)",
+        borderRight: "1px solid var(--border-hairline)",
       }} />
     );
   }
@@ -433,15 +433,15 @@ export default function ContextualSidebar() {
             top:        14,
             left:       14,
             zIndex:     20,
-            background: "rgba(17,17,17,0.9)",
-            border:     "1px solid rgba(255,255,255,0.08)",
+            background: "color-mix(in srgb, var(--bg-elevated) 90%, transparent)",
+            border:     "1px solid var(--border-strong)",
             borderRadius: 6,
             width:      36,
             height:     36,
             display:    "flex",
             alignItems: "center",
             justifyContent: "center",
-            color:      "#a1a1aa",
+            color:      "var(--text-secondary)",
             fontSize:   16,
             cursor:     "pointer",
           }}
@@ -481,8 +481,8 @@ export default function ContextualSidebar() {
             height:      "100vh",
             width:       "72%",
             maxWidth:    280,
-            background:  "#111111",
-            borderRight: "1px solid rgba(255,255,255,0.05)",
+            background:  "var(--bg-elevated)",
+            borderRight: "1px solid var(--border-hairline)",
             display:     "flex",
             flexDirection: "column",
             zIndex:      11,
@@ -495,21 +495,21 @@ export default function ContextualSidebar() {
             alignItems:     "center",
             justifyContent: "space-between",
             padding:        "10px 14px",
-            borderBottom:   "1px solid rgba(255,255,255,0.05)",
+            borderBottom:   "1px solid var(--border-hairline)",
             minHeight:      52,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{
                 width: 26, height: 26, borderRadius: 6,
-                background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+                background: "var(--accent-grad)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 12, color: "#fff", fontWeight: 700,
+                fontSize: 12, color: "var(--bg-base)", fontWeight: 700,
               }}>✦</div>
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#f4f4f5" }}>AskMyNotes</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>AskMyNotes</span>
             </div>
             <button
               onClick={() => setMobileOpen(false)}
-              style={{ background: "transparent", border: "none", color: "#52525b", cursor: "pointer", fontSize: 18 }}
+              style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", fontSize: 18 }}
             >
               ✕
             </button>
@@ -537,8 +537,8 @@ export default function ContextualSidebar() {
       transition={{ duration: 0.25, ease: "easeInOut" }}
       style={{
         height:         "100vh",
-        background:     "#111111",
-        borderRight:    "1px solid rgba(255,255,255,0.05)",
+        background:     "var(--bg-elevated)",
+        borderRight:    "1px solid var(--border-hairline)",
         display:        "flex",
         flexDirection:  "column",
         overflow:       "visible",

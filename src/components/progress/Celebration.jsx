@@ -7,13 +7,13 @@ import { AnimatePresence, motion } from "framer-motion";
  * Anchored particle ring for milestone moments.
  * Imperative API: ref.emit({ x, y, label? })
  *
- *  - 24 small purple+cyan particles in a ring, 700ms fade.
+ *  - 24 small gold particles in a ring, 700ms fade.
  *  - Throttled to 1 emission per 30s to avoid noise.
  *  - Skipped under prefers-reduced-motion.
  *  - Fixed-position overlay so it doesn't affect layout.
  */
 const PARTICLE_COUNT = 24;
-const COLORS = ["#8B5CF6", "#22D3EE", "#A78BFA"];
+const COLORS = ["#D4AF6E", "#EACF96", "#9A7E44"];
 const THROTTLE_MS = 30_000;
 
 const Celebration = forwardRef(function Celebration(_props, ref) {
@@ -91,9 +91,9 @@ const Celebration = forwardRef(function Celebration(_props, ref) {
                   transform: "translate(-50%, -50%)",
                   fontSize: 11,
                   fontWeight: 700,
-                  color: "#f4f4f5",
+                  color: "var(--text-primary)",
                   letterSpacing: 0.4,
-                  textShadow: "0 0 12px rgba(139,92,246,0.6)",
+                  textShadow: "0 0 12px var(--accent-glow-hard)",
                   whiteSpace: "nowrap",
                 }}
               >

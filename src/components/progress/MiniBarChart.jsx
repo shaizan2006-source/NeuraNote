@@ -1,6 +1,6 @@
 "use client";
 
-export default function MiniBarChart({ data = [], height = 40, barColor = "#8B5CF6", barWidth = 8, gap = 3 }) {
+export default function MiniBarChart({ data = [], height = 40, barColor = "var(--accent)", barWidth = 8, gap = 3 }) {
   const max = Math.max(...data.map(d => d.minutes ?? d.value ?? 0), 1);
 
   return (
@@ -17,7 +17,7 @@ export default function MiniBarChart({ data = [], height = 40, barColor = "#8B5C
               width:      barWidth,
               height:     barH,
               borderRadius: 2,
-              background: isLast ? "#8B5CF6" : barColor,
+              background: isLast ? "var(--accent)" : barColor,
               opacity:    isLast ? 1 : 0.3 + (i / data.length) * 0.5,
               transition: "height 0.8s ease-out",
             }}

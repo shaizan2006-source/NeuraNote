@@ -41,7 +41,7 @@ export function useChangePulse(key, opts = {}) {
   const style = pulsing
     ? {
         boxShadow:
-          "0 0 0 1px rgba(139,92,246,0.55), 0 0 28px 4px rgba(34,211,238,0.22)",
+          "0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent), 0 0 28px 4px var(--accent-glow-soft)",
         transition: `box-shadow ${duration}ms ease-out`,
       }
     : { boxShadow: "none", transition: `box-shadow ${duration}ms ease-out` };

@@ -138,6 +138,14 @@ Ran a 9-agent workflow (render-safety, dead-links, states, palette, a11y, mobile
 
 Full finding objects: `tasks/wjf8wvf8d.output` (workflow run wf_2cdb5872-948).
 
+## Stage 9 execution notes (2026-06-26)
+
+- **9a** P0 fix: `lib/telemetry/events.js` `trackEvent` is now isomorphic (server: dynamic-import serverAuth; client: POST `/api/telemetry`). Key insight: dynamic `import()` inside a `typeof window==='undefined'` branch keeps serverAuth out of the client bundle's eval path. globals.css: app-wide `:focus-visible` gold ring (`:where(a,button,...)`) + `@media (prefers-reduced-motion)` guard.
+- **lib/styles.js** COLORS MUST stay LITERAL hex (not var()) — consumed in `<canvas>` (TimerRing `ctx.strokeStyle = COLORS.accent.purple`). Mapped to literal O&A gold ramp. Same rule for any SVG presentation attribute / JS-built gradient string.
+- **Re-skin agent rule** that worked: "if file imports COLORS/SHADOWS from @/lib/styles, leave those refs alone (already gold); only sweep RAW literals; var()/color-mix for CSS contexts, literal gold for canvas/SVG/JS-string contexts."
+- **Auth-gated visual verification:** `.env.local` has NO TEST_EMAIL/TEST_PASSWORD (Stage-7 probe used runtime env). `scripts/shot-9e.mjs` logs in + captures /exams /study /focus /progress /quiz once creds exist. Pending for 9h. All 5 routes return HTTP 200 (SSR no-crash) meanwhile.
+- Gate progression: 9a→1403, 9b→1352, 9e→1024 hex (baseline-aware, none introduced).
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

@@ -18,6 +18,7 @@ import { useQuizStream } from '@/hooks/useQuizStream';
 import { saveQuizSession, loadQuizSession, clearQuizSession } from '@/utils/quizSession';
 import { retryWithBackoff } from '@/utils/quizResilience';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
+import { clientFetch } from '@/lib/clientFetch';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -226,11 +227,10 @@ function QuizContent() {
     try {
       const requestBody = JSON.stringify({ documentId, userId, count: 12, marks: [5, 10, 20] });
       const data = await retryWithBackoff(
-        () => fetch('/api/ai/generate-questions', {
+        () => clientFetch('/api/ai/generate-questions', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: requestBody,
-        }).then((r) => r.json()),
+        }).then((r) => r?.json()),
         2,
         2000,
         60000
@@ -267,9 +267,8 @@ function QuizContent() {
     const timeSpent = Math.floor((Date.now() - questionStartTimeRef.current) / 1000);
 
     try {
-      const res = await fetch('/api/ai/evaluate-answer', {
+      const res = await clientFetch('/api/ai/evaluate-answer', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question: currentQ.text,
           answer: answers[currentIndex],
@@ -359,9 +358,8 @@ function QuizContent() {
   const fetchCoachSuggestion = async (signals, docName, questionIndex, totalQuestions) => {
     setCoachLoading(true);
     try {
-      const res = await fetch('/api/quiz/ai-coach', {
+      const res = await clientFetch('/api/quiz/ai-coach', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           signals: {
             ...signals,
@@ -614,7 +612,7 @@ function QuizContent() {
                     <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: SPACING.sm, display: 'flex', alignItems: 'center', gap: 6 }}>
                       <span style={{ opacity: 0.7 }}>📄</span> Source excerpt
                     </div>
-                    <div style={{ padding: SPACING.md, border: `1px solid rgba(34,211,238,0.15)`, borderRadius: RADIUS.md, background: 'rgba(34,211,238,0.03)', fontSize: '0.78rem', color: COLORS.text.secondary, lineHeight: 1.75, wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>
+                    <div style={{ padding: SPACING.md, border: `1px solid color-mix(in srgb, var(--accent) 28%, transparent)`, borderRadius: RADIUS.md, background: 'color-mix(in srgb, var(--accent) 8%, transparent)', fontSize: '0.78rem', color: COLORS.text.secondary, lineHeight: 1.75, wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>
                       {currentQ.sourceSnippet
                         ? segmentText(currentQ.sourceSnippet)
                         : 'No excerpt available for this question.'}
@@ -630,7 +628,7 @@ function QuizContent() {
 
                   <div>
                     <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>🤖 AI Coach:</div>
-                    <div style={{ padding: SPACING.md, borderRadius: RADIUS.md, background: 'rgba(139,92,246,0.05)', border: `1px solid rgba(139,92,246,0.1)`, fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, lineHeight: 1.6 }}>
+                    <div style={{ padding: SPACING.md, borderRadius: RADIUS.md, background: 'color-mix(in srgb, var(--accent) 8%, transparent)', border: `1px solid color-mix(in srgb, var(--accent) 25%, transparent)`, fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, lineHeight: 1.6 }}>
                       {coachLoading
                         ? 'Thinking…'
                         : coachSuggestion || 'Answer a question to get coaching feedback.'}

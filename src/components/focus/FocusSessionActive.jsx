@@ -24,16 +24,16 @@ const AI_TIPS = [
 ];
 
 const EXAM_WEIGHT_BADGE = {
-  high:   { label: 'HIGH YIELD', bg: 'rgba(239,68,68,0.15)',   border: 'rgba(239,68,68,0.40)',   color: '#ef4444' },
-  medium: { label: 'MUST KNOW',  bg: 'rgba(245,158,11,0.12)',  border: 'rgba(245,158,11,0.30)',  color: '#f59e0b' },
+  high:   { label: 'HIGH YIELD', bg: 'color-mix(in srgb, var(--error) 15%, transparent)',   border: 'color-mix(in srgb, var(--error) 40%, transparent)',   color: 'var(--error)' },
+  medium: { label: 'MUST KNOW',  bg: 'color-mix(in srgb, var(--warning) 12%, transparent)',  border: 'color-mix(in srgb, var(--warning) 30%, transparent)',  color: 'var(--warning)' },
 };
 
 const TASK_TYPE_PILL = {
-  conceptual:   { label: 'conceptual',   bg: 'rgba(139,92,246,0.15)', border: 'rgba(139,92,246,0.30)', color: '#a78bfa' },
-  memorisation: { label: 'memorise',     bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.30)', color: '#f59e0b' },
-  derivation:   { label: 'derivation',   bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.30)', color: '#60a5fa' },
-  practice:     { label: 'practice',     bg: 'rgba(34,211,238,0.08)', border: 'rgba(34,211,238,0.25)', color: '#22d3ee' },
-  revision:     { label: 'revision',     bg: 'rgba(34,197,94,0.10)',  border: 'rgba(34,197,94,0.25)',  color: '#4ade80' },
+  conceptual:   { label: 'conceptual',   bg: 'color-mix(in srgb, var(--accent) 12%, transparent)', border: 'color-mix(in srgb, var(--accent) 30%, transparent)', color: 'var(--accent)' },
+  memorisation: { label: 'memorise',     bg: 'color-mix(in srgb, var(--warning) 12%, transparent)', border: 'color-mix(in srgb, var(--warning) 30%, transparent)', color: 'var(--warning)' },
+  derivation:   { label: 'derivation',   bg: 'color-mix(in srgb, var(--info) 12%, transparent)', border: 'color-mix(in srgb, var(--info) 30%, transparent)', color: 'var(--info)' },
+  practice:     { label: 'practice',     bg: 'color-mix(in srgb, var(--accent) 8%, transparent)', border: 'color-mix(in srgb, var(--accent) 25%, transparent)', color: 'var(--accent)' },
+  revision:     { label: 'revision',     bg: 'color-mix(in srgb, var(--success) 10%, transparent)',  border: 'color-mix(in srgb, var(--success) 25%, transparent)',  color: 'var(--success)' },
 };
 
 function ExamWeightBadge({ examWeight }) {
@@ -236,7 +236,7 @@ export default function FocusSessionActive({
           </div>
 
           {/* AI Tip */}
-          <div style={{ ...panelStyle, width: '100%', background: 'rgba(34,211,238,0.04)', border: `1px solid rgba(34,211,238,0.15)` }}>
+          <div style={{ ...panelStyle, width: '100%', background: 'color-mix(in srgb, var(--accent) 6%, transparent)', border: `1px solid color-mix(in srgb, var(--accent) 15%, transparent)` }}>
             <div style={{ fontSize: TYPOGRAPHY.sizes.label, color: COLORS.accent.cyan, fontWeight: 700, marginBottom: SPACING.sm }}>
               💡 AI Tip
             </div>
@@ -289,10 +289,10 @@ export default function FocusSessionActive({
                     title="Ask AI about this task"
                     style={{
                       flexShrink: 0,
-                      background: 'rgba(34,211,238,0.08)',
-                      border: `1px solid rgba(34,211,238,0.25)`,
+                      background: 'color-mix(in srgb, var(--accent) 8%, transparent)',
+                      border: `1px solid color-mix(in srgb, var(--accent) 25%, transparent)`,
                       borderRadius: RADIUS.md,
-                      color: '#22D3EE',
+                      color: 'var(--accent)',
                       fontSize: TYPOGRAPHY.sizes.label,
                       fontWeight: TYPOGRAPHY.weights.semibold,
                       cursor: 'pointer',
@@ -302,12 +302,12 @@ export default function FocusSessionActive({
                       whiteSpace: 'nowrap',
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.background = 'rgba(34,211,238,0.14)';
-                      e.currentTarget.style.borderColor = 'rgba(34,211,238,0.4)';
+                      e.currentTarget.style.background = 'color-mix(in srgb, var(--accent) 14%, transparent)';
+                      e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent) 40%, transparent)';
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.background = 'rgba(34,211,238,0.08)';
-                      e.currentTarget.style.borderColor = 'rgba(34,211,238,0.25)';
+                      e.currentTarget.style.background = 'color-mix(in srgb, var(--accent) 8%, transparent)';
+                      e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent) 25%, transparent)';
                     }}
                   >
                     ✦ Ask AI

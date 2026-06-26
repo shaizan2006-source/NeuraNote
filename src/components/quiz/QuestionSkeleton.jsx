@@ -21,11 +21,11 @@ export default function QuestionSkeleton({ streamStatus = 'fetching', isError = 
   if (isError) {
     return (
       <div style={{
-        border: `1px solid rgba(248,113,113,0.3)`,
+        border: `1px solid color-mix(in srgb, var(--error) 30%, transparent)`,
         borderRadius: RADIUS.md,
         padding: SPACING.lg,
-        background: 'rgba(248,113,113,0.05)',
-        color: '#f87171',
+        background: 'color-mix(in srgb, var(--error) 5%, transparent)',
+        color: 'var(--error)',
         fontSize: TYPOGRAPHY.sizes.body,
         lineHeight: 1.6,
       }}>
@@ -61,7 +61,7 @@ export default function QuestionSkeleton({ streamStatus = 'fetching', isError = 
           <SkLine width="80px" height="11px" />
           <div style={{
             width: '48px', height: '22px', flexShrink: 0,
-            background: 'rgba(139,92,246,0.1)',
+            background: 'color-mix(in srgb, var(--accent) 10%, transparent)',
             border: `1px solid ${COLORS.border.accent}`,
             borderRadius: RADIUS.sm,
           }} />
@@ -80,7 +80,7 @@ export default function QuestionSkeleton({ streamStatus = 'fetching', isError = 
         minHeight: '180px',
         border: `1px solid ${COLORS.border.lighter}`,
         borderRadius: RADIUS.md,
-        background: 'rgba(255,255,255,0.01)',
+        background: 'var(--bg-surface)',
         marginBottom: SPACING.lg,
         ...pulseStyle(120),
       }} />
@@ -88,7 +88,7 @@ export default function QuestionSkeleton({ streamStatus = 'fetching', isError = 
       {/* Button row skeleton */}
       <div style={{ display: 'flex', gap: SPACING.md, ...pulseStyle(220) }}>
         <div style={{ height: '38px', flex: 1, background: COLORS.bg.card, borderRadius: RADIUS.md, border: `1px solid ${COLORS.border.lighter}` }} />
-        <div style={{ height: '38px', flex: 2, background: 'rgba(139,92,246,0.04)', borderRadius: RADIUS.md, border: `1px solid rgba(139,92,246,0.1)` }} />
+        <div style={{ height: '38px', flex: 2, background: 'color-mix(in srgb, var(--accent) 4%, transparent)', borderRadius: RADIUS.md, border: `1px solid color-mix(in srgb, var(--accent) 25%, transparent)` }} />
       </div>
     </>
   );

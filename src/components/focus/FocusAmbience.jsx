@@ -39,14 +39,14 @@ export default function FocusAmbience() {
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(ellipse 90% 55% at 50% 110%, rgba(88,28,235,0.28) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse 90% 55% at 50% 110%, color-mix(in srgb, var(--accent) 28%, transparent) 0%, transparent 70%)',
       }} />
 
       {/* Layer 2 — Breathing pulse (6 s cycle) */}
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(ellipse 70% 40% at 50% 115%, rgba(139,92,246,0.22) 0%, transparent 65%)',
+        background: 'radial-gradient(ellipse 70% 40% at 50% 115%, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 65%)',
         animation: 'ambiencePulse 6s ease-in-out infinite alternate',
       }} />
 
@@ -57,7 +57,7 @@ export default function FocusAmbience() {
         height: '30%',
         top: '3%',
         right: '8%',
-        background: 'radial-gradient(circle, rgba(67,56,202,0.10) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 70%)',
         filter: 'blur(40px)',
         animation: 'ambienceFloat 14s ease-in-out infinite alternate',
       }} />

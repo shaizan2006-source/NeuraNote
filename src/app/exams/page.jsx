@@ -64,7 +64,7 @@ export default function ExamsPage() {
     <div style={{
       display: "flex",
       minHeight: "100vh",
-      background: "linear-gradient(180deg, #0A0A0A 0%, #1A1A2E 100%)",
+      background: "linear-gradient(180deg, var(--bg-base) 0%, var(--bg-surface-2) 100%)",
     }}>
       <ExamsSidebar />
 
@@ -74,10 +74,10 @@ export default function ExamsPage() {
 
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
-          <h1 style={{ margin: "0 0 6px", fontSize: 28, fontWeight: 700, color: "#f4f4f5" }}>
+          <h1 style={{ margin: "0 0 6px", fontSize: 28, fontWeight: 700, color: "var(--text-primary)" }}>
             Exams
           </h1>
-          <p style={{ margin: 0, fontSize: 13, color: "#71717a" }}>
+          <p style={{ margin: 0, fontSize: 13, color: "var(--text-tertiary)" }}>
             Track your upcoming exams and focus on weak areas
           </p>
         </div>
@@ -104,13 +104,13 @@ export default function ExamsPage() {
               {/* Left — Countdown + list */}
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 <div style={{
-                  background: "linear-gradient(135deg, rgba(34,211,238,0.08), rgba(139,92,246,0.08))",
+                  background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, transparent), color-mix(in srgb, var(--accent) 8%, transparent))",
                   borderWidth: "1px 1px 1px 2px", borderStyle: "solid",
-                  borderColor: "rgba(34,211,238,0.25) rgba(34,211,238,0.25) rgba(34,211,238,0.25) rgba(139,92,246,0.35)",
+                  borderColor: "color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 32%, transparent)",
                   borderRadius: 12, padding: 20,
-                  boxShadow: "inset 0 0 30px rgba(34,211,238,0.04)",
+                  boxShadow: "var(--accent-glow)",
                 }}>
-                  <p style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#e4e4e7" }}>
+                  <p style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
                     Countdown
                   </p>
                   <ExamCountdownSection exams={activeExams} />
@@ -120,14 +120,14 @@ export default function ExamsPage() {
                   onClick={() => setShowModal(true)}
                   style={{
                     padding: "12px 16px",
-                    background: "linear-gradient(135deg, #8B5CF6, #6D28D9)",
-                    border: "1px solid rgba(139,92,246,0.3)",
-                    borderRadius: 8, color: "#fff",
+                    background: "var(--accent-grad)",
+                    border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)",
+                    borderRadius: 8, color: "var(--bg-base)",
                     fontSize: 13, fontWeight: 600, cursor: "pointer",
                     transition: "all 200ms ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(139,92,246,0.3)";
+                    e.currentTarget.style.boxShadow = "var(--accent-glow)";
                     e.currentTarget.style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
@@ -141,11 +141,11 @@ export default function ExamsPage() {
                 {/* All exams list when multiple */}
                 {activeExams.length > 1 && (
                   <div style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid rgba(255,255,255,0.06)",
+                    background: "var(--bg-surface)",
+                    border: "1px solid var(--border-hairline)",
                     borderRadius: 8, padding: 16,
                   }}>
-                    <p style={{ margin: "0 0 12px", fontSize: 12, fontWeight: 600, color: "#71717a" }}>
+                    <p style={{ margin: "0 0 12px", fontSize: 12, fontWeight: 600, color: "var(--text-tertiary)" }}>
                       All Active Exams ({activeExams.length})
                     </p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -156,15 +156,15 @@ export default function ExamsPage() {
                         return (
                           <div key={exam.id} style={{
                             padding: "8px 12px",
-                            background: "rgba(255,255,255,0.02)",
-                            border: "1px solid rgba(255,255,255,0.06)",
+                            background: "var(--bg-surface)",
+                            border: "1px solid var(--border-hairline)",
                             borderRadius: 6,
                             display: "flex", justifyContent: "space-between", alignItems: "center",
                           }}>
-                            <span style={{ fontSize: 12, color: "#e4e4e7" }}>{exam.name}</span>
+                            <span style={{ fontSize: 12, color: "var(--text-primary)" }}>{exam.name}</span>
                             <span style={{
                               fontSize: 11,
-                              color: daysLeft <= 7 ? "#EF4444" : daysLeft <= 30 ? "#F59E0B" : "#22C55E",
+                              color: daysLeft <= 7 ? "var(--error)" : daysLeft <= 30 ? "var(--warning)" : "var(--success)",
                             }}>
                               {daysLeft > 0 ? `${daysLeft}d` : daysLeft === 0 ? "Today!" : "Past"}
                             </span>
@@ -178,13 +178,13 @@ export default function ExamsPage() {
 
               {/* Right — Weak topics */}
               <div style={{
-                background: "linear-gradient(135deg, rgba(34,211,238,0.08), rgba(139,92,246,0.08))",
+                background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, transparent), color-mix(in srgb, var(--accent) 8%, transparent))",
                 borderWidth: "1px 1px 1px 2px", borderStyle: "solid",
-                borderColor: "rgba(34,211,238,0.25) rgba(34,211,238,0.25) rgba(34,211,238,0.25) rgba(139,92,246,0.35)",
+                borderColor: "color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 32%, transparent)",
                 borderRadius: 12, padding: 20,
-                boxShadow: "inset 0 0 30px rgba(34,211,238,0.04)",
+                boxShadow: "var(--accent-glow)",
               }}>
-                <p style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#e4e4e7" }}>
+                <p style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
                   Weak Topics
                 </p>
                 <WeakTopicsSection weakTopics={weakTopics} />
@@ -192,10 +192,10 @@ export default function ExamsPage() {
                 {weakTopics.length > 0 && (
                   <div style={{
                     marginTop: 16, padding: 12,
-                    background: "rgba(59,130,246,0.05)",
-                    border: "1px solid rgba(59,130,246,0.2)", borderRadius: 6,
+                    background: "color-mix(in srgb, var(--accent) 8%, transparent)",
+                    border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)", borderRadius: 6,
                   }}>
-                    <p style={{ margin: 0, fontSize: 11, color: "#60a5fa", lineHeight: 1.5 }}>
+                    <p style={{ margin: 0, fontSize: 11, color: "var(--accent)", lineHeight: 1.5 }}>
                       💡 Topics asked 5+ times appear here. Focus on these to improve faster.
                     </p>
                   </div>
@@ -208,24 +208,24 @@ export default function ExamsPage() {
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
               gap: 12, padding: 16,
-              background: "rgba(255,255,255,0.01)",
-              border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8,
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-hairline)", borderRadius: 8,
             }}>
               <div>
-                <p style={{ margin: 0, fontSize: 11, color: "#71717a" }}>Active Exams</p>
-                <p style={{ margin: "4px 0 0", fontSize: 18, fontWeight: 700, color: "#22D3EE" }}>
+                <p style={{ margin: 0, fontSize: 11, color: "var(--text-tertiary)" }}>Active Exams</p>
+                <p style={{ margin: "4px 0 0", fontSize: 18, fontWeight: 700, color: "var(--accent)" }}>
                   {activeExams.length}
                 </p>
               </div>
               <div>
-                <p style={{ margin: 0, fontSize: 11, color: "#71717a" }}>Weak Topics</p>
-                <p style={{ margin: "4px 0 0", fontSize: 18, fontWeight: 700, color: "#F59E0B" }}>
+                <p style={{ margin: 0, fontSize: 11, color: "var(--text-tertiary)" }}>Weak Topics</p>
+                <p style={{ margin: "4px 0 0", fontSize: 18, fontWeight: 700, color: "var(--warning)" }}>
                   {weakTopics.length}
                 </p>
               </div>
               <div>
-                <p style={{ margin: 0, fontSize: 11, color: "#71717a" }}>Days to Next Exam</p>
-                <p style={{ margin: "4px 0 0", fontSize: 18, fontWeight: 700, color: "#22C55E" }}>
+                <p style={{ margin: 0, fontSize: 11, color: "var(--text-tertiary)" }}>Days to Next Exam</p>
+                <p style={{ margin: "4px 0 0", fontSize: 18, fontWeight: 700, color: "var(--success)" }}>
                   {nextExamDaysLeft !== null ? (nextExamDaysLeft >= 0 ? nextExamDaysLeft : "Past") : "—"}
                 </p>
               </div>

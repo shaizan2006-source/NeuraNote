@@ -27,11 +27,11 @@ export default function TimerRing({ timeLeft = 900, duration = 1500, paused = fa
     // Track ring (background)
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(139,92,246,0.12)';
+    ctx.strokeStyle = 'rgba(212,175,110,0.12)'; // faint gold track (canvas; literal req'd)
     ctx.lineWidth = 10;
     ctx.stroke();
 
-    // Progress arc (purple → cyan gradient via color interpolation)
+    // Progress arc (gold)
     if (progress > 0) {
       ctx.beginPath();
       ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * progress);

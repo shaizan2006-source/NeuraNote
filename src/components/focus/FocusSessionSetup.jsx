@@ -3,6 +3,7 @@ import { useState, useMemo, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Button from '@/components/shared/Button';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '@/lib/styles';
+import { clientFetch } from '@/lib/clientFetch';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -39,11 +40,9 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
     setUploading(true);
     setUploadError(null);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('userId', session?.user?.id || userId || '');
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const res = await clientFetch('/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (!res.ok || !data.document) throw new Error(data.error || 'Upload failed');
       onSelectPDF(data.document.id, data.document.name);
@@ -85,7 +84,7 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
     padding: `${SPACING.md} ${SPACING.lg}`,
     borderRadius: RADIUS.md,
     border: `1px solid ${isActive ? COLORS.border.accent : COLORS.border.light}`,
-    background: isActive ? 'rgba(139,92,246,0.06)' : 'transparent',
+    background: isActive ? 'color-mix(in srgb, var(--accent) 10%, transparent)' : 'transparent',
     cursor: 'pointer',
     transition: 'background 0.15s',
   });
@@ -121,7 +120,7 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
             </div>
             <span style={{
               fontSize: TYPOGRAPHY.sizes.small,
-              background: 'rgba(139,92,246,0.15)',
+              background: 'color-mix(in srgb, var(--accent) 15%, transparent)',
               color: COLORS.text.accent,
               padding: `2px ${SPACING.sm}`,
               borderRadius: RADIUS.sm,
@@ -160,9 +159,9 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
             <div style={{
               fontSize: TYPOGRAPHY.sizes.body,
               fontWeight: 700,
-              color: '#dc2626',
-              background: 'rgba(220, 38, 38, 0.1)',
-              border: '2px solid #dc2626',
+              color: 'var(--error)',
+              background: 'color-mix(in srgb, var(--error) 10%, transparent)',
+              border: '2px solid var(--error)',
               borderRadius: RADIUS.md,
               padding: SPACING.lg,
               marginTop: SPACING.md,
@@ -220,9 +219,9 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
             <div style={{
               fontSize: TYPOGRAPHY.sizes.body,
               fontWeight: 700,
-              color: '#dc2626',
-              background: 'rgba(220, 38, 38, 0.1)',
-              border: '2px solid #dc2626',
+              color: 'var(--error)',
+              background: 'color-mix(in srgb, var(--error) 10%, transparent)',
+              border: '2px solid var(--error)',
               borderRadius: RADIUS.md,
               padding: SPACING.lg,
               marginTop: SPACING.md,
@@ -265,9 +264,9 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
           <div style={{
             fontSize: TYPOGRAPHY.sizes.body,
             fontWeight: 700,
-            color: '#dc2626',
-            background: 'rgba(220, 38, 38, 0.1)',
-            border: '2px solid #dc2626',
+            color: 'var(--error)',
+            background: 'color-mix(in srgb, var(--error) 10%, transparent)',
+            border: '2px solid var(--error)',
             borderRadius: RADIUS.md,
             padding: SPACING.lg,
             marginTop: SPACING.md,

@@ -58,16 +58,16 @@ export default class ProgressErrorBoundary extends React.Component {
           padding: "48px 24px",
           gap: 12,
           textAlign: "center",
-          background: "#111111",
-          border: "1px solid rgba(239,68,68,0.25)",
+          background: "var(--bg-elevated)",
+          border: "1px solid color-mix(in srgb, var(--error) 25%, transparent)",
           borderRadius: 12,
         }}
       >
         <span style={{ fontSize: 24 }}>⚠</span>
-        <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#f4f4f5" }}>
+        <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
           Something went wrong loading this section.
         </p>
-        <p style={{ margin: 0, fontSize: 11, color: "#71717a", maxWidth: 320 }}>
+        <p style={{ margin: 0, fontSize: 11, color: "var(--text-tertiary)", maxWidth: 320 }}>
           {this.state.message}
         </p>
         <button
@@ -75,10 +75,10 @@ export default class ProgressErrorBoundary extends React.Component {
           style={{
             marginTop: 4,
             padding: "8px 18px",
-            background: "linear-gradient(135deg, #8B5CF6, #7C3AED)",
+            background: "var(--accent-grad)",
             border: "none",
             borderRadius: 8,
-            color: "#fff",
+            color: "var(--bg-base)",
             fontSize: 12,
             fontWeight: 600,
             cursor: "pointer",

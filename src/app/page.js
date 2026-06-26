@@ -5,6 +5,26 @@ import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import WaitlistForm from "@/components/marketing/WaitlistForm";
 import FAQAccordion from "@/components/marketing/FAQAccordion";
+import { LogoMark } from "@/components/brand/Logo";
+
+// Constellation backdrop for the hero — the brand-signature star-field
+// (same identity as the Sage idle effect, brain map, and logo spark).
+function HeroConstellation() {
+  const nodes = [[12, 22], [30, 12], [52, 24], [74, 14], [88, 30], [22, 54], [46, 42], [68, 56], [86, 64], [36, 76], [62, 82]];
+  const links = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [2, 6], [6, 7], [4, 8], [5, 9], [7, 10], [6, 1]];
+  return (
+    <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none"
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.55, pointerEvents: "none" }}>
+      {links.map(([a, b], i) => (
+        <line key={i} x1={nodes[a][0]} y1={nodes[a][1]} x2={nodes[b][0]} y2={nodes[b][1]}
+          stroke="var(--accent)" strokeOpacity={0.3} strokeWidth="1" vectorEffect="non-scaling-stroke" />
+      ))}
+      {nodes.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 0.42 : 0.28} fill="var(--accent-bright)" />
+      ))}
+    </svg>
+  );
+}
 
 function FadeUp({ children, delay = 0, className = "" }) {
   const ref = useRef(null);
@@ -106,13 +126,8 @@ export default function Home() {
         borderBottom: "1px solid var(--border-subtle)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{
-            width: 30, height: 30, borderRadius: 9,
-            background: "var(--accent-grad)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 15, boxShadow: "0 0 14px var(--brand-glow)",
-          }}>📚</div>
-          <span style={{ fontWeight: 700, fontSize: 15 }}>Ask My Notes</span>
+          <span style={{ display: "flex", color: "var(--text-primary)" }}><LogoMark size={26} strokeWidth={1.7} /></span>
+          <span style={{ fontWeight: 600, fontSize: 15, letterSpacing: "-0.01em" }}>Ask My Notes</span>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link href="/pricing" style={{ color: "var(--text-secondary)", fontSize: 14, textDecoration: "none", fontWeight: 500 }}>
@@ -141,26 +156,42 @@ export default function Home() {
         padding: "clamp(72px, 15vh, 120px) clamp(16px, 4vw, 24px) clamp(40px, 8vh, 80px)",
         position: "relative", overflow: "hidden",
       }}>
+        {/* Constellation backdrop + gold glow */}
+        <HeroConstellation />
         <div style={{
-          position: "absolute", top: "10%", left: "50%", transform: "translateX(-50%)",
-          width: 600, height: 400,
-          background: "radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, transparent 70%)",
+          position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)",
+          width: 640, height: 460,
+          background: "radial-gradient(ellipse, var(--accent-glow-soft) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
 
+        {/* Brand mark */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+          style={{ position: "relative", zIndex: 1, color: "var(--text-primary)", marginBottom: 26 }}
+        >
+          <LogoMark size={60} strokeWidth={1.4} />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.05, ease: [0.4, 0, 0.2, 1] }}
           style={{
+            position: "relative", zIndex: 1,
             display: "inline-flex", alignItems: "center", gap: 8,
-            background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.3)",
+            background: "transparent", border: "1px solid var(--accent-dim)",
             borderRadius: 20, padding: "5px 14px",
-            fontSize: 12, fontWeight: 600, color: "var(--brand-light)",
-            marginBottom: 28, letterSpacing: "0.4px",
+            fontSize: 12, fontWeight: 600, color: "var(--accent)",
+            marginBottom: 24, letterSpacing: "0.4px",
           }}
         >
-          🇮🇳 Built for JEE · NEET · India&apos;s hardest exams
+          <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden="true" style={{ flexShrink: 0 }}>
+            <circle cx="3" cy="3" r="3" fill="var(--accent)" />
+          </svg>
+          Built for JEE · NEET · India&apos;s hardest exams
         </motion.div>
 
         <motion.h1
@@ -168,14 +199,14 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
           style={{
-            fontSize: "clamp(36px, 6vw, 62px)", fontWeight: 800,
-            lineHeight: 1.1, letterSpacing: "-0.5px",
-            maxWidth: 720, margin: "0 auto 20px",
-            background: "linear-gradient(180deg, #f1f5f9 40%, #64748b 100%)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            position: "relative", zIndex: 1,
+            fontSize: "clamp(40px, 6.5vw, 64px)", fontWeight: 600,
+            lineHeight: 1.08, letterSpacing: "-0.02em",
+            maxWidth: 760, margin: "0 auto 20px",
+            color: "var(--text-primary)",
           }}
         >
-          Remember everything you study. Ace JEE/NEET.
+          Your notes that <span style={{ color: "var(--accent)" }}>answer back.</span>
         </motion.h1>
 
         <motion.p
@@ -183,25 +214,26 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           style={{
+            position: "relative", zIndex: 1,
             fontSize: "clamp(14px, 3.5vw, 18px)", color: "var(--text-secondary)",
-            maxWidth: 520, lineHeight: 1.7, margin: "0 auto 40px",
+            maxWidth: 540, lineHeight: 1.7, margin: "0 auto 40px",
           }}
         >
-          AI Brain Map + Daily Briefing + 1000+ official PYQs. Built for Indian competitive exams.
+          Upload your notes, ask Sage, and master more in less time. AI Brain Map, daily briefings, and 1000+ official PYQs — built for JEE &amp; NEET.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}
+          style={{ position: "relative", zIndex: 1, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}
         >
           <Link href="/signup" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
             background: "var(--accent-grad)",
             color: "var(--bg-base)", padding: "14px 28px", borderRadius: 12,
             fontSize: 15, fontWeight: 700, textDecoration: "none",
-            boxShadow: "0 4px 24px var(--brand-glow)",
+            boxShadow: "0 4px 24px var(--accent-glow-soft)",
           }}>
             Start free 7-day trial →
           </Link>
@@ -220,7 +252,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          style={{ marginTop: 20, fontSize: 12, color: "var(--text-faint)" }}
+          style={{ position: "relative", zIndex: 1, marginTop: 20, fontSize: 12, color: "var(--text-faint)" }}
         >
           7-day Pro trial · No credit card needed
         </motion.p>
@@ -352,8 +384,8 @@ export default function Home() {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span style={{ fontSize: 13, fontWeight: 600 }}>{q.name}</span>
                   <span style={{
-                    fontSize: 11, fontWeight: 600, color: "var(--brand-light)",
-                    background: "var(--brand-glow)", border: "1px solid rgba(124,58,237,0.25)",
+                    fontSize: 11, fontWeight: 600, color: "var(--accent)",
+                    background: "color-mix(in srgb, var(--accent) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)",
                     padding: "3px 9px", borderRadius: 20,
                   }}>
                     {q.tag}
@@ -380,12 +412,12 @@ export default function Home() {
           {PLANS.map((plan, i) => (
             <FadeUp key={plan.name} delay={i * 0.08}>
               <div style={{
-                background: plan.highlight ? "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,70,229,0.1))" : "var(--surface-card)",
-                border: plan.highlight ? "1px solid rgba(124,58,237,0.5)" : "1px solid var(--border-default)",
+                background: plan.highlight ? "color-mix(in srgb, var(--accent) 9%, transparent)" : "var(--surface-card)",
+                border: plan.highlight ? "1px solid var(--accent)" : "1px solid var(--border-default)",
                 borderRadius: 16, padding: "28px 24px",
                 position: "relative", height: "100%",
                 display: "flex", flexDirection: "column",
-                boxShadow: plan.highlight ? "0 0 40px rgba(124,58,237,0.15)" : "none",
+                boxShadow: plan.highlight ? "var(--shadow-card), 0 0 32px var(--accent-glow-soft)" : "none",
               }}>
                 {plan.badge && (
                   <div style={{
@@ -452,7 +484,7 @@ export default function Home() {
             maxWidth: 640, margin: "0 auto", textAlign: "center",
             background: "var(--surface-card)", border: "1px solid var(--border-default)",
             borderRadius: 20, padding: "clamp(24px, 5vw, 48px) clamp(16px, 4vw, 32px)",
-            boxShadow: "0 0 60px rgba(124,58,237,0.1)",
+            boxShadow: "var(--shadow-card), 0 0 48px var(--accent-glow-soft)",
           }}>
             <div style={{ fontSize: 36, marginBottom: 16 }}>🚀</div>
             <h2 style={{ fontSize: "clamp(20px, 5vw, 28px)", fontWeight: 800, margin: "0 0 12px", letterSpacing: "-0.3px" }}>

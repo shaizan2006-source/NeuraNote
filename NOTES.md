@@ -111,6 +111,14 @@
   2. `/exam-transition` shows "in **undefined** days" when no exam date is set — a data-fallback copy bug.
 - Build clean, gate green (1405 hex).
 
+## Stage 8h status (2026-06-26) — / landing — STAGE 8 COMPLETE
+
+- Founder picked **Hero A — Constellation Hero** (over B Product-Peek / C Minimal) from `__screens__/stage-8h-proposals/`.
+- `src/app/page.js`: `HeroConstellation()` inline-SVG gold star-field backdrop + gold radial glow behind centered `LogoMark(60)`; nav emoji 📚 → `LogoMark`; headline "Your notes that **answer back.**" (`answer back` = `var(--accent)`); subtitle copy refreshed; CTAs `position:relative;zIndex:1`.
+- Cleaned residual purple literals: testimonial tag border → `color-mix(--accent 25%)`; pricing highlight bg → `color-mix(--accent 9%)` + `var(--accent)` border + `--shadow-card`/`--accent-glow-soft`; CTA-banner + hero-CTA shadows → `--accent-glow-soft`; removed slate headline gradient hex (`#f1f5f9`/`#64748b`).
+- **Badge:** dropped 🇮🇳 flag emoji (Windows/Chromium render it as "IN"/tofu — Windows has no flag-emoji font) → 6px gold-dot SVG. (NOTE: one decorative 🚀 remains in the CTA banner — renders fine cross-platform; left as marketing flourish.)
+- Verified: build clean, gate green (none introduced, `page.js` 15→0), rupee symbols correct, desktop + mobile hero + full-page captured (`__screens__/stage-8h-landing/`). Landing's `useInView`/FadeUp sections need a scroll-capture (`scripts/shot-landing.mjs`) — plain full-page shots render them blank.
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: 🔄 Stage 8 in progress — ✅ 8a–8g done. LAST sub-stage: 8h (/ landing) — needs founder hero-direction pick (§10) before building. Then Stage 9 (audit + polish).**
+**Current stage: ✅ Stage 8 COMPLETE (8a–8h done). NEXT: Stage 9 (wire-up audit + polish) — needs founder sign-off to start.**
 
 ---
 
@@ -26,7 +26,7 @@
   - [x] **8e — /cohort** — DONE 2026-06-25 (leaderboard re-skin; "you" row + handle = gold identity, top-3 ranks gold, "studying now" success; cold-start + populated states verified).
   - [x] **8f — /pricing** — DONE 2026-06-25 (visuals only; Pro = gold hero card, gold annual toggle, success callout/checks; **mojibake fixed incl. ₹ rupee symbol**; Razorpay theme reads computed --accent; payment/plan logic untouched + verified).
   - [x] **8g — onboarding + welcome-back + exam-transition + post-exam + trial** — DONE 2026-06-25 (16 files re-skinned; onboarding single-select = gold-edge, CTAs gold, success/win moments gold; mojibake fixed). 6/7 pages render clean. **2 PRE-EXISTING bugs flagged (not re-skin):** /trial/decision crashes (client comp imports serverAuth via telemetry/events — server-only SERVICE_ROLE_KEY undefined in browser); exam-transition shows "in undefined days" with no exam date set.
-  - [ ] 8h / landing (hero direction needs founder pick §10)
+  - [x] **8h — / landing** — DONE 2026-06-26 (founder picked **Hero A — Constellation Hero**: gold star-field backdrop + gold radial glow, centered LogoMark, gold-dot badge, headline "Your notes that **answer back.**" with gold accent; cleaned all residual `rgba(124,58,237,…)` purple literals + slate headline gradient hex; rupee symbols verified; full page social-proof/features/steps/testimonials/pricing/FAQ/CTA/waitlist all O&A. 🇮🇳 flag emoji removed — broke on Windows/Chromium → gold-dot SVG). Verified desktop + mobile.
 - [ ] **Stage 9 — Wire-up audit + polish**
 
 ---

@@ -74,8 +74,9 @@ export default function ForgotPasswordPage() {
 
         <form onSubmit={handleSubmit} noValidate>
           <div style={styles.fieldWrap}>
-            <label style={styles.label}>Email address</label>
+            <label htmlFor="forgot-email" style={styles.label}>Email address</label>
             <input
+              id="forgot-email"
               type="email"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setEmailErr(""); }}

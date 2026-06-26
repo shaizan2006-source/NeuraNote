@@ -27,6 +27,8 @@ export default function FAQAccordion() {
         }}>
           <button
             onClick={() => setOpen(open === i ? null : i)}
+            aria-expanded={open === i}
+            aria-controls={`faq-answer-${i}`}
             style={{
               width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
               padding: "16px 20px", background: "none", border: "none", cursor: "pointer",
@@ -34,7 +36,7 @@ export default function FAQAccordion() {
             }}
           >
             <span>{faq.q}</span>
-            <span style={{
+            <span aria-hidden="true" style={{
               fontSize: 18, color: "var(--text-muted)", flexShrink: 0,
               transition: "transform 0.2s",
               transform: open === i ? "rotate(45deg)" : "rotate(0deg)",
@@ -42,7 +44,7 @@ export default function FAQAccordion() {
             }}>+</span>
           </button>
           {open === i && (
-            <div style={{ padding: "0 20px 16px", fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.7 }}>
+            <div id={`faq-answer-${i}`} style={{ padding: "0 20px 16px", fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.7 }}>
               {faq.a}
             </div>
           )}

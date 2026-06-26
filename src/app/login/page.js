@@ -116,8 +116,9 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} noValidate>
           {/* Email */}
           <div style={styles.fieldWrap}>
-            <label style={styles.label}>Email</label>
+            <label htmlFor="login-email" style={styles.label}>Email</label>
             <input
+              id="login-email"
               type="email"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setEmailErr(""); }}
@@ -133,11 +134,12 @@ export default function LoginPage() {
           {/* Password */}
           <div style={styles.fieldWrap}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <label style={styles.label}>Password</label>
+              <label htmlFor="login-password" style={styles.label}>Password</label>
               <a href="/forgot-password" style={styles.forgotLink}>Forgot password?</a>
             </div>
             <div style={styles.passWrap}>
               <input
+                id="login-password"
                 type={showPass ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

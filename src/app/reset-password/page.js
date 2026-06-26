@@ -90,9 +90,10 @@ export default function ResetPasswordPage() {
 
         <form onSubmit={handleReset} noValidate>
           <div style={styles.fieldWrap}>
-            <label style={styles.label}>New Password</label>
+            <label htmlFor="reset-password" style={styles.label}>New Password</label>
             <div style={styles.passWrap}>
               <input
+                id="reset-password"
                 type={showPass ? "text" : "password"}
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setPassErr(""); }}
@@ -117,8 +118,9 @@ export default function ResetPasswordPage() {
           </div>
 
           <div style={styles.fieldWrap}>
-            <label style={styles.label}>Confirm Password</label>
+            <label htmlFor="reset-confirm" style={styles.label}>Confirm Password</label>
             <input
+              id="reset-confirm"
               type="password"
               value={confirm}
               onChange={(e) => { setConfirm(e.target.value); setConfirmErr(""); }}

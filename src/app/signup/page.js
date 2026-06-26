@@ -135,8 +135,9 @@ export default function SignupPage() {
         <form onSubmit={handleSignup} noValidate>
           {/* Email */}
           <div style={styles.fieldWrap}>
-            <label style={styles.label}>Email</label>
+            <label htmlFor="signup-email" style={styles.label}>Email</label>
             <input
+              id="signup-email"
               type="email"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setEmailErr(""); }}
@@ -150,9 +151,10 @@ export default function SignupPage() {
 
           {/* Password */}
           <div style={styles.fieldWrap}>
-            <label style={styles.label}>Password</label>
+            <label htmlFor="signup-password" style={styles.label}>Password</label>
             <div style={styles.passWrap}>
               <input
+                id="signup-password"
                 type={showPass ? "text" : "password"}
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setPassErr(""); }}
@@ -188,9 +190,10 @@ export default function SignupPage() {
 
           {/* Confirm password */}
           <div style={styles.fieldWrap}>
-            <label style={styles.label}>Confirm Password</label>
+            <label htmlFor="signup-confirm" style={styles.label}>Confirm Password</label>
             <div style={styles.passWrap}>
               <input
+                id="signup-confirm"
                 type={showConfirm ? "text" : "password"}
                 value={confirm}
                 onChange={(e) => { setConfirm(e.target.value); setConfirmErr(""); }}

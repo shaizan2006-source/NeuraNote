@@ -286,7 +286,6 @@ describe("T-PSR-008: getSectionMeta — known sections", () => {
       const meta = getSectionMeta(heading);
       assert.equal(meta.label, expectedLabel, `label mismatch for "${heading}"`);
       assert.equal(meta.icon,  expectedIcon,  `icon mismatch for "${heading}"`);
-      assert.ok(meta.accent.startsWith("#"), "accent must be a hex colour");
     });
   }
 });
@@ -315,9 +314,8 @@ describe("T-PSR-009: getSectionMeta — case insensitivity", () => {
 // T-PSR-010 — getSectionMeta fallback for unknown sections
 // ════════════════════════════════════════════════════════════════════════════
 describe("T-PSR-010: getSectionMeta — unknown section fallback", () => {
-  test("unknown heading returns neutral fallback accent #475569", () => {
+  test("unknown heading returns neutral fallback", () => {
     const meta = getSectionMeta("SomeMadeUpSection");
-    assert.equal(meta.accent, "#475569");
     assert.equal(meta.icon,   "📝");
     assert.equal(meta.label,  "SomeMadeUpSection", "label should be the raw heading");
   });

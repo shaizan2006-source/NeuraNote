@@ -116,63 +116,66 @@ export function extractQuickSummary(sections) {
   return { summary, rest };
 }
 
-// ── Section metadata (icon, accent colour) ───────────────────
+// ── Section metadata (icon, label) ───────────────────────────
 // Maps canonical heading names → visual config.
 // Keys are lowercase for case-insensitive matching.
+// Note: section accent colour is no longer configured here — the UI
+// derives all colour from CSS tokens (var(--accent)), so per-section
+// hex accents were dead config and have been removed.
 
 const SECTION_META = {
-  'definition':              { icon: '📖', accent: '#3b82f6', label: 'Definition' },
-  'introduction':            { icon: '💡', accent: '#3b82f6', label: 'Introduction' },
-  'introduction / historical context': { icon: '💡', accent: '#3b82f6', label: 'Introduction' },
-  'core explanation':        { icon: '🔬', accent: '#7c3aed', label: 'Core Explanation' },
-  'theoretical foundation':  { icon: '🔬', accent: '#7c3aed', label: 'Theoretical Foundation' },
-  'key characteristics':     { icon: '📋', accent: '#8b5cf6', label: 'Key Characteristics' },
-  'key features':            { icon: '📋', accent: '#8b5cf6', label: 'Key Features' },
-  'detailed features':       { icon: '📋', accent: '#8b5cf6', label: 'Detailed Features' },
-  'working':                 { icon: '⚙️', accent: '#f59e0b', label: 'Working' },
-  'working / process':       { icon: '⚙️', accent: '#f59e0b', label: 'Working / Process' },
-  'working mechanism':       { icon: '⚙️', accent: '#f59e0b', label: 'Working Mechanism' },
-  'diagram':                 { icon: '📊', accent: '#22c55e', label: 'Diagram' },
-  'applications':            { icon: '🌍', accent: '#22c55e', label: 'Applications' },
-  'real-world applications': { icon: '🌍', accent: '#22c55e', label: 'Applications' },
-  'extensive real-world applications': { icon: '🌍', accent: '#22c55e', label: 'Applications' },
-  'advantages':              { icon: '✅', accent: '#22c55e', label: 'Advantages' },
-  'limitations':             { icon: '⚠️', accent: '#f97316', label: 'Limitations' },
-  'limitations / challenges':{ icon: '⚠️', accent: '#f97316', label: 'Limitations' },
-  'types':                   { icon: '🗂️', accent: '#8b5cf6', label: 'Types' },
-  'types / classification':  { icon: '🗂️', accent: '#8b5cf6', label: 'Types / Classification' },
-  'classification':          { icon: '🗂️', accent: '#8b5cf6', label: 'Classification' },
-  'case study':              { icon: '📁', accent: '#f59e0b', label: 'Case Study' },
-  'example':                 { icon: '📁', accent: '#f59e0b', label: 'Example' },
-  'example / case study':    { icon: '📁', accent: '#f59e0b', label: 'Example' },
-  'conclusion':              { icon: '🎯', accent: '#7c3aed', label: 'Conclusion' },
-  'current trends':          { icon: '🚀', accent: '#3b82f6', label: 'Current Trends' },
-  'current trends / future scope': { icon: '🚀', accent: '#3b82f6', label: 'Current Trends' },
-  'future scope':            { icon: '🚀', accent: '#3b82f6', label: 'Future Scope' },
-  'critical analysis':       { icon: '🧠', accent: '#7c3aed', label: 'Critical Analysis' },
+  'definition':              { icon: '📖', label: 'Definition' },
+  'introduction':            { icon: '💡', label: 'Introduction' },
+  'introduction / historical context': { icon: '💡', label: 'Introduction' },
+  'core explanation':        { icon: '🔬', label: 'Core Explanation' },
+  'theoretical foundation':  { icon: '🔬', label: 'Theoretical Foundation' },
+  'key characteristics':     { icon: '📋', label: 'Key Characteristics' },
+  'key features':            { icon: '📋', label: 'Key Features' },
+  'detailed features':       { icon: '📋', label: 'Detailed Features' },
+  'working':                 { icon: '⚙️', label: 'Working' },
+  'working / process':       { icon: '⚙️', label: 'Working / Process' },
+  'working mechanism':       { icon: '⚙️', label: 'Working Mechanism' },
+  'diagram':                 { icon: '📊', label: 'Diagram' },
+  'applications':            { icon: '🌍', label: 'Applications' },
+  'real-world applications': { icon: '🌍', label: 'Applications' },
+  'extensive real-world applications': { icon: '🌍', label: 'Applications' },
+  'advantages':              { icon: '✅', label: 'Advantages' },
+  'limitations':             { icon: '⚠️', label: 'Limitations' },
+  'limitations / challenges':{ icon: '⚠️', label: 'Limitations' },
+  'types':                   { icon: '🗂️', label: 'Types' },
+  'types / classification':  { icon: '🗂️', label: 'Types / Classification' },
+  'classification':          { icon: '🗂️', label: 'Classification' },
+  'case study':              { icon: '📁', label: 'Case Study' },
+  'example':                 { icon: '📁', label: 'Example' },
+  'example / case study':    { icon: '📁', label: 'Example' },
+  'conclusion':              { icon: '🎯', label: 'Conclusion' },
+  'current trends':          { icon: '🚀', label: 'Current Trends' },
+  'current trends / future scope': { icon: '🚀', label: 'Current Trends' },
+  'future scope':            { icon: '🚀', label: 'Future Scope' },
+  'critical analysis':       { icon: '🧠', label: 'Critical Analysis' },
   // Problem solving
-  'given':                   { icon: '📥', accent: '#3b82f6', label: 'Given' },
-  'required':                { icon: '🎯', accent: '#8b5cf6', label: 'Required' },
-  'solution':                { icon: '⚙️', accent: '#f59e0b', label: 'Solution' },
-  'answer':                  { icon: '✅', accent: '#22c55e', label: 'Answer' },
-  'verification':            { icon: '🔍', accent: '#3b82f6', label: 'Verification' },
+  'given':                   { icon: '📥', label: 'Given' },
+  'required':                { icon: '🎯', label: 'Required' },
+  'solution':                { icon: '⚙️', label: 'Solution' },
+  'answer':                  { icon: '✅', label: 'Answer' },
+  'verification':            { icon: '🔍', label: 'Verification' },
   // Comparison
-  'key differences':         { icon: '↔️', accent: '#8b5cf6', label: 'Key Differences' },
-  'when to use each':        { icon: '🗺️', accent: '#22c55e', label: 'When to Use Each' },
+  'key differences':         { icon: '↔️', label: 'Key Differences' },
+  'when to use each':        { icon: '🗺️', label: 'When to Use Each' },
   // Code
-  'approach':                { icon: '💡', accent: '#3b82f6', label: 'Approach' },
-  'code':                    { icon: '💻', accent: '#7c3aed', label: 'Code' },
-  'explanation':             { icon: '📝', accent: '#8b5cf6', label: 'Explanation' },
-  'complexity analysis':     { icon: '📈', accent: '#f59e0b', label: 'Complexity Analysis' },
-  'example trace':           { icon: '🔍', accent: '#3b82f6', label: 'Example Trace' },
+  'approach':                { icon: '💡', label: 'Approach' },
+  'code':                    { icon: '💻', label: 'Code' },
+  'explanation':             { icon: '📝', label: 'Explanation' },
+  'complexity analysis':     { icon: '📈', label: 'Complexity Analysis' },
+  'example trace':           { icon: '🔍', label: 'Example Trace' },
 };
 
 /**
- * Return icon + accent colour for a section heading.
+ * Return icon + label for a section heading.
  * Falls back to a neutral default.
  */
 export function getSectionMeta(heading) {
-  if (!heading) return { icon: '📝', accent: '#475569', label: heading || '' };
+  if (!heading) return { icon: '📝', label: heading || '' };
   const key = heading.toLowerCase().replace(/\s+/g, ' ').trim();
-  return SECTION_META[key] || { icon: '📝', accent: '#475569', label: heading };
+  return SECTION_META[key] || { icon: '📝', label: heading };
 }

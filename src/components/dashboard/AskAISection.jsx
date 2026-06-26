@@ -87,6 +87,7 @@ function CopyBtn({ text, light = false }) {
     <button
       onClick={copy}
       title={copied ? "Copied!" : "Copy"}
+      aria-label={copied ? "Copied!" : "Copy"}
       style={{
         background:   "transparent",
         border:       "none",
@@ -400,6 +401,7 @@ function FileChip({ sf, onRemove, isUploading }) {
           transition:  "color 0.1s",
         }}
         title="Remove"
+        aria-label="Remove attachment"
       >✕</button>
     </motion.div>
   );
@@ -419,6 +421,7 @@ function HoverActionBtn({ onClick, title, children }) {
     <button
       onClick={onClick}
       title={title}
+      aria-label={title}
       onMouseEnter={() => setBtnHov(true)}
       onMouseLeave={() => setBtnHov(false)}
       style={{
@@ -447,6 +450,7 @@ function AIMsgBtn({ onClick, title, children, active = false }) {
     <button
       onClick={onClick}
       title={title}
+      aria-label={title}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
@@ -1420,6 +1424,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 transition:  "color 0.15s",
               }}
               title="Attach file"
+              aria-label="Attach file"
             >
               +
             </motion.button>
@@ -1427,6 +1432,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
             {/* Textarea */}
             <textarea
               ref={textareaRef}
+              aria-label="Ask Sage a question"
               placeholder={
                 stagedFiles.length > 0
                   ? "Add a message about these files…"
@@ -1518,6 +1524,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 transition:     "background 0.18s, box-shadow 0.18s",
               }}
               title={asking ? "Stop" : "Send"}
+              aria-label={asking ? "Stop generating" : "Send message"}
             >
               {asking ? "⏹" : "➤"}
             </motion.button>

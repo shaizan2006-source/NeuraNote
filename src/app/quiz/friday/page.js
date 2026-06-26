@@ -9,12 +9,20 @@ export default function FridayQuizPage() {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(null);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
+  function generate() {
+    setError(false);
+    setLoading(true);
     fetch("/api/quiz/friday/generate", { method: "POST" })
       .then(r => r.json())
-      .then(d => { if (d.questions) setQuestions(d.questions); })
+      .then(d => { if (d.questions) setQuestions(d.questions); else setError(true); })
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    generate();
   }, []);
 
   function handleAnswer(idx, option) {
@@ -34,6 +42,17 @@ export default function FridayQuizPage() {
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "var(--bg-base)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-tertiary)" }}>
       Generating your Friday quiz…
+    </div>
+  );
+
+  if (error || !questions.length) return (
+    <div style={{ minHeight: "100vh", background: "var(--bg-base)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+      <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border-hairline)", borderRadius: 12, padding: 24, textAlign: "center", maxWidth: 360 }}>
+        <p style={{ margin: 0, fontSize: 14, color: "var(--text-secondary)" }}>Couldn&apos;t generate this week&apos;s quiz — try again.</p>
+        <button onClick={generate} style={{ marginTop: 16, background: "var(--accent-grad)", color: "var(--bg-base)", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 600, cursor: "pointer" }}>
+          Retry
+        </button>
+      </div>
     </div>
   );
 

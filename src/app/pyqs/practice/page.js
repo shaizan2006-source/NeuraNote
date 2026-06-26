@@ -35,24 +35,33 @@ function PYQPracticePageInner() {
   const [score, setScore] = useState(null);
   const [loading, setLoading] = useState(false);
   const [started, setStarted] = useState(false);
+  const [error, setError] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams({ per_page: String(count) });
-    if (exam) params.set("exam", exam);
-    if (subject) params.set("subject", subject);
-    if (difficulty) params.set("difficulty", difficulty);
-    const d = await fetch(`/api/pyqs/search?${params}`).then(r => r.json());
-    // Shuffle
-    const arr = (d.results ?? []).sort(() => Math.random() - 0.5).slice(0, count);
-    setQuestions(arr);
-    setCurrent(0);
-    setAnswers({});
-    setRevealed({});
-    setSubmitted(false);
-    setScore(null);
-    setLoading(false);
+    setError(false);
     setStarted(true);
+    try {
+      const params = new URLSearchParams({ per_page: String(count) });
+      if (exam) params.set("exam", exam);
+      if (subject) params.set("subject", subject);
+      if (difficulty) params.set("difficulty", difficulty);
+      const res = await fetch(`/api/pyqs/search?${params}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const d = await res.json();
+      // Shuffle
+      const arr = (d.results ?? []).sort(() => Math.random() - 0.5).slice(0, count);
+      setQuestions(arr);
+      setCurrent(0);
+      setAnswers({});
+      setRevealed({});
+      setSubmitted(false);
+      setScore(null);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   }, [exam, subject, difficulty, count]);
 
   function handleAnswer(idx, opt) {
@@ -131,6 +140,15 @@ function PYQPracticePageInner() {
     return (
       <div style={{ minHeight: "100vh", background: "var(--bg-base)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-tertiary)" }}>
         Loading questions…
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
+        <div style={{ fontSize: 16 }}>Couldn&apos;t load questions — try again.</div>
+        <button onClick={load} onFocus={focusRing} onBlur={blurRing} style={{ background: "var(--accent-grad)", color: "var(--bg-base)", border: "none", borderRadius: 8, padding: "10px 20px", cursor: "pointer" }}>Retry</button>
       </div>
     );
   }

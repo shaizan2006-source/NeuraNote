@@ -28,6 +28,7 @@ export default function MockTestPage() {
   const [timeLeft, setTimeLeft] = useState(0);
   const [result, setResult] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -41,35 +42,48 @@ export default function MockTestPage() {
   }, [view, timeLeft]);
 
   async function startTest() {
+    setError(null);
     setLoading(true);
-    const res = await fetch("/api/mock-test/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ exam_type: exam }),
-    });
-    const d = await res.json();
-    if (d.error) { alert(d.error); setLoading(false); return; }
-    setTest(d);
-    setTimeLeft(d.duration_seconds);
-    setAnswers({});
-    setCurrent(0);
-    setView(VIEWS.running);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/mock-test/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ exam_type: exam }),
+      });
+      const d = await res.json();
+      if (!res.ok || d.error) { setError(d.error || "Couldn't load the test — try again."); return; }
+      setTest(d);
+      setTimeLeft(d.duration_seconds);
+      setAnswers({});
+      setCurrent(0);
+      setView(VIEWS.running);
+    } catch {
+      setError("Couldn't load the test — try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleSubmit() {
     clearInterval(timerRef.current);
+    setError(null);
     setSubmitting(true);
-    const payload = Object.entries(answers).map(([qid, ans]) => ({ question_id: qid, answer: ans }));
-    const res = await fetch("/api/mock-test/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ test_id: test.test_id, answers: payload }),
-    });
-    const d = await res.json();
-    setResult(d);
-    setView(VIEWS.result);
-    setSubmitting(false);
+    try {
+      const payload = Object.entries(answers).map(([qid, ans]) => ({ question_id: qid, answer: ans }));
+      const res = await fetch("/api/mock-test/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ test_id: test.test_id, answers: payload }),
+      });
+      const d = await res.json();
+      if (!res.ok || d.error) { setError(d.error || "Couldn't submit your test — try again."); return; }
+      setResult(d);
+      setView(VIEWS.result);
+    } catch {
+      setError("Couldn't submit your test — try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const q = test?.questions[current];
@@ -105,6 +119,13 @@ export default function MockTestPage() {
             </ul>
           </div>
 
+          {error && (
+            <div style={{ background: "color-mix(in srgb, var(--error) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--error) 35%, transparent)", borderRadius: 10, padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+              <span style={{ fontSize: 13, color: "var(--error)" }}>{error}</span>
+              <button onClick={startTest} disabled={loading} style={{ background: "var(--accent-grad)", color: "var(--bg-base)", border: "none", borderRadius: 6, padding: "6px 14px", fontWeight: 600, fontSize: 12, cursor: "pointer", whiteSpace: "nowrap" }}>Retry</button>
+            </div>
+          )}
+
           <button onClick={startTest} disabled={loading} style={{ width: "100%", background: "var(--accent-grad)", color: "var(--bg-base)", border: "none", borderRadius: 8, padding: 14, fontWeight: 700, fontSize: 15, cursor: "pointer" }}>
             {loading ? "Loading questions…" : "Begin Mock Test →"}
           </button>
@@ -125,6 +146,13 @@ export default function MockTestPage() {
             {submitting ? "Submitting…" : "Submit"}
           </button>
         </div>
+
+        {error && (
+          <div style={{ background: "color-mix(in srgb, var(--error) 12%, transparent)", borderBottom: "1px solid color-mix(in srgb, var(--error) 35%, transparent)", padding: "10px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+            <span style={{ fontSize: 13, color: "var(--error)" }}>{error}</span>
+            <button onClick={handleSubmit} disabled={submitting} style={{ background: "var(--accent-grad)", color: "var(--bg-base)", border: "none", borderRadius: 6, padding: "6px 14px", fontWeight: 600, fontSize: 12, cursor: "pointer", whiteSpace: "nowrap" }}>{submitting ? "Submitting…" : "Retry"}</button>
+          </div>
+        )}
 
         {/* Subject tabs */}
         <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--border-hairline)", overflowX: "auto" }}>
@@ -254,6 +282,20 @@ export default function MockTestPage() {
           <div style={{ display: "flex", gap: 10 }}>
             <button onClick={() => setView(VIEWS.setup)} style={{ flex: 1, background: "var(--accent-grad)", color: "var(--bg-base)", border: "none", borderRadius: 8, padding: 12, fontWeight: 700, cursor: "pointer" }}>Take Another Test</button>
             <button onClick={() => router.push("/pyqs/practice")} style={{ flex: 1, background: "var(--bg-surface-2)", color: "var(--text-secondary)", border: "none", borderRadius: 8, padding: 12, fontWeight: 600, cursor: "pointer" }}>Practice Weak Areas</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (view === VIEWS.running && !q) {
+    return (
+      <div style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ maxWidth: 460, width: "100%", padding: 32, textAlign: "center" }}>
+          <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border-hairline)", borderRadius: 12, padding: "28px 24px" }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: "var(--text-primary)" }}>No questions available</h2>
+            <p style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 8, marginBottom: 20, lineHeight: 1.6 }}>No questions available for this exam yet. Pick another exam and try again.</p>
+            <button onClick={() => { setError(null); setView(VIEWS.setup); }} style={{ background: "var(--accent-grad)", color: "var(--bg-base)", border: "none", borderRadius: 8, padding: "10px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>Back to setup</button>
           </div>
         </div>
       </div>

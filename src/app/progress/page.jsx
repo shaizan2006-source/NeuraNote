@@ -53,7 +53,7 @@ function Skeleton({ isMobile }) {
 
 function ProgressInner() {
   const router                   = useRouter();
-  const { data, loading, error } = useProgressData();
+  const { data, loading, error, refetch } = useProgressData();
   const { dailyPlan }            = useDashboard();
   const [isMobile, setIsMobile]  = useState(false);
 
@@ -108,7 +108,31 @@ function ProgressInner() {
           )}
         </div>
 
-        {loading ? <Skeleton isMobile={isMobile} /> : data && data.sessionsCompleted === 0 && data.totalTopics === 0 ? (
+        {loading ? <Skeleton isMobile={isMobile} /> : error ? (
+          <div style={{
+            display: "flex", flexDirection: "column", alignItems: "center",
+            justifyContent: "center", padding: "64px 24px", gap: 14, textAlign: "center",
+          }}>
+            <span style={{ fontSize: 36 }}>⚠️</span>
+            <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
+              Couldn’t load your progress
+            </p>
+            <p style={{ margin: 0, fontSize: 12, color: "var(--text-tertiary)", maxWidth: 280 }}>
+              Something went wrong while fetching your analytics. Please try again.
+            </p>
+            <button
+              onClick={refetch}
+              style={{
+                marginTop: 4, padding: "9px 20px",
+                background: "var(--accent-grad)",
+                border: "none", borderRadius: 8, color: "var(--bg-base)",
+                fontSize: 12, fontWeight: 600, cursor: "pointer",
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        ) : data && data.sessionsCompleted === 0 && data.totalTopics === 0 ? (
           <div style={{
             display: "flex", flexDirection: "column", alignItems: "center",
             justifyContent: "center", padding: "64px 24px", gap: 14, textAlign: "center",

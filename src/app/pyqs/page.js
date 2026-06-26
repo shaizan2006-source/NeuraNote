@@ -21,6 +21,8 @@ function PYQsPageInner() {
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [exam, setExam] = useState(sp.get("exam") ?? "");
   const [subject, setSubject] = useState(sp.get("subject") ?? "");
   const [difficulty, setDifficulty] = useState(sp.get("difficulty") ?? "");
@@ -28,15 +30,17 @@ function PYQsPageInner() {
 
   useEffect(() => {
     setLoading(true);
+    setFetchError(false);
     const params = new URLSearchParams({ page: String(page) });
     if (exam) params.set("exam", exam);
     if (subject) params.set("subject", subject);
     if (difficulty) params.set("difficulty", difficulty);
     fetch(`/api/pyqs/search?${params}`)
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error("bad status"); return r.json(); })
       .then(d => { setResults(d.results ?? []); setTotal(d.total ?? 0); })
+      .catch(() => setFetchError(true))
       .finally(() => setLoading(false));
-  }, [exam, subject, difficulty, page]);
+  }, [exam, subject, difficulty, page, reloadKey]);
 
   const chipBtn = (active, onClick, label) => (
     <button onClick={onClick}
@@ -64,6 +68,16 @@ function PYQsPageInner() {
 
         {loading ? (
           <div style={{ color: "var(--text-tertiary)", textAlign: "center", padding: 40 }}>Loading…</div>
+        ) : fetchError ? (
+          <div style={{ textAlign: "center", padding: "56px 20px", color: "var(--text-tertiary)" }}>
+            <div style={{ fontSize: 28, marginBottom: 10, opacity: 0.5 }}>✦</div>
+            <p style={{ margin: 0, fontSize: 15, color: "var(--text-secondary)" }}>Couldn&apos;t load questions</p>
+            <p style={{ margin: "6px 0 16px", fontSize: 13 }}>Something went wrong on our end.</p>
+            <button onClick={() => setReloadKey(k => k + 1)}
+              onFocus={e => { e.currentTarget.style.boxShadow = "0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent)"; }}
+              onBlur={e => { e.currentTarget.style.boxShadow = "none"; }}
+              style={{ background: "var(--accent-grad)", border: "none", borderRadius: 8, padding: "8px 16px", color: "var(--bg-base)", fontSize: 13, cursor: "pointer" }}>Retry</button>
+          </div>
         ) : results.length === 0 ? (
           <div style={{ textAlign: "center", padding: "56px 20px", color: "var(--text-tertiary)" }}>
             <div style={{ fontSize: 28, marginBottom: 10, opacity: 0.5 }}>✦</div>

@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { useExamReminders } from "@/hooks/useExamReminders";
+import { writeSessionStorage } from "@/lib/examUtils";
 import ExamCountdownSection from "@/components/dashboard/exams/ExamCountdownSection";
 import WeakTopicsSection from "@/components/dashboard/exams/WeakTopicsSection";
 import AddExamModal from "@/components/dashboard/exams/AddExamModal";
@@ -14,9 +16,11 @@ const supabase = createClient(
 );
 
 export default function ExamsPage() {
+  const router = useRouter();
   const [exams, setExams] = useState([]);
   const [weakTopics, setWeakTopics] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   // Activate reminders with current exams
@@ -24,6 +28,7 @@ export default function ExamsPage() {
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
@@ -44,6 +49,7 @@ export default function ExamsPage() {
       }
     } catch (err) {
       console.error("ExamsPage fetchAll error:", err);
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -52,6 +58,24 @@ export default function ExamsPage() {
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const activeExams = exams.filter((e) => e.status === "active");
+  const selectedExam = activeExams[0] ?? null;
+
+  // ── Navigation helpers (mirror ExamCard) ──────────────────────────────
+  const navigateToQuiz = (topic) => {
+    writeSessionStorage("amn_prefill", {
+      subject: selectedExam?.subject ?? "general",
+      topic,
+    });
+    router.push("/quiz");
+  };
+
+  const navigateToAskAI = (topic) => {
+    writeSessionStorage(
+      "amn_ask_prefill",
+      `Explain ${topic} from ${selectedExam?.subject ?? "this subject"} in simple terms`
+    );
+    router.push("/sage");
+  };
 
   const nextExamDaysLeft = activeExams.length > 0
     ? Math.ceil(
@@ -94,6 +118,50 @@ export default function ExamsPage() {
           </div>
         ) : (
           <>
+            {/* Error banner — shown when load failed and no data */}
+            {error && exams.length === 0 && weakTopics.length === 0 && (
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                marginBottom: 24,
+                padding: 16,
+                background: "color-mix(in srgb, var(--error) 8%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--error) 25%, transparent)",
+                borderRadius: 8,
+              }}>
+                <p style={{ margin: 0, fontSize: 13, color: "var(--text-secondary)" }}>
+                  Couldn&apos;t load your exams — try again.
+                </p>
+                <button
+                  onClick={fetchAll}
+                  style={{
+                    flexShrink: 0,
+                    padding: "8px 16px",
+                    background: "var(--accent-grad)",
+                    border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)",
+                    borderRadius: 6,
+                    color: "var(--bg-base)",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    transition: "all 200ms ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = "var(--accent-glow)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  Retry
+                </button>
+              </div>
+            )}
+
             {/* Main Grid */}
             <div style={{
               display: "grid",
@@ -187,7 +255,15 @@ export default function ExamsPage() {
                 <p style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
                   Weak Topics
                 </p>
-                <WeakTopicsSection weakTopics={weakTopics} />
+                <WeakTopicsSection
+                  topics={weakTopics}
+                  loading={loading}
+                  selectedExam={selectedExam}
+                  onAddExam={() => setShowModal(true)}
+                  onPractice={navigateToQuiz}
+                  onAskAI={navigateToAskAI}
+                  onStartQuiz={() => navigateToQuiz("")}
+                />
 
                 {weakTopics.length > 0 && (
                   <div style={{

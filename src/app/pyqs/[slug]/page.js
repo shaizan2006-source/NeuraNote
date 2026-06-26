@@ -23,8 +23,8 @@ export async function generateMetadata({ params }) {
 }
 
 async function getQuestion(slug) {
-  const { data } = await supabaseAdmin.from("pyqs").select("*").eq("slug", slug).maybeSingle();
-  return data;
+  const { data, error } = await supabaseAdmin.from("pyqs").select("*").eq("slug", slug).maybeSingle();
+  return { data, error };
 }
 
 async function getSimilar(q) {
@@ -63,9 +63,29 @@ function SolutionBlock({ solution, answer }) {
   );
 }
 
+function QuestionUnavailable() {
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)" }}>
+      <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-hairline)", display: "flex", alignItems: "center", gap: 12, position: "sticky", top: 0, background: "var(--bg-base)", zIndex: 10 }}>
+        <Link href="/pyqs" style={{ color: "var(--text-tertiary)", textDecoration: "none", fontSize: 20 }}>←</Link>
+      </div>
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "24px 20px 80px" }}>
+        <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border-hairline)", borderRadius: 12, padding: "32px 24px", textAlign: "center" }}>
+          <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>Question unavailable</div>
+          <p style={{ margin: "0 0 20px", fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.7 }}>Couldn’t load this question — try again.</p>
+          <Link href="/pyqs" style={{ display: "inline-block", background: "var(--accent-grad)", color: "var(--bg-base)", borderRadius: 8, padding: "10px 20px", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+            Back to Questions
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default async function PYQSlugPage({ params }) {
   const { slug } = await params;
-  const q = await getQuestion(slug);
+  const { data: q, error } = await getQuestion(slug);
+  if (error) return <QuestionUnavailable />;
   if (!q) notFound();
 
   const similar = await getSimilar(q);

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -11,6 +11,13 @@ export function useProgressData() {
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const refetch = useCallback(() => {
+    setError(null);
+    setLoading(true);
+    setReloadKey(k => k + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -32,7 +39,7 @@ export function useProgressData() {
 
     fetch_();
     return () => { cancelled = true; };
-  }, []);
+  }, [reloadKey]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch };
 }

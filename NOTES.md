@@ -146,6 +146,16 @@ Full finding objects: `tasks/wjf8wvf8d.output` (workflow run wf_2cdb5872-948).
 - **Auth-gated visual verification:** `.env.local` has NO TEST_EMAIL/TEST_PASSWORD (Stage-7 probe used runtime env). `scripts/shot-9e.mjs` logs in + captures /exams /study /focus /progress /quiz once creds exist. Pending for 9h. All 5 routes return HTTP 200 (SSR no-crash) meanwhile.
 - Gate progression: 9a→1403, 9b→1352, 9e→1024 hex (baseline-aware, none introduced).
 
+## ⚠️ FOUNDER — pre-existing infra bug found during Stage 9h (NOT the redesign)
+
+**Signup is broken on the connected Supabase project (`ytygxrnhppupvhpsvtvf`).** Probe (`scripts/probe-tables.mjs`) shows ALL tables exist (profiles, pyqs, mock_tests, notification_preferences, etc. — the earlier "unprovisioned" flags from Stage 8a/8b are RESOLVED; those pages can show real data now). BUT `profiles` and `notification_preferences` are **empty (0 rows)** → no user has ever been created. `auth.admin.createUser` and app signup both fail with **"Database error creating new user."** Two `AFTER INSERT ON auth.users` triggers fire: `handle_new_user`→profiles(id,email) and `create_default_notification_prefs`→notification_preferences(user_id). Both look benign in the migrations, so the LIVE `profiles` schema likely has a NOT NULL column without a default that the trigger doesn't fill. **Diagnose via SQL editor:** `select column_name, is_nullable, column_default from information_schema.columns where table_schema='public' and table_name='profiles';` — add defaults / make nullable / update the trigger to populate it. This blocks ALL logins, so it gates the Stage 9h authed visual sweep. Once a login works: add `TEST_EMAIL`/`TEST_PASSWORD` to `.env.local` (or run `scripts/create-test-account.mjs`) then `node scripts/shot-9e.mjs`.
+
+## Stage 9h finalization (2026-06-27)
+
+- Whole-app O&A redesign verified: build clean every commit; grep gate green; **zero banned violet/cyan in all live components + user pages** (admin/dev internal + server-side doc/image generation excepted, out of scope). Raw hex 2299→513 (−78%); baseline refreshed.
+- Public routes visually confirmed (landing/login/signup/pricing, desktop+mobile). Authed pages harness-verified (build + zero-banned-colors + HTTP 200 + agent reports) but screenshots deferred (signup-bug infra block above).
+- New utility scripts: shot-9e.mjs (auth capture, tolerant login), create-test-account.mjs (admin user provision), probe-tables.mjs (schema probe).
+
 ## Locked decisions (founder-approved)
 
 - **Name:** AI Q&A experience = **Sage**, route `/sage`, `/ask-ai` becomes a permanent 308 redirect. Parent product stays Ask My Notes.

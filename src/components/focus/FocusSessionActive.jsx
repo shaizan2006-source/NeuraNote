@@ -84,6 +84,7 @@ export default function FocusSessionActive({
   userId,
   onSessionEnd,
   onAskAI,
+  isMobile = false,
 }) {
   const [timeLeft, setTimeLeft] = useState(initialTimeLeft ?? durationSeconds);
   const [paused, setPaused] = useState(false);
@@ -214,11 +215,11 @@ export default function FocusSessionActive({
           title={documentName ? `Focus: ${documentName.length > 24 ? documentName.slice(0, 24) + '…' : documentName}` : 'Focus Session'}
         />
 
-        <div style={{ padding: `${SPACING.xl} ${SPACING.xxl}`, maxWidth: '900px', margin: '0 auto', width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: SPACING.xl }}>
+        <div style={{ padding: `${SPACING.xl} ${SPACING.xxl}`, maxWidth: '900px', margin: '0 auto', width: '100%', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: SPACING.xl }}>
 
         {/* ── Left: Timer ── */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: SPACING.xl }}>
-          <TimerRing timeLeft={timeLeft} duration={durationSeconds} paused={paused} size={220} />
+          <TimerRing timeLeft={timeLeft} duration={durationSeconds} paused={paused} size={isMobile ? 160 : 220} />
 
           {documentName && (
             <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary }}>

@@ -45,6 +45,16 @@ function QuizContent() {
     });
   }, []);
 
+  // ── Responsive (mobile stacks the quiz columns) ──────────────────────────
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function check() { setIsMobile(window.innerWidth < 768); }
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   const { activePdf, loading: activePdfLoading } = useActivePDF(userId);
 
   // ── Prefill context (from sessionStorage amn_prefill) ────────────────────
@@ -506,7 +516,7 @@ function QuizContent() {
           <div style={{
             padding: `0 ${SPACING.lg} ${SPACING.lg}`,
             display: 'grid',
-            gridTemplateColumns: '3fr 2fr',
+            gridTemplateColumns: isMobile ? '1fr' : '3fr 2fr',
             gap: SPACING.xl,
             maxWidth: '1100px',
             margin: '0 auto',

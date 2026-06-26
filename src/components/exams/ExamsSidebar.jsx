@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 
 const NAV_ITEMS = [
   {
@@ -73,12 +74,13 @@ const NAV_ITEMS = [
   },
 ];
 
-function NavItem({ href, label, icon, glow, activeColor, isActive }) {
+function NavItem({ href, label, icon, glow, activeColor, isActive, onItemClick }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <Link
       href={href}
+      onClick={onItemClick}
       style={{ textDecoration: "none", display: "block" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -92,12 +94,12 @@ function NavItem({ href, label, icon, glow, activeColor, isActive }) {
         cursor: "pointer",
         transition: "all 180ms ease",
         background: isActive
-          ? `${activeColor.replace(")", ", 0.12)").replace("#", "rgba(").replace("rgba(", "rgba(")}`
+          ? `color-mix(in srgb, ${activeColor} 12%, transparent)`
           : hovered
             ? "rgba(255,255,255,0.05)"
             : "transparent",
         border: isActive
-          ? `1px solid ${activeColor.replace(")", "").replace("#", "")}22`
+          ? `1px solid color-mix(in srgb, ${activeColor} 30%, transparent)`
           : "1px solid transparent",
         boxShadow: hovered && !isActive ? `0 0 16px ${glow}` : "none",
         transform: hovered ? "translateX(2px)" : "translateX(0)",
@@ -135,21 +137,10 @@ function NavItem({ href, label, icon, glow, activeColor, isActive }) {
   );
 }
 
-export default function ExamsSidebar() {
-  const pathname = usePathname();
-
+// Shared inner content — identical chrome for desktop aside + mobile drawer
+function SidebarContent({ pathname, onItemClick }) {
   return (
-    <aside style={{
-      width: 220,
-      minWidth: 220,
-      height: "100vh",
-      background: "var(--bg-elevated)",
-      borderRight: "1px solid rgba(255,255,255,0.05)",
-      display: "flex",
-      flexDirection: "column",
-      padding: "0 0 16px",
-      flexShrink: 0,
-    }}>
+    <>
       {/* Logo */}
       <div style={{
         padding: "14px 16px",
@@ -198,6 +189,7 @@ export default function ExamsSidebar() {
             key={item.href}
             {...item}
             isActive={pathname === item.href}
+            onItemClick={onItemClick}
           />
         ))}
       </nav>
@@ -211,6 +203,97 @@ export default function ExamsSidebar() {
           AskMyNotes • Study Smarter
         </p>
       </div>
+    </>
+  );
+}
+
+export default function ExamsSidebar() {
+  const pathname = usePathname();
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+    function check() { setIsMobile(window.innerWidth < 768); }
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // ── Mobile: hamburger trigger + slide-in drawer (≤768px) ────────────
+  if (hydrated && isMobile) {
+    return (
+      <>
+        {/* Hamburger trigger */}
+        <button
+          onClick={() => setMobileOpen(true)}
+          style={{
+            position: "fixed", top: 14, left: 14, zIndex: 20,
+            background: "rgba(17,17,17,0.9)", border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 6, width: 36, height: 36, display: "flex",
+            alignItems: "center", justifyContent: "center",
+            color: "var(--text-tertiary)", fontSize: 16, cursor: "pointer",
+          }}
+        >☰</button>
+
+        {/* Dark overlay — closes on tap */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileOpen(false)}
+              style={{
+                position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 10,
+              }}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Sidebar drawer */}
+        <motion.div
+          initial={{ x: "-100%" }}
+          animate={{ x: mobileOpen ? 0 : "-100%" }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          style={{
+            position: "fixed", top: 0, left: 0, height: "100vh",
+            width: "72%", maxWidth: 280, background: "var(--bg-elevated)",
+            borderRight: "1px solid rgba(255,255,255,0.05)",
+            display: "flex", flexDirection: "column",
+            padding: "0 0 16px",
+            zIndex: 11, overflow: "hidden",
+          }}
+        >
+          {/* Close button row */}
+          <div style={{
+            display: "flex", justifyContent: "flex-end",
+            padding: "10px 14px 0",
+          }}>
+            <button onClick={() => setMobileOpen(false)}
+              style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", fontSize: 18 }}>✕</button>
+          </div>
+
+          <SidebarContent pathname={pathname} onItemClick={() => setMobileOpen(false)} />
+        </motion.div>
+      </>
+    );
+  }
+
+  // ── Desktop: always-visible aside (≥768px) — unchanged ──────────────
+  return (
+    <aside style={{
+      width: 220,
+      minWidth: 220,
+      height: "100vh",
+      background: "var(--bg-elevated)",
+      borderRight: "1px solid rgba(255,255,255,0.05)",
+      display: "flex",
+      flexDirection: "column",
+      padding: "0 0 16px",
+      flexShrink: 0,
+    }}>
+      <SidebarContent pathname={pathname} />
     </aside>
   );
 }

@@ -326,7 +326,7 @@ export default function PricingPage() {
       </div>
 
       {/* Family + Institute cards */}
-      <div style={{ maxWidth: 900, margin: "0 auto 32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+      <div style={{ maxWidth: 900, margin: "0 auto 32px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
         <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border-hairline)", borderRadius: 14, padding: "22px 24px" }}>
           <h3 style={{ margin: "0 0 4px", fontSize: 16, color: "var(--text-primary)" }}>Family</h3>
           <div style={{ fontSize: 28, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4 }}>₹4,499<span style={{ fontSize: 14, color: "var(--text-tertiary)" }}>/year</span></div>

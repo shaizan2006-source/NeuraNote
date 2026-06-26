@@ -219,6 +219,7 @@ function FocusPageContent() {
             documentId={focusSessionDocumentId}
             documentName={focusSessionDocumentName}
             userId={user?.id}
+            isMobile={isMobile}
             onSessionEnd={() => {
               clearSession();
               clearFocusSession();

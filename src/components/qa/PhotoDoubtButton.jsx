@@ -55,12 +55,12 @@ export default function PhotoDoubtButton({ onResult }) {
       {!preview ? (
         <button onClick={() => inputRef.current?.click()} title="Photo Doubt" style={{
           background: "none", border: "none", cursor: "pointer",
-          fontSize: 20, color: "#6B7280", padding: "6px",
+          fontSize: 20, color: "var(--text-tertiary)", padding: "6px",
           display: "flex", alignItems: "center",
         }}>📷</button>
       ) : (
         <div style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.9)",
+          position: "fixed", inset: 0, background: "rgba(8,8,10,0.9)",
           zIndex: 200, display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center", padding: 20,
         }}>
@@ -71,16 +71,16 @@ export default function PhotoDoubtButton({ onResult }) {
             placeholder="Add context (optional)…"
             style={{
               marginTop: 16, width: "100%", maxWidth: 400,
-              background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)",
-              borderRadius: 8, padding: "10px 14px", color: "#F9FAFB", fontSize: 14,
+              background: "var(--bg-surface-2)", border: "1px solid var(--border-strong)",
+              borderRadius: 8, padding: "10px 14px", color: "var(--text-primary)", fontSize: 14,
             }}
           />
-          {error && <p style={{ color: "#EF4444", fontSize: 13, marginTop: 8 }}>{error}</p>}
+          {error && <p style={{ color: "var(--error)", fontSize: 13, marginTop: 8 }}>{error}</p>}
           <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
-            <button onClick={handleRetake} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 8, padding: "10px 20px", color: "#E5E7EB", cursor: "pointer" }}>Retake</button>
+            <button onClick={handleRetake} style={{ background: "var(--bg-surface-2)", border: "none", borderRadius: 8, padding: "10px 20px", color: "var(--text-primary)", cursor: "pointer" }}>Retake</button>
             <button onClick={handleSend} disabled={loading} style={{
-              background: "#8B5CF6", border: "none", borderRadius: 8,
-              padding: "10px 24px", color: "#fff", fontWeight: 600,
+              background: "var(--accent-grad)", border: "none", borderRadius: 8,
+              padding: "10px 24px", color: "var(--bg-base)", fontWeight: 600,
               cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1,
             }}>
               {loading ? "Analysing…" : "Send"}

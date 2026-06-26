@@ -7,16 +7,16 @@ export default function VoiceCallSection() {
 
   return (
     <div id="section-voice" style={{
-      background:   "#0b1120",
+      background:   "var(--bg-surface)",
       borderRadius: 20,
       padding:      "28px 24px",
       marginTop:    24,
-      border:       "1px solid #1e3a5f",
+      border:       "1px solid var(--border-hairline)",
     }}>
 
       {/* ── Header ───────────────────────────────────────────────── */}
       <div style={{ marginBottom: 20 }}>
-        <h3 style={{ color: "white", margin: 0, fontSize: 18, fontWeight: 700 }}>
+        <h3 style={{ color: "var(--text-primary)", margin: 0, fontSize: 18, fontWeight: 700 }}>
           📞 Voice AI Tutor
         </h3>
         <p style={{ color: "var(--text-muted)", margin: "5px 0 0", fontSize: 13 }}>
@@ -35,9 +35,9 @@ export default function VoiceCallSection() {
             fontWeight:   700,
             cursor:       "pointer",
             border:       "none",
-            background:   "linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)",
-            color:        "white",
-            boxShadow:    "0 0 28px rgba(124,58,237,0.4)",
+            background:   "var(--accent-grad)",
+            color:        "var(--bg-base)",
+            boxShadow:    "0 0 28px var(--accent-glow)",
             display:      "flex",
             alignItems:   "center",
             gap:          8,
@@ -45,11 +45,11 @@ export default function VoiceCallSection() {
           }}
           onMouseEnter={e => {
             e.currentTarget.style.transform = "scale(1.04)";
-            e.currentTarget.style.boxShadow = "0 0 40px rgba(124,58,237,0.55)";
+            e.currentTarget.style.boxShadow = "0 0 40px var(--accent-glow)";
           }}
           onMouseLeave={e => {
             e.currentTarget.style.transform = "scale(1)";
-            e.currentTarget.style.boxShadow = "0 0 28px rgba(124,58,237,0.4)";
+            e.currentTarget.style.boxShadow = "0 0 28px var(--accent-glow)";
           }}
         >
           📞 Call AI Tutor

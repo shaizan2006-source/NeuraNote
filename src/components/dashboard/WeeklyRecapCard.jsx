@@ -78,8 +78,8 @@ export default function WeeklyRecapCard() {
           marginBottom: 20,
           borderRadius: 16,
           padding: "18px 20px",
-          background: "linear-gradient(135deg, rgba(124,58,237,0.12) 0%, rgba(79,70,229,0.08) 100%)",
-          border: "1px solid rgba(124,58,237,0.25)",
+          background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, transparent) 0%, color-mix(in srgb, var(--accent) 8%, transparent) 100%)",
+          border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)",
           position: "relative",
         }}
       >
@@ -139,7 +139,7 @@ export default function WeeklyRecapCard() {
 
         {/* Motivational line */}
         {delta.questions > 0 || delta.mastery > 0 ? (
-          <p style={{ margin: "14px 0 0", fontSize: 12, color: "#a78bfa", fontWeight: 600 }}>
+          <p style={{ margin: "14px 0 0", fontSize: 12, color: "var(--accent)", fontWeight: 600 }}>
             Great week! Keep the momentum going into next week. 🚀
           </p>
         ) : (

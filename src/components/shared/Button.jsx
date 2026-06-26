@@ -23,7 +23,7 @@ export default function Button({
     transition: 'all 0.15s ease-out',
     opacity: disabled ? 0.5 : 1,
     width: fullWidth ? '100%' : 'auto',
-    color: '#fff',
+    color: 'var(--text-primary)',
   };
 
   const variants = {

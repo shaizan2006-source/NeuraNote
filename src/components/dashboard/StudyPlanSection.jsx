@@ -42,7 +42,7 @@ function TaskRow({ index, label, timeSlot, accent, checked, onCheck }) {
           background: checked ? accent : "transparent",
           cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 10, color: "#fff", marginTop: 1,
+          fontSize: 10, color: "var(--bg-base)", marginTop: 1,
           transition: "background 0.15s, border-color 0.15s",
         }}
       >
@@ -61,9 +61,9 @@ function TaskRow({ index, label, timeSlot, accent, checked, onCheck }) {
         {timeSlot && (
           <span style={{
             display: "inline-block",
-            background: "rgba(37,99,235,0.15)",
-            color: "var(--blue)",
-            border: "1px solid rgba(37,99,235,0.25)",
+            background: "color-mix(in srgb, var(--info) 15%, transparent)",
+            color: "var(--info)",
+            border: "1px solid color-mix(in srgb, var(--info) 25%, transparent)",
             borderRadius: 5, padding: "1px 8px",
             fontSize: 10, fontWeight: 600, marginBottom: 4,
           }}>
@@ -100,7 +100,7 @@ function ListRow({ index, text, accent }) {
         flexShrink: 0, width: 22, height: 22, borderRadius: "50%",
         background: accent,
         display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: 10, fontWeight: 700, color: "#fff", marginTop: 1,
+        fontSize: 10, fontWeight: 700, color: "var(--bg-base)", marginTop: 1,
       }}>
         {index + 1}
       </span>
@@ -129,11 +129,11 @@ function EmptyState({ icon, text, sub }) {
 function AIPlanTab() {
   const LEVEL_OPTIONS  = ["Beginner", "Intermediate", "Advanced"];
   const PREF_OPTIONS   = ["Concept Learning", "Revision-Heavy", "Mixed"];
-  const PRIORITY_COLOR = { high: "var(--red)", medium: "var(--amber)", low: "var(--green)" };
+  const PRIORITY_COLOR = { high: "var(--error)", medium: "var(--warning)", low: "var(--success)" };
   const TYPE_BADGE     = {
-    learn:    { label: "Learn",    bg: "rgba(37,99,235,0.12)",   color: "var(--blue)"        },
-    revise:   { label: "Revise",   bg: "rgba(124,58,237,0.12)",  color: "var(--brand-light)" },
-    practice: { label: "Practice", bg: "rgba(5,150,105,0.12)",   color: "var(--green)"       },
+    learn:    { label: "Learn",    bg: "color-mix(in srgb, var(--info) 12%, transparent)",    color: "var(--info)"          },
+    revise:   { label: "Revise",   bg: "color-mix(in srgb, var(--accent) 12%, transparent)",  color: "var(--accent-bright)" },
+    practice: { label: "Practice", bg: "color-mix(in srgb, var(--success) 12%, transparent)", color: "var(--success)"       },
   };
 
   const EMPTY_FORM = { subject: "", hoursPerDay: "", target: "", deadline: "", level: "", preference: "" };
@@ -189,8 +189,8 @@ function AIPlanTab() {
     return (
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
         {/* Summary */}
-        <div style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: 10, padding: "12px 14px", marginBottom: 14 }}>
-          <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.7px", textTransform: "uppercase", color: "var(--brand-light)", marginBottom: 4 }}>🤖 AI Plan — {form.subject}</p>
+        <div style={{ background: "color-mix(in srgb, var(--accent) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)", borderRadius: 10, padding: "12px 14px", marginBottom: 14 }}>
+          <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.7px", textTransform: "uppercase", color: "var(--accent-bright)", marginBottom: 4 }}>🤖 AI Plan — {form.subject}</p>
           <p style={{ margin: 0, fontSize: 13, color: "var(--text-primary)", lineHeight: 1.5 }}>{aiPlan.summary}</p>
         </div>
 
@@ -217,7 +217,7 @@ function AIPlanTab() {
                     >
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3, flexWrap: "wrap" }}>
-                          <span style={{ fontSize: 10, fontWeight: 600, color: "var(--blue)", background: "rgba(37,99,235,0.1)", border: "1px solid rgba(37,99,235,0.2)", borderRadius: 4, padding: "1px 6px" }}>
+                          <span style={{ fontSize: 10, fontWeight: 600, color: "var(--info)", background: "color-mix(in srgb, var(--info) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--info) 20%, transparent)", borderRadius: 4, padding: "1px 6px" }}>
                             🕐 {s.time}
                           </span>
                           <span style={{ fontSize: 10, fontWeight: 600, borderRadius: 4, padding: "1px 6px", background: badge.bg, color: badge.color }}>
@@ -298,9 +298,9 @@ function AIPlanTab() {
                 onClick={() => setForm((p) => ({ ...p, level: opt }))}
                 style={{
                   flex: 1, padding: "7px 4px", borderRadius: 7, fontSize: 12, fontWeight: 600,
-                  border: `1px solid ${form.level === opt ? "var(--brand)" : "var(--border-default)"}`,
-                  background: form.level === opt ? "rgba(124,58,237,0.12)" : "var(--surface-raised)",
-                  color: form.level === opt ? "var(--brand-light)" : "var(--text-muted)",
+                  border: `1px solid ${form.level === opt ? "var(--accent)" : "var(--border-default)"}`,
+                  background: form.level === opt ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "var(--surface-raised)",
+                  color: form.level === opt ? "var(--accent-bright)" : "var(--text-muted)",
                   cursor: "pointer", transition: "all 0.15s",
                 }}
               >
@@ -320,9 +320,9 @@ function AIPlanTab() {
                 onClick={() => setForm((p) => ({ ...p, preference: opt }))}
                 style={{
                   flex: 1, padding: "7px 4px", borderRadius: 7, fontSize: 11, fontWeight: 600,
-                  border: `1px solid ${form.preference === opt ? "var(--blue)" : "var(--border-default)"}`,
-                  background: form.preference === opt ? "rgba(37,99,235,0.1)" : "var(--surface-raised)",
-                  color: form.preference === opt ? "var(--blue)" : "var(--text-muted)",
+                  border: `1px solid ${form.preference === opt ? "var(--accent)" : "var(--border-default)"}`,
+                  background: form.preference === opt ? "color-mix(in srgb, var(--accent) 10%, transparent)" : "var(--surface-raised)",
+                  color: form.preference === opt ? "var(--accent-bright)" : "var(--text-muted)",
                   cursor: "pointer", transition: "all 0.15s",
                 }}
               >
@@ -334,7 +334,7 @@ function AIPlanTab() {
       </div>
 
       {aiError && (
-        <p style={{ margin: "10px 0 0", fontSize: 12, color: "var(--red)" }}>{aiError}</p>
+        <p style={{ margin: "10px 0 0", fontSize: 12, color: "var(--error)" }}>{aiError}</p>
       )}
 
       <button
@@ -343,8 +343,8 @@ function AIPlanTab() {
         style={{
           marginTop: 14, width: "100%", padding: "10px 0",
           borderRadius: 9, border: "none", fontSize: 13, fontWeight: 700,
-          background: isValid && !generating ? "var(--brand)" : "var(--surface-raised)",
-          color: isValid && !generating ? "#fff" : "var(--text-faint)",
+          background: isValid && !generating ? "var(--accent)" : "var(--surface-raised)",
+          color: isValid && !generating ? "var(--bg-base)" : "var(--text-faint)",
           cursor: isValid && !generating ? "pointer" : "not-allowed",
           transition: "background 0.2s",
         }}
@@ -412,8 +412,8 @@ export default function StudyPlanSection() {
               style={{
                 height: "100%", borderRadius: 99,
                 background: doneCount === totalToday
-                  ? "var(--green)"
-                  : "linear-gradient(90deg, var(--brand), var(--blue))",
+                  ? "var(--success)"
+                  : "var(--accent-grad)",
               }}
             />
           </div>
@@ -486,19 +486,19 @@ export default function StudyPlanSection() {
                         transition={{ duration: 0.25 }}
                         style={{
                           marginBottom: 12, padding: "14px 16px", borderRadius: 12,
-                          background: "linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(79,70,229,0.07) 100%)",
+                          background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, transparent) 0%, color-mix(in srgb, var(--accent) 7%, transparent) 100%)",
                           borderWidth: "1px 1px 1px 3px", borderStyle: "solid",
-                          borderColor: "rgba(124,58,237,0.25) rgba(124,58,237,0.25) rgba(124,58,237,0.25) var(--brand)",
+                          borderColor: "color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 25%, transparent) var(--accent)",
                         }}
                       >
-                        <p style={{ margin: "0 0 6px", fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--brand-light)" }}>
+                        <p style={{ margin: "0 0 6px", fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-bright)" }}>
                           ⚡ Today's Focus
                         </p>
                         {timeSlot && (
                           <span style={{
                             display: "inline-block", marginBottom: 6,
-                            background: "rgba(37,99,235,0.15)", color: "var(--blue)",
-                            border: "1px solid rgba(37,99,235,0.25)",
+                            background: "color-mix(in srgb, var(--info) 15%, transparent)", color: "var(--info)",
+                            border: "1px solid color-mix(in srgb, var(--info) 25%, transparent)",
                             borderRadius: 5, padding: "1px 8px",
                             fontSize: 10, fontWeight: 600,
                           }}>
@@ -518,7 +518,7 @@ export default function StudyPlanSection() {
                       const label    = arrowIdx !== -1 ? task.slice(arrowIdx + 1).trim() : task;
                       const isHard   = task.includes("🔥");
                       const isMed    = task.includes("⚡");
-                      const accent   = isHard ? "var(--red)" : isMed ? "var(--amber)" : "var(--green)";
+                      const accent   = isHard ? "var(--error)" : isMed ? "var(--warning)" : "var(--success)";
                       return (
                         <TaskRow
                           key={task}
@@ -551,7 +551,7 @@ export default function StudyPlanSection() {
               : <>
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                     {(showAll ? smartPlan : smartPlan.slice(0, 5)).map((item, i) => (
-                      <ListRow key={item} index={i} text={item} accent="var(--blue)" />
+                      <ListRow key={item} index={i} text={item} accent="var(--accent)" />
                     ))}
                   </div>
                   {smartPlan.length > 5 && (

@@ -27,10 +27,10 @@ export default class CardErrorBoundary extends React.Component {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#111111",
-          border: "1px solid rgba(239,68,68,0.18)",
+          background: "var(--bg-elevated)",
+          border: "1px solid color-mix(in srgb, var(--error) 18%, transparent)",
           borderRadius: 12,
-          color: "#52525b",
+          color: "var(--text-tertiary)",
           fontSize: 12,
         }}
       >

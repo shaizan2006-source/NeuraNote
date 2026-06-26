@@ -66,7 +66,7 @@ function SessionProgress({ completed, total }) {
         <motion.div
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          style={{ height: "100%", borderRadius: 99, background: "linear-gradient(90deg, var(--brand), var(--green))" }}
+          style={{ height: "100%", borderRadius: 99, background: "linear-gradient(90deg, var(--accent), var(--success))" }}
         />
       </div>
     </div>
@@ -112,9 +112,9 @@ export default function FocusModeSection() {
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               style={{
-                background: isBreak ? "var(--amber-glow)" : "rgba(34,197,94,0.15)",
-                color: isBreak ? "var(--amber)" : "var(--green)",
-                border: `1px solid ${isBreak ? "rgba(245,158,11,0.3)" : "rgba(34,197,94,0.3)"}`,
+                background: isBreak ? "var(--amber-glow)" : "color-mix(in srgb, var(--success) 15%, transparent)",
+                color: isBreak ? "var(--amber)" : "var(--success)",
+                border: `1px solid ${isBreak ? "color-mix(in srgb, var(--warning) 30%, transparent)" : "color-mix(in srgb, var(--success) 30%, transparent)"}`,
                 borderRadius: 20, padding: "2px 10px",
                 fontSize: 11, fontWeight: 700,
               }}
@@ -216,7 +216,7 @@ export default function FocusModeSection() {
                     onClick={() => startFocus(selectedMode.duration, selectedMode.isBreak)}
                     style={{
                       background: selectedMode.isBreak
-                        ? "linear-gradient(135deg, var(--amber), #d97706)"
+                        ? "linear-gradient(135deg, var(--warning), color-mix(in srgb, var(--warning) 70%, #000))"
                         : "var(--accent-grad)",
                       color: "var(--bg-base)", border: "none", borderRadius: 12,
                       padding: "13px 36px", fontSize: 15, fontWeight: 700,
@@ -252,7 +252,7 @@ export default function FocusModeSection() {
                           inset: 0, margin: "auto",
                           width: 200, height: 200,
                           borderRadius: "50%",
-                          background: "radial-gradient(circle, rgba(34,197,94,0.35) 0%, transparent 70%)",
+                          background: "radial-gradient(circle, color-mix(in srgb, var(--success) 35%, transparent) 0%, transparent 70%)",
                           pointerEvents: "none",
                           zIndex: 2,
                         }}
@@ -270,8 +270,8 @@ export default function FocusModeSection() {
                         position: "absolute", inset: 0, margin: "auto",
                         width: 140, height: 140, borderRadius: "50%",
                         background: isBreak
-                          ? "radial-gradient(circle, rgba(245,158,11,0.2), transparent)"
-                          : "radial-gradient(circle, rgba(124,58,237,0.2), transparent)",
+                          ? "radial-gradient(circle, color-mix(in srgb, var(--warning) 20%, transparent), transparent)"
+                          : "radial-gradient(circle, var(--accent-glow), transparent)",
                         pointerEvents: "none",
                       }}
                     />
@@ -344,8 +344,8 @@ export default function FocusModeSection() {
                             onClick={markTaskDone}
                             style={{
                               marginTop: 12,
-                              background: "rgba(34,197,94,0.15)",
-                              color: "var(--green)", border: "1px solid rgba(34,197,94,0.3)",
+                              background: "color-mix(in srgb, var(--success) 15%, transparent)",
+                              color: "var(--success)", border: "1px solid color-mix(in srgb, var(--success) 30%, transparent)",
                               borderRadius: 8, padding: "7px 18px",
                               fontSize: 13, fontWeight: 600, cursor: "pointer",
                             }}
@@ -358,7 +358,7 @@ export default function FocusModeSection() {
                       <motion.p
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        style={{ color: "var(--green)", fontWeight: 700, margin: 0, fontSize: 14 }}
+                        style={{ color: "var(--success)", fontWeight: 700, margin: 0, fontSize: 14 }}
                       >
                         🎉 All tasks completed!
                       </motion.p>

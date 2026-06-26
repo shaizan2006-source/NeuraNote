@@ -13,10 +13,10 @@ export default function FlashcardViewer({ cards }) {
 
   return (
     <div style={{
-      background: "linear-gradient(135deg, #2d2d2d, #1f1f1f)",
+      background: "linear-gradient(135deg, var(--bg-elevated), var(--bg-surface))",
       borderRadius: 12,
       padding: 24,
-      border: "1px solid #3a3a3a",
+      border: "1px solid var(--border-hairline)",
     }}>
       <div style={{
         display: "flex",
@@ -24,10 +24,10 @@ export default function FlashcardViewer({ cards }) {
         alignItems: "center",
         marginBottom: 16,
       }}>
-        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#f4f4f5" }}>
+        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
           Flashcards
         </h3>
-        <span style={{ fontSize: 12, color: "#71717a" }}>{progress}</span>
+        <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>{progress}</span>
       </div>
 
       {/* Flashcard */}
@@ -35,8 +35,8 @@ export default function FlashcardViewer({ cards }) {
         onClick={() => setIsFlipped(!isFlipped)}
         style={{
           background: isFlipped
-            ? "linear-gradient(135deg, #7c3aed, #8b5cf6)"
-            : "linear-gradient(135deg, #3b82f6, #2563eb)",
+            ? "linear-gradient(135deg, var(--accent-dim), var(--accent))"
+            : "linear-gradient(135deg, var(--accent), var(--accent-bright))",
           borderRadius: 12,
           padding: 32,
           minHeight: 200,
@@ -53,7 +53,7 @@ export default function FlashcardViewer({ cards }) {
           <p style={{
             margin: "0 0 8px 0",
             fontSize: 11,
-            color: "rgba(255,255,255,0.6)",
+            color: "color-mix(in srgb, var(--bg-base) 60%, transparent)",
             textTransform: "uppercase",
             letterSpacing: "0.05em",
           }}>
@@ -63,7 +63,7 @@ export default function FlashcardViewer({ cards }) {
             margin: 0,
             fontSize: 16,
             fontWeight: 500,
-            color: "#fff",
+            color: "var(--bg-base)",
             lineHeight: 1.6,
           }}>
             {isFlipped ? card.back : card.front}
@@ -71,7 +71,7 @@ export default function FlashcardViewer({ cards }) {
           <p style={{
             margin: "16px 0 0 0",
             fontSize: 10,
-            color: "rgba(255,255,255,0.5)",
+            color: "color-mix(in srgb, var(--bg-base) 50%, transparent)",
             textTransform: "uppercase",
             letterSpacing: "0.05em",
           }}>
@@ -84,8 +84,8 @@ export default function FlashcardViewer({ cards }) {
       <div style={{ marginBottom: 16 }}>
         <span style={{
           display: "inline-block",
-          background: "rgba(100, 200, 255, 0.15)",
-          color: "#64c8ff",
+          background: "color-mix(in srgb, var(--accent) 15%, transparent)",
+          color: "var(--accent)",
           padding: "4px 10px",
           borderRadius: 6,
           fontSize: 11,
@@ -109,8 +109,8 @@ export default function FlashcardViewer({ cards }) {
           disabled={currentIdx === 0}
           style={{
             padding: "8px 16px",
-            background: currentIdx === 0 ? "#3a3a3a" : "#3b82f6",
-            color: currentIdx === 0 ? "#71717a" : "#fff",
+            background: currentIdx === 0 ? "var(--bg-surface-2)" : "var(--accent)",
+            color: currentIdx === 0 ? "var(--text-tertiary)" : "var(--bg-base)",
             border: "none",
             borderRadius: 6,
             fontSize: 12,
@@ -129,8 +129,8 @@ export default function FlashcardViewer({ cards }) {
           disabled={currentIdx === cards.length - 1}
           style={{
             padding: "8px 16px",
-            background: currentIdx === cards.length - 1 ? "#3a3a3a" : "#3b82f6",
-            color: currentIdx === cards.length - 1 ? "#71717a" : "#fff",
+            background: currentIdx === cards.length - 1 ? "var(--bg-surface-2)" : "var(--accent)",
+            color: currentIdx === cards.length - 1 ? "var(--text-tertiary)" : "var(--bg-base)",
             border: "none",
             borderRadius: 6,
             fontSize: 12,

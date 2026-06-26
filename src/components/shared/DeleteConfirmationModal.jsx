@@ -87,27 +87,27 @@ export default function DeleteConfirmationModal({
               boxShadow: `
                 0 24px 64px rgba(0,0,0,0.75),
                 0 0 0 1px rgba(255,255,255,0.04),
-                0 0 80px rgba(239,68,68,0.04)
+                0 0 80px color-mix(in srgb, var(--error) 4%, transparent)
               `,
             }}
           >
             {/* Title */}
             <p
               id="del-modal-title"
-              style={{ margin: "0 0 10px 0", fontSize: 15, fontWeight: 700, color: "#f4f4f5" }}
+              style={{ margin: "0 0 10px 0", fontSize: 15, fontWeight: 700, color: "var(--text-primary)" }}
             >
               Delete chat?
             </p>
 
             {/* Description */}
             {itemName && (
-              <p style={{ margin: "0 0 6px 0", fontSize: 12, color: "#a1a1aa", lineHeight: 1.55 }}>
-                This will delete &ldquo;<span style={{ color: "#e4e4e7" }}>{itemName}</span>&rdquo;.
+              <p style={{ margin: "0 0 6px 0", fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.55 }}>
+                This will delete &ldquo;<span style={{ color: "var(--text-primary)" }}>{itemName}</span>&rdquo;.
               </p>
             )}
 
             {/* Subtext */}
-            <p style={{ margin: 0, fontSize: 11, color: "#52525b", lineHeight: 1.55 }}>
+            <p style={{ margin: 0, fontSize: 11, color: "var(--text-tertiary)", lineHeight: 1.55 }}>
               {subtext}
             </p>
 
@@ -123,7 +123,7 @@ export default function DeleteConfirmationModal({
                   padding: "8px 18px",
                   background: "rgba(255,255,255,0.05)",
                   border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 7, color: "#a1a1aa",
+                  borderRadius: 7, color: "var(--text-secondary)",
                   fontSize: 12, fontWeight: 500,
                   cursor: "pointer",
                   transition: "background 120ms, border-color 120ms, color 120ms",
@@ -131,12 +131,12 @@ export default function DeleteConfirmationModal({
                 onMouseEnter={e => {
                   e.currentTarget.style.background    = "rgba(255,255,255,0.09)";
                   e.currentTarget.style.borderColor   = "rgba(255,255,255,0.18)";
-                  e.currentTarget.style.color         = "#e4e4e7";
+                  e.currentTarget.style.color         = "var(--text-primary)";
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.background    = "rgba(255,255,255,0.05)";
                   e.currentTarget.style.borderColor   = "rgba(255,255,255,0.1)";
-                  e.currentTarget.style.color         = "#a1a1aa";
+                  e.currentTarget.style.color         = "var(--text-secondary)";
                 }}
               >
                 Cancel
@@ -146,15 +146,15 @@ export default function DeleteConfirmationModal({
                 onClick={onConfirm}
                 style={{
                   padding: "8px 18px",
-                  background: "#dc2626",
+                  background: "var(--error)",
                   border: "none",
-                  borderRadius: 7, color: "#fff",
+                  borderRadius: 7, color: "var(--bg-base)",
                   fontSize: 12, fontWeight: 600,
                   cursor: "pointer",
                   transition: "background 120ms",
                 }}
-                onMouseEnter={e => e.currentTarget.style.background = "#ef4444"}
-                onMouseLeave={e => e.currentTarget.style.background = "#dc2626"}
+                onMouseEnter={e => e.currentTarget.style.background = "color-mix(in srgb, var(--error) 85%, #fff)"}
+                onMouseLeave={e => e.currentTarget.style.background = "var(--error)"}
               >
                 Delete
               </button>

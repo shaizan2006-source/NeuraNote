@@ -38,10 +38,10 @@ export default function QuizViewer({ questions }) {
 
   return (
     <div style={{
-      background: "linear-gradient(135deg, #2d2d2d, #1f1f1f)",
+      background: "linear-gradient(135deg, var(--bg-surface-2), var(--bg-surface))",
       borderRadius: 12,
       padding: 24,
-      border: "1px solid #3a3a3a",
+      border: "1px solid var(--border-strong)",
     }}>
       <div style={{
         display: "flex",
@@ -49,10 +49,10 @@ export default function QuizViewer({ questions }) {
         alignItems: "center",
         marginBottom: 16,
       }}>
-        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#f4f4f5" }}>
+        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
           Micro-Quiz
         </h3>
-        <span style={{ fontSize: 12, color: "#71717a" }}>{progress}</span>
+        <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>{progress}</span>
       </div>
 
       {/* Question */}
@@ -60,7 +60,7 @@ export default function QuizViewer({ questions }) {
         margin: "0 0 20px 0",
         fontSize: 15,
         fontWeight: 500,
-        color: "#f4f4f5",
+        color: "var(--text-primary)",
         lineHeight: 1.5,
       }}>
         {q.question}
@@ -74,20 +74,20 @@ export default function QuizViewer({ questions }) {
           const isWrong = isAnswered && isSelected && idx !== q.correct;
 
           let bgColor = "rgba(255,255,255,0.04)";
-          let borderColor = "#3a3a3a";
-          let textColor = "#f4f4f5";
+          let borderColor = "var(--border-strong)";
+          let textColor = "var(--text-primary)";
 
           if (isSelected && !isAnswered) {
-            bgColor = "rgba(59, 130, 246, 0.2)";
-            borderColor = "#3b82f6";
+            bgColor = "color-mix(in srgb, var(--accent) 20%, transparent)";
+            borderColor = "var(--accent)";
           } else if (isAnswer) {
-            bgColor = "rgba(34, 197, 94, 0.15)";
-            borderColor = "#22c55e";
-            textColor = "#86efac";
+            bgColor = "color-mix(in srgb, var(--success) 15%, transparent)";
+            borderColor = "var(--success)";
+            textColor = "var(--success)";
           } else if (isWrong) {
-            bgColor = "rgba(239, 68, 68, 0.15)";
-            borderColor = "#ef4444";
-            textColor = "#fca5a5";
+            bgColor = "color-mix(in srgb, var(--error) 15%, transparent)";
+            borderColor = "var(--error)";
+            textColor = "var(--error)";
           }
 
           return (
@@ -132,8 +132,8 @@ export default function QuizViewer({ questions }) {
       {/* Explanation (if answered) */}
       {isAnswered && (
         <div style={{
-          background: isCorrect ? "rgba(34, 197, 94, 0.1)" : "rgba(239, 68, 68, 0.1)",
-          borderLeft: `4px solid ${isCorrect ? "#22c55e" : "#ef4444"}`,
+          background: isCorrect ? "color-mix(in srgb, var(--success) 10%, transparent)" : "color-mix(in srgb, var(--error) 10%, transparent)",
+          borderLeft: `4px solid ${isCorrect ? "var(--success)" : "var(--error)"}`,
           padding: 12,
           borderRadius: 6,
           marginBottom: 16,
@@ -142,14 +142,14 @@ export default function QuizViewer({ questions }) {
             margin: "0 0 6px 0",
             fontSize: 12,
             fontWeight: 600,
-            color: isCorrect ? "#86efac" : "#fca5a5",
+            color: isCorrect ? "var(--success)" : "var(--error)",
           }}>
             {isCorrect ? "✓ Correct!" : "✗ Incorrect"}
           </p>
           <p style={{
             margin: 0,
             fontSize: 12,
-            color: "#e5e7eb",
+            color: "var(--text-secondary)",
             lineHeight: 1.5,
           }}>
             {q.explanation}
@@ -161,8 +161,8 @@ export default function QuizViewer({ questions }) {
       <div style={{ marginBottom: 16 }}>
         <span style={{
           display: "inline-block",
-          background: "rgba(100, 200, 255, 0.15)",
-          color: "#64c8ff",
+          background: "color-mix(in srgb, var(--accent) 15%, transparent)",
+          color: "var(--accent)",
           padding: "4px 10px",
           borderRadius: 6,
           fontSize: 11,
@@ -183,8 +183,8 @@ export default function QuizViewer({ questions }) {
           disabled={currentIdx === 0}
           style={{
             padding: "8px 16px",
-            background: currentIdx === 0 ? "#3a3a3a" : "#3b82f6",
-            color: currentIdx === 0 ? "#71717a" : "#fff",
+            background: currentIdx === 0 ? "var(--bg-surface-2)" : "var(--accent)",
+            color: currentIdx === 0 ? "var(--text-tertiary)" : "var(--bg-base)",
             border: "none",
             borderRadius: 6,
             fontSize: 12,
@@ -202,8 +202,8 @@ export default function QuizViewer({ questions }) {
             disabled={selected === null}
             style={{
               padding: "8px 16px",
-              background: selected === null ? "#3a3a3a" : "#8b5cf6",
-              color: selected === null ? "#71717a" : "#fff",
+              background: selected === null ? "var(--bg-surface-2)" : "var(--accent)",
+              color: selected === null ? "var(--text-tertiary)" : "var(--bg-base)",
               border: "none",
               borderRadius: 6,
               fontSize: 12,
@@ -220,8 +220,8 @@ export default function QuizViewer({ questions }) {
             disabled={currentIdx === questions.length - 1}
             style={{
               padding: "8px 16px",
-              background: currentIdx === questions.length - 1 ? "#3a3a3a" : "#8b5cf6",
-              color: currentIdx === questions.length - 1 ? "#71717a" : "#fff",
+              background: currentIdx === questions.length - 1 ? "var(--bg-surface-2)" : "var(--accent)",
+              color: currentIdx === questions.length - 1 ? "var(--text-tertiary)" : "var(--bg-base)",
               border: "none",
               borderRadius: 6,
               fontSize: 12,

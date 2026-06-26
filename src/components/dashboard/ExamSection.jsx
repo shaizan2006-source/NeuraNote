@@ -16,7 +16,7 @@ export default function ExamSection() {
   const activeExam = getActiveExam();
 
   return (
-    <div id="section-exam" style={{ background: "linear-gradient(135deg, #0c1a2e 0%, #162032 100%)", border: "1px solid var(--border-strong)", borderRadius: 16, padding: 20, marginTop: 20, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}>
+    <div id="section-exam" style={{ background: "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)", border: "1px solid var(--border-strong)", borderRadius: 16, padding: 20, marginTop: 20, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
         <span style={{ fontSize: 22 }}>⏳</span>
         <span style={{ fontWeight: 700, fontSize: 17, color: "var(--text-primary)" }}>Exam Countdown</span>
@@ -58,11 +58,11 @@ export default function ExamSection() {
               </div>
               <div style={{ textAlign: "right" }}>
                 <p style={{ margin: 0, fontWeight: 900, fontSize: "clamp(28px, 8vw, 42px)", color: urgencyColor, lineHeight: 1 }}>{Math.max(0, days)}</p>
-                <p style={{ margin: 0, color: "#64748b", fontSize: 11 }}>days left</p>
+                <p style={{ margin: 0, color: "var(--text-tertiary)", fontSize: 11 }}>days left</p>
               </div>
             </div>
             <div style={{ marginTop: 12, padding: "8px 12px", background: "rgba(0,0,0,0.3)", borderRadius: 8, fontSize: 13, color: urgencyColor, fontWeight: 600 }}>{urgencyMsg}</div>
-            <div style={{ marginTop: 6, color: "#0d9488", fontSize: 13, fontWeight: 500 }}>{getStudySuggestion()}</div>
+            <div style={{ marginTop: 6, color: "var(--accent)", fontSize: 13, fontWeight: 500 }}>{getStudySuggestion()}</div>
           </div>
         );
       })()}
@@ -73,7 +73,7 @@ export default function ExamSection() {
           <div onClick={() => setIsExamSelectorOpen((prev) => !prev)}
             style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 10, background: "var(--surface-card)", border: "1px solid var(--border-default)", cursor: "pointer", userSelect: "none" }}>
             <span style={{ color: "var(--text-secondary)", fontSize: 13, fontWeight: 600 }}>🗂 Select Active Exam ({activeExams.length})</span>
-            <span style={{ color: "#64748b", fontSize: 14, display: "inline-block", transform: isExamSelectorOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s ease" }}>▼</span>
+            <span style={{ color: "var(--text-tertiary)", fontSize: 14, display: "inline-block", transform: isExamSelectorOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s ease" }}>▼</span>
           </div>
           <div style={{ overflow: "hidden", maxHeight: isExamSelectorOpen ? "320px" : "0px", transition: "max-height 0.35s ease" }}>
             <div style={{ maxHeight: "300px", overflowY: "auto", paddingRight: 4 }}>
@@ -87,7 +87,7 @@ export default function ExamSection() {
                     const urgencyColor = days <= 3 ? "var(--red)" : days <= 5 ? "var(--amber)" : "var(--green)";
                     return (
                       <div key={exam.id} onClick={() => { setSelectedExam(exam); setIsExamSelectorOpen(false); }}
-                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderRadius: 10, cursor: "pointer", background: isSelected ? "#1e3a5f" : "var(--surface-card)", border: `2px solid ${isSelected ? urgencyColor : "var(--border-default)"}` }}>
+                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderRadius: 10, cursor: "pointer", background: isSelected ? "var(--bg-surface-2)" : "var(--surface-card)", border: `2px solid ${isSelected ? urgencyColor : "var(--border-default)"}` }}>
                         <div>
                           <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: "var(--text-primary)" }}>{exam.name}</p>
                           <p style={{ margin: 0, fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>{exam.exam_date}</p>

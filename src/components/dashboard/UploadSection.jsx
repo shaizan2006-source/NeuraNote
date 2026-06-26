@@ -13,13 +13,13 @@ function StreakCard({ streak }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0 }}
-      whileHover={{ y: -3, boxShadow: "0 8px 32px rgba(249,115,22,0.18)" }}
+      whileHover={{ y: -3, boxShadow: "0 8px 32px var(--accent-glow-soft)" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
         flex: 1, minWidth: 130,
-        background: "linear-gradient(160deg, #0f0a00 0%, #0a0f1e 100%)",
-        border: `1px solid ${hovered ? "rgba(249,115,22,0.35)" : "#2a1a08"}`,
+        background: "var(--bg-surface)",
+        border: `1px solid ${hovered ? "color-mix(in srgb, var(--accent) 35%, transparent)" : "var(--border-hairline)"}`,
         borderRadius: 18,
         padding: "20px 20px",
         cursor: "default",
@@ -32,30 +32,30 @@ function StreakCard({ streak }) {
       <div style={{
         position: "absolute", top: -20, right: -20,
         width: 80, height: 80,
-        background: "radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%)",
+        background: "radial-gradient(circle, var(--accent-glow-soft) 0%, transparent 70%)",
         pointerEvents: "none",
       }} />
 
       <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 14 }}>
         <div style={{
           width: 36, height: 36, borderRadius: 10,
-          background: "linear-gradient(135deg, var(--orange-dark), var(--orange))",
+          background: "var(--accent-grad)",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 16,
-          boxShadow: "0 0 14px rgba(249,115,22,0.35)",
+          boxShadow: "0 0 14px var(--accent-glow)",
           flexShrink: 0,
         }}>
           🔥
         </div>
-        <span style={{ color: "#78350f", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
+        <span style={{ color: "var(--text-tertiary)", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
           Study Streak
         </span>
       </div>
 
-      <p style={{ margin: "0 0 2px", fontSize: "clamp(28px, 6vw, 38px)", fontWeight: 800, color: isActive ? "#fdba74" : "var(--text-faint)", lineHeight: 1 }}>
+      <p style={{ margin: "0 0 2px", fontSize: "clamp(28px, 6vw, 38px)", fontWeight: 800, color: isActive ? "var(--accent-bright)" : "var(--text-faint)", lineHeight: 1 }}>
         {streak}
       </p>
-      <p style={{ margin: "4px 0 0", fontSize: 12, color: "#92400e", fontWeight: 500 }}>
+      <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--text-secondary)", fontWeight: 500 }}>
         {isActive ? "days in a row 🎯" : "Start your streak today"}
       </p>
 
@@ -65,13 +65,13 @@ function StreakCard({ streak }) {
           <div key={i} style={{
             flex: 1, height: 4, borderRadius: 99,
             background: i < (streak % 7 || (streak > 0 ? 7 : 0))
-              ? "linear-gradient(90deg, var(--orange-dark), var(--orange))"
+              ? "var(--accent-grad)"
               : "var(--border-default)",
             transition: "background 0.3s",
           }} />
         ))}
       </div>
-      <p style={{ margin: "5px 0 0", fontSize: 10, color: "#44250a" }}>This week</p>
+      <p style={{ margin: "5px 0 0", fontSize: 10, color: "var(--text-tertiary)" }}>This week</p>
     </motion.div>
   );
 }
@@ -79,7 +79,7 @@ function StreakCard({ streak }) {
 // ── Daily Progress Card ────────────────────────────────────────────
 function ProgressCard({ progressScore, progressQuestions }) {
   const pct = Math.min(progressScore, 100);
-  const grade = pct >= 80 ? "var(--green)" : pct >= 50 ? "var(--blue)" : "var(--text-muted)";
+  const grade = pct >= 80 ? "var(--success)" : pct >= 50 ? "var(--accent)" : "var(--text-muted)";
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -87,13 +87,13 @@ function ProgressCard({ progressScore, progressQuestions }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.08 }}
-      whileHover={{ y: -3, boxShadow: "0 8px 32px rgba(59,130,246,0.18)" }}
+      whileHover={{ y: -3, boxShadow: "0 8px 32px var(--accent-glow-soft)" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
         flex: 1, minWidth: 130,
-        background: "linear-gradient(160deg, #020b18 0%, #0a0f1e 100%)",
-        border: `1px solid ${hovered ? "rgba(59,130,246,0.35)" : "#0d2240"}`,
+        background: "var(--bg-surface)",
+        border: `1px solid ${hovered ? "color-mix(in srgb, var(--accent) 35%, transparent)" : "var(--border-hairline)"}`,
         borderRadius: 18,
         padding: "20px 20px",
         cursor: "default",
@@ -105,45 +105,45 @@ function ProgressCard({ progressScore, progressQuestions }) {
       <div style={{
         position: "absolute", top: -20, right: -20,
         width: 80, height: 80,
-        background: "radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)",
+        background: "radial-gradient(circle, var(--accent-glow-soft) 0%, transparent 70%)",
         pointerEvents: "none",
       }} />
 
       <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 14 }}>
         <div style={{
           width: 36, height: 36, borderRadius: 10,
-          background: "linear-gradient(135deg, #1d4ed8, var(--blue))",
+          background: "var(--accent-grad)",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 16,
-          boxShadow: "0 0 14px rgba(59,130,246,0.3)",
+          boxShadow: "0 0 14px var(--accent-glow)",
           flexShrink: 0,
         }}>
           📈
         </div>
-        <span style={{ color: "#1e3a5f", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
+        <span style={{ color: "var(--text-tertiary)", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
           Daily Progress
         </span>
       </div>
 
       <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 2 }}>
-        <p style={{ margin: 0, fontSize: "clamp(28px, 6vw, 38px)", fontWeight: 800, color: pct > 0 ? "#93c5fd" : "var(--text-faint)", lineHeight: 1 }}>
+        <p style={{ margin: 0, fontSize: "clamp(28px, 6vw, 38px)", fontWeight: 800, color: pct > 0 ? "var(--accent-bright)" : "var(--text-faint)", lineHeight: 1 }}>
           {pct}
         </p>
-        <span style={{ color: "#1e3a5f", fontSize: 16, fontWeight: 600 }}>/100</span>
+        <span style={{ color: "var(--text-tertiary)", fontSize: 16, fontWeight: 600 }}>/100</span>
       </div>
-      <p style={{ margin: "4px 0 12px", fontSize: 12, color: "#1e3a5f", fontWeight: 500 }}>
+      <p style={{ margin: "4px 0 12px", fontSize: 12, color: "var(--text-secondary)", fontWeight: 500 }}>
         {progressQuestions} question{progressQuestions !== 1 ? "s" : ""} answered today
       </p>
 
       {/* Animated progress bar */}
-      <div style={{ background: "#0d1829", borderRadius: 99, height: 5, overflow: "hidden" }}>
+      <div style={{ background: "var(--bg-inset)", borderRadius: 99, height: 5, overflow: "hidden" }}>
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
           style={{
             height: "100%", borderRadius: 99,
-            background: `linear-gradient(90deg, #1d4ed8, ${grade})`,
+            background: `linear-gradient(90deg, var(--accent-dim), ${grade})`,
           }}
         />
       </div>
@@ -200,7 +200,7 @@ function SmartProgressBar({ progress, stage }) {
           {statusText}
         </motion.p>
         <span style={{
-          color: "#a855f7", fontSize: 15, fontWeight: 800,
+          color: "var(--accent)", fontSize: 15, fontWeight: 800,
           fontVariantNumeric: "tabular-nums", minWidth: 42, textAlign: "right",
         }}>
           {progress}%
@@ -210,15 +210,15 @@ function SmartProgressBar({ progress, stage }) {
       {/* Track */}
       <div style={{
         height: 10, borderRadius: 99, overflow: "hidden", position: "relative",
-        background: "rgba(255,255,255,0.05)",
-        border: "1px solid rgba(255,255,255,0.07)",
+        background: "var(--bg-inset)",
+        border: "1px solid var(--border-hairline)",
       }}>
         {/* Animated fill */}
         <div style={{
           height: "100%", borderRadius: 99, position: "relative", overflow: "hidden",
           width: `${progress}%`,
           transition: "width 0.18s linear",
-          background: "linear-gradient(90deg, #4f46e5, #7c3aed, #a855f7, #ec4899, #7c3aed)",
+          background: "linear-gradient(90deg, var(--accent-dim), var(--accent), var(--accent-bright), var(--accent), var(--accent-dim))",
           backgroundSize: "300% 100%",
           animation: "amn-gradient 3s ease infinite",
         }}>
@@ -235,7 +235,7 @@ function SmartProgressBar({ progress, stage }) {
           <div style={{
             position: "absolute", top: "50%", left: `${progress}%`,
             width: 18, height: 18, borderRadius: "50%", pointerEvents: "none",
-            background: "radial-gradient(circle, rgba(168,85,247,0.9) 0%, transparent 65%)",
+            background: "radial-gradient(circle, var(--accent-glow) 0%, transparent 65%)",
             animation: "amn-pulse 1.4s ease-in-out infinite",
           }} />
         )}
@@ -251,13 +251,13 @@ function SmartProgressBar({ progress, stage }) {
               style={{
                 width: 5, height: 5, borderRadius: "50%",
                 background: progress >= ms
-                  ? "linear-gradient(135deg, #7c3aed, #ec4899)"
-                  : "rgba(255,255,255,0.18)",
+                  ? "linear-gradient(135deg, var(--accent-dim), var(--accent-bright))"
+                  : "var(--border-strong)",
               }}
             />
             <span style={{
               fontSize: 9, fontWeight: 600,
-              color: progress >= ms ? "#a855f7" : "rgba(255,255,255,0.18)",
+              color: progress >= ms ? "var(--accent)" : "var(--text-disabled)",
             }}>
               {ms}%
             </span>
@@ -280,13 +280,13 @@ function WeakTopicsCard({ topics }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.16 }}
-      whileHover={{ y: -3, boxShadow: "0 8px 32px rgba(239,68,68,0.14)" }}
+      whileHover={{ y: -3, boxShadow: "0 8px 32px color-mix(in srgb, var(--error) 14%, transparent)" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
         flex: 1, minWidth: 130,
-        background: "linear-gradient(160deg, #0f0006 0%, #0a0f1e 100%)",
-        border: `1px solid ${hovered ? "rgba(239,68,68,0.28)" : "#280a0a"}`,
+        background: "var(--bg-surface)",
+        border: `1px solid ${hovered ? "color-mix(in srgb, var(--error) 28%, transparent)" : "var(--border-hairline)"}`,
         borderRadius: 18,
         padding: "20px 20px",
         cursor: "default",
@@ -298,30 +298,30 @@ function WeakTopicsCard({ topics }) {
       <div style={{
         position: "absolute", top: -20, right: -20,
         width: 80, height: 80,
-        background: "radial-gradient(circle, rgba(239,68,68,0.1) 0%, transparent 70%)",
+        background: "radial-gradient(circle, color-mix(in srgb, var(--error) 10%, transparent) 0%, transparent 70%)",
         pointerEvents: "none",
       }} />
 
       <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 14 }}>
         <div style={{
           width: 36, height: 36, borderRadius: 10,
-          background: "linear-gradient(135deg, #b91c1c, var(--red))",
+          background: "linear-gradient(135deg, color-mix(in srgb, var(--error) 70%, #000), var(--error))",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 16,
-          boxShadow: "0 0 14px rgba(239,68,68,0.3)",
+          boxShadow: "0 0 14px color-mix(in srgb, var(--error) 30%, transparent)",
           flexShrink: 0,
         }}>
           ⚠️
         </div>
-        <span style={{ color: "#450a0a", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
+        <span style={{ color: "var(--text-tertiary)", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
           Weak Topics
         </span>
       </div>
 
-      <p style={{ margin: "0 0 2px", fontSize: "clamp(28px, 6vw, 38px)", fontWeight: 800, color: count > 0 ? "#fca5a5" : "var(--text-faint)", lineHeight: 1 }}>
+      <p style={{ margin: "0 0 2px", fontSize: "clamp(28px, 6vw, 38px)", fontWeight: 800, color: count > 0 ? "var(--error)" : "var(--text-faint)", lineHeight: 1 }}>
         {count}
       </p>
-      <p style={{ margin: "4px 0 12px", fontSize: 12, color: "#450a0a", fontWeight: 500 }}>
+      <p style={{ margin: "4px 0 12px", fontSize: 12, color: "var(--text-tertiary)", fontWeight: 500 }}>
         {count > 0 ? "topics need revision" : "All topics looking good!"}
       </p>
 
@@ -330,9 +330,9 @@ function WeakTopicsCard({ topics }) {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
           {visible.map((t) => (
             <span key={t.topic} style={{
-              background: "rgba(239,68,68,0.1)",
-              border: "1px solid rgba(239,68,68,0.22)",
-              color: "#fca5a5",
+              background: "color-mix(in srgb, var(--error) 10%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--error) 22%, transparent)",
+              color: "var(--error)",
               fontSize: 10,
               fontWeight: 600,
               padding: "3px 9px",
@@ -393,7 +393,7 @@ export default function UploadSection() {
           onDragLeave={() => setIsDragging(false)}
           onDrop={(e) => { e.preventDefault(); setIsDragging(false); const f = e.dataTransfer.files[0]; if (f) { setFile(f); handleUpload(f); } }}
           onClick={() => document.getElementById("pdf-file-input").click()}
-          style={{ border: `2px dashed ${isDragging ? "var(--blue-dark)" : "var(--text-faint)"}`, borderRadius: 12, padding: "clamp(16px, 4vw, 32px) 20px", textAlign: "center", cursor: "pointer", background: isDragging ? "rgba(37,99,235,0.08)" : "var(--surface-card)", transition: "all 0.2s ease", marginBottom: 14 }}
+          style={{ border: `2px dashed ${isDragging ? "var(--accent)" : "var(--text-faint)"}`, borderRadius: 12, padding: "clamp(16px, 4vw, 32px) 20px", textAlign: "center", cursor: "pointer", background: isDragging ? "color-mix(in srgb, var(--accent) 8%, transparent)" : "var(--surface-card)", transition: "all 0.2s ease", marginBottom: 14 }}
         >
           <input
             id="pdf-file-input"
@@ -417,7 +417,7 @@ export default function UploadSection() {
             <div>
               <div style={{ fontSize: 36, marginBottom: 10 }}>✅</div>
               <p style={{ color: "var(--green)", fontSize: 15, fontWeight: 700, margin: 0 }}>PDF uploaded successfully!</p>
-              <p style={{ color: "#64748b", fontSize: 12, marginTop: 6 }}>📄 {uploadedFileName} · {uploadedFileSize}</p>
+              <p style={{ color: "var(--text-tertiary)", fontSize: 12, marginTop: 6 }}>📄 {uploadedFileName} · {uploadedFileSize}</p>
             </div>
           )}
           {uploadStage === "error" && (
@@ -433,9 +433,9 @@ export default function UploadSection() {
             onClick={cancelUpload}
             style={{
               width: "100%", padding: "10px 0", borderRadius: 8,
-              border: "1px solid rgba(239,68,68,0.4)",
-              background: "rgba(239,68,68,0.08)",
-              color: "#f87171", fontWeight: 600, fontSize: 13,
+              border: "1px solid color-mix(in srgb, var(--error) 40%, transparent)",
+              background: "color-mix(in srgb, var(--error) 8%, transparent)",
+              color: "var(--error)", fontWeight: 600, fontSize: 13,
               cursor: "pointer", marginTop: 10,
             }}
           >
@@ -446,7 +446,7 @@ export default function UploadSection() {
         {uploadStage === "done" && (
           <div style={{ display: "flex", gap: 8 }}>
             {documentId && file && (
-              <button onClick={handleSavePDF} style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: "linear-gradient(135deg, var(--green), var(--green-dark))", color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+              <button onClick={handleSavePDF} style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: "linear-gradient(135deg, var(--green), var(--green-dark))", color: "var(--text-primary)", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
                 💾 Save PDF to Library
               </button>
             )}

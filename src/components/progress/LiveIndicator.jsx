@@ -12,10 +12,10 @@ import { motion } from "framer-motion";
  * Tooltip shows "Last update: Ns ago" updated every 1s while mounted.
  */
 const COLORS = {
-  connected:    { dot: "#22C55E", glow: "rgba(34,197,94,0.55)",  label: "Live" },
-  connecting:   { dot: "#F59E0B", glow: "rgba(245,158,11,0.55)", label: "Connecting…" },
-  polling:      { dot: "#F59E0B", glow: "rgba(245,158,11,0.55)", label: "Polling fallback" },
-  disconnected: { dot: "#EF4444", glow: "rgba(239,68,68,0.55)",  label: "Disconnected" },
+  connected:    { dot: "var(--success)", glow: "color-mix(in srgb, var(--success) 55%, transparent)",  label: "Live" },
+  connecting:   { dot: "var(--warning)", glow: "color-mix(in srgb, var(--warning) 55%, transparent)", label: "Connecting…" },
+  polling:      { dot: "var(--warning)", glow: "color-mix(in srgb, var(--warning) 55%, transparent)", label: "Polling fallback" },
+  disconnected: { dot: "var(--error)",   glow: "color-mix(in srgb, var(--error) 55%, transparent)",   label: "Disconnected" },
 };
 
 function formatAgo(ts) {
@@ -47,7 +47,7 @@ export default function LiveIndicator({ status = "connecting", lastUpdateAt = nu
         padding: "3px 8px",
         borderRadius: 999,
         background: "rgba(255,255,255,0.04)",
-        border: "1px solid rgba(255,255,255,0.06)",
+        border: "1px solid var(--border-hairline)",
         cursor: "help",
         userSelect: "none",
       }}
@@ -75,7 +75,7 @@ export default function LiveIndicator({ status = "connecting", lastUpdateAt = nu
           />
         )}
       </span>
-      <span style={{ fontSize: 10, color: "#a1a1aa", fontWeight: 500, letterSpacing: 0.2 }}>
+      <span style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: 0.2 }}>
         {c.label}
       </span>
     </div>

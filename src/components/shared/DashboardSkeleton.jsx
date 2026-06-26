@@ -40,7 +40,7 @@ export default function DashboardSkeleton() {
           display: 'flex',
           height: '100vh',
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%)',
+          background: 'linear-gradient(135deg, var(--bg-base) 0%, var(--bg-surface) 50%, var(--bg-elevated) 100%)',
         }}
       >
         {/* Sidebar placeholder — matches DashboardSidebar expanded width (220px) */}

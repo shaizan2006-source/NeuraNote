@@ -52,7 +52,7 @@ export default function ArtifactModal({
       left: 0,
       right: 0,
       bottom: 0,
-      background: "rgba(0, 0, 0, 0.8)",
+      background: "rgba(8, 8, 10, 0.8)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -60,10 +60,10 @@ export default function ArtifactModal({
       padding: 16,
     }}>
       <div style={{
-        background: "linear-gradient(135deg, #1f1f1f, #2d2d2d)",
+        background: "linear-gradient(135deg, var(--bg-elevated), var(--bg-surface))",
         borderRadius: 16,
         padding: 24,
-        border: "1px solid #3a3a3a",
+        border: "1px solid var(--border-strong)",
         maxWidth: 600,
         width: "100%",
         maxHeight: "80vh",
@@ -77,13 +77,13 @@ export default function ArtifactModal({
           marginBottom: 20,
         }}>
           <div>
-            <h2 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700, color: "#f4f4f5" }}>
+            <h2 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>
               {cluster.label}
             </h2>
             <p style={{
               margin: 0,
               fontSize: 12,
-              color: "#71717a",
+              color: "var(--text-tertiary)",
             }}>
               Topics: {cluster.topics.join(", ")} • Mastery: {cluster.avgScore}%
             </p>
@@ -93,7 +93,7 @@ export default function ArtifactModal({
             style={{
               background: "none",
               border: "none",
-              color: "#71717a",
+              color: "var(--text-tertiary)",
               fontSize: 20,
               cursor: "pointer",
             }}
@@ -117,8 +117,8 @@ export default function ArtifactModal({
                 onClick={() => setArtifact(null)}
                 style={{
                   padding: "8px 16px",
-                  background: "#3a3a3a",
-                  color: "#f4f4f5",
+                  background: "var(--bg-surface-2)",
+                  color: "var(--text-primary)",
                   border: "none",
                   borderRadius: 6,
                   fontSize: 12,
@@ -137,7 +137,7 @@ export default function ArtifactModal({
                 margin: "0 0 10px 0",
                 fontSize: 12,
                 fontWeight: 600,
-                color: "#f4f4f5",
+                color: "var(--text-primary)",
               }}>
                 Select Practice Type:
               </p>
@@ -152,8 +152,8 @@ export default function ArtifactModal({
                     style={{
                       flex: 1,
                       padding: 12,
-                      background: artifactType === type ? "#8b5cf6" : "#3a3a3a",
-                      color: "#f4f4f5",
+                      background: artifactType === type ? "var(--accent)" : "var(--bg-surface-2)",
+                      color: artifactType === type ? "var(--bg-base)" : "var(--text-primary)",
                       border: "none",
                       borderRadius: 8,
                       fontSize: 12,
@@ -172,13 +172,13 @@ export default function ArtifactModal({
             {/* Error */}
             {error && (
               <div style={{
-                background: "rgba(239, 68, 68, 0.1)",
-                borderLeft: "3px solid #ef4444",
+                background: "color-mix(in srgb, var(--error) 10%, transparent)",
+                borderLeft: "3px solid var(--error)",
                 padding: 12,
                 borderRadius: 6,
                 marginBottom: 16,
               }}>
-                <p style={{ margin: 0, fontSize: 12, color: "#fca5a5" }}>
+                <p style={{ margin: 0, fontSize: 12, color: "var(--error)" }}>
                   {error}
                 </p>
               </div>
@@ -191,8 +191,8 @@ export default function ArtifactModal({
               style={{
                 width: "100%",
                 padding: 12,
-                background: loading ? "#3a3a3a" : "linear-gradient(135deg, #8b5cf6, #7c3aed)",
-                color: "#fff",
+                background: loading ? "var(--bg-surface-2)" : "var(--accent-grad)",
+                color: loading ? "var(--text-primary)" : "var(--bg-base)",
                 border: "none",
                 borderRadius: 8,
                 fontSize: 14,
@@ -208,7 +208,7 @@ export default function ArtifactModal({
             <p style={{
               margin: "12px 0 0 0",
               fontSize: 11,
-              color: "#71717a",
+              color: "var(--text-tertiary)",
               textAlign: "center",
             }}>
               Powered by OpenAI • Takes ~3 seconds

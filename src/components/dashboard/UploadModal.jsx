@@ -28,14 +28,14 @@ function SmartProgressBar({ progress, stage }) {
     <div style={{ padding: "4px 0" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
         <span style={{ color: "var(--text-secondary)", fontSize: 13, fontWeight: 600 }}>{statusText}</span>
-        <span style={{ color: "#a855f7", fontSize: 14, fontWeight: 800 }}>{progress}%</span>
+        <span style={{ color: "var(--accent)", fontSize: 14, fontWeight: 800 }}>{progress}%</span>
       </div>
-      <div style={{ height: 8, borderRadius: 99, overflow: "hidden", background: "rgba(255,255,255,0.05)" }}>
+      <div style={{ height: 8, borderRadius: 99, overflow: "hidden", background: "var(--border-hairline)" }}>
         <div style={{
           height: "100%", borderRadius: 99,
           width: `${progress}%`,
           transition: "width 0.18s linear",
-          background: "linear-gradient(90deg, #4f46e5, #7c3aed, #a855f7)",
+          background: "var(--accent-grad)",
         }} />
       </div>
     </div>
@@ -81,9 +81,9 @@ export default function UploadModal() {
           gap:            6,
           padding:        "7px 14px",
           borderRadius:   9,
-          border:         "1px solid rgba(124,58,237,0.4)",
-          background:     "rgba(124,58,237,0.12)",
-          color:          "#a78bfa",
+          border:         "1px solid color-mix(in srgb, var(--accent) 40%, transparent)",
+          background:     "color-mix(in srgb, var(--accent) 12%, transparent)",
+          color:          "var(--accent)",
           fontSize:       13,
           fontWeight:     600,
           cursor:         "pointer",
@@ -195,7 +195,7 @@ export default function UploadModal() {
                   padding:      "28px 20px",
                   textAlign:    "center",
                   cursor:       "pointer",
-                  background:   isDragging ? "rgba(37,99,235,0.08)" : "var(--surface-raised)",
+                  background:   isDragging ? "color-mix(in srgb, var(--accent) 8%, transparent)" : "var(--surface-raised)",
                   transition:   "all 0.2s ease",
                   marginBottom: 14,
                 }}
@@ -228,7 +228,7 @@ export default function UploadModal() {
                   <>
                     <div style={{ fontSize: 32, marginBottom: 8 }}>✅</div>
                     <p style={{ color: "var(--green)", fontSize: 14, fontWeight: 700, margin: 0 }}>Uploaded successfully!</p>
-                    <p style={{ color: "#64748b", fontSize: 12, marginTop: 4 }}>📄 {uploadedFileName} · {uploadedFileSize}</p>
+                    <p style={{ color: "var(--text-tertiary)", fontSize: 12, marginTop: 4 }}>📄 {uploadedFileName} · {uploadedFileSize}</p>
                   </>
                 )}
                 {uploadStage === "error" && (
@@ -245,9 +245,9 @@ export default function UploadModal() {
                   onClick={cancelUpload}
                   style={{
                     width: "100%", padding: "10px 0", borderRadius: 8,
-                    border: "1px solid rgba(239,68,68,0.4)",
-                    background: "rgba(239,68,68,0.08)",
-                    color: "#f87171", fontWeight: 600, fontSize: 13, cursor: "pointer",
+                    border: "1px solid color-mix(in srgb, var(--error) 40%, transparent)",
+                    background: "color-mix(in srgb, var(--error) 8%, transparent)",
+                    color: "var(--error)", fontWeight: 600, fontSize: 13, cursor: "pointer",
                   }}
                 >
                   ✕ Cancel Upload

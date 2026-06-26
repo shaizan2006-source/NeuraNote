@@ -16,19 +16,19 @@ export default function StreakBadge() {
   return (
     <div style={{
       display: "inline-flex", flexDirection: "column",
-      background: "rgba(16,185,129,0.08)",
-      border: "1px solid rgba(16,185,129,0.2)",
+      background: "color-mix(in srgb, var(--accent) 8%, transparent)",
+      border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)",
       borderRadius: 10, padding: "10px 14px",
       gap: 2,
     }}>
-      <span style={{ fontSize: 11, color: "#6B7280", letterSpacing: "0.5px", textTransform: "uppercase" }}>
+      <span style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.5px", textTransform: "uppercase" }}>
         🌱 {data.badge_label}
       </span>
-      <span style={{ fontSize: 22, fontWeight: 700, color: "#10B981" }}>
+      <span style={{ fontSize: 22, fontWeight: 700, color: "var(--accent)" }}>
         Day {data.cumulative_days}
       </span>
       {data.freezes_available > 0 && (
-        <span style={{ fontSize: 11, color: "#6B7280" }}>
+        <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
           {data.freezes_available} freeze{data.freezes_available !== 1 ? "s" : ""} available
         </span>
       )}

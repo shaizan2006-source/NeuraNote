@@ -146,9 +146,19 @@ Full finding objects: `tasks/wjf8wvf8d.output` (workflow run wf_2cdb5872-948).
 - **Auth-gated visual verification:** `.env.local` has NO TEST_EMAIL/TEST_PASSWORD (Stage-7 probe used runtime env). `scripts/shot-9e.mjs` logs in + captures /exams /study /focus /progress /quiz once creds exist. Pending for 9h. All 5 routes return HTTP 200 (SSR no-crash) meanwhile.
 - Gate progression: 9a→1403, 9b→1352, 9e→1024 hex (baseline-aware, none introduced).
 
-## ⚠️ FOUNDER — pre-existing infra bug found during Stage 9h (NOT the redesign)
+## ✅ Signup bug — FIXED 2026-06-27 (root cause + fix)
 
-**Signup is broken on the connected Supabase project (`ytygxrnhppupvhpsvtvf`).** Probe (`scripts/probe-tables.mjs`) shows ALL tables exist (profiles, pyqs, mock_tests, notification_preferences, etc. — the earlier "unprovisioned" flags from Stage 8a/8b are RESOLVED; those pages can show real data now). BUT `profiles` and `notification_preferences` are **empty (0 rows)** → no user has ever been created. `auth.admin.createUser` and app signup both fail with **"Database error creating new user."** Two `AFTER INSERT ON auth.users` triggers fire: `handle_new_user`→profiles(id,email) and `create_default_notification_prefs`→notification_preferences(user_id). Both look benign in the migrations, so the LIVE `profiles` schema likely has a NOT NULL column without a default that the trigger doesn't fill. **Diagnose via SQL editor:** `select column_name, is_nullable, column_default from information_schema.columns where table_schema='public' and table_name='profiles';` — add defaults / make nullable / update the trigger to populate it. This blocks ALL logins, so it gates the Stage 9h authed visual sweep. Once a login works: add `TEST_EMAIL`/`TEST_PASSWORD` to `.env.local` (or run `scripts/create-test-account.mjs`) then `node scripts/shot-9e.mjs`.
+**Was:** all signups (app + `auth.admin.createUser`) failed with "Database error creating new user"; `profiles`/`notification_preferences` empty (zero users ever). **Root cause:** the `create_default_notification_prefs` trigger ran `INSERT INTO notification_preferences` with an **unqualified** table name; under GoTrue's restricted signup `search_path` it failed to resolve → aborted the auth.users insert. (`handle_new_user` already used `public.profiles`, so it was fine.) **Fix** (`scripts/fix-signup-triggers.sql`, applied via psql): qualified it to `public.notification_preferences` + wrapped both trigger fns in `EXCEPTION WHEN OTHERS THEN RETURN NEW` (signup can never break again; profile + prefs rows now create correctly). Verified: test user created, profile + prefs rows present, login works, full authed visual sweep captured.
+
+**DB access used:** added `SUPABASE_DB_PASSWORD` to `.env.local`; connect via `psql -h db.ytygxrnhppupvhpsvtvf.supabase.co -p 5432 -U postgres -d postgres` (PGPASSWORD + PGSSLMODE=require). `psql` is at `C:\Program Files\PostgreSQL\18\bin`. **Founder can delete `SUPABASE_DB_PASSWORD` from `.env.local` now** — the app doesn't use it.
+
+Test account: `uitest@askmynotes.in` (creds in `.env.local` TEST_EMAIL/TEST_PASSWORD, gitignored), `onboarding_completed=true` set via admin API so authed pages render.
+
+## ⚠️ FOUNDER — remaining schema gaps (NOT the redesign; flagged, not fixed)
+
+- **`user_profiles` table does NOT exist** but `src/lib/exam/transitions.js` `getExamPhase` reads `user_profiles.exam_date/exam_type` → exam phases never trigger. (exam-transition UI crash itself is fixed — no more "undefined days".)
+- **`profiles` is missing the onboarding columns** (`class_level`, `exam_type`, `exam_date`, `study_window`, `region`, `city`, `cohort_id`, `phone_number`, …) that `/api/onboarding/complete` upserts — the upsert silently fails on `class_level`. So onboarding doesn't persist exam data. profiles↔user_profiles is an unresolved data-model split; needs a schema migration + a decide-which-table call (out of redesign scope).
+- pyqs / mock_tests tables DO exist now (earlier "unprovisioned" flags RESOLVED).
 
 ## Stage 9h finalization (2026-06-27)
 

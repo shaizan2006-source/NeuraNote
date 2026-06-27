@@ -3,7 +3,7 @@
 > Source of truth: `REDESIGN_MASTER_PROMPT.md` (§9 staged plan).
 > One stage = one approval = one revert unit. Founder sign-off required before each stage's long run.
 
-**Current stage: ✅ Stage 9 COMPLETE (harness-verified) 2026-06-27 — 9a–9h done. Whole-app Obsidian & Aurum redesign finished. ONE deferred item: authed-page visual screenshots, blocked by a pre-existing broken-signup infra bug (see NOTES). Baseline refreshed: 37 files / 513 hex (from 159 / 2299).**
+**Current stage: ✅ Stage 9 COMPLETE + fully verified 2026-06-27 — 9a–9h done. Whole-app Obsidian & Aurum redesign finished. Authed visual sweep DONE (all 7 pages desktop+mobile, after fixing the signup-trigger bug that gated it). Baseline: 37 files / 513 hex (from 159 / 2299). Post-completion fixes: signup trigger (search_path bug) + exam-transition "undefined days".**
 
 ---
 

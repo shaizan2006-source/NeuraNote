@@ -1,6 +1,12 @@
 ﻿"use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 const PHASE_UI = {
   t30: {
@@ -41,10 +47,19 @@ export default function ExamTransitionPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/exam/phase")
-      .then(r => r.json())
-      .then(d => setPhase(d))
-      .finally(() => setLoading(false));
+    (async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch("/api/exam/phase", {
+          headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {},
+        });
+        setPhase(await res.json());
+      } catch {
+        setPhase(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   if (loading) {

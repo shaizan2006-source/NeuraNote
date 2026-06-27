@@ -154,11 +154,15 @@ Full finding objects: `tasks/wjf8wvf8d.output` (workflow run wf_2cdb5872-948).
 
 Test account: `uitest@askmynotes.in` (creds in `.env.local` TEST_EMAIL/TEST_PASSWORD, gitignored), `onboarding_completed=true` set via admin API so authed pages render.
 
-## ⚠️ FOUNDER — remaining schema gaps (NOT the redesign; flagged, not fixed)
+## ✅ Schema gaps — FIXED 2026-06-28 (consolidated onto `profiles`)
 
-- **`user_profiles` table does NOT exist** but `src/lib/exam/transitions.js` `getExamPhase` reads `user_profiles.exam_date/exam_type` → exam phases never trigger. (exam-transition UI crash itself is fixed — no more "undefined days".)
-- **`profiles` is missing the onboarding columns** (`class_level`, `exam_type`, `exam_date`, `study_window`, `region`, `city`, `cohort_id`, `phone_number`, …) that `/api/onboarding/complete` upserts — the upsert silently fails on `class_level`. So onboarding doesn't persist exam data. profiles↔user_profiles is an unresolved data-model split; needs a schema migration + a decide-which-table call (out of redesign scope).
-- pyqs / mock_tests tables DO exist now (earlier "unprovisioned" flags RESOLVED).
+The app was split between `profiles` (exists; written by onboarding) and a never-created `user_profiles` (read by ThemeContext / exam transitions / brain-map snapshot, with inconsistent `id` vs `user_id` keys). **Consolidated onto `profiles`** (the canonical table — PK `id`→auth.users, RLS, signup trigger):
+- **Migration** `supabase/migrations/20260628000001_consolidate_profiles_onboarding.sql` (applied via psql): `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS` exam_type, exam_year, exam_date, class_level, study_window, region, city, cohort_id, phone_number, parent_phone_number, is_repeat_aspirant, exam_proximity_months_at_signup, theme_preference (+ check constraint). Now `/api/onboarding/complete` upsert succeeds (previously failed on `class_level`).
+- **Repointed all 4 `user_profiles` readers → `profiles`** with the correct `id` key: `lib/exam/transitions.js` (`.eq("user_id")`→`.eq("id")`), `api/brain-map/snapshot` (`display_name`→`full_name`, `user_id`→`id`), `context/ThemeContext.tsx` ×2. Zero `user_profiles` refs remain.
+- **Bonus bug fixed:** `exam-transition` page fetched `/api/exam/phase` with NO auth header → always 401 → the real origin of "undefined days". Now sends `Authorization: Bearer <session token>`.
+- **Verified end-to-end:** set test user exam_date=+5d → /exam-transition renders "JEE 2027 in 5 days" with the gold T-7 countdown. Build clean.
+- pyqs / mock_tests tables DO exist (earlier "unprovisioned" flags RESOLVED).
+- NOTE (left as-is): `api/brain-map/snapshot` OG-image gradient still uses `#1a0a2e` — it's a server-generated share IMAGE, not app UI.
 
 ## Stage 9h finalization (2026-06-27)
 

@@ -37,38 +37,38 @@ export async function GET(req) {
       <div
         style={{
           width: "100%", height: "100%",
-          background: "linear-gradient(135deg, #0A0A0A 0%, #1a0a2e 100%)",
+          background: "linear-gradient(135deg, #08080A 0%, #131317 100%)",
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          fontFamily: "sans-serif", color: "#F9FAFB", padding: 48,
+          fontFamily: "sans-serif", color: "#F5F5F4", padding: 48,
         }}
       >
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 36 }}>
-          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "linear-gradient(135deg, #8B5CF6, #EC4899)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 700, color: "#fff" }}>
+          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "linear-gradient(135deg, #EACF96, #D4AF6E)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 700, color: "#08080A" }}>
             {name[0]?.toUpperCase()}
           </div>
           <div>
             <div style={{ fontSize: 20, fontWeight: 700 }}>{name}</div>
-            <div style={{ fontSize: 13, color: "#8B5CF6" }}>{examLabel} Brain Map</div>
+            <div style={{ fontSize: 13, color: "#D4AF6E" }}>{examLabel} Brain Map</div>
           </div>
         </div>
 
         {/* Big stat */}
         <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <div style={{ fontSize: 80, fontWeight: 800, color: "#8B5CF6", lineHeight: 1 }}>{pct}%</div>
-          <div style={{ fontSize: 16, color: "#9CA3AF", marginTop: 8 }}>mastery · {total} concepts mapped</div>
+          <div style={{ fontSize: 80, fontWeight: 800, color: "#D4AF6E", lineHeight: 1 }}>{pct}%</div>
+          <div style={{ fontSize: 16, color: "#A1A1A6", marginTop: 8 }}>mastery · {total} concepts mapped</div>
         </div>
 
         {/* Stats row */}
         <div style={{ display: "flex", gap: 32, marginBottom: 40 }}>
           {[
-            { label: "Mastered", value: mastered, color: "#10B981" },
-            { label: "Strong", value: strong, color: "#8B5CF6" },
-            { label: "Learning", value: total - mastered - strong, color: "#F59E0B" },
+            { label: "Mastered", value: mastered, color: "#D4AF6E" },
+            { label: "Strong", value: strong, color: "#34D399" },
+            { label: "Learning", value: total - mastered - strong, color: "#F5B544" },
           ].map(s => (
             <div key={s.label} style={{ textAlign: "center" }}>
               <div style={{ fontSize: 28, fontWeight: 700, color: s.color }}>{s.value}</div>
-              <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{s.label}</div>
+              <div style={{ fontSize: 12, color: "#6B6B70", marginTop: 2 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -77,7 +77,7 @@ export async function GET(req) {
         {topNodes.length > 0 && (
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", maxWidth: 600 }}>
             {topNodes.map(n => (
-              <div key={n.label} style={{ background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.3)", borderRadius: 20, padding: "4px 14px", fontSize: 13, color: "#C4B5FD" }}>
+              <div key={n.label} style={{ background: "rgba(212,175,110,0.15)", border: "1px solid rgba(212,175,110,0.3)", borderRadius: 20, padding: "4px 14px", fontSize: 13, color: "#EACF96" }}>
                 {n.label}
               </div>
             ))}
@@ -85,7 +85,7 @@ export async function GET(req) {
         )}
 
         {/* Footer */}
-        <div style={{ position: "absolute", bottom: 24, fontSize: 12, color: "#374151" }}>
+        <div style={{ position: "absolute", bottom: 24, fontSize: 12, color: "#46464B" }}>
           askmynotes.in
         </div>
       </div>

@@ -162,7 +162,7 @@ The app was split between `profiles` (exists; written by onboarding) and a never
 - **Bonus bug fixed:** `exam-transition` page fetched `/api/exam/phase` with NO auth header → always 401 → the real origin of "undefined days". Now sends `Authorization: Bearer <session token>`.
 - **Verified end-to-end:** set test user exam_date=+5d → /exam-transition renders "JEE 2027 in 5 days" with the gold T-7 countdown. Build clean.
 - pyqs / mock_tests tables DO exist (earlier "unprovisioned" flags RESOLVED).
-- NOTE (left as-is): `api/brain-map/snapshot` OG-image gradient still uses `#1a0a2e` — it's a server-generated share IMAGE, not app UI.
+- `api/brain-map/snapshot` OG share image **re-skinned to O&A 2026-06-28** (near-black gradient, gold avatar/%/subtitle, mastery-tier stats gold/success/warning, gold chips). Verified via static mock (`scripts/` one-off) + build/gate. **Pre-existing (separate) bug:** the route's `runtime="edge"` handler crashes at request time in dev ("other side closed" — likely next/og satori or serverAuth under edge), so the live OG image doesn't render; unrelated to the colors. Flag for later.
 
 ## Stage 9h finalization (2026-06-27)
 

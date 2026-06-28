@@ -3,7 +3,16 @@
 Format: ID · Severity · Area · What's wrong · Repro · Expected vs Actual · Fix · Status.
 Severity: S0 blocker · S1 critical · S2 major · S3 minor · S4 polish.
 
-**Counts:** S0 **1** · S1 **8** · S2 **7** · S3 **11** (27 findings).  **Fixed & verified: 25** · **Addressed: F-006** · **Open: 1** — only **F-007** (release hygiene, a process recommendation, not a code bug).
+**Counts:** S0 **1** · S1 **8** · S2 **8** · S3 **11** (28 findings).  **Fixed & verified: 25** · **Addressed: F-006** · **Open: 2** — **F-007** (release hygiene) + **F-028** (cron secret in client code), both S2.
+
+**Phase-3 security audit (mostly clean):** secrets are **server-only** — the only `NEXT_PUBLIC_` values are the safe ones (Supabase URL/anon, Sentry DSN, VAPID public, app URL); no service-role/OpenAI/Razorpay-secret in any client component (one anti-pattern: F-028). **Git history has no real committed keys** (all `sk-proj-`/`rzp_live_` matches are `.env.example` placeholders + docs). **JWT tampering rejected** (valid→200, tampered signature→401 PGRST301, garbage→401). Remaining Phase-3 (not yet run): AI prompt-injection/system-prompt-leak, DB connection-pool/concurrency breakage, chaos (kill mid-payment/AI/upload).
+
+## F-028 · S2 · Secrets / cron secret referenced in client code  ⛔ OPEN
+`src/app/admin/trial-segments/page.js:62` (a `"use client"` component) sends `Authorization: Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET ?? ""}` to trigger a cron from the admin UI. `NEXT_PUBLIC_*` is **inlined into the client bundle**, so if `NEXT_PUBLIC_CRON_SECRET` is ever set, the cron secret leaks to every visitor (forge cron calls → trigger notifications/trial messaging); if unset (current — not in env.example/vercel.json), the admin manual-trigger is silently **broken** (sends empty auth). Either way it's wrong.
+**Fix:** route admin manual-triggers through a server endpoint that is admin-gated (`ADMIN_EMAILS`) and holds `CRON_SECRET` server-side; never expose it via `NEXT_PUBLIC_`. Not auto-fixed (needs a small new server route).
+**Status:** OPEN (S2). (`NEXT_PUBLIC_CRON_SECRET` appears unset today → likely no live leak, but the pattern must go.)
+
+**Auth note (S3, by design):** Supabase access tokens are stateless JWTs — client "logout" clears local storage but the JWT stays valid until `exp` (~1h); there's no server-side revocation on normal logout (only the deletion flow calls `admin.signOutUser`). Acceptable for most apps; note it for shared-device scenarios.
 
 **Phase-3 remediation pass:** fixed F-008 (recaps bucket + text fallback), F-009 (briefing RPC), F-010 (pdfs bucket parity), F-016 (sr_next_due IST), F-017/F-027 (mock-test auth + redirect), F-018 (study redirect), F-019 (streak IST), F-020 (photo-doubt validation), F-025 (concept_edges to_id), F-026 (cohort_members recursion). Migration `20260629000002_phase3_fixes.sql` + 5 route/page/lib edits. Verified where live-testable (cohort_members no `42P17`, photo-doubt 400 on non-image, pages compile).
 

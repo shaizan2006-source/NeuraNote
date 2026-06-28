@@ -3,10 +3,10 @@
 Format: ID · Severity · Area · What's wrong · Repro · Expected vs Actual · Fix · Status.
 Severity: S0 blocker · S1 critical · S2 major · S3 minor · S4 polish.
 
-**Counts:** S0 **0** · S1 **4** · S2 **3** · S3 **7**.  **Fixed & verified: 9** (F-001/2/3/4/5/11/12/13/14) · **Open: 4** (F-007/8/9/10) · **Addressed: F-006**.
-(Phase 1: F-005 escalated S2→S1 then FIXED+verified; F-012/F-013/F-014 added from money-path testing.)
+**Counts:** S0 **0** · S1 **5** · S2 **3** · S3 **10**.  **Fixed & verified: 9** (F-001/2/3/4/5/11/12/13/14) · **Open: 8** (F-007/8/9/10/15/16/17/18) · **Addressed: F-006**.
+(Phase 1: F-005 escalated S2→S1 then FIXED+verified; F-012/13/14 from money-path; F-015 from FSRS; F-016/17/18 from FSRS/routing.)
 
-**Verified CORRECT (no finding):** mock-test scoring (TV-7) across all-correct/all-wrong/partial/skipped/timed-out — `tests/staging/phase1-core.mjs` 5/5. Razorpay webhook signature-rejection + idempotency. (Minor note: `mock_tests.total_marks` is the static exam config (e.g. 300) regardless of how many PYQs actually seed the paper — percentage skews if the bank is under-filled; cosmetic.)
+**Verified CORRECT (no finding):** mock-test scoring (TV-7) all 5 submission types — `tests/staging/phase1-core.mjs`. Razorpay webhook signature-rejection + idempotency. **Auth/routing — 12/12 on mobile+desktop** (`tests/e2e/phase1-auth-routing.spec.js`): real 404s (unknown URL + invalid `/pyqs/<slug>`), logged-out `/dashboard`/`/sage` redirect to `/login` with no authed-content leak, `/ask-ai`+`/chat` → `/sage` (308), login works, deep-link + back/forward intact. FSRS: rating ordering (again<hard<good<easy), persistence, and **no IST/UTC *scheduling* bug** (due uses absolute instants) all correct. (Minor: `mock_tests.total_marks` is static config regardless of actual PYQ count — cosmetic.)
 
 **Money-path test result (staging, Razorpay test mode): 10/10 pass after fixes.** create-order (server-priced), verify (signature-checked, tier bound to order, error-checked), webhook (signature rejection + idempotent replay) all verified. Harness: `tests/staging/phase1-money.mjs`.
 
@@ -37,6 +37,22 @@ Method note: found by rebuilding the schema **from git** on an isolated staging 
 **What's wrong:** `verify` ignored the entitlement upsert error and returned `{success:true}` even when the write failed → **"payment captured, access not granted"** with the user told it succeeded. Manifested on staging (the upsert failed on the missing constraint, F-006, yet verify reported success).
 **Fix:** verify now checks the upsert error and returns 500 (with a support message) if the grant write fails — matching the webhook's behavior.
 **Status:** **FIXED** + verified.
+
+## F-015 · **S1** · FSRS / spaced repetition doesn't space  ⛔ OPEN (confirmed)
+**What's wrong:** cards never graduate `learning → review`, so the interval is **frozen at the ~10-minute learning step forever** for `again`/`hard`/`good` reviews (only `easy`, which jumps straight to `review`, ever produces a multi-day interval). `src/lib/fsrs/scheduler.js` (`scheduleReview`, ts-fsrs) neither **persists** nor **reconstructs** the ts-fsrs `learning_steps` cursor, so every review resets the step to 0 and re-applies the first learning step.
+**Repro (live, staging):** ensure a `mastery_topics` row with `topic == card.concept_id` so `/api/cards/[id]/review` invokes the scheduler; POST `review {rating:'good'}` repeatedly (on-time). Re-read `spaced_repetition_cards`. Harness: `tests/staging/phase1-fsrs.mjs`.
+**Expected vs actual:** on-time `good` reviews grow the interval (in-process ts-fsrs control: `[0,2,11,46,163,498]` days, state→`review`). Actual via the endpoint: `interval_days=[0,0,0,0,0]`, `fsrs_stability` frozen `2.307`, `fsrs_state='learning'` ×5 — card re-shown every ~10 min, lapses never counted, relearning never triggered, and the `fsrs-due-reminder` cron (filters `fsrs_state='review'`) never fires for these cards. **Core spaced-repetition value is broken.**
+**Proposed fix (isolation-verified by the test):** in `scheduler.js` (1) add `spaced_repetition_cards.fsrs_learning_steps INT` and write `next.learning_steps` in the update; (2) set `learning_steps: card.fsrs_learning_steps ?? 0` when building the fsrsCard before `f.next()`. (Verified: with the cursor preserved, `good#2` graduates to `review` with a 2-day interval.) Alternatively set empty learning/relearning steps in `generatorParameters` so cards graduate on first `good`.
+**Status:** OPEN — **a scheduler-algorithm + schema change; flagged for your decision, not auto-applied.** Likely affects prod (FSRS is live).
+
+## F-016 · S3 · FSRS / `days_overdue` UTC truncation  ⛔ OPEN
+`sr_next_due()` computes `days_overdue = now()::date - fsrs_due::date` in the DB session tz (UTC) — a cosmetic off-by-one "days overdue" label for IST users near midnight. **Scheduling is unaffected** (due selection uses `fsrs_due <= now()`). Fix: truncate `AT TIME ZONE 'Asia/Kolkata'`. Low priority.
+
+## F-017 · S3 · Auth-gating / `/mock-test` open to logged-out  ⛔ OPEN
+`/mock-test` renders the full setup UI (exam list, instructions, Start) to logged-out visitors — no redirect/gate. **No personal data leaks** (the mock-test APIs are token-gated). Fix: add a client `getSession()` check → `router.push('/login')` like DashboardContext. Cosmetic/consistency.
+
+## F-018 · S3 · Auth-gating / `/study` no redirect  ⛔ OPEN
+`/study` shows an in-place "sign in" message to logged-out users instead of redirecting to `/login` — degrades gracefully, no leak. Optional: redirect on missing session.
 
 ## F-005 · **S1** · Revenue / Trial-expiry entitlement bypass  ✅ FIXED + verified
 **What's wrong:** the server-side entitlement gate `getUserPlan()` ([planLimits.js:48-55](../../src/lib/planLimits.js#L48)) downgrades **only** on `expires_at < now` and ignores `is_trial`/`trial_ends_at`. A trial row is `{plan:'pro', is_trial:true, trial_ends_at:+7d}` with **`expires_at` NULL** ([onboarding/complete:81-88](../../src/app/api/onboarding/complete/route.js#L81)). Confirmed by code search: **no cron or code path sets `expires_at` / downgrades `plan` at trial end** (`expires_at` is written only by payments + admin grants). Trial expiry is enforced **UI-only** (`TrialBanner`, `trial/decision` redirect — both client-side, bypassable).

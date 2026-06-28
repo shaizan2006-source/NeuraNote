@@ -1,7 +1,7 @@
 ﻿import { ImageResponse } from "next/og";
 import { verifyAuth, supabaseAdmin } from "@/lib/serverAuth";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export async function GET(req) {
   const user = await verifyAuth(req);
@@ -47,16 +47,16 @@ export async function GET(req) {
           <div style={{ width: 48, height: 48, borderRadius: "50%", background: "linear-gradient(135deg, #EACF96, #D4AF6E)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 700, color: "#08080A" }}>
             {name[0]?.toUpperCase()}
           </div>
-          <div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ fontSize: 20, fontWeight: 700 }}>{name}</div>
-            <div style={{ fontSize: 13, color: "#D4AF6E" }}>{examLabel} Brain Map</div>
+            <div style={{ fontSize: 13, color: "#D4AF6E" }}>{`${examLabel} Brain Map`}</div>
           </div>
         </div>
 
         {/* Big stat */}
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <div style={{ fontSize: 80, fontWeight: 800, color: "#D4AF6E", lineHeight: 1 }}>{pct}%</div>
-          <div style={{ fontSize: 16, color: "#A1A1A6", marginTop: 8 }}>mastery · {total} concepts mapped</div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 40 }}>
+          <div style={{ fontSize: 80, fontWeight: 800, color: "#D4AF6E", lineHeight: 1 }}>{`${pct}%`}</div>
+          <div style={{ fontSize: 16, color: "#A1A1A6", marginTop: 8 }}>{`mastery · ${total} concepts mapped`}</div>
         </div>
 
         {/* Stats row */}
@@ -66,7 +66,7 @@ export async function GET(req) {
             { label: "Strong", value: strong, color: "#34D399" },
             { label: "Learning", value: total - mastered - strong, color: "#F5B544" },
           ].map(s => (
-            <div key={s.label} style={{ textAlign: "center" }}>
+            <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div style={{ fontSize: 28, fontWeight: 700, color: s.color }}>{s.value}</div>
               <div style={{ fontSize: 12, color: "#6B6B70", marginTop: 2 }}>{s.label}</div>
             </div>

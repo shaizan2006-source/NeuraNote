@@ -37,7 +37,7 @@ export default function StudyPage() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       const t = data?.session?.access_token;
-      if (!t) { setStatus("error"); return; }
+      if (!t) { window.location.href = "/login"; return; } // F-018: redirect logged-out users
       setToken(t);
     });
   }, []);

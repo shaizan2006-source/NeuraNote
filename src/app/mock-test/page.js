@@ -1,6 +1,12 @@
 ﻿"use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
 
 const EXAMS = [
   { id: "jee_main", label: "JEE Main", desc: "90 Q · 3 hours · 300 marks" },
@@ -30,6 +36,18 @@ export default function MockTestPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const timerRef = useRef(null);
+  const [token, setToken] = useState(null);
+
+  // F-017/F-027: require a session (redirect logged-out users) AND capture the token —
+  // create/submit previously sent no Authorization header, so the simulator 401'd for
+  // everyone (verifyAuth is Bearer-only).
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      const t = data?.session?.access_token;
+      if (!t) { router.push("/login"); return; }
+      setToken(t);
+    });
+  }, []);
 
   useEffect(() => {
     if (view === VIEWS.running && timeLeft > 0) {
@@ -47,7 +65,7 @@ export default function MockTestPage() {
     try {
       const res = await fetch("/api/mock-test/create", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ exam_type: exam }),
       });
       const d = await res.json();
@@ -72,7 +90,7 @@ export default function MockTestPage() {
       const payload = Object.entries(answers).map(([qid, ans]) => ({ question_id: qid, answer: ans }));
       const res = await fetch("/api/mock-test/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ test_id: test.test_id, answers: payload }),
       });
       const d = await res.json();

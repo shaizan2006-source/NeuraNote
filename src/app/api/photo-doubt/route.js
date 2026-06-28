@@ -39,6 +39,15 @@ export async function POST(req) {
 
   if (!file) return Response.json({ error: "image required" }, { status: 400 });
 
+  // F-020: validate type + size BEFORE uploading / sending to OpenAI vision (cost/DoS guard).
+  const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+  if (file.type && !ALLOWED_TYPES.includes(file.type)) {
+    return Response.json({ error: "unsupported_type", message: "Upload a JPEG, PNG, or WebP image." }, { status: 400 });
+  }
+  if (typeof file.size === "number" && file.size > 10 * 1024 * 1024) {
+    return Response.json({ error: "file_too_large", message: "Image must be under 10MB." }, { status: 413 });
+  }
+
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
   const base64 = buffer.toString("base64");

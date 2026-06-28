@@ -81,6 +81,10 @@ const APPLY_ORDER = [
   //     S0 cross-user read/forge/tamper, family_invites, waitlist/lead PII, etc.).
   "supabase/migrations/20260629000001_enable_rls_open_tables.sql",
 
+  // 6e. F-008/9/10/16/25/26: cohort RLS recursion fix, concept_edges to_id, briefing RPC,
+  //     sr_next_due IST, recaps + pdfs buckets.
+  "supabase/migrations/20260629000002_phase3_fixes.sql",
+
   // 7. Manual patches: objects the app uses that live ONLY in prod, not in git
   //    (conversations.messages, documents/recaps buckets, get_active_briefing_users,
   //     anonymise_profile's missing columns). See STAGING_SETUP.md §"Manual patches".

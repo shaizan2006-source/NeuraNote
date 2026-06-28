@@ -6,6 +6,9 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// F-019: streak day boundary must follow IST (users roll over at 05:30 IST), not UTC midnight.
+const istDateStr = (ms = Date.now()) => new Date(ms + 5.5 * 3600 * 1000).toISOString().slice(0, 10);
+
 async function getUser(req) {
   try {
     const token = req.headers.get("authorization")?.replace("Bearer ", "");
@@ -45,7 +48,7 @@ export async function POST(req) {
     const user = await getUser(req);
     if (!user) return NextResponse.json({ streak: 0 });
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = istDateStr();
 
     const { data } = await supabase
       .from("study_streaks")
@@ -64,9 +67,7 @@ export async function POST(req) {
     }
 
     const lastDate = data.last_active_date;
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split("T")[0];
+    const yesterdayStr = istDateStr(Date.now() - 86_400_000);
 
     let newStreak = data.streak_count;
 

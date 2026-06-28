@@ -1,0 +1,88 @@
+diff --git a/src/app/api/payments/verify/route.js b/src/app/api/payments/verify/route.js
+index c7fc82b..e70d667 100644
+--- a/src/app/api/payments/verify/route.js
++++ b/src/app/api/payments/verify/route.js
+@@ -1,5 +1,6 @@
+ import { NextResponse } from "next/server";
+ import crypto from "crypto";
++import Razorpay from "razorpay";
+ import { createClient } from "@supabase/supabase-js";
+ 
+ const supabase = createClient(
+@@ -19,7 +20,7 @@ export async function POST(req) {
+     const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+     if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+ 
+-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, plan } = await req.json();
++    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json();
+ 
+     // Verify signature
+     const expected = crypto
+@@ -31,11 +32,31 @@ export async function POST(req) {
+       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+     }
+ 
++    // F-012: derive the tier from the SERVER-SET Razorpay order notes, never from the
++    // client. The signature only covers order|payment, so trusting a client `plan` let a
++    // user pay for a cheap order and claim an expensive tier. Also confirm the order
++    // belongs to this user.
++    const rzp = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
++    let order;
++    try {
++      order = await rzp.orders.fetch(razorpay_order_id);
++    } catch {
++      return NextResponse.json({ error: "Order not found" }, { status: 400 });
++    }
++    if (order?.notes?.userId !== user.id) {
++      return NextResponse.json({ error: "Order does not belong to this user" }, { status: 403 });
++    }
++    const plan = order?.notes?.plan;
++    if (!plan || !PLAN_DURATION[plan]) {
++      return NextResponse.json({ error: "Unknown plan on order" }, { status: 400 });
++    }
++
+     // Activate subscription
+     const expiresAt = new Date();
+     expiresAt.setDate(expiresAt.getDate() + (PLAN_DURATION[plan] || 30));
+ 
+-    await supabase.from("user_plans").upsert({
++    // F-013: never report success if the entitlement write fails (money taken, no access).
++    const { error: grantErr } = await supabase.from("user_plans").upsert({
+       user_id:    user.id,
+       plan,
+       payment_id: razorpay_payment_id,
+@@ -44,6 +65,11 @@ export async function POST(req) {
+       updated_at: new Date().toISOString(),
+     }, { onConflict: "user_id" });
+ 
++    if (grantErr) {
++      console.error("verify: entitlement upsert failed", grantErr);
++      return NextResponse.json({ error: "Payment captured but activation failed — please contact support" }, { status: 500 });
++    }
++
+     return NextResponse.json({ success: true, plan, expiresAt: expiresAt.toISOString() });
+   } catch (err) {
+     console.error("verify error:", err);
+diff --git a/src/lib/planLimits.js b/src/lib/planLimits.js
+index 6443b50..12a5035 100644
+--- a/src/lib/planLimits.js
++++ b/src/lib/planLimits.js
+@@ -36,13 +36,16 @@ export async function getUserPlan(userId, user = null) {
+ 
+   const { data } = await supabase
+     .from("user_plans")
+-    .select("plan, expires_at")
++    .select("plan, expires_at, is_trial, trial_ends_at")
+     .eq("user_id", userId)
+     .maybeSingle();
+ 
+   if (!data) return "free";
+-  // Expired subscription → downgrade to free
++  // Expired paid subscription → downgrade to free
+   if (data.expires_at && new Date(data.expires_at) < new Date()) return "free";
++  // F-005: a lapsed trial must also drop to free — trials set trial_ends_at but never
++  // expires_at, so without this an expired trial kept Pro entitlements forever.
++  if (data.is_trial && data.trial_ends_at && new Date(data.trial_ends_at) < new Date()) return "free";
+   return data.plan || "free";
+ }
+ 

@@ -74,6 +74,9 @@ const APPLY_ORDER = [
   //     user_plans.expires_at/order_id, conversations.messages, documents bucket).
   "supabase/migrations/20260628000002_reconcile_prod_drift.sql",
 
+  // 6c. F-015: add fsrs_learning_steps so SRS cards graduate learning->review.
+  "supabase/migrations/20260628000003_fsrs_learning_steps.sql",
+
   // 7. Manual patches: objects the app uses that live ONLY in prod, not in git
   //    (conversations.messages, documents/recaps buckets, get_active_briefing_users,
   //     anonymise_profile's missing columns). See STAGING_SETUP.md §"Manual patches".

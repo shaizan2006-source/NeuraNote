@@ -3,10 +3,10 @@
 Format: ID · Severity · Area · What's wrong · Repro · Expected vs Actual · Fix · Status.
 Severity: S0 blocker · S1 critical · S2 major · S3 minor · S4 polish.
 
-**Counts:** S0 **0** · S1 **5** · S2 **3** · S3 **10**.  **Fixed & verified: 9** (F-001/2/3/4/5/11/12/13/14) · **Open: 8** (F-007/8/9/10/15/16/17/18) · **Addressed: F-006**.
+**Counts:** S0 **0** · S1 **5** (ALL fixed) · S2 **4** · S3 **11**.  **Fixed & verified: 10** (F-001/2/3/4/5/11/12/13/14/15) · **Open: 9** (S2: F-007/8/20 · S3: F-009/10/16/17/18/19) · **Addressed: F-006**.
 (Phase 1: F-005 escalated S2→S1 then FIXED+verified; F-012/13/14 from money-path; F-015 from FSRS; F-016/17/18 from FSRS/routing.)
 
-**Verified CORRECT (no finding):** mock-test scoring (TV-7) all 5 submission types — `tests/staging/phase1-core.mjs`. Razorpay webhook signature-rejection + idempotency. **Auth/routing — 12/12 on mobile+desktop** (`tests/e2e/phase1-auth-routing.spec.js`): real 404s (unknown URL + invalid `/pyqs/<slug>`), logged-out `/dashboard`/`/sage` redirect to `/login` with no authed-content leak, `/ask-ai`+`/chat` → `/sage` (308), login works, deep-link + back/forward intact. FSRS: rating ordering (again<hard<good<easy), persistence, and **no IST/UTC *scheduling* bug** (due uses absolute instants) all correct. (Minor: `mock_tests.total_marks` is static config regardless of actual PYQ count — cosmetic.)
+**Verified CORRECT (no finding):** mock-test scoring (TV-7) all 5 submission types — `tests/staging/phase1-core.mjs`. Razorpay webhook signature-rejection + idempotency. **Auth/routing — 12/12 on mobile+desktop** (`tests/e2e/phase1-auth-routing.spec.js`): real 404s (unknown URL + invalid `/pyqs/<slug>`), logged-out `/dashboard`/`/sage` redirect to `/login` with no authed-content leak, `/ask-ai`+`/chat` → `/sage` (308), login works, deep-link + back/forward intact. FSRS: rating ordering (again<hard<good<easy), persistence, **no IST/UTC *scheduling* bug**, and (after the F-015 fix) graduation + interval growth + lapse/relearning all correct (`tests/staging/phase1-fsrs.mjs` 29/29). **Gamification streak math** correct: consecutive +1, gap→1, same-day idempotent, never negative/NaN (`tests/staging/phase1-lighter.mjs`). **Photo Doubt** per-day rate-limit (429) + missing-image (400) handled. **Brain Map** + **today's briefing** endpoints respond without 500. (Minor: `mock_tests.total_marks` is static config regardless of actual PYQ count — cosmetic.)
 
 **Money-path test result (staging, Razorpay test mode): 10/10 pass after fixes.** create-order (server-priced), verify (signature-checked, tier bound to order, error-checked), webhook (signature rejection + idempotent replay) all verified. Harness: `tests/staging/phase1-money.mjs`.
 
@@ -38,12 +38,21 @@ Method note: found by rebuilding the schema **from git** on an isolated staging 
 **Fix:** verify now checks the upsert error and returns 500 (with a support message) if the grant write fails — matching the webhook's behavior.
 **Status:** **FIXED** + verified.
 
-## F-015 · **S1** · FSRS / spaced repetition doesn't space  ⛔ OPEN (confirmed)
+## F-015 · **S1** · FSRS / spaced repetition doesn't space  ✅ FIXED + verified
 **What's wrong:** cards never graduate `learning → review`, so the interval is **frozen at the ~10-minute learning step forever** for `again`/`hard`/`good` reviews (only `easy`, which jumps straight to `review`, ever produces a multi-day interval). `src/lib/fsrs/scheduler.js` (`scheduleReview`, ts-fsrs) neither **persists** nor **reconstructs** the ts-fsrs `learning_steps` cursor, so every review resets the step to 0 and re-applies the first learning step.
 **Repro (live, staging):** ensure a `mastery_topics` row with `topic == card.concept_id` so `/api/cards/[id]/review` invokes the scheduler; POST `review {rating:'good'}` repeatedly (on-time). Re-read `spaced_repetition_cards`. Harness: `tests/staging/phase1-fsrs.mjs`.
 **Expected vs actual:** on-time `good` reviews grow the interval (in-process ts-fsrs control: `[0,2,11,46,163,498]` days, state→`review`). Actual via the endpoint: `interval_days=[0,0,0,0,0]`, `fsrs_stability` frozen `2.307`, `fsrs_state='learning'` ×5 — card re-shown every ~10 min, lapses never counted, relearning never triggered, and the `fsrs-due-reminder` cron (filters `fsrs_state='review'`) never fires for these cards. **Core spaced-repetition value is broken.**
 **Proposed fix (isolation-verified by the test):** in `scheduler.js` (1) add `spaced_repetition_cards.fsrs_learning_steps INT` and write `next.learning_steps` in the update; (2) set `learning_steps: card.fsrs_learning_steps ?? 0` when building the fsrsCard before `f.next()`. (Verified: with the cursor preserved, `good#2` graduates to `review` with a 2-day interval.) Alternatively set empty learning/relearning steps in `generatorParameters` so cards graduate on first `good`.
-**Status:** OPEN — **a scheduler-algorithm + schema change; flagged for your decision, not auto-applied.** Likely affects prod (FSRS is live).
+**Fix applied:** `scheduler.js` now reconstructs `learning_steps` from `card.fsrs_learning_steps` before `f.next()` and persists `next.learning_steps`; new migration `20260628000003_fsrs_learning_steps.sql` adds the column. **Verified live (29/29):** repeated `good` → intervals `[0,2,11,45,171]`d, state graduates `learning→review` on the 2nd review; lapse resets `171d→0d`, `lapses 0→1`, `state→relearning`.
+**Status:** **FIXED + verified.** Deploy with the scheduler change + the new migration.
+
+## F-020 · S2 · Photo Doubt Cam / no file type or size validation (TV-8)  ⛔ OPEN
+`POST /api/photo-doubt` ([route.js:36-52](../../src/app/api/photo-doubt/route.js#L36)) takes the `image` form field with **no MIME allowlist and no size cap** before uploading to storage and sending to OpenAI vision (gpt-4o). A non-image or very large file is uploaded + sent to the model — a **cost/DoS abuse vector**; the only guard is the per-day count (free 3 / student 20 / pro ∞). **Verified:** limit returns 429; missing image returns 400; but type/size are unchecked.
+**Fix:** validate `file.type ∈ {image/jpeg,png,webp}` and reject `file.size > ~10MB` before upload/vision.
+**Status:** OPEN. (Storage bucket cap is 10MB but the route accepts the buffer + calls vision before that matters.)
+
+## F-019 · S3 · Gamification / streak day-boundary uses UTC not IST  ⛔ OPEN
+`/api/streak` ([route.js:48,69](../../src/app/api/streak/route.js#L48)) computes "today"/"yesterday" via `new Date().toISOString()` (UTC). Indian users' day rolls at 05:30 IST, so studying 00:00–05:30 IST counts toward the previous UTC day → streaks can break or mis-increment near the boundary. **Streak math itself is correct** (consecutive +1, gap→1, same-day idempotent, never negative/NaN — verified). Fix: compute the date in `Asia/Kolkata`. Low priority. (Same IST-date class as F-016; the briefings/streak-eval crons should be audited for the same pattern.)
 
 ## F-016 · S3 · FSRS / `days_overdue` UTC truncation  ⛔ OPEN
 `sr_next_due()` computes `days_overdue = now()::date - fsrs_due::date` in the DB session tz (UTC) — a cosmetic off-by-one "days overdue" label for IST users near midnight. **Scheduling is unaffected** (due selection uses `fsrs_due <= now()`). Fix: truncate `AT TIME ZONE 'Asia/Kolkata'`. Low priority.

@@ -77,6 +77,10 @@ const APPLY_ORDER = [
   // 6c. F-015: add fsrs_learning_steps so SRS cards graduate learning->review.
   "supabase/migrations/20260628000003_fsrs_learning_steps.sql",
 
+  // 6d. F-021..F-024: enable RLS on the 6 tables that shipped RLS-off (payment_orders
+  //     S0 cross-user read/forge/tamper, family_invites, waitlist/lead PII, etc.).
+  "supabase/migrations/20260629000001_enable_rls_open_tables.sql",
+
   // 7. Manual patches: objects the app uses that live ONLY in prod, not in git
   //    (conversations.messages, documents/recaps buckets, get_active_briefing_users,
   //     anonymise_profile's missing columns). See STAGING_SETUP.md §"Manual patches".

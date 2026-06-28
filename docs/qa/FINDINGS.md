@@ -3,7 +3,9 @@
 Format: ID · Severity · Area · What's wrong · Repro · Expected vs Actual · Fix · Status.
 Severity: S0 blocker · S1 critical · S2 major · S3 minor · S4 polish.
 
-**Counts:** S0 **0** · S1 **5** (ALL fixed) · S2 **4** · S3 **11**.  **Fixed & verified: 10** (F-001/2/3/4/5/11/12/13/14/15) · **Open: 9** (S2: F-007/8/20 · S3: F-009/10/16/17/18/19) · **Addressed: F-006**.
+**Counts:** S0 **1** (fixed) · S1 **7** (ALL fixed) · S2 **7** · S3 **11**.  **Fixed & verified: 14** (F-001/2/3/4/5/11/12/13/14/15/21/22/23/24) · **Open: 11** (S2: F-007/8/20/25/26 · S3: F-009/10/16/17/18/19) · **Addressed: F-006**.
+
+**Phase 3 RLS isolation (the #1 risk):** probed ~40 user-data tables table-by-table with two real user tokens directly against PostgREST. **39 tables correctly isolated** (identity, content, learning-graph, activity/notifications — read/insert/update all denied cross-user). The **6 RLS-OFF tables were confirmed live cross-user leaks** (F-021 S0…F-024 S2) — now fixed by enabling RLS (`20260629000001`). Two policy bugs found: F-025 (concept_edges), F-026 (cohort_members recursion).
 (Phase 1: F-005 escalated S2→S1 then FIXED+verified; F-012/13/14 from money-path; F-015 from FSRS; F-016/17/18 from FSRS/routing.)
 
 **Verified CORRECT (no finding):** mock-test scoring (TV-7) all 5 submission types — `tests/staging/phase1-core.mjs`. Razorpay webhook signature-rejection + idempotency. **Auth/routing — 12/12 on mobile+desktop** (`tests/e2e/phase1-auth-routing.spec.js`): real 404s (unknown URL + invalid `/pyqs/<slug>`), logged-out `/dashboard`/`/sage` redirect to `/login` with no authed-content leak, `/ask-ai`+`/chat` → `/sage` (308), login works, deep-link + back/forward intact. FSRS: rating ordering (again<hard<good<easy), persistence, **no IST/UTC *scheduling* bug**, and (after the F-015 fix) graduation + interval growth + lapse/relearning all correct (`tests/staging/phase1-fsrs.mjs` 29/29). **Gamification streak math** correct: consecutive +1, gap→1, same-day idempotent, never negative/NaN (`tests/staging/phase1-lighter.mjs`). **Photo Doubt** per-day rate-limit (429) + missing-image (400) handled. **Brain Map** + **today's briefing** endpoints respond without 500. (Minor: `mock_tests.total_marks` is static config regardless of actual PYQ count — cosmetic.)
@@ -20,6 +22,28 @@ Method note: found by rebuilding the schema **from git** on an isolated staging 
 **Expected vs actual:** deleting an account scrubs PII (name/phone/region/city/exam) and removes the auth login. Actual: PII retained, auth login retained, deletion reports failure.
 **Fix:** corrected `anonymize.js` to the real schema (`email/avatar_url/phone_number/parent_phone_number/region/city/exam_date/cohort_id` + `deleted_at`); removed the dead `user_plans.billing_email` update. Verified at data layer (corrected `UPDATE`→`UPDATE 1`, rolled back).
 **Status:** **FIXED** in code. Follow-ups: full end-to-end deletion test (Phase 3 privacy); audit how many prior prod deletion requests failed and re-run them.
+
+## F-021 · **S0** · RLS / payment_orders cross-user read + forge + tamper  ✅ FIXED + verified
+**What's wrong:** `payment_orders` shipped with **RLS OFF**. Any ordinary authenticated user could read, insert, and update **other users'** payment orders directly via PostgREST.
+**Repro (live, staging):** as User A (`free@`) with A's JWT + anon key: `GET /rest/v1/payment_orders?select=*` returned User B's order; `POST` a forged order with `user_id=B` → 201; `PATCH ?order_id=eq.<B order>` `amount: 49900→1` → 200 (row changed).
+**Expected vs actual:** a user sees/affects only their own orders. Actual: full cross-user billing read + forge + tamper.
+**Fix:** `ENABLE ROW LEVEL SECURITY` + owner-only SELECT (`auth.uid()=user_id`), no user write policy (writes are service-role). Migration `20260629000001_enable_rls_open_tables.sql`. **Verified:** with a B-owned order present, A's read=`[]`, forge=`42501 RLS violation`, tamper affected 0 rows, B's amount unchanged.
+**Status:** **FIXED + verified.** ⚠️ Ships RLS-off in the migrations → **almost certainly live in prod; patch ASAP.**
+
+## F-022 · **S1** · RLS / family_invites off — invite-code leak + forgery + role escalation  ✅ FIXED
+RLS OFF. As A: read B's row incl. secret `invite_code`; forged an invite with `primary_user_id=B`; PATCHed role `member→primary`. → join another user's family plan / unauthorized plan access. **Fixed**: RLS enabled + owner SELECT (`primary_user_id`/`used_by`); writes service-role only. Verified A→0 rows. Prod likely affected.
+
+## F-023 · **S1** · RLS / lead + waitlist PII exposed (coaching_institute_pilots, waitlist_emails)  ✅ FIXED
+RLS OFF, no `user_id`. Any logged-in user could read/scrape + inject business-lead contact PII (emails/phones) and the waitlist email list. **Fixed**: RLS enabled, **no anon/authenticated policy** (service-role only — `/api/waitlist` writes via service-role, so signup still works). Verified A→0 rows. Prod likely affected.
+
+## F-024 · S2 · RLS / cancellation_reasons + decompression_triggers off — cross-user read/overwrite  ✅ FIXED
+RLS OFF. As A: read + overwrote B's cancellation feedback and behavioral/wellbeing data. **Fixed**: RLS enabled + owner SELECT (`user_id`); writes service-role. Verified A→0 rows.
+
+## F-025 · S2 · RLS / concept_edges INSERT doesn't validate `to_id` ownership  ⛔ OPEN
+The `concept_edges` owner policy checks `from_id`'s concept ownership but not `to_id`, so a user can create an edge pointing at **another user's** concept (dangling cross-user reference). No data leak (reads still scoped), but an integrity hole. Fix: validate both `from_id` and `to_id` belong to `auth.uid()` in the policy. Low priority.
+
+## F-026 · S2 · RLS / cohort_members policy infinite recursion (feature broken)  ⛔ OPEN
+The `cohort_members` SELECT policy is self-referential (`cohort_id IN (SELECT cohort_id FROM cohort_members WHERE user_id=auth.uid())`) → Postgres `42P17 infinite recursion`, so **any authenticated SELECT on `cohort_members` errors** — the cohort/leaderboard feature is broken for logged-in users reading it directly (server snapshots via service-role still work). Fix: make it non-recursive — either `user_id = auth.uid()` (own membership) or a `SECURITY DEFINER` helper returning the caller's cohort_ids. Needs a product call on co-member visibility, so not auto-applied.
 
 ## F-014 · **S1** · Payments / create-order crashes  ✅ FIXED
 **What's wrong:** `POST /api/payments/create-order` returned **500 on every call** — `supabaseAdmin.from("payment_orders").upsert(...).catch(...)` ([create-order.js:62](../../src/app/api/payments/create-order/route.js#L62)); the supabase-js builder is a thenable, not a Promise, so `.catch` is not a function → `TypeError`. **No checkout could start.**

@@ -19,7 +19,7 @@ export async function POST(req) {
     const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
     if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, plan } = await req.json();
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json();
 
     // Verify signature
     const expected = crypto
@@ -31,11 +31,25 @@ export async function POST(req) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
-    // Activate subscription
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + (PLAN_DURATION[plan] || 30));
+    // F-012 fix: derive the granted tier from the SERVER-STORED order, never from the
+    // client. The signature only covers order|payment, so trusting a client `plan` let
+    // a user pay for a cheap order and claim an expensive tier. Bind plan to the order.
+    const { data: orderRow } = await supabase
+      .from("payment_orders")
+      .select("tier, cycle, user_id")
+      .eq("order_id", razorpay_order_id)
+      .maybeSingle();
 
-    await supabase.from("user_plans").upsert({
+    if (!orderRow || orderRow.user_id !== user.id) {
+      return NextResponse.json({ error: "Order not found for this user" }, { status: 400 });
+    }
+
+    const plan = orderRow.tier;
+    const cycle = orderRow.cycle || "monthly";
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + (cycle === "yearly" ? 365 : (PLAN_DURATION[plan] || 30)));
+
+    const { error: grantErr } = await supabase.from("user_plans").upsert({
       user_id:    user.id,
       plan,
       payment_id: razorpay_payment_id,
@@ -43,6 +57,13 @@ export async function POST(req) {
       expires_at: expiresAt.toISOString(),
       updated_at: new Date().toISOString(),
     }, { onConflict: "user_id" });
+
+    // Never report success if the entitlement write failed — otherwise the user is
+    // told their payment worked while no access is granted ("money taken, no access").
+    if (grantErr) {
+      console.error("verify: entitlement upsert failed", grantErr);
+      return NextResponse.json({ error: "Payment captured but activation failed — please contact support" }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true, plan, expiresAt: expiresAt.toISOString() });
   } catch (err) {

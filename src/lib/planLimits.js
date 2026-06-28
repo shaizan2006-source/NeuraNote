@@ -1,10 +1,12 @@
 /**
  * Plan limits + enforcement helpers
  * Free    : 1 PDF, 20 Q&A/day
- * Student : 10 PDFs, unlimited Q&A
- * Pro     : unlimited PDFs, unlimited Q&A
- * School  : unlimited everything (managed separately)
+ * Student : 10 PDFs, unlimited Q&A  (₹199/mo · ₹1,599/yr)
+ * Pro     : unlimited PDFs & Q&A    (₹399/mo · ₹2,999/yr)
+ * Family  : unlimited PDFs & Q&A    (₹4,499/yr — up to 5 seats)
+ * School  : unlimited everything    (B2B — negotiated separately)
  *
+ * Prices are derived from pricing.js — do NOT hardcode amounts here.
  * Internal developer accounts bypass all limits — see internalAccess.js.
  * Pass the `user` object (from supabase.auth.getUser) to any check function
  * to enable the bypass path without an extra DB query.
@@ -12,17 +14,24 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { isInternalDev, DEV_ALLOWED, DEV_PLAN } from "@/lib/internalAccess";
+import { PRICING_AMOUNTS } from "@/lib/pricing";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// Convert paise → INR for display / comparison purposes.
+// pricing.js is the single source of truth for all monetary values.
+const inr = (paise) => Math.round(paise / 100);
+
 export const PLANS = {
-  free:    { name: "Free",    pdfLimit: 1,         qaLimit: 20,  price: 0 },
-  student: { name: "Student", pdfLimit: 10,        qaLimit: null, price: 299 },
-  pro:     { name: "Pro",     pdfLimit: null,       qaLimit: null, price: 599 },
-  school:  { name: "School",  pdfLimit: null,       qaLimit: null, price: 50000 },
+  free:    { name: "Free",     pdfLimit: 1,    qaLimit: 20,   monthlyPrice: 0,                                          yearlyPrice: 0 },
+  student: { name: "Student",  pdfLimit: 10,   qaLimit: null, monthlyPrice: inr(PRICING_AMOUNTS.student.monthly),       yearlyPrice: inr(PRICING_AMOUNTS.student.yearly) },
+  pro:     { name: "Pro",      pdfLimit: null, qaLimit: null, monthlyPrice: inr(PRICING_AMOUNTS.pro.monthly),           yearlyPrice: inr(PRICING_AMOUNTS.pro.yearly) },
+  proplus: { name: "Pro+",     pdfLimit: null, qaLimit: null, monthlyPrice: inr(PRICING_AMOUNTS.proplus.monthly),       yearlyPrice: inr(PRICING_AMOUNTS.proplus.yearly) },
+  family:  { name: "Family",   pdfLimit: null, qaLimit: null, monthlyPrice: null,                                       yearlyPrice: inr(PRICING_AMOUNTS.family.yearly) },
+  school:  { name: "School",   pdfLimit: null, qaLimit: null, monthlyPrice: null,                                       yearlyPrice: null },  // B2B — negotiated separately
 };
 
 /**
@@ -36,13 +45,16 @@ export async function getUserPlan(userId, user = null) {
 
   const { data } = await supabase
     .from("user_plans")
-    .select("plan, expires_at")
+    .select("plan, expires_at, is_trial, trial_ends_at")
     .eq("user_id", userId)
     .maybeSingle();
 
   if (!data) return "free";
-  // Expired subscription → downgrade to free
+  // Expired paid subscription → downgrade to free
   if (data.expires_at && new Date(data.expires_at) < new Date()) return "free";
+  // F-005: a lapsed trial must also drop to free. Trials set trial_ends_at but never
+  // expires_at, so without this check an expired trial kept Pro entitlements forever.
+  if (data.is_trial && data.trial_ends_at && new Date(data.trial_ends_at) < new Date()) return "free";
   return data.plan || "free";
 }
 

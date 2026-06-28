@@ -25,3 +25,18 @@ ALTER TABLE public.cards         ADD COLUMN IF NOT EXISTS metadata   JSONB;
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES ('documents', 'documents', false, 52428800, ARRAY['application/pdf'])
 ON CONFLICT (id) DO NOTHING;
+
+-- F-006: user_plans / study_streaks have no UNIQUE(user_id) in git, yet the app
+-- upserts onConflict:user_id (payments, streaks). Prod must have it (payments work);
+-- without it, payment grants fail (webhook 500; verify silently no-ops). Guarded so
+-- this is a no-op where a unique constraint on the table already exists.
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='public.user_plans'::regclass AND contype='u') THEN
+    ALTER TABLE public.user_plans ADD CONSTRAINT user_plans_user_id_key UNIQUE (user_id);
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='public.study_streaks'::regclass AND contype='u') THEN
+    ALTER TABLE public.study_streaks ADD CONSTRAINT study_streaks_user_id_key UNIQUE (user_id);
+  END IF;
+END $$;

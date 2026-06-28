@@ -3,7 +3,12 @@
 Format: ID · Severity · Area · What's wrong · Repro · Expected vs Actual · Fix · Status.
 Severity: S0 blocker · S1 critical · S2 major · S3 minor · S4 polish.
 
-**Counts (Phase 0):** S0 **0** · S1 **1** · S2 **3** · S3 **7**.  **Fixed & verified: 5** (F-001/2/3/4/11) · **Open: 6** (F-005/6/7/8/9/10).
+**Counts:** S0 **0** · S1 **4** · S2 **3** · S3 **7**.  **Fixed & verified: 9** (F-001/2/3/4/5/11/12/13/14) · **Open: 4** (F-007/8/9/10) · **Addressed: F-006**.
+(Phase 1: F-005 escalated S2→S1 then FIXED+verified; F-012/F-013/F-014 added from money-path testing.)
+
+**Verified CORRECT (no finding):** mock-test scoring (TV-7) across all-correct/all-wrong/partial/skipped/timed-out — `tests/staging/phase1-core.mjs` 5/5. Razorpay webhook signature-rejection + idempotency. (Minor note: `mock_tests.total_marks` is the static exam config (e.g. 300) regardless of how many PYQs actually seed the paper — percentage skews if the bank is under-filled; cosmetic.)
+
+**Money-path test result (staging, Razorpay test mode): 10/10 pass after fixes.** create-order (server-priced), verify (signature-checked, tier bound to order, error-checked), webhook (signature rejection + idempotent replay) all verified. Harness: `tests/staging/phase1-money.mjs`.
 
 Method note: found by rebuilding the schema **from git** on an isolated staging project, exercising it, and a **read-only prod schema introspection** (catalog only, no customer data, 2026-06-28). Prod truth let me finalize severities — most "drift" items don't affect prod today.
 
@@ -16,11 +21,39 @@ Method note: found by rebuilding the schema **from git** on an isolated staging 
 **Fix:** corrected `anonymize.js` to the real schema (`email/avatar_url/phone_number/parent_phone_number/region/city/exam_date/cohort_id` + `deleted_at`); removed the dead `user_plans.billing_email` update. Verified at data layer (corrected `UPDATE`→`UPDATE 1`, rolled back).
 **Status:** **FIXED** in code. Follow-ups: full end-to-end deletion test (Phase 3 privacy); audit how many prior prod deletion requests failed and re-run them.
 
-## F-005 · S2 · Revenue / Trial expiry  ⛔ OPEN
-**What's wrong:** `getUserPlan()` ([planLimits.js:48,54](../../src/lib/planLimits.js#L48)) downgrades only on `expires_at < now`; it ignores `is_trial`/`trial_ends_at`. A lapsed trial (`trial_ends_at` past, `expires_at` NULL) keeps its `plan` (pro).
-**Repro:** `expired@staging` persona: `plan=pro, is_trial=t, trial_ends=2026-06-23 (past), expires_at=NULL` → `getUserPlan` returns `pro` → full Pro after trial end.
-**Fix (proposed):** treat `is_trial && trial_ends_at < now` as expired→`free` in `getUserPlan`, OR ensure a trial-expiry cron writes `expires_at`/downgrades `plan`.
-**Status:** OPEN. **Phase 1:** confirm whether a cron compensates; if not → revenue leak (paid features free post-trial). Same logic runs in prod.
+## F-014 · **S1** · Payments / create-order crashes  ✅ FIXED
+**What's wrong:** `POST /api/payments/create-order` returned **500 on every call** — `supabaseAdmin.from("payment_orders").upsert(...).catch(...)` ([create-order.js:62](../../src/app/api/payments/create-order/route.js#L62)); the supabase-js builder is a thenable, not a Promise, so `.catch` is not a function → `TypeError`. **No checkout could start.**
+**Repro:** `POST /api/payments/create-order {plan:"student"}` → 500; server log `create-order error: TypeError: ...upsert(...).catch is not a function`.
+**Fix:** `await` the upsert and check the returned `error` (no `.catch`). Verified: create-order → 200, amount 19900. (Likely undeployed working-tree WIP given the repo's uncommitted state — must not ship.)
+**Status:** **FIXED** + verified.
+
+## F-012 · **S1** · Payments / tier-escalation (verify trusts client plan)  ✅ FIXED
+**What's wrong:** `POST /api/payments/verify` granted the **client-supplied `plan`**; the Razorpay signature only covers `order_id|payment_id` ([verify.js:27](../../src/app/api/payments/verify/route.js#L27)), not the tier. A user could pay for a **student (₹199)** order then call verify with `plan:"family"` (₹4,499) using the legit signature → get the expensive tier for the cheap price.
+**Repro (live, staging):** create student order → verify with valid signature + `plan:"family"` → `user_plans.plan` became `family`. Confirmed by `phase1-money.mjs`.
+**Fix:** verify now derives the tier from the **server-stored order** (`payment_orders.tier` by `razorpay_order_id`, with `user_id` match) and ignores the client `plan`. Verified: escalation attempt now grants `student` (the paid tier).
+**Status:** **FIXED** + verified. (Webhook was already safe — derives plan from server-set `notes.plan`.)
+
+## F-013 · S2 · Payments / verify false-success  ✅ FIXED
+**What's wrong:** `verify` ignored the entitlement upsert error and returned `{success:true}` even when the write failed → **"payment captured, access not granted"** with the user told it succeeded. Manifested on staging (the upsert failed on the missing constraint, F-006, yet verify reported success).
+**Fix:** verify now checks the upsert error and returns 500 (with a support message) if the grant write fails — matching the webhook's behavior.
+**Status:** **FIXED** + verified.
+
+## F-005 · **S1** · Revenue / Trial-expiry entitlement bypass  ✅ FIXED + verified
+**What's wrong:** the server-side entitlement gate `getUserPlan()` ([planLimits.js:48-55](../../src/lib/planLimits.js#L48)) downgrades **only** on `expires_at < now` and ignores `is_trial`/`trial_ends_at`. A trial row is `{plan:'pro', is_trial:true, trial_ends_at:+7d}` with **`expires_at` NULL** ([onboarding/complete:81-88](../../src/app/api/onboarding/complete/route.js#L81)). Confirmed by code search: **no cron or code path sets `expires_at` / downgrades `plan` at trial end** (`expires_at` is written only by payments + admin grants). Trial expiry is enforced **UI-only** (`TrialBanner`, `trial/decision` redirect — both client-side, bypassable).
+**Repro:** `expired@staging` persona (`plan=pro, is_trial=t, trial_ends=2026-06-23 past, expires_at=NULL`) → `getUserPlan()` returns `pro`. `canAskQuestion`/`canUploadPDF` therefore grant unlimited (Pro) access. Final live proof pending: `GET/POST /api/ask` as this persona should be free-tier-blocked but is served as Pro.
+**Expected vs actual:** after the 7-day trial, the user is downgraded to Free server-side (1 PDF, 20 Q&A/day). Actual: retains **Pro (unlimited Q&A/PDFs + Pro AI budget) indefinitely** — defeats trial→paid conversion (the product's revenue mechanism) and grants ongoing AI cost to non-payers (capped only by `AI_BUDGET_PRO_USD`/mo).
+**Fix (proposed, smallest):** in `getUserPlan`, also expire trials —
+```js
+const { data } = await supabase.from("user_plans")
+  .select("plan, expires_at, is_trial, trial_ends_at").eq("user_id", userId).maybeSingle();
+if (!data) return "free";
+if (data.expires_at && new Date(data.expires_at) < new Date()) return "free";
+if (data.is_trial && data.trial_ends_at && new Date(data.trial_ends_at) < new Date()) return "free";
+return data.plan || "free";
+```
+(Alternatively/additionally, a daily cron that downgrades lapsed trials.)
+**Fix applied:** `getUserPlan` now also returns `free` when `is_trial && trial_ends_at < now`. **Verified live:** expired persona at the free cap → `/api/ask` 403 "Free plan allows 20 questions per day" (treated as free, not pro).
+**Status:** **FIXED + verified.** Deploy this with the others; consider also backfilling/auditing trials that lapsed under the old logic.
 
 ## F-007 · S2 · Migrations / DR  🔶 PARTIALLY ADDRESSED
 **What's wrong:** schema not reproducible from git in one clean pass: dead `20260504120000_add_theme_preference.sql` (ALTERs non-existent `user_profiles` → ERROR); root `supabase/{migrations,voice_migration,quickchat_migration,concept_graph_migration}.sql` conflict with the timestamped set; many `CREATE POLICY`/`ADD CONSTRAINT`/`ALTER PUBLICATION` lack `IF NOT EXISTS` (not re-run-idempotent); plus the drift in F-001/2/3/4.
@@ -46,10 +79,10 @@ Method note: found by rebuilding the schema **from git** on an isolated staging 
 ## F-004 · S3 (was potential S1) · FSRS / cards.due  ✅ FIXED
 `GET /api/cards/due` 500'd because it selects `cards.metadata`, absent from the git `cards` table. **Prod HAS `cards.metadata`** → prod works; the break was staging/from-git only. **Fixed** via reconcile migration (`cards.metadata jsonb`); **verified `/api/cards/due` → HTTP 200 `{"cards":[]}`**, other 4 baseline APIs still 200.
 
-## F-006 · S3 · DB integrity / idempotency  ⛔ OPEN
-No `UNIQUE(user_id)` on `user_plans` or `study_streaks` (only PK on `id`); app `.upsert()`s these and `getUserPlan` uses `.maybeSingle()` → duplicates possible → `maybeSingle` errors; payment upserts may not dedupe.
-**Fix (proposed):** add `UNIQUE(user_id)` and use as upsert target (after de-duping existing rows).
-**Status:** OPEN. Prod constraints **UNVERIFIED** over REST — needs prod DB connection or Phase-3 check.
+## F-006 · S3 (drift, load-bearing) · DB integrity / idempotency  ✅ ADDRESSED
+No `UNIQUE(user_id)` on `user_plans`/`study_streaks` in git (only PK on `id`), yet the app upserts `onConflict:user_id` (payments, streaks) and `getUserPlan` uses `.maybeSingle()`. On staging this caused **total payment-grant failure** (webhook 500; verify false-success — see F-013). Prod has paying users, so prod has the constraint (drift). 
+**Fix:** guarded `UNIQUE(user_id)` add folded into `20260628000002_reconcile_prod_drift.sql` (no-op where it already exists) + applied to staging. Money path then passed 10/10.
+**Status:** ADDRESSED (staging + migration). Confirm prod's constraint name/state when convenient.
 
 ## F-009 · S3 · Briefings / dead RPC  ⛔ OPEN
 `get_active_briefing_users(min_streak,min_session_date)` is called by [briefings/generator.js:135](../../src/lib/briefings/generator.js#L135) but **missing in prod** → the `.catch()` fallback (streak≥1, cap 500) runs instead of the intended "streak≥3 OR recent session". Briefings target a broader set than designed (possible extra TTS cost).

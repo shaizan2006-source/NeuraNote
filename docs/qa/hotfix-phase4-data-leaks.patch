@@ -47,6 +47,62 @@ index 84a02155..58dda3e5 100644
      });
  
    } catch (error) {
+diff --git a/src/app/api/generate-document/route.js b/src/app/api/generate-document/route.js
+index d73e6390..cc2466d0 100644
+--- a/src/app/api/generate-document/route.js
++++ b/src/app/api/generate-document/route.js
+@@ -379,10 +379,20 @@ function StudyDoc({ title, date, bodyElements }) {
+ // ── Route handler ─────────────────────────────────────────────────────
+ export async function POST(req) {
+   try {
++    // F-037: was fully unauthenticated — anyone could trigger CPU-heavy PDF rendering +
++    // a storage upload. Require a valid JWT and cap input size.
++    const token = req.headers.get("authorization")?.replace("Bearer ", "");
++    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
++    const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
++    if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
++
+     const { content, type, filename } = await req.json();
+     if (!content || type !== "pdf") {
+       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+     }
++    if (typeof content !== "string" || content.length > 100_000) {
++      return NextResponse.json({ error: "Content too large" }, { status: 413 });
++    }
+ 
+     // Clean and deduplicate markdown
+     const cleaned = cleanContent(content);
+diff --git a/src/app/api/generate-quiz/route.js b/src/app/api/generate-quiz/route.js
+index 24dfe9e7..4785a557 100644
+--- a/src/app/api/generate-quiz/route.js
++++ b/src/app/api/generate-quiz/route.js
+@@ -14,17 +14,15 @@ const supabase = createClient(
+ export async function POST(req) {
+   try {
+     // ========================
+-    // 1. Get User ID (SAFE)
+-    // ========================
+-    let body = {};
+-    try {
+-      body = await req.json();
+-    } catch {}
+-
+-    const userId = body.userId;
+-    if (!userId) {
+-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+-    }
++    // 1. Get User ID (from the verified JWT — NEVER the client body)
++    // ========================
++    // F-036: previously userId came straight from body.userId with no auth, so any caller
++    // could trigger OpenAI quiz generation (cost) and read/write any user's data (IDOR).
++    const token = req.headers.get("authorization")?.replace("Bearer ", "");
++    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
++    const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
++    if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
++    const userId = user.id;
+ 
+     // ========================
+     // 2. Fetch Weak Topics
 diff --git a/src/app/api/get-pdfs/route.js b/src/app/api/get-pdfs/route.js
 index 2ad81e01..52a8cbdb 100644
 --- a/src/app/api/get-pdfs/route.js
@@ -114,8 +170,40 @@ index 22294c0b..647c7748 100644
        });
  
        const data = await res.json();
+diff --git a/src/components/dashboard/AskAISection.jsx b/src/components/dashboard/AskAISection.jsx
+index ad65133c..fbd44fc9 100644
+--- a/src/components/dashboard/AskAISection.jsx
++++ b/src/components/dashboard/AskAISection.jsx
+@@ -9,6 +9,12 @@ import StructuredAnswer from "@/components/answer/StructuredAnswer";
+ import DynamicGreeting from "@/components/dashboard/DynamicGreeting";
+ import { saveChat, loadChat, clearChat } from "@/lib/chatStorage";
+ import ModeSwitcher from "@/components/AskAI/ModeSwitcher";
++import { createClient } from "@supabase/supabase-js";
++
++const supabase = createClient(
++  process.env.NEXT_PUBLIC_SUPABASE_URL,
++  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
++);
+ 
+ function hashQuestion(text) {
+   let h = 0;
+@@ -1004,9 +1010,13 @@ export default function AskAISection({ fullPage = false, conversationId = null }
+     if (!text || isExporting) return;
+     setIsExporting(true);
+     try {
++      const { data: { session } } = await supabase.auth.getSession();
+       const res = await fetch("/api/generate-document", {
+         method:  "POST",
+-        headers: { "Content-Type": "application/json" },
++        headers: {
++          "Content-Type": "application/json",
++          Authorization: `Bearer ${session?.access_token ?? ""}`,
++        },
+         body:    JSON.stringify({ content: text, type: "pdf", filename: `notes-${Date.now()}` }),
+       });
+       const data = await res.json();
 diff --git a/src/context/DashboardContext.jsx b/src/context/DashboardContext.jsx
-index 4b4319d1..27765df6 100644
+index 4b4319d1..d7997f20 100644
 --- a/src/context/DashboardContext.jsx
 +++ b/src/context/DashboardContext.jsx
 @@ -755,7 +755,11 @@ export function DashboardProvider({ children }) {
@@ -131,3 +219,78 @@ index 4b4319d1..27765df6 100644
        const data = await res.json();
        setSavedPDFs(Array.isArray(data) ? data : []);
      } catch (err) {
+@@ -895,8 +899,11 @@ export function DashboardProvider({ children }) {
+       if (!session?.user) { alert("User not logged in"); return; }
+       const res = await fetch("/api/generate-quiz", {
+         method: "POST",
+-        headers: { "Content-Type": "application/json" },
+-        body: JSON.stringify({ userId: session.user.id }),
++        headers: {
++          "Content-Type": "application/json",
++          Authorization: `Bearer ${session.access_token}`,
++        },
++        body: JSON.stringify({}),
+       });
+       const data = await res.json();
+       if (!res.ok) throw new Error(data.error || "Failed to generate quiz");
+@@ -919,8 +926,11 @@ export function DashboardProvider({ children }) {
+       if (!session?.user) { alert("User not logged in"); return; }
+       const res = await fetch("/api/generate-quiz", {
+         method: "POST",
+-        headers: { "Content-Type": "application/json" },
+-        body: JSON.stringify({ userId: session.user.id }),
++        headers: {
++          "Content-Type": "application/json",
++          Authorization: `Bearer ${session.access_token}`,
++        },
++        body: JSON.stringify({}),
+       });
+       const data = await res.json();
+       if (!res.ok) throw new Error(data.error || "Failed to generate quiz");
+diff --git a/src/lib/planLimits.js b/src/lib/planLimits.js
+index 6443b50c..d82658d3 100644
+--- a/src/lib/planLimits.js
++++ b/src/lib/planLimits.js
+@@ -57,20 +57,33 @@ export async function countUserPDFs(userId) {
+ 
+ /** Count Q&A requests made today by this user. */
+ export async function countTodayQA(userId) {
+-  const todayStart = new Date();
+-  todayStart.setHours(0, 0, 0, 0);
+-
+-  const { count } = await supabase
++  // F-038: qa_usage is keyed (user_id, date) with a `count` column and has NO created_at.
++  // The old `.gte("created_at", …)` filtered a non-existent column → query error → count 0
++  // → the free 20/day cap NEVER enforced (unlimited free Q&A = OpenAI cost leak).
++  const today = new Date().toISOString().slice(0, 10); // matches qa_usage.date (DATE, default CURRENT_DATE)
++  const { data } = await supabase
+     .from("qa_usage")
+-    .select("id", { count: "exact", head: true })
++    .select("count")
+     .eq("user_id", userId)
+-    .gte("created_at", todayStart.toISOString());
+-  return count || 0;
++    .eq("date", today)
++    .maybeSingle();
++  return data?.count || 0;
+ }
+ 
+-/** Record one Q&A usage event. */
++/** Record one Q&A usage event — increments today's per-user counter (one row per user/day). */
+ export async function recordQAUsage(userId) {
+-  const { error } = await supabase.from("qa_usage").insert({ user_id: userId });
++  // Was `.insert({ user_id })`: ignored the `count`/`date` design and collided on the
++  // UNIQUE(user_id, date) constraint after the first call of the day.
++  const today = new Date().toISOString().slice(0, 10);
++  const { data } = await supabase
++    .from("qa_usage")
++    .select("count")
++    .eq("user_id", userId)
++    .eq("date", today)
++    .maybeSingle();
++  const { error } = await supabase
++    .from("qa_usage")
++    .upsert({ user_id: userId, date: today, count: (data?.count || 0) + 1 }, { onConflict: "user_id,date" });
+   if (error) console.error("recordQAUsage failed:", error.message);
+ }
+ 

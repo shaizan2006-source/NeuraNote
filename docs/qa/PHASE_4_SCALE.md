@@ -34,26 +34,27 @@ client call sites (`chat/page.js`) send the token. → same patch.
 > undeployed and stranded behind the release-hygiene problem (F-007). The patch above is a
 > minimal, deployable-now version off `origin/main` that doesn't wait on the WIP.
 
-### F-036 · S1 · `/api/generate-quiz` — spoofable `userId` from body  🔶 FIX SPECIFIED
-`POST` reads `body.userId` (line 24) with no JWT → anyone can trigger OpenAI quiz
-generation for any user (unauth cost + IDOR write). **Fix:** `verifyAuth(req)`, derive
-userId from the token; add rate limiting. (WIP fixes this; not in the patch above to keep
-it scoped to the S0 leaks — apply alongside.)
+### F-036 · S1 · `/api/generate-quiz` — spoofable `userId` from body  ✅ FIX READY (in patch)
+`POST` read `body.userId` (line 24) with no JWT → anyone could trigger OpenAI quiz
+generation for any user (unauth cost + IDOR write). **Fixed** in `hotfix-phase4-data-leaks.patch`:
+derive userId from the verified JWT; both client callers (`DashboardContext`) send the token.
 
-### F-037 · S1 · `/api/generate-document` — fully unauthenticated + CPU-heavy  🔶 FIX SPECIFIED
-`POST` renders markdown→PDF (react-pdf) + storage upload with **no auth** (LIVE in prod AND
-WIP). Anonymous CPU/storage cost amplification. **Fix:** require auth, cap content length
-(≤100KB), rate-limit; for the internal `/api/ask` caller, call the renderer directly instead
-of round-tripping the public endpoint.
+### F-037 · S1 · `/api/generate-document` — fully unauthenticated + CPU-heavy  ✅ FIX READY (in patch)
+`POST` rendered markdown→PDF (react-pdf) + storage upload with **no auth**. Anonymous
+CPU/storage cost amplification. **Fixed** in the patch: require a valid JWT + cap content at
+100KB (413); client (`AskAISection`) now sends the token (a Supabase client was added there).
+*Future: rate-limit via `middleware.js` (F-040); call the renderer directly from the internal `/api/ask` path instead of round-tripping the public endpoint.*
 
-### F-038 · S1 · Free-tier Q&A cap never enforces (broken column)  🔶 FIX SPECIFIED
-`planLimits.countTodayQA` filters `.gte("created_at", …)` but `qa_usage` has **no
-`created_at`** (it's `id, user_id, date, count`) → the query errors → count 0 → the **20/day
-free cap never applies** (free users get unlimited Q&A = direct OpenAI cost leak). Worse,
-`recordQAUsage` does a plain `.insert({user_id})` (ignores `count`/`date` + the
-`UNIQUE(user_id,date)`). **Fix:** `countTodayQA` → `select("count").eq("user_id",id).eq("date",today).maybeSingle()`;
-`recordQAUsage` → upsert-increment on `(user_id,date)`. *(Touches `planLimits.js`, same file
-as the entitlements hotfix — apply as a disjoint hunk.)*
+### F-038 · S1 · Free-tier Q&A cap never enforces (broken column)  ✅ FIX READY (in patch)
+`planLimits.countTodayQA` filtered `.gte("created_at", …)` but `qa_usage` has **no
+`created_at`** (it's `id, user_id, date, count`) → query error → count 0 → the **20/day free
+cap never applied** (unlimited free Q&A = OpenAI cost leak). `recordQAUsage` did a plain
+`.insert({user_id})` (wrote `count=0`, then collided on `UNIQUE(user_id,date)`). **Fixed** in
+the patch: `countTodayQA` reads the `count` column for today's `(user_id,date)` row;
+`recordQAUsage` upserts an incremented count. *NB: this also edits `planLimits.js` (like the
+entitlements patch) — disjoint hunks; use `git apply --3way` if the tree already has the
+entitlements change. Read-then-increment has a tiny race; a fully-atomic increment RPC is the
+follow-up.*
 
 ### F-039 · S1 · `document_chunks.embedding` has NO ANN index  ✅ MIGRATION READY
 The RAG path (`match_documents`/`_multi`, the hottest query) does exact cosine KNN —

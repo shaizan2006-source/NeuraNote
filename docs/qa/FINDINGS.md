@@ -3,7 +3,26 @@
 Format: ID · Severity · Area · What's wrong · Repro · Expected vs Actual · Fix · Status.
 Severity: S0 blocker · S1 critical · S2 major · S3 minor · S4 polish.
 
-**Counts:** S0 **1** · S1 **8** · S2 **8** · S3 **11** (28 findings).  **Fixed & verified: 25** · **Addressed: F-006** · **Open: 2** — **F-007** (release hygiene) + **F-028** (cron secret in client code), both S2.
+**Counts:** S0 **1** · S1 **9** · S2 **10** · S3 **13** (33 findings).  **Fixed & verified: 25** · **Addressed: F-006** · **Open: 7** — S1: **F-029** (AI cost-abuse, live); S2: F-007, F-028, F-030, F-031; S3: F-032, F-033.
+
+**Phase-3 adversarial (AI / DB-concurrency / chaos) — results:** **No data corruption, no lost writes, no hangs/white-screens, no stack-trace leaks** (except F-030), prompt-injection + system-prompt-leak **refused**, output token caps in place, the per-user AI budget breaker **fires** (429). **DB-concurrency is clean** (`tests/staging/phase3-db.mjs` 4/4): mock double-submit idempotent (sequential + concurrent), concurrent streak no over-increment, 30 concurrent requests degrade gracefully (all 200). Webhook / mock-submit / quick-chat have exemplary error handling. New findings F-029…F-033 below.
+
+## F-029 · **S1** · AI cost-abuse / unauthenticated `/api/ask` is uncapped  ⛔ OPEN
+`/api/ask` gates the QA rate-limit AND the monthly budget breaker on `userId` ([ask.js:120,132](../../src/app/api/ask/route.js#L120)); a request with **no token or an expired/invalid token** resolves `userId=null`, so **both caps are skipped and the call is served anonymously, unlimited**, billing OpenAI. An attacker can script unlimited `/api/ask` calls → direct cost runaway on your card (the engagement's S0-class "AI cost runaway"). Expired tokens also return 200 instead of 401.
+**Repro:** `POST /api/ask {question:"hi"}` with no Authorization header (or an expired JWT) → 200 streamed answer, no `qa_usage`/spend rows, breaker never consulted.
+**Fix:** if a token is present but unresolved → 401. For genuinely-anonymous demo use (if intended), add a per-IP rate limit + a global anonymous daily budget; otherwise require auth on `/api/ask`. **Live in prod.**
+
+## F-030 · S2 · Info disclosure / `/api/upload` leaks internal error messages  ⛔ OPEN
+[upload/route.js:110](../../src/app/api/upload/route.js#L110) returns `{ error: err.message }` → raw internals to the client, e.g. `"file.arrayBuffer is not a function"`, `'Content-Type was not one of "multipart/form-data"'`. Fix: return a generic message; log details server-side.
+
+## F-031 · S2 · Error contract / several endpoints 500 on malformed input (should be 4xx)  ⛔ OPEN
+On unparseable/wrong-type input these return a raw **500** (some with an **empty body**) instead of a clean 4xx: `/api/ask` (non-string `question` → `.trim()` throws), `/api/mock-test/create` (unguarded `req.json()`), `/api/photo-doubt` (unguarded `req.formData()`; string `image` → `.arrayBuffer()` throws), `/api/payments/verify` (parse in `try`→catch-all 500), `/api/onboarding/complete` (`exam_type.match()` on a non-string). And `/api/process-pdf` returns error payloads under **HTTP 200** (misleading success). No stack leaks or data loss, but it violates the "every failure → clean 4xx JSON" bar. Fix: guard `req.json()`/`req.formData()` → 400; type-check fields; give process-pdf a real error status.
+
+## F-032 · S3 · `/api/ask` sends unbounded question length to OpenAI  ⛔ OPEN
+A ~50k–100k-char `question` is accepted and sent through classify/embeddings/completion; only the *output* is capped (and the after-the-fact budget breaker). Add an early `413` above a sane input limit (cost/latency guard).
+
+## F-033 · S3 · `/api/mock-test/create` array `exam_type` bypasses the type guard  ⛔ OPEN
+`exam_type:["jee_main"]` coerces to the string key, passing the `!EXAM_CONFIGS[exam_type]` check and creating a real test with `exam_type` stored as `'["jee_main"]'`. Validate `typeof exam_type === "string"`.
 
 **Phase-3 security audit (mostly clean):** secrets are **server-only** — the only `NEXT_PUBLIC_` values are the safe ones (Supabase URL/anon, Sentry DSN, VAPID public, app URL); no service-role/OpenAI/Razorpay-secret in any client component (one anti-pattern: F-028). **Git history has no real committed keys** (all `sk-proj-`/`rzp_live_` matches are `.env.example` placeholders + docs). **JWT tampering rejected** (valid→200, tampered signature→401 PGRST301, garbage→401). Remaining Phase-3 (not yet run): AI prompt-injection/system-prompt-leak, DB connection-pool/concurrency breakage, chaos (kill mid-payment/AI/upload).
 

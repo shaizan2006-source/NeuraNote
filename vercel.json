@@ -23,7 +23,8 @@
     "CRON_SECRET": "@cron_secret",
     "NEXT_PUBLIC_VAPID_PUBLIC_KEY": "@vapid_public_key",
     "VAPID_PRIVATE_KEY": "@vapid_private_key",
-    "VAPID_SUBJECT": "@vapid_subject"
+    "VAPID_SUBJECT": "@vapid_subject",
+    "WHATSAPP_APP_SECRET": "@whatsapp_app_secret"
   },
   "headers": [
     {
@@ -62,6 +63,18 @@
     {
       "path": "/api/cron/fsrs-due-reminder",
       "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/purge-deleted-accounts",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/trial-d3-segment",
+      "schedule": "30 12 * * *"
+    },
+    {
+      "path": "/api/cron/trial-d5-warmup",
+      "schedule": "30 12 * * *"
     }
   ]
 }

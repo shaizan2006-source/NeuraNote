@@ -26,7 +26,7 @@ import { computeStudyDepth } from "@/lib/analytics/computeStudyDepth";
 
 function ProgressSkeleton({ isMobile }) {
   const s = {
-    background: "rgba(255,255,255,0.04)",
+    background: "var(--bg-surface)",
     borderRadius: 16,
     animation: "skeleton-pulse 1.5s ease-in-out infinite",
   };
@@ -127,11 +127,11 @@ export default function ProgressLayout() {
   if (error) return (
     <div style={{
       display: "flex", flexDirection: "column", alignItems: "center",
-      justifyContent: "center", padding: 40, gap: 8, color: "#71717a",
+      justifyContent: "center", padding: 40, gap: 8, color: "var(--text-tertiary)",
     }}>
       <span style={{ fontSize: 24 }}>⚠</span>
       <p style={{ margin: 0, fontSize: 14 }}>Failed to load progress data</p>
-      <p style={{ margin: 0, fontSize: 12, color: "#52525b" }}>{error}</p>
+      <p style={{ margin: 0, fontSize: 12, color: "var(--text-disabled)" }}>{error}</p>
     </div>
   );
 
@@ -148,18 +148,18 @@ export default function ProgressLayout() {
           justifyContent: "center", padding: "48px 24px", gap: 14, textAlign: "center",
         }}>
           <span style={{ fontSize: 36 }}>📊</span>
-          <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#f4f4f5" }}>
+          <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
             Your analytics will appear here
           </p>
-          <p style={{ margin: 0, fontSize: 12, color: "#52525b", maxWidth: 280 }}>
+          <p style={{ margin: 0, fontSize: 12, color: "var(--text-disabled)", maxWidth: 280 }}>
             Complete a few study sessions and add topics to your mastery tracker — your Focus Score, Accuracy, and Insights will populate automatically.
           </p>
           <button
             onClick={toggleDashboardMode}
             style={{
               marginTop: 4, padding: "9px 20px",
-              background: "linear-gradient(135deg, #8B5CF6, #7C3AED)",
-              border: "none", borderRadius: 8, color: "#fff",
+              background: "var(--accent-grad)",
+              border: "none", borderRadius: 8, color: "var(--bg-inset)",
               fontSize: 12, fontWeight: 600, cursor: "pointer",
             }}
           >

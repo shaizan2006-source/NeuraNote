@@ -1,9 +1,17 @@
+/**
+ * @deprecated — No frontend callers found as of 2026-06-01.
+ * Superseded by /api/ask (streaming, full RAG, budget-gated, fallback-resilient).
+ * Safe to delete once confirmed no external integrations call this endpoint.
+ */
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
+import { verifyAuth } from "@/lib/serverAuth";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  maxRetries: 2,
+  timeout: 45_000,
 });
 
 const supabase = createClient(
@@ -51,13 +59,11 @@ function detectExportIntent(question) {
 
 export async function POST(req) {
   try {
+    const user = await verifyAuth(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const body = await req.json();
     const { question, documentId, documentIds } = body;
-
-    console.log("QUESTION:", question);
-    console.log("DOCUMENT ID:", documentId);
-    console.log("DOCUMENT IDs:", documentIds);
-    console.log("OpenAI Key Exists:", !!process.env.OPENAI_API_KEY);
 
     // ── Validate ──
     if (!question || question.trim() === "") {

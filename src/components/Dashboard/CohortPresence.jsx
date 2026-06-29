@@ -23,8 +23,8 @@ export default function CohortPresence() {
       onClick={() => router.push("/cohort")}
       style={{
         display: "inline-flex", alignItems: "center", gap: 8,
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(255,255,255,0.07)",
+        background: "var(--bg-surface-2)",
+        border: "1px solid var(--border-hairline)",
         borderRadius: 10, padding: "8px 12px",
         cursor: "pointer", marginBottom: 12,
       }}
@@ -32,13 +32,13 @@ export default function CohortPresence() {
       {/* Pulse dot */}
       <span style={{
         width: 8, height: 8, borderRadius: 4,
-        background: "#10B981",
+        background: "var(--success)",
         animation: "cohort-pulse 4s ease-in-out infinite",
         flexShrink: 0,
       }} />
-      <span style={{ fontSize: 12, color: "#9CA3AF" }}>
-        <strong style={{ color: "#E5E7EB" }}>{activeCount}</strong> member{activeCount !== 1 ? "s" : ""} studying now
-        {cohort.cohort_name && <span style={{ color: "#6B7280" }}> · {cohort.cohort_name}</span>}
+      <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>
+        <strong style={{ color: "var(--text-primary)" }}>{activeCount}</strong> member{activeCount !== 1 ? "s" : ""} studying now
+        {cohort.cohort_name && <span style={{ color: "var(--text-tertiary)" }}> · {cohort.cohort_name}</span>}
       </span>
       <style>{`@keyframes cohort-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
     </div>

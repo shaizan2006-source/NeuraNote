@@ -1,36 +1,57 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import ExamCountdownSection from "./exams/ExamCountdownSection";
 import WeakTopicsSection from "./exams/WeakTopicsSection";
 import AddExamModal from "./exams/AddExamModal";
+import { writeSessionStorage } from "@/lib/examUtils";
 
 export default function ExamsHeroCard({ exams = [], weakTopics = [], onAddExam = null }) {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+
+  const selectedExam = exams.find((e) => e.status === "active") ?? exams[0] ?? null;
+
+  const navigateToQuiz = (topic) => {
+    writeSessionStorage("amn_prefill", {
+      subject: selectedExam?.subject ?? "general",
+      topic,
+    });
+    router.push("/quiz");
+  };
+
+  const navigateToAskAI = (topic) => {
+    writeSessionStorage(
+      "amn_ask_prefill",
+      `Explain ${topic} from ${selectedExam?.subject ?? "this subject"} in simple terms`
+    );
+    router.push("/sage");
+  };
 
   return (
     <>
       <style>{CSS_ANIMATIONS}</style>
       <div
         style={{
-          background: "linear-gradient(135deg, rgba(34,211,238,0.08), rgba(139,92,246,0.08))",
+          background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), color-mix(in srgb, var(--accent) 8%, transparent))",
           borderWidth: "1px 1px 1px 2px", borderStyle: "solid",
-          borderColor: "rgba(34,211,238,0.25) rgba(34,211,238,0.25) rgba(34,211,238,0.25) rgba(139,92,246,0.35)",
+          borderColor: "color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 25%, transparent) color-mix(in srgb, var(--accent) 32%, transparent)",
           borderRadius: 12,
           padding: 16,
           display: "flex",
           flexDirection: "column",
           gap: 12,
-          boxShadow: "inset 0 0 30px rgba(34,211,238,0.04)",
+          boxShadow: "inset 0 0 30px var(--accent-glow-soft)",
           height: "100%",
           boxSizing: "border-box",
         }}
       >
         {/* Title */}
         <div>
-          <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#f4f4f5" }}>Exams</p>
-          <p style={{ margin: "3px 0 0", fontSize: 9, color: "#52525b" }}>
+          <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "var(--text-primary)" }}>Exams</p>
+          <p style={{ margin: "3px 0 0", fontSize: 9, color: "var(--text-tertiary)" }}>
             Track your upcoming exams and focus on weak areas
           </p>
         </div>
@@ -39,7 +60,14 @@ export default function ExamsHeroCard({ exams = [], weakTopics = [], onAddExam =
         <ExamCountdownSection exams={exams} />
 
         {/* Weak Topics Section */}
-        <WeakTopicsSection weakTopics={weakTopics} />
+        <WeakTopicsSection
+          topics={weakTopics}
+          selectedExam={selectedExam}
+          onAddExam={() => setShowModal(true)}
+          onPractice={navigateToQuiz}
+          onAskAI={navigateToAskAI}
+          onStartQuiz={() => navigateToQuiz("")}
+        />
 
         {/* Add Exam Button */}
         <button
@@ -47,17 +75,17 @@ export default function ExamsHeroCard({ exams = [], weakTopics = [], onAddExam =
           style={{
             marginTop: "auto",
             padding: "8px 12px",
-            background: "linear-gradient(135deg, #8B5CF6, #6D28D9)",
-            border: "1px solid rgba(139,92,246,0.3)",
+            background: "var(--accent-grad)",
+            border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)",
             borderRadius: 6,
-            color: "#fff",
+            color: "var(--bg-base)",
             fontSize: 11,
             fontWeight: 600,
             cursor: "pointer",
             transition: "all 200ms ease",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = "0 4px 12px rgba(139,92,246,0.2)";
+            e.currentTarget.style.boxShadow = "0 4px 12px var(--accent-glow-hard)";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.boxShadow = "none";

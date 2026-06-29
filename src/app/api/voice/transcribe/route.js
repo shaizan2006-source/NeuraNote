@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
+import { recordAISpend, estimateCost } from "@/lib/aiSpend";
 
-const openai   = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai   = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -48,6 +49,15 @@ export async function POST(req) {
     });
 
     const text = transcript.text?.trim() || "";
+
+    // Estimate Whisper cost from file size: webm ≈ 16 kbps → bytes / 2000 ≈ seconds
+    const audioBytes   = audio.size ?? 0;
+    const estDurationSecs = Math.max(1, audioBytes / 2000);
+    recordAISpend(user.id, {
+      costUsd:      estimateCost({ model: "whisper-1", durationSecs: estDurationSecs }),
+      whisperSecs:  estDurationSecs,
+    }).catch(() => {});
+
     return NextResponse.json({ text });
   } catch (err) {
     console.error("transcribe error:", err);

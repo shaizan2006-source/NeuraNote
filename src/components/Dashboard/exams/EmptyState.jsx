@@ -20,10 +20,10 @@ export default function EmptyState({ variant, onAction }) {
       gap: 6,
     }}>
       <span style={{ fontSize: 22 }}>{isNoExam ? "📚" : "🎉"}</span>
-      <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "#e4e4e7" }}>
+      <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>
         {isNoExam ? "No exam selected" : "No weak areas detected"}
       </p>
-      <p style={{ margin: 0, fontSize: 10, color: "#71717a", maxWidth: 200 }}>
+      <p style={{ margin: 0, fontSize: 10, color: "var(--text-secondary)", maxWidth: 200 }}>
         {isNoExam
           ? "Add an exam to start tracking weak areas"
           : "You're doing great in this subject. Keep practicing to stay sharp."}
@@ -34,11 +34,11 @@ export default function EmptyState({ variant, onAction }) {
           marginTop: 4,
           padding: "6px 14px",
           background: isNoExam
-            ? "linear-gradient(135deg, #8B5CF6, #6D28D9)"
-            : "rgba(34,211,238,0.1)",
-          border: isNoExam ? "none" : "1px solid rgba(34,211,238,0.3)",
+            ? "var(--accent-grad)"
+            : "color-mix(in srgb, var(--accent) 10%, transparent)",
+          border: isNoExam ? "none" : "1px solid color-mix(in srgb, var(--accent) 30%, transparent)",
           borderRadius: 6,
-          color: isNoExam ? "#fff" : "#22d3ee",
+          color: isNoExam ? "#fff" : "var(--accent)",
           fontSize: 10,
           fontWeight: 600,
           cursor: "pointer",

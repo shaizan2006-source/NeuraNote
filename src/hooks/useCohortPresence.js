@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 import { useEffect, useState } from "react";
-import { createBrowserClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 
 export function useCohortPresence(cohortId, handle) {
   const [activeCount, setActiveCount] = useState(0);
@@ -8,7 +8,7 @@ export function useCohortPresence(cohortId, handle) {
   useEffect(() => {
     if (!cohortId || !handle) return;
 
-    const supabase = createBrowserClient(
+    const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     );

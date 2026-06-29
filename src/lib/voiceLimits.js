@@ -2,9 +2,12 @@
  * Voice call rate limiting
  * Free    : 2 calls/day, 10 min max
  * Student : 5 calls/day, 20 min max
- * Pro     : 15 calls/day, 40 min max
+ * Pro     : 15 calls/day, 40 min max        (when VOICE_PROPLUS_ENABLED=false — default)
+ * Pro+    : unlimited, 60 min max           (when VOICE_PROPLUS_ENABLED=true)
+ *           When Pro+ is ENABLED, Pro drops to 3 calls/day to incentivise upgrade.
  * School  : unlimited, 60 min max
  *
+ * Feature flag: set VOICE_PROPLUS_ENABLED=true in Vercel env to activate the Pro+ tier.
  * Internal developer accounts bypass all voice limits — see internalAccess.js.
  */
 import { createClient } from "@supabase/supabase-js";
@@ -16,10 +19,18 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+/** True when Pro+ voice tier is live. Flip via VOICE_PROPLUS_ENABLED env var. */
+export const VOICE_PROPLUS_ENABLED = process.env.VOICE_PROPLUS_ENABLED === "true";
+
+// When Pro+ is disabled: Pro gets generous limits (bundled voice).
+// When Pro+ is enabled:  Pro drops to 3 calls/day → creates upsell pressure.
 export const VOICE_LIMITS = {
   free:    { callsPerDay: 2,    maxDurationSecs: 600,  label: "2 calls/day · 10 min each" },
   student: { callsPerDay: 5,    maxDurationSecs: 1200, label: "5 calls/day · 20 min each" },
-  pro:     { callsPerDay: 15,   maxDurationSecs: 2400, label: "15 calls/day · 40 min each" },
+  pro:     VOICE_PROPLUS_ENABLED
+    ? { callsPerDay: 3,    maxDurationSecs: 1200, label: "3 calls/day · 20 min each" }
+    : { callsPerDay: 15,   maxDurationSecs: 2400, label: "15 calls/day · 40 min each" },
+  proplus: { callsPerDay: null, maxDurationSecs: 3600, label: "Unlimited · 60 min each" },
   school:  { callsPerDay: null, maxDurationSecs: 3600, label: "Unlimited · 60 min each" },
 };
 

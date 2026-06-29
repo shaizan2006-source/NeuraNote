@@ -65,9 +65,9 @@ export default function WeakTopicsSection({
     }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <p style={{ margin: 0, fontSize: 10, color: "#71717a", fontWeight: 600 }}>Weak Topics</p>
+        <p style={{ margin: 0, fontSize: 10, color: "var(--text-secondary)", fontWeight: 600 }}>Weak Topics</p>
         {topics.length > 0 && (
-          <p style={{ margin: 0, fontSize: 9, color: "#3f3f46" }}>{topics.length} tracked</p>
+          <p style={{ margin: 0, fontSize: 9, color: "var(--text-tertiary)" }}>{topics.length} tracked</p>
         )}
       </div>
 
@@ -76,13 +76,13 @@ export default function WeakTopicsSection({
         <div style={{
           marginBottom: 8,
           padding: "5px 8px",
-          background: "rgba(245,158,11,0.08)",
-          border: "1px solid rgba(245,158,11,0.2)",
+          background: "color-mix(in srgb, var(--warning) 8%, transparent)",
+          border: "1px solid color-mix(in srgb, var(--warning) 20%, transparent)",
           borderRadius: 4,
         }}>
-          <p style={{ margin: 0, fontSize: 9, color: "#fbbf24" }}>
+          <p style={{ margin: 0, fontSize: 9, color: "var(--warning)" }}>
             Subject not set — showing all weak topics.{" "}
-            <span style={{ color: "#71717a" }}>Edit this exam to add a subject.</span>
+            <span style={{ color: "var(--text-secondary)" }}>Edit this exam to add a subject.</span>
           </p>
         </div>
       )}

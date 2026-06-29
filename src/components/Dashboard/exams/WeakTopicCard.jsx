@@ -31,10 +31,10 @@ export default function WeakTopicCard({ topic, onPractice, onAskAI }) {
   const accuracy = deriveAccuracy(topic.count);
   const isHard = topic.level === "hard" || accuracy < 30;
 
-  const accentColor = accuracy < 30 ? "#ef4444" : "#f59e0b";
-  const bgColor     = accuracy < 30 ? "rgba(239,68,68,0.06)" : "rgba(245,158,11,0.06)";
-  const borderColor = accuracy < 30 ? "rgba(239,68,68,0.2)"  : "rgba(245,158,11,0.2)";
-  const textColor   = accuracy < 30 ? "#fca5a5" : "#fbbf24";
+  const accentColor = accuracy < 30 ? "var(--error)" : "var(--warning)";
+  const bgColor     = accuracy < 30 ? "color-mix(in srgb, var(--error) 8%, transparent)" : "color-mix(in srgb, var(--warning) 8%, transparent)";
+  const borderColor = accuracy < 30 ? "color-mix(in srgb, var(--error) 28%, transparent)"  : "color-mix(in srgb, var(--warning) 28%, transparent)";
+  const textColor   = accuracy < 30 ? "var(--error)" : "var(--warning)";
 
   return (
     <div style={{
@@ -50,7 +50,7 @@ export default function WeakTopicCard({ topic, onPractice, onAskAI }) {
       {/* Left: topic info */}
       <div style={{ minWidth: 0, flex: 1 }}>
         <p style={{
-          margin: 0, fontSize: 11, fontWeight: 600, color: "#e4e4e7",
+          margin: 0, fontSize: 11, fontWeight: 600, color: "var(--text-primary)",
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }}>
           {truncate(topic.topic)}
@@ -61,7 +61,7 @@ export default function WeakTopicCard({ topic, onPractice, onAskAI }) {
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
           <div style={{
             width: 72, height: 3,
-            background: "rgba(255,255,255,0.08)", borderRadius: 2, overflow: "hidden",
+            background: "var(--border-strong)", borderRadius: 2, overflow: "hidden",
           }}>
             <div style={{
               width: `${accuracy}%`, height: "100%",
@@ -71,7 +71,7 @@ export default function WeakTopicCard({ topic, onPractice, onAskAI }) {
           <span style={{ fontSize: 9, color: textColor }}>{accuracy}%</span>
         </div>
 
-        <p style={{ margin: "2px 0 0", fontSize: 9, color: "#52525b" }}>
+        <p style={{ margin: "2px 0 0", fontSize: 9, color: "var(--text-tertiary)" }}>
           {formatLastPracticed(topic.updated_at)}
         </p>
       </div>
@@ -96,8 +96,8 @@ export default function WeakTopicCard({ topic, onPractice, onAskAI }) {
           title={`Ask AI about ${topic.topic}`}
           style={{
             padding: "3px 8px",
-            background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.2)",
-            borderRadius: 4, color: "#c4b5fd", fontSize: 9, cursor: "pointer",
+            background: "color-mix(in srgb, var(--accent) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--accent) 28%, transparent)",
+            borderRadius: 4, color: "var(--accent)", fontSize: 9, cursor: "pointer",
           }}
           onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.8"; }}
           onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}

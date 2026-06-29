@@ -1,13 +1,14 @@
 import { verifyAuth, supabaseAdmin } from "@/lib/serverAuth";
 import OpenAI from "openai";
+import { daysAgoIST } from "@/lib/format/date";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 
 export async function POST(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString().slice(0, 10);
+  const weekAgo = daysAgoIST(7);
 
   // Get this week's topics from focus sessions
   const { data: sessions } = await supabaseAdmin

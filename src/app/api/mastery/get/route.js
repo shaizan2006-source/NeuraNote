@@ -1,27 +1,15 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { verifyAuth, supabaseAdmin as supabase } from "@/lib/serverAuth";
 
 export async function GET(req) {
   try {
-    const { searchParams } = new URL(req.url);
-    const user_id = searchParams.get("user_id");
-
-    if (!user_id) {
-      return NextResponse.json(
-        { error: "Missing user_id" },
-        { status: 400 }
-      );
-    }
+    const user = await verifyAuth(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { data, error } = await supabase
       .from("mastery_topics")
       .select("*")
-      .eq("user_id", user_id)
+      .eq("user_id", user.id)
       .order("mastery_score", { ascending: true }); // weakest first
 
     if (error) {

@@ -1,8 +1,8 @@
 import { generateBriefingForUser, getActiveBriefingUsers } from "@/lib/briefings/generator";
+import { cronSecretValid } from "@/lib/security/cronAuth";
 
 export async function GET(req) {
-  const secret = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (secret !== process.env.CRON_SECRET) return new Response(null, { status: 401 });
+  if (!cronSecretValid(req)) return new Response(null, { status: 401 });
 
   const users = await getActiveBriefingUsers();
   const results = { generated: 0, skipped: 0, errors: 0 };

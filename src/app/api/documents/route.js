@@ -1,18 +1,9 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { verifyAuth, supabaseAdmin as supabase } from "@/lib/serverAuth";
 
 export async function GET(req) {
-  const token = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { data: authData, error: authErr } = await supabase.auth.getUser(token);
-  const user = authData?.user;
-  if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await verifyAuth(req);
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { data, error } = await supabase
     .from("documents")

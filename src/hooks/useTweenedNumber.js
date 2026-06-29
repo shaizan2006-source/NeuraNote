@@ -16,7 +16,7 @@ import { animate, useMotionValue, useTransform } from "framer-motion";
 export function useTweenedNumber(value, opts = {}) {
   const {
     duration = 0.9,
-    format = (v) => Math.round(v).toLocaleString(),
+    format = (v) => Math.round(v).toLocaleString("en-IN"),
   } = opts;
 
   const mv = useMotionValue(typeof value === "number" ? value : 0);

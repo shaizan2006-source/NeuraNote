@@ -29,7 +29,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY,
 );
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 
 export async function POST(req) {
   try {
@@ -93,7 +93,7 @@ export async function POST(req) {
     // Step 4: Build context for Claude to synthesize answer
     const eventSummary = (relevantEvents || [])
       .slice(0, 5)
-      .map(e => `- ${e.event_type || "activity"}: ${e.metadata?.topic || "general"} (${e.created_at ? new Date(e.created_at).toLocaleDateString() : "unknown date"})`)
+      .map(e => `- ${e.event_type || "activity"}: ${e.metadata?.topic || "general"} (${e.created_at ? new Date(e.created_at).toLocaleDateString("en-IN") : "unknown date"})`)
       .join("\n");
 
     const weakTopics = topicsInfo
@@ -104,7 +104,7 @@ export async function POST(req) {
     const context = `
 User has been studying with the following patterns:
 - Current streak: ${streakInfo.streak_count || 0} days
-- Last active: ${streakInfo.last_active_date ? new Date(streakInfo.last_active_date).toLocaleDateString() : "never"}
+- Last active: ${streakInfo.last_active_date ? new Date(streakInfo.last_active_date).toLocaleDateString("en-IN") : "never"}
 - Recent sessions: ${recentSessions.length} in the last 30 days
 - Weak areas: ${weakTopics || "none identified yet"}
 - Recent activity:

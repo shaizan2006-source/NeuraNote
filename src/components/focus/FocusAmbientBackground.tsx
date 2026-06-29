@@ -51,7 +51,7 @@ export default function FocusAmbientBackground() {
     scrollEl.addEventListener('scroll', onScroll, { passive: true });
 
     return () => {
-      scrollEl.removeEventListener('scroll', onScroll, { passive: true });
+      scrollEl.removeEventListener('scroll', onScroll);
       cancelAnimationFrame(rafId);
     };
   }, []);

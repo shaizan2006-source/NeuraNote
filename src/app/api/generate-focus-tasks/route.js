@@ -1,7 +1,7 @@
-// src/app/api/generate-focus-tasks/route.js
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { generateFocusPlan, ENHANCED_FALLBACK_TASKS } from '@/lib/focusPlanner';
+import { parsePdfDocument } from '@/lib/parsePdfDocument';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -39,20 +39,8 @@ export async function POST(req) {
       .order('page_number', { ascending: true });
 
     if (chunkErr || !chunks || chunks.length === 0) {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-      const parseRes = await fetch(`${appUrl}/api/parse-pdf`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ documentId, userId: user.id }),
-      });
-
-      if (!parseRes.ok) {
-        console.error('[generate-focus-tasks] PDF parsing failed:', parseRes.status);
-        return NextResponse.json(
-          { error: 'pdf_parse_failed', message: 'Failed to process PDF. Please try re-uploading.' },
-          { status: 422 }
-        );
-      }
+      // Trigger parse directly (no HTTP loopback — avoids Vercel timeout cascade)
+      await parsePdfDocument(documentId, user.id);
 
       const refetch = await supabase
         .from('document_chunks')

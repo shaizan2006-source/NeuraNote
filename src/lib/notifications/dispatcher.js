@@ -3,11 +3,22 @@ import { supabaseAdmin } from "@/lib/serverAuth";
 import { buildPayload } from "./copy";
 import { shouldSkip, shouldSkipSlump, localMinuteOfDay } from "./guardrails";
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+// Guarded: missing VAPID env (e.g. local dev) must not crash module load / build.
+// Sends fail at call time with webpush's own "no VAPID details" error instead.
+const VAPID_CONFIGURED = Boolean(
+  process.env.VAPID_SUBJECT &&
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY &&
   process.env.VAPID_PRIVATE_KEY
 );
+if (VAPID_CONFIGURED) {
+  webpush.setVapidDetails(
+    process.env.VAPID_SUBJECT,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+} else {
+  console.warn("[push] VAPID env vars not set — push sends will fail until configured");
+}
 
 const BUCKET_FIELD = {
   briefing:     { enabled: "briefing_enabled",      time: "briefing_time" },
@@ -16,28 +27,65 @@ const BUCKET_FIELD = {
   night_closure:{ enabled: "night_closure_enabled",  time: "night_closure_time" },
 };
 
+/**
+ * Send an ad-hoc push notification to one user, to every registered subscription.
+ * Throws if the user has no push subscriptions (callers treat that as "skip").
+ */
+export async function sendNotification(userId, payload) {
+  const { data: subs } = await supabaseAdmin
+    .from("push_subscriptions")
+    .select("endpoint, p256dh, auth")
+    .eq("user_id", userId);
+
+  if (!subs?.length) throw new Error("no push subscription");
+
+  let sent = 0;
+  for (const sub of subs) {
+    try {
+      await webpush.sendNotification(
+        { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+        JSON.stringify(payload)
+      );
+      sent++;
+    } catch (err) {
+      if (err.statusCode === 410 || err.statusCode === 404) {
+        await supabaseAdmin.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
+      } else {
+        console.error(`[push] ad-hoc send failed for ${userId}:`, err.message);
+      }
+    }
+  }
+
+  if (sent === 0) throw new Error("all subscriptions failed");
+
+  await supabaseAdmin.from("notification_log").insert({
+    user_id: userId,
+    notification_type: payload?.type ?? "adhoc",
+    delivered: true,
+    metadata: { adhoc: true },
+  });
+
+  return sent;
+}
+
 export async function dispatchNotifications() {
   const now = new Date();
   const results = { sent: 0, skipped: 0, errors: 0 };
 
   for (const [bucket, fields] of Object.entries(BUCKET_FIELD)) {
-    // Fetch users whose notification time is in the current 5-min bucket
+    // Single query: fetch prefs + profile via JOIN (eliminates N+1)
     const { data: prefs } = await supabaseAdmin
       .from("notification_preferences")
-      .select(`user_id, ${fields.time}, ${fields.enabled}`)
+      .select(
+        `user_id, ${fields.time}, ${fields.enabled},
+         profiles(id, full_name, exam_date, timezone, cohort_id)`
+      )
       .eq(fields.enabled, true);
 
     if (!prefs?.length) continue;
 
-    // Filter to users whose local minute-of-day matches current bucket
-    const eligible = [];
     for (const pref of prefs) {
-      const { data: profile } = await supabaseAdmin
-        .from("profiles")
-        .select("id, full_name, exam_date, timezone, cohort_id")
-        .eq("id", pref.user_id)
-        .maybeSingle();
-
+      const profile = pref.profiles;
       if (!profile) continue;
 
       const localMin = localMinuteOfDay(now, profile.timezone ?? "Asia/Kolkata");
@@ -45,24 +93,17 @@ export async function dispatchNotifications() {
       const diff = localMin - targetMin;
       if (diff < 0 || diff >= 5) continue;
 
-      eligible.push({ ...pref, profile });
-    }
-
-    for (const user of eligible) {
       try {
-        // Apply guardrails
-        if (await shouldSkip(user.profile, now)) { results.skipped++; continue; }
-        if (bucket === "midday" && await shouldSkipSlump(user.profile, now)) { results.skipped++; continue; }
+        if (await shouldSkip(profile, now)) { results.skipped++; continue; }
+        if (bucket === "midday" && await shouldSkipSlump(profile, now)) { results.skipped++; continue; }
 
-        // Build payload
-        const payload = buildPayload(bucket, user.profile.full_name?.split(" ")[0]);
+        const payload = buildPayload(bucket, profile.full_name?.split(" ")[0]);
         if (!payload) continue;
 
-        // Get push subscriptions
         const { data: subs } = await supabaseAdmin
           .from("push_subscriptions")
           .select("endpoint, p256dh, auth")
-          .eq("user_id", user.profile.id);
+          .eq("user_id", profile.id);
 
         if (!subs?.length) continue;
 
@@ -75,18 +116,16 @@ export async function dispatchNotifications() {
             results.sent++;
           } catch (err) {
             if (err.statusCode === 410 || err.statusCode === 404) {
-              // Expired subscription — remove it
               await supabaseAdmin.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
             } else {
               results.errors++;
-              console.error(`[push] send failed for ${user.profile.id}:`, err.message);
+              console.error(`[push] send failed for ${profile.id}:`, err.message);
             }
           }
         }
 
-        // Log send
         await supabaseAdmin.from("notification_log").insert({
-          user_id: user.profile.id,
+          user_id: profile.id,
           notification_type: bucket,
           delivered: true,
           metadata: { bucket },
@@ -94,7 +133,7 @@ export async function dispatchNotifications() {
 
       } catch (err) {
         results.errors++;
-        console.error(`[dispatcher] user ${user.profile?.id} error:`, err.message);
+        console.error(`[dispatcher] user ${profile?.id} error:`, err.message);
       }
     }
   }

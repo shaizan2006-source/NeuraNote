@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { useExamReminders } from "@/hooks/useExamReminders";
 import { useRealtimeProgress } from "@/hooks/useRealtimeProgress";
+import { useDashboardMode } from "@/hooks/useDashboardMode";
+import { useSidebarState } from "@/hooks/useSidebarState";
+import { SUBJECT_MAP } from "@/lib/subjectMap";
+import { parseSseStream } from "@/lib/sseParser";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -33,192 +37,7 @@ export function useDashboard() {
 // Every specific sub-subject gets its own key so study plans never cross-contaminate.
 // Aliases for the same concept (e.g. "os" / "operating systems") share one key.
 // If a subject is not listed here, normalizeSubject() returns the lowercased name as-is.
-const SUBJECT_MAP = {
-
-  // ── Computer Science — generic ────────────────────────────
-  "computer science": "cs", cse: "cs",
-
-  // ── CS sub-subjects ───────────────────────────────────────
-  "web technologies": "web", "web technology": "web", web: "web",
-
-  daa: "daa", "design and analysis": "daa",
-  "design and analysis of algorithms": "daa", algorithms: "daa",
-
-  "data structures": "dsa", dsa: "dsa", "data structures and algorithms": "dsa",
-
-  dbms: "dbms", database: "dbms", "database management": "dbms",
-  "database management systems": "dbms",
-
-  os: "os", "operating systems": "os", "operating system": "os",
-
-  cn: "cn", "computer networks": "cn", networking: "cn",
-
-  oops: "oop", oop: "oop", "object oriented programming": "oop",
-
-  "software engineering": "se", se: "se",
-
-  "compiler design": "cd",
-
-  "theory of computation": "toc", toc: "toc",
-
-  "cloud computing": "cloud",
-
-  "cyber security": "cybersecurity", cybersecurity: "cybersecurity",
-
-  // ── AI / ML ───────────────────────────────────────────────
-  ai: "ai", "artificial intelligence": "ai",
-  "machine learning": "ai", ml: "ai",
-  "deep learning": "ai", dl: "ai", nlp: "ai",
-
-  // ── Mathematics — generic ─────────────────────────────────
-  mathematics: "math", maths: "math", math: "math",
-  "engineering mathematics": "math",           // broad math course → umbrella key
-
-  // ── Math sub-subjects ─────────────────────────────────────
-  calculus: "calculus",
-  "linear algebra": "linear algebra",
-  "discrete mathematics": "discrete math", "discrete math": "discrete math",
-  probability: "probability",
-  statistics: "statistics",
-  "differential equations": "differential equations",
-  "numerical methods": "numerical methods",
-
-  // ── Physics — generic ─────────────────────────────────────
-  physics: "physics", "applied physics": "physics", "engineering physics": "physics",
-
-  // ── Physics sub-subjects ──────────────────────────────────
-  mechanics: "mechanics",
-  thermodynamics: "thermodynamics",
-  optics: "optics",
-  electrostatics: "electrostatics",
-  "modern physics": "modern physics",
-  "nuclear physics": "nuclear physics",
-
-  // ── Chemistry — generic ───────────────────────────────────
-  chemistry: "chemistry", "engineering chemistry": "chemistry",
-
-  // ── Chemistry sub-subjects ────────────────────────────────
-  "organic chemistry": "organic chemistry",
-  "inorganic chemistry": "inorganic chemistry",
-  "physical chemistry": "physical chemistry",
-  biochemistry: "biochemistry",
-
-  // ── Biology — generic ─────────────────────────────────────
-  biology: "biology",
-
-  // ── Biology sub-subjects ──────────────────────────────────
-  "cell biology": "cell biology",
-  genetics: "genetics",
-  ecology: "ecology",
-  "human anatomy": "human anatomy",
-  physiology: "physiology",
-  botany: "botany",
-  zoology: "zoology",
-  microbiology: "microbiology",
-  biotechnology: "biotechnology",
-
-  // ── Law — generic ─────────────────────────────────────────
-  law: "law",
-
-  // ── Law sub-subjects ──────────────────────────────────────
-  "constitutional law": "constitutional law",
-  "criminal law": "criminal law",
-  "civil law": "civil law",
-  "contract law": "contract law",
-  ipc: "ipc", crpc: "crpc", cpc: "cpc",
-  "corporate law": "corporate law",
-  "intellectual property": "intellectual property",
-  jurisprudence: "jurisprudence",
-  "family law": "family law",
-  "labour law": "labour law",
-  "company law": "company law",
-  "evidence law": "evidence law",
-
-  // ── Finance — generic ─────────────────────────────────────
-  finance: "finance", commerce: "finance",
-
-  // ── Finance sub-subjects ──────────────────────────────────
-  accounting: "accounting", "financial accounting": "accounting",
-  "cost accounting": "accounting",
-  economics: "economics",
-  "micro economics": "microeconomics", microeconomics: "microeconomics",
-  "macro economics": "macroeconomics", macroeconomics: "macroeconomics",
-  taxation: "taxation", "income tax": "taxation",
-  gst: "gst",
-  banking: "banking",
-  auditing: "auditing",
-  "financial management": "financial management",
-  "business studies": "business studies",
-
-  // ── Mechanical Engineering — generic ──────────────────────
-  "mechanical engineering": "mechanical", mechanical: "mechanical",
-
-  // ── Mechanical sub-subjects ───────────────────────────────
-  "fluid mechanics": "fluid mechanics",
-  "strength of materials": "strength of materials",
-  "machine design": "machine design",
-  manufacturing: "manufacturing",
-  "heat transfer": "heat transfer",
-  "engineering mechanics": "engineering mechanics",
-  "theory of machines": "theory of machines",
-  "industrial engineering": "industrial engineering",
-
-  // ── Electrical Engineering — generic ──────────────────────
-  "electrical engineering": "electrical", electrical: "electrical",
-
-  // ── Electrical sub-subjects ───────────────────────────────
-  electronics: "electronics",
-  "electronic devices": "electronic devices",
-  "control systems": "control systems",
-  "power systems": "power systems",
-  "digital electronics": "digital electronics",
-  microprocessors: "microprocessors",
-  "signals and systems": "signals and systems",
-  "circuit theory": "circuit theory",
-  electromagnetic: "electromagnetic",
-  vlsi: "vlsi",
-
-  // ── Medical — generic ─────────────────────────────────────
-  medical: "medical", medicine: "medical", mbbs: "medical",
-  "clinical medicine": "medical",
-
-  // ── Medical sub-subjects ──────────────────────────────────
-  anatomy: "anatomy", "gross anatomy": "anatomy", neuroanatomy: "anatomy",
-  physiology: "physiology",
-  biochemistry: "biochemistry",
-  pathology: "pathology", "general pathology": "pathology",
-  pharmacology: "pharmacology",
-  microbiology: "microbiology",
-  "community medicine": "community medicine", "preventive medicine": "community medicine",
-  "forensic medicine": "forensic medicine", "forensic": "forensic medicine",
-  surgery: "surgery", "general surgery": "surgery",
-  "pediatrics": "pediatrics", paediatrics: "pediatrics",
-  "obstetrics": "obstetrics and gynaecology", "gynaecology": "obstetrics and gynaecology",
-  "obs and gynae": "obstetrics and gynaecology",
-  psychiatry: "psychiatry",
-  ophthalmology: "ophthalmology",
-  ent: "ent", "ear nose throat": "ent",
-  dermatology: "dermatology",
-  orthopaedics: "orthopaedics", orthopedics: "orthopaedics",
-
-  // ── Business / BBA / MBA — generic ───────────────────────
-  business: "business", bba: "business", mba: "business",
-  "business administration": "business", management: "business",
-
-  // ── Business sub-subjects ─────────────────────────────────
-  "principles of management": "principles of management",
-  "human resource management": "hrm", hrm: "hrm",
-  "marketing management": "marketing", marketing: "marketing",
-  "operations management": "operations management",
-  "organizational behavior": "organizational behavior",
-  "organisational behaviour": "organizational behavior",
-  "strategic management": "strategic management",
-  entrepreneurship: "entrepreneurship",
-  "business ethics": "business ethics",
-  "international business": "international business",
-  "business communication": "business communication",
-  "research methodology": "research methodology",
-};
+// SUBJECT_MAP is imported from @/lib/subjectMap — see that file for all entries.
 
 const TIME_SLOTS = [
   "10:00 - 12:00", "12:00 - 1:00", "2:00 - 4:00",
@@ -414,42 +233,9 @@ export function DashboardProvider({ children }) {
     }
   }, []);
 
-  // ── Dashboard mode: "study" | "progress" ─────────────────────
-  // SSR-safe: always start with "study"; read sessionStorage only after mount
-  // sessionStorage persists on page refresh, but resets when browser tab closes
-  const [dashboardMode, setDashboardMode] = useState("study");
-
-  useEffect(() => {
-    const stored = typeof window !== "undefined" ? sessionStorage.getItem("dashboard_mode") : null;
-    if (stored && stored !== "study") setDashboardMode(stored);
-  }, []);
-
-  function toggleDashboardMode() {
-    const next = dashboardMode === "study" ? "progress" : "study";
-    setDashboardMode(next);
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("dashboard_mode", next);
-      import("@/lib/track").then(({ trackDashboardToggle }) => {
-        trackDashboardToggle(dashboardMode, next);
-      }).catch(() => {});
-    }
-  }
-
-  // ── Sidebar collapsed state ───────────────────────────────────
-  // SSR-safe: always start expanded; read localStorage only after mount
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
-  useEffect(() => {
-    setSidebarCollapsed(localStorage.getItem("sidebar_collapsed") === "true");
-  }, []);
-
-  function toggleSidebar() {
-    setSidebarCollapsed(prev => {
-      const next = !prev;
-      localStorage.setItem("sidebar_collapsed", String(next));
-      return next;
-    });
-  }
+  // ── Dashboard mode + sidebar (extracted hooks) ───────────────
+  const { dashboardMode, setDashboardMode, toggleDashboardMode } = useDashboardMode();
+  const { sidebarCollapsed, setSidebarCollapsed, toggleSidebar } = useSidebarState();
 
   // ================================================================
   // PURE UTILITIES
@@ -771,7 +557,11 @@ export function DashboardProvider({ children }) {
 
   const fetchSavedPDFs = async () => {
     try {
-      const res = await fetch("/api/get-pdfs");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      const res = await fetch("/api/get-pdfs", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
       const data = await res.json();
       setSavedPDFs(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -781,15 +571,26 @@ export function DashboardProvider({ children }) {
 
   const handleSavePDF = async () => {
     if (!file) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) return;
     const formData = new FormData();
     formData.append("file", file);
-    const res = await fetch("/api/save-pdf", { method: "POST", body: formData });
+    const res = await fetch("/api/save-pdf", {
+      method:  "POST",
+      headers: { Authorization: `Bearer ${session.access_token}` },
+      body:    formData,
+    });
     const data = await res.json();
     setSavedPDFs((prev) => [...prev, data]);
   };
 
   const deletePDF = async (id) => {
-    await fetch(`/api/delete-pdf?id=${id}`, { method: "DELETE" });
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) return;
+    await fetch(`/api/delete-pdf?id=${id}`, {
+      method:  "DELETE",
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
     setSavedPDFs((prev) => prev.filter((pdf) => pdf.id !== id));
   };
 
@@ -1132,7 +933,8 @@ export function DashboardProvider({ children }) {
       }
 
       const contentType = res.headers.get("Content-Type") || "";
-      const isStreaming = contentType.includes("text/plain");
+      // SSE v2 streams as text/event-stream; legacy raw streaming was text/plain
+      const isStreaming = contentType.includes("text/event-stream") || contentType.includes("text/plain");
 
       if (!isStreaming) {
         const data = await res.json();
@@ -1144,65 +946,29 @@ export function DashboardProvider({ children }) {
         return;
       }
 
-      const sourcesHeader = res.headers.get("X-Sources");
-      const usedCtx = res.headers.get("X-Used-Context");
-      if (sourcesHeader) { try { setSources(JSON.parse(sourcesHeader)); } catch {} }
-      setUsedContext(usedCtx === "true");
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
       let accumulated = "";
-      let metaHandled = false;
-      // Bug #2 fix: keep asking=true during streaming so cursor renders
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const rawChunk = decoder.decode(value, { stream: true });
-
-        if (!metaHandled && rawChunk.startsWith("__META__")) {
-          try {
-            const metaLine = rawChunk.replace("__META__", "").split("\n")[0];
-            const meta = JSON.parse(metaLine);
-            if (meta.sources) setSources(meta.sources);
-            if (typeof meta.usedContext !== "undefined") setUsedContext(meta.usedContext);
-            if (meta.fromCache) setFromCache(true);
-            // Dispatch classification to AskAISection via custom event
-            if (meta.classification) {
-              window.dispatchEvent(new CustomEvent("askmynotes:classification", { detail: meta.classification }));
-            }
-            const rest = rawChunk.replace(`__META__${metaLine}\n`, "");
-            if (rest) { accumulated += rest; setAnswer(accumulated); }
-            metaHandled = true;
-          } catch {
-            accumulated += rawChunk;
-            setAnswer(accumulated);
-            metaHandled = true;
+      for await (const event of parseSseStream(res)) {
+        if (event.type === "meta") {
+          if (event.sources)     setSources(event.sources);
+          if (typeof event.usedContext !== "undefined") setUsedContext(event.usedContext);
+          if (event.fromCache)   setFromCache(true);
+          if (event.classification) {
+            window.dispatchEvent(new CustomEvent("askmynotes:classification", { detail: event.classification }));
           }
-          continue;
+        } else if (event.type === "token") {
+          accumulated += event.text;
+          setAnswer(accumulated);
+        } else if (event.type === "conv") {
+          if (event.conversation_id) {
+            window.dispatchEvent(new CustomEvent("askmynotes:new-conversation", {
+              detail: {
+                id:    event.conversation_id,
+                title: questionText.trim().slice(0, 60) || "New Chat",
+              },
+            }));
+          }
         }
-        // ── Parse __CONV__ marker (new conversation created server-side) ──
-        const convIdx = rawChunk.indexOf("\n__CONV__");
-        if (convIdx !== -1) {
-          const textPart = rawChunk.slice(0, convIdx);
-          const metaPart = rawChunk.slice(convIdx + 9); // "\n__CONV__".length === 9
-          if (textPart) { accumulated += textPart; setAnswer(accumulated); }
-          try {
-            const convMeta = JSON.parse(metaPart);
-            if (convMeta.conversation_id) {
-              window.dispatchEvent(new CustomEvent("askmynotes:new-conversation", {
-                detail: {
-                  id:    convMeta.conversation_id,
-                  title: questionText.trim().slice(0, 60) || "New Chat",
-                },
-              }));
-            }
-          } catch {}
-          continue;
-        }
-
-        accumulated += rawChunk;
-        setAnswer(accumulated);
       }
 
       if (chatMode !== "coach") fireTracking();
@@ -1279,15 +1045,19 @@ export function DashboardProvider({ children }) {
       }
 
       const fetchAdaptivePlan = async () => {
-        if (!userId) return;
-        const res = await fetch(`/api/study-plan/adaptive?user_id=${userId}`);
+        if (!userId || !session?.access_token) return;
+        const res = await fetch("/api/study-plan/adaptive", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
         const data = await res.json();
         setAdaptivePlan(data.plan || []);
       };
 
       const fetchMastery = async () => {
-        if (!userId) return;
-        const res = await fetch(`/api/mastery/get?user_id=${userId}`);
+        if (!userId || !session?.access_token) return;
+        const res = await fetch("/api/mastery/get", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
         const data = await res.json();
         setMasteryTopics(data.topics || []);
       };

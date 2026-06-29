@@ -1,21 +1,18 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { verifyAuth, supabaseAdmin as supabase } from "@/lib/serverAuth";
 
 // Stores PDF file + metadata only — no parsing, no embeddings.
 // Parsing is triggered separately via /api/parse-pdf when the user activates the PDF.
 export async function POST(req) {
   try {
+    const user = await verifyAuth(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const formData = await req.formData();
     const file = formData.get("file");
-    const userId = formData.get("userId");
+    const userId = user.id; // always use token-verified id, never trust form data
 
     if (!file) return NextResponse.json({ error: "No file" }, { status: 400 });
-    if (!userId) return NextResponse.json({ error: "No userId" }, { status: 400 });
     if (file.type !== "application/pdf") {
       return NextResponse.json({ error: "Must be a PDF" }, { status: 400 });
     }

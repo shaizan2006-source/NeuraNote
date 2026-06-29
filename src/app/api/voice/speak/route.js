@@ -1,7 +1,8 @@
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
+import { recordAISpend, estimateCost } from "@/lib/aiSpend";
 
-const openai   = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai   = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -34,6 +35,13 @@ export async function POST(req) {
     });
 
     const buffer = Buffer.from(await mp3.arrayBuffer());
+
+    // Record TTS cost (fire-and-forget — never block the audio response)
+    const ttsChars = text.slice(0, 4096).length;
+    recordAISpend(user.id, {
+      costUsd:  estimateCost({ model: "tts-1", chars: ttsChars }),
+      ttsChars,
+    }).catch(() => {});
 
     return new Response(buffer, {
       headers: {

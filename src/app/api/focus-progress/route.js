@@ -1,21 +1,9 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
-async function getAuthUser(req) {
-  const token = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (!token) return null;
-  const { data: { user } } = await supabase.auth.getUser(token);
-  return user || null;
-}
+import { verifyAuth, supabaseAdmin as supabase } from "@/lib/serverAuth";
 
 // ✅ SAVE TASK
 export async function POST(req) {
-  const user = await getAuthUser(req);
+  const user = await verifyAuth(req);
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -46,7 +34,7 @@ export async function POST(req) {
 
 // ✅ GET TASKS
 export async function GET(req) {
-  const user = await getAuthUser(req);
+  const user = await verifyAuth(req);
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

@@ -10,6 +10,8 @@ import { ELECTRICAL_PROMPT } from './electrical.js';
 import { MEDICAL_PROMPT } from './medical.js';
 import { BUSINESS_PROMPT } from './business.js';
 import { GENERAL_PROMPT } from './general.js';
+import { UPSC_PROMPT } from './upsc.js';
+import { GATE_PROMPT } from './gate.js';
 
 const DOMAIN_PROMPTS = {
   cs:         CS_PROMPT,
@@ -24,6 +26,8 @@ const DOMAIN_PROMPTS = {
   medical:    MEDICAL_PROMPT,
   business:   BUSINESS_PROMPT,
   general:    GENERAL_PROMPT,
+  upsc:       UPSC_PROMPT,
+  gate:       GATE_PROMPT,
 };
 
 export function getDomainPrompt(domain) {

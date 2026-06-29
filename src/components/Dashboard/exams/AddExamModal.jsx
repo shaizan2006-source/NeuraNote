@@ -97,8 +97,8 @@ export default function AddExamModal({ onClose, onSubmit }) {
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
         style={{
-          background: "#111111",
-          border: "1px solid rgba(255,255,255,0.06)",
+          background: "var(--bg-surface)",
+          border: "1px solid var(--border-hairline)",
           borderRadius: 12,
           padding: 20,
           width: "90%",
@@ -108,7 +108,7 @@ export default function AddExamModal({ onClose, onSubmit }) {
           gap: 12,
         }}
       >
-        <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#f4f4f5" }}>
+        <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
           Add Exam
         </p>
 
@@ -123,16 +123,16 @@ export default function AddExamModal({ onClose, onSubmit }) {
             onChange={(e) => { setExamName(e.target.value); setError(""); }}
             style={{
               background: "rgba(255,255,255,0.04)",
-              border: `1px solid ${error && !examName.trim() ? "rgba(239,68,68,0.5)" : "rgba(255,255,255,0.06)"}`,
+              border: `1px solid ${error && !examName.trim() ? "color-mix(in srgb, var(--error) 50%, transparent)" : "var(--border-hairline)"}`,
               borderRadius: 6,
               padding: "10px",
               fontSize: 12,
-              color: "#e4e4e7",
+              color: "var(--text-primary)",
               outline: "none",
             }}
           />
           {nearLimit && (
-            <p style={{ margin: 0, fontSize: 9, color: charCount >= MAX_NAME_LENGTH ? "#EF4444" : "#71717a" }}>
+            <p style={{ margin: 0, fontSize: 9, color: charCount >= MAX_NAME_LENGTH ? "var(--error)" : "var(--text-tertiary)" }}>
               {charCount}/{MAX_NAME_LENGTH} characters
             </p>
           )}
@@ -145,11 +145,11 @@ export default function AddExamModal({ onClose, onSubmit }) {
             onChange={(e) => { setSubject(e.target.value); setError(""); }}
             style={{
               background: "rgba(255,255,255,0.04)",
-              border: `1px solid ${error && !subject ? "rgba(239,68,68,0.5)" : "rgba(255,255,255,0.06)"}`,
+              border: `1px solid ${error && !subject ? "color-mix(in srgb, var(--error) 50%, transparent)" : "var(--border-hairline)"}`,
               borderRadius: 6,
               padding: "10px",
               fontSize: 12,
-              color: subject ? "#e4e4e7" : "#52525b",
+              color: subject ? "var(--text-primary)" : "var(--text-tertiary)",
               outline: "none",
               cursor: "pointer",
             }}
@@ -170,16 +170,16 @@ export default function AddExamModal({ onClose, onSubmit }) {
             onChange={(e) => { setExamDate(e.target.value); setError(""); }}
             style={{
               background: "rgba(255,255,255,0.04)",
-              border: `1px solid ${isPastDate || (error && !examDate) ? "rgba(239,68,68,0.5)" : "rgba(255,255,255,0.06)"}`,
+              border: `1px solid ${isPastDate || (error && !examDate) ? "color-mix(in srgb, var(--error) 50%, transparent)" : "var(--border-hairline)"}`,
               borderRadius: 6,
               padding: "10px",
               fontSize: 12,
-              color: examDate ? "#e4e4e7" : "#52525b",
+              color: examDate ? "var(--text-primary)" : "var(--text-tertiary)",
               outline: "none",
             }}
           />
           {isPastDate && (
-            <p style={{ margin: 0, fontSize: 9, color: "#EF4444" }}>
+            <p style={{ margin: 0, fontSize: 9, color: "var(--error)" }}>
               Date is in the past — the exam will be marked completed immediately.
             </p>
           )}
@@ -189,11 +189,11 @@ export default function AddExamModal({ onClose, onSubmit }) {
         {error && (
           <div style={{
             padding: "8px 10px",
-            background: "rgba(239,68,68,0.08)",
-            border: "1px solid rgba(239,68,68,0.3)",
+            background: "color-mix(in srgb, var(--error) 8%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--error) 30%, transparent)",
             borderRadius: 6,
           }}>
-            <p style={{ margin: 0, fontSize: 11, color: "#fca5a5" }}>{error}</p>
+            <p style={{ margin: 0, fontSize: 11, color: "var(--error)" }}>{error}</p>
           </div>
         )}
 
@@ -204,8 +204,8 @@ export default function AddExamModal({ onClose, onSubmit }) {
             style={{
               flex: 1, padding: "10px",
               background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.06)",
-              borderRadius: 6, color: "#a1a1aa", fontSize: 12, cursor: "pointer",
+              border: "1px solid var(--border-hairline)",
+              borderRadius: 6, color: "var(--text-secondary)", fontSize: 12, cursor: "pointer",
             }}
           >
             Cancel
@@ -215,8 +215,8 @@ export default function AddExamModal({ onClose, onSubmit }) {
             disabled={loading}
             style={{
               flex: 1, padding: "10px",
-              background: loading ? "rgba(139,92,246,0.3)" : "linear-gradient(135deg, #8B5CF6, #6D28D9)",
-              border: "none", borderRadius: 6, color: "#fff",
+              background: loading ? "color-mix(in srgb, var(--accent) 30%, transparent)" : "var(--accent-grad)",
+              border: "none", borderRadius: 6, color: "var(--bg-base)",
               fontSize: 12, fontWeight: 600,
               cursor: loading ? "not-allowed" : "pointer",
               opacity: loading ? 0.6 : 1,
@@ -226,7 +226,7 @@ export default function AddExamModal({ onClose, onSubmit }) {
           </button>
         </div>
 
-        <p style={{ margin: 0, fontSize: 9, color: "#3f3f46", textAlign: "center" }}>
+        <p style={{ margin: 0, fontSize: 9, color: "var(--text-disabled)", textAlign: "center" }}>
           Press Enter to submit · Esc to close
         </p>
       </motion.div>

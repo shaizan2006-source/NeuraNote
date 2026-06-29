@@ -1,29 +1,16 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-// 🔹 Supabase (server-side)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { verifyAuth, supabaseAdmin as supabase } from "@/lib/serverAuth";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { user_id } = body;
+    const user = await verifyAuth(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (!user_id) {
-      return NextResponse.json(
-        { error: "Missing user_id" },
-        { status: 400 }
-      );
-    }
-
-    // 🔹 Fetch chat history
+    // 🔹 Fetch chat history — scoped to authenticated user only
     const { data, error } = await supabase
       .from("chat_messages")
       .select("*")
-      .eq("user_id", user_id)
+      .eq("user_id", user.id)
       .order("created_at", { ascending: true });
 
     if (error) {

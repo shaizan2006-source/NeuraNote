@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
+import { recordAISpend, estimateCost } from "@/lib/aiSpend";
 
-const openai   = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai   = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -64,6 +65,16 @@ export async function POST(req) {
     const raw     = completion.choices[0].message.content.trim();
     const endCall = raw.includes("[END_CALL]");
     const text    = raw.replace("[END_CALL]", "").trim();
+
+    // Record spend (fire-and-forget)
+    const promptLen   = messages.reduce((n, m) => n + (m.content?.length ?? 0), 0);
+    const estimatedIn  = Math.ceil(promptLen / 4);
+    const estimatedOut = Math.ceil(text.length / 4);
+    recordAISpend(user.id, {
+      costUsd:   estimateCost({ model: "gpt-4o-mini", tokensIn: estimatedIn, tokensOut: estimatedOut }),
+      tokensIn:  estimatedIn,
+      tokensOut: estimatedOut,
+    }).catch(() => {});
 
     return NextResponse.json({ text, endCall });
   } catch (err) {

@@ -1,10 +1,11 @@
 import { verifyAuth, supabaseAdmin } from "@/lib/serverAuth";
+import { todayIST } from "@/lib/format/date";
 
 export async function POST(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = todayIST();
 
   await supabaseAdmin
     .from("daily_briefings")

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { verifyAuth } from '@/lib/serverAuth';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 
 export async function POST(req) {
   const user = await verifyAuth(req);

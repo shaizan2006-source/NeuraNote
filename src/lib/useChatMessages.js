@@ -1,5 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
+import { parseSseStream } from '@/lib/sseParser';
+import { clientFetch } from '@/lib/clientFetch';
 
 /**
  * Shared streaming chat hook used by both QuickChatDrawer and FocusInlineChat.
@@ -28,46 +30,33 @@ export function useChatMessages({ userId, documentId } = {}) {
     ]);
 
     try {
-      const res = await fetch('/api/quick-chat', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await clientFetch('/api/quick-chat', {
+        method: 'POST',
         body: JSON.stringify({
           question:        q,
-          user_id:         userId,
           document_id:     documentId || null,
           conversation_id: conversationId,
         }),
       });
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
+      if (!res || !res.ok) {
+        const err = await res?.json().catch(() => ({})) ?? {};
         throw new Error(err.error || 'Request failed');
       }
 
-      const reader  = res.body.getReader();
-      const decoder = new TextDecoder();
-      let raw = '';
+      let accumulated = '';
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        raw += decoder.decode(value, { stream: true });
-        const sep     = raw.indexOf('\n__CONV__');
-        const visible = sep !== -1 ? raw.slice(0, sep) : raw;
-        setMessages(prev => {
-          const msgs = [...prev];
-          msgs[msgs.length - 1] = { role: 'assistant', content: visible, streaming: true };
-          return msgs;
-        });
-      }
-
-      // Parse conversation id appended after stream
-      const sep = raw.indexOf('\n__CONV__');
-      if (sep !== -1) {
-        try {
-          const meta = JSON.parse(raw.slice(sep + 9));
-          if (meta.conversation_id) setConversationId(meta.conversation_id);
-        } catch {}
+      for await (const event of parseSseStream(res)) {
+        if (event.type === 'token') {
+          accumulated += event.text;
+          setMessages(prev => {
+            const msgs = [...prev];
+            msgs[msgs.length - 1] = { role: 'assistant', content: accumulated, streaming: true };
+            return msgs;
+          });
+        } else if (event.type === 'conv' && event.conversation_id) {
+          setConversationId(event.conversation_id);
+        }
       }
 
       setMessages(prev => {

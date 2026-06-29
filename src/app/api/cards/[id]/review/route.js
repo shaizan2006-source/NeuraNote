@@ -19,7 +19,7 @@
 
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { computeNextReview } from "@/lib/sm2Scheduler";
+import { scheduleReview } from "@/lib/fsrs/scheduler";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -28,7 +28,8 @@ const supabase = createClient(
 
 const RATING_DELTA = { again: -0.2, hard: 0, good: 0.15, easy: 0.3 };
 const RATING_DAYS  = { again: 0,    hard: 1, good: 5,    easy: 14 };
-const RATING_TO_SM2_QUALITY = { again: 1, hard: 2, good: 4, easy: 5 };
+// FSRS rating values: Again=1, Hard=2, Good=3, Easy=4
+const RATING_TO_FSRS = { again: 1, hard: 2, good: 3, easy: 4 };
 
 export async function POST(req, { params }) {
   try {
@@ -109,46 +110,8 @@ export async function POST(req, { params }) {
       .maybeSingle();
 
     if (masteryTopic) {
-      const sm2Quality = RATING_TO_SM2_QUALITY[rating] || 3;
-      const { data: srCard } = await supabase
-        .from("spaced_repetition_cards")
-        .select("ease_factor, interval_days, repetition, next_due_at")
-        .eq("user_id", user.id)
-        .eq("topic", masteryTopic.topic)
-        .maybeSingle();
-
-      if (srCard) {
-        // Card exists — update using SM-2
-        const { newEF, newInterval, newRepetition, nextDueAt } = computeNextReview(srCard, sm2Quality);
-        await supabase
-          .from("spaced_repetition_cards")
-          .update({
-            ease_factor:     newEF,
-            interval_days:   newInterval,
-            repetition:      newRepetition,
-            last_reviewed_at: new Date().toISOString(),
-            next_due_at:     nextDueAt.toISOString(),
-            updated_at:      new Date().toISOString(),
-          })
-          .eq("user_id", user.id)
-          .eq("topic", masteryTopic.topic);
-      } else {
-        // Card doesn't exist — create it (first review starts at 1 day)
-        const nextDueAt = new Date();
-        nextDueAt.setDate(nextDueAt.getDate() + 1);
-        await supabase
-          .from("spaced_repetition_cards")
-          .insert({
-            user_id:       user.id,
-            topic:         masteryTopic.topic,
-            subject:       masteryTopic.subject,
-            ease_factor:   2.5,
-            interval_days: 1,
-            repetition:    1,
-            last_reviewed_at: new Date().toISOString(),
-            next_due_at:   nextDueAt.toISOString(),
-          });
-      }
+      const fsrsRating = RATING_TO_FSRS[rating] ?? 3;
+      await scheduleReview(user.id, masteryTopic.topic, fsrsRating).catch(() => null);
     }
 
     return NextResponse.json({

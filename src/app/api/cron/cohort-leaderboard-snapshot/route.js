@@ -1,4 +1,6 @@
 import { supabaseAdmin } from "@/lib/serverAuth";
+import { todayIST, daysAgoIST } from "@/lib/format/date";
+import { cronSecretValid } from "@/lib/security/cronAuth";
 
 async function computeRankings(cohortId) {
   // Get all members
@@ -9,7 +11,7 @@ async function computeRankings(cohortId) {
 
   if (!members?.length) return [];
 
-  const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString().slice(0, 10);
+  const weekAgo = daysAgoIST(7);
 
   // Score each member by focus minutes this week
   const scores = await Promise.all(members.map(async (m) => {
@@ -30,11 +32,10 @@ async function computeRankings(cohortId) {
 }
 
 export async function GET(req) {
-  const secret = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (secret !== process.env.CRON_SECRET) return new Response(null, { status: 401 });
+  if (!cronSecretValid(req)) return new Response(null, { status: 401 });
 
   const { data: cohorts } = await supabaseAdmin.from("cohorts").select("id");
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = todayIST();
   let snapshotted = 0;
 
   for (const cohort of cohorts ?? []) {

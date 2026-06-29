@@ -1,12 +1,12 @@
-"use client";
+﻿"use client";
 import { useEffect, useState } from "react";
-import { createBrowserClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 
 const STATUS_LABELS = {
-  uploading: "Uploading…",
-  parsing: "Reading PDF…",
-  embedding: "Building embeddings…",
-  extracting_concepts: "Extracting concepts…",
+  uploading: "Uploadingâ€¦",
+  parsing: "Reading PDFâ€¦",
+  embedding: "Building embeddingsâ€¦",
+  extracting_concepts: "Extracting conceptsâ€¦",
   ready: "Ready",
   failed: "Failed",
 };
@@ -19,7 +19,7 @@ export function useDocumentProgress(documentId) {
   useEffect(() => {
     if (!documentId) return;
 
-    const supabase = createBrowserClient(
+    const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     );

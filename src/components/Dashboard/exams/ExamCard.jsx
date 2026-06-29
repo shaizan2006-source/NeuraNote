@@ -23,16 +23,16 @@ class ExamCardErrorBoundary extends Component {
         background: "rgba(255,255,255,0.02)",
         borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)",
       }}>
-        <p style={{ margin: 0, fontSize: 11, color: "#71717a" }}>
+        <p style={{ margin: 0, fontSize: 11, color: "var(--text-tertiary)" }}>
           Something went wrong loading exam data.
         </p>
         <button
           onClick={() => this.setState({ hasError: false })}
           style={{
             marginTop: 8, fontSize: 10, padding: "4px 12px",
-            background: "rgba(139,92,246,0.15)",
-            border: "1px solid rgba(139,92,246,0.3)",
-            borderRadius: 4, color: "#a78bfa", cursor: "pointer",
+            background: "color-mix(in srgb, var(--accent) 14%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)",
+            borderRadius: 4, color: "var(--accent)", cursor: "pointer",
           }}
         >
           Retry
@@ -66,9 +66,9 @@ function ProgressSnapshot({ masteryTopics, subject, lastActiveDate, normalizeSub
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
       {[
-        { value: `${avgAccuracy}%`, label: "Avg accuracy", color: "#22c55e" },
-        { value: total ? `${mastered}/${total}` : "—", label: "Mastered", color: "#a78bfa" },
-        { value: lastActive, label: "Last active", color: "#fb923c" },
+        { value: `${avgAccuracy}%`, label: "Avg accuracy", color: "var(--success)" },
+        { value: total ? `${mastered}/${total}` : "—", label: "Mastered", color: "var(--accent)" },
+        { value: lastActive, label: "Last active", color: "var(--warning)" },
       ].map(({ value, label, color }) => (
         <div key={label} style={{
           textAlign: "center", padding: "7px 4px",
@@ -76,7 +76,7 @@ function ProgressSnapshot({ masteryTopics, subject, lastActiveDate, normalizeSub
           border: "1px solid rgba(255,255,255,0.05)", borderRadius: 6,
         }}>
           <p style={{ margin: 0, fontSize: 14, fontWeight: 900, color }}>{value}</p>
-          <p style={{ margin: "2px 0 0", fontSize: 9, color: "#71717a" }}>{label}</p>
+          <p style={{ margin: "2px 0 0", fontSize: 9, color: "var(--text-tertiary)" }}>{label}</p>
         </div>
       ))}
     </div>
@@ -143,27 +143,26 @@ export default function ExamCard() {
   return (
     <ExamCardErrorBoundary>
       <div style={{
-        background: "linear-gradient(135deg, rgba(34,211,238,0.08), rgba(139,92,246,0.08))",
+        background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), color-mix(in srgb, var(--accent) 8%, transparent))",
         borderWidth: "1px 1px 1px 2px", borderStyle: "solid",
-        borderColor: "rgba(34,211,238,0.25) rgba(34,211,238,0.25) rgba(34,211,238,0.25) rgba(139,92,246,0.35)",
+        borderColor: "color-mix(in srgb, var(--accent) 28%, transparent) color-mix(in srgb, var(--accent) 28%, transparent) color-mix(in srgb, var(--accent) 28%, transparent) color-mix(in srgb, var(--accent) 32%, transparent)",
         borderRadius: 12, padding: 14,
         display: "flex", flexDirection: "column", gap: 10,
-        boxShadow: "inset 0 0 30px rgba(34,211,238,0.04)",
         height: "100%", boxSizing: "border-box",
       }}>
         {/* Title row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#f4f4f5" }}>Exams</p>
-            <p style={{ margin: "2px 0 0", fontSize: 9, color: "#52525b" }}>
+            <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>Exams</p>
+            <p style={{ margin: "2px 0 0", fontSize: 9, color: "var(--text-tertiary)" }}>
               Track upcoming exams and focus on weak areas
             </p>
           </div>
           {selectedExam?.subject && (
             <span style={{
-              padding: "2px 8px", background: "rgba(139,92,246,0.1)",
-              border: "1px solid rgba(139,92,246,0.25)", borderRadius: 10,
-              fontSize: 9, color: "#c4b5fd", fontWeight: 600, textTransform: "uppercase",
+              padding: "2px 8px", background: "color-mix(in srgb, var(--accent) 10%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--accent) 28%, transparent)", borderRadius: 10,
+              fontSize: 9, color: "var(--accent)", fontWeight: 600, textTransform: "uppercase",
             }}>
               {selectedExam.subject}
             </span>
@@ -209,9 +208,9 @@ export default function ExamCard() {
               onClick={handleFixWeakAreas}
               style={{
                 padding: "7px 10px",
-                background: "linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05))",
-                border: "1px solid rgba(239,68,68,0.3)",
-                borderRadius: 6, color: "#fca5a5", fontSize: 10, fontWeight: 600, cursor: "pointer",
+                background: "linear-gradient(135deg, color-mix(in srgb, var(--error) 15%, transparent), color-mix(in srgb, var(--error) 5%, transparent))",
+                border: "1px solid color-mix(in srgb, var(--error) 30%, transparent)",
+                borderRadius: 6, color: "var(--error)", fontSize: 10, fontWeight: 600, cursor: "pointer",
               }}
             >
               ⚡ Fix Weak Areas
@@ -220,9 +219,9 @@ export default function ExamCard() {
               onClick={() => setShowPlanModal(true)}
               style={{
                 padding: "7px 10px",
-                background: "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05))",
-                border: "1px solid rgba(139,92,246,0.3)",
-                borderRadius: 6, color: "#c4b5fd", fontSize: 10, fontWeight: 600, cursor: "pointer",
+                background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 15%, transparent), color-mix(in srgb, var(--accent) 5%, transparent))",
+                border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)",
+                borderRadius: 6, color: "var(--accent)", fontSize: 10, fontWeight: 600, cursor: "pointer",
               }}
             >
               📅 Study Plan
@@ -235,9 +234,9 @@ export default function ExamCard() {
           onClick={() => setShowAddModal(true)}
           style={{
             marginTop: "auto", padding: "7px 12px",
-            background: "linear-gradient(135deg, #8B5CF6, #6D28D9)",
-            border: "1px solid rgba(139,92,246,0.3)", borderRadius: 6,
-            color: "#fff", fontSize: 11, fontWeight: 600, cursor: "pointer",
+            background: "var(--accent-grad)",
+            border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)", borderRadius: 6,
+            color: "var(--bg-base)", fontSize: 11, fontWeight: 600, cursor: "pointer",
           }}
         >
           + Add Exam

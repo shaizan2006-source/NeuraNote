@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useFocusSession } from '@/context/FocusSessionContext';
+import { parseSseStream } from '@/lib/sseParser';
+import { clientFetch } from '@/lib/clientFetch';
 
 /**
  * useFocusSessionChat: Chat hook with session persistence
@@ -54,46 +56,33 @@ export function useFocusSessionChat({ userId, documentId } = {}) {
     setMessages(newMessages);
 
     try {
-      const res = await fetch('/api/quick-chat', {
+      const res = await clientFetch('/api/quick-chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          question: q,
-          user_id: userId,
-          document_id: documentId || null,
+          question:        q,
+          document_id:     documentId || null,
           conversation_id: conversationId,
         }),
       });
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
+      if (!res || !res.ok) {
+        const err = await res?.json().catch(() => ({})) ?? {};
         throw new Error(err.error || 'Request failed');
       }
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let raw = '';
+      let accumulated = '';
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        raw += decoder.decode(value, { stream: true });
-        const sep = raw.indexOf('\n__CONV__');
-        const visible = sep !== -1 ? raw.slice(0, sep) : raw;
-        setMessages(prev => {
-          const msgs = [...prev];
-          msgs[msgs.length - 1] = { ...msgs[msgs.length - 1], content: visible, streaming: true };
-          return msgs;
-        });
-      }
-
-      // Parse conversation ID if provided
-      const sep = raw.indexOf('\n__CONV__');
-      if (sep !== -1) {
-        try {
-          const meta = JSON.parse(raw.slice(sep + 9));
-          if (meta.conversation_id) setConversationId(meta.conversation_id);
-        } catch {}
+      for await (const event of parseSseStream(res)) {
+        if (event.type === 'token') {
+          accumulated += event.text;
+          setMessages(prev => {
+            const msgs = [...prev];
+            msgs[msgs.length - 1] = { ...msgs[msgs.length - 1], content: accumulated, streaming: true };
+            return msgs;
+          });
+        } else if (event.type === 'conv' && event.conversation_id) {
+          setConversationId(event.conversation_id);
+        }
       }
 
       // Mark message as complete

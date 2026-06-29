@@ -1,19 +1,13 @@
 import { NextResponse } from "next/server";
+import { verifyAuth } from "@/lib/serverAuth";
 import { getAdaptivePlan } from "@/lib/adaptivePlanner";
 
 export async function GET(req) {
   try {
-    const { searchParams } = new URL(req.url);
-    const user_id = searchParams.get("user_id");
+    const user = await verifyAuth(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (!user_id) {
-      return NextResponse.json(
-        { error: "Missing user_id" },
-        { status: 400 }
-      );
-    }
-
-    const plan = await getAdaptivePlan(user_id);
+    const plan = await getAdaptivePlan(user.id);
 
     return NextResponse.json({
       success: true,

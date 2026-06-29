@@ -1,65 +1,98 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
+import { parseSynthesizedTasks, ENHANCED_FALLBACK_TASKS, stripFences } from "../../src/lib/focusPlanner.js";
 
-// ── Pure function inlined from the route (identical logic) ──────────
-const FALLBACK_TASKS = [
-  { name: "Read through the material carefully", estimatedMinutes: 15 },
-  { name: "Note key concepts and definitions", estimatedMinutes: 10 },
-  { name: "Attempt practice problems", estimatedMinutes: 20 },
-  { name: "Review and summarise", estimatedMinutes: 10 },
-];
-
-function parseFocusTasks(raw) {
-  try {
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) return FALLBACK_TASKS;
-    return parsed.map((t, i) => ({
-      id: `t${i + 1}`,
-      name: String(t.name || "Study task"),
-      estimatedMinutes: Number(t.estimatedMinutes) || 10,
-      status: i === 0 ? "current" : "pending",
-    }));
-  } catch {
-    return FALLBACK_TASKS;
-  }
-}
-
-// ── Tests ───────────────────────────────────────────────────────────
-describe("parseFocusTasks", () => {
+describe("parseSynthesizedTasks", () => {
   test("parses valid GPT JSON array", () => {
     const raw = JSON.stringify([
-      { name: "Review definitions", estimatedMinutes: 8 },
-      { name: "Solve problems", estimatedMinutes: 12 },
+      { name: "Review definitions", estimatedMinutes: 8, taskType: "memorisation", examWeight: "high" },
+      { name: "Solve problems", estimatedMinutes: 12, taskType: "practice", examWeight: "medium" },
     ]);
-    const result = parseFocusTasks(raw);
+    const result = parseSynthesizedTasks(raw);
+    assert.ok(Array.isArray(result), "should return an array");
     assert.equal(result.length, 2);
     assert.equal(result[0].id, "t1");
     assert.equal(result[0].name, "Review definitions");
     assert.equal(result[0].estimatedMinutes, 8);
-    assert.equal(result[0].status, "current");
-    assert.equal(result[1].status, "pending");
+    assert.equal(result[0].taskType, "memorisation");
+    assert.equal(result[0].examWeight, "high");
+    assert.equal(result[1].id, "t2");
   });
 
-  test("returns fallback tasks on invalid JSON", () => {
-    const result = parseFocusTasks("not json at all");
-    assert.equal(result, FALLBACK_TASKS);
-    assert.equal(result.length, 4);
+  test("returns null on invalid JSON", () => {
+    const result = parseSynthesizedTasks("not json at all");
+    assert.equal(result, null);
   });
 
-  test("returns fallback tasks on empty array", () => {
-    const result = parseFocusTasks("[]");
-    assert.equal(result, FALLBACK_TASKS);
+  test("returns null on empty array", () => {
+    const result = parseSynthesizedTasks("[]");
+    assert.equal(result, null);
   });
 
-  test("handles missing estimatedMinutes with default 10", () => {
+  test("clamps estimatedMinutes below 5 up to 5", () => {
+    const raw = JSON.stringify([{ name: "Quick task", estimatedMinutes: 1 }]);
+    const result = parseSynthesizedTasks(raw);
+    assert.equal(result[0].estimatedMinutes, 5);
+  });
+
+  test("clamps estimatedMinutes above 60 down to 60", () => {
+    const raw = JSON.stringify([{ name: "Long task", estimatedMinutes: 120 }]);
+    const result = parseSynthesizedTasks(raw);
+    assert.equal(result[0].estimatedMinutes, 60);
+  });
+
+  test("defaults missing estimatedMinutes to 15", () => {
     const raw = JSON.stringify([{ name: "Study" }]);
-    const result = parseFocusTasks(raw);
-    assert.equal(result[0].estimatedMinutes, 10);
+    const result = parseSynthesizedTasks(raw);
+    assert.equal(result[0].estimatedMinutes, 15);
   });
 
-  test("handles missing name with default string", () => {
-    const raw = JSON.stringify([{ estimatedMinutes: 5 }]);
-    const result = parseFocusTasks(raw);
+  test("defaults missing name to 'Study task'", () => {
+    const raw = JSON.stringify([{ estimatedMinutes: 10 }]);
+    const result = parseSynthesizedTasks(raw);
     assert.equal(result[0].name, "Study task");
+  });
+
+  test("defaults invalid taskType to 'conceptual'", () => {
+    const raw = JSON.stringify([{ name: "Task", taskType: "unknown_type" }]);
+    const result = parseSynthesizedTasks(raw);
+    assert.equal(result[0].taskType, "conceptual");
+  });
+
+  test("defaults invalid examWeight to 'standard'", () => {
+    const raw = JSON.stringify([{ name: "Task", examWeight: "critical" }]);
+    const result = parseSynthesizedTasks(raw);
+    assert.equal(result[0].examWeight, "standard");
+  });
+
+  test("strips markdown code fences before parsing", () => {
+    const raw = "```json\n" + JSON.stringify([{ name: "Fenced task", estimatedMinutes: 10 }]) + "\n```";
+    const result = parseSynthesizedTasks(raw);
+    assert.ok(Array.isArray(result));
+    assert.equal(result[0].name, "Fenced task");
+  });
+});
+
+describe("ENHANCED_FALLBACK_TASKS", () => {
+  test("has at least 4 tasks with required fields", () => {
+    assert.ok(Array.isArray(ENHANCED_FALLBACK_TASKS));
+    assert.ok(ENHANCED_FALLBACK_TASKS.length >= 4);
+    for (const t of ENHANCED_FALLBACK_TASKS) {
+      assert.ok(t.id, "task must have id");
+      assert.ok(t.name, "task must have name");
+      assert.ok(typeof t.estimatedMinutes === "number", "task must have estimatedMinutes");
+      assert.ok(t.taskType, "task must have taskType");
+      assert.ok(t.examWeight, "task must have examWeight");
+    }
+  });
+});
+
+describe("stripFences", () => {
+  test("removes ```json code fences", () => {
+    assert.equal(stripFences("```json\n[1,2]\n```"), "[1,2]");
+  });
+
+  test("is a no-op on plain JSON", () => {
+    assert.equal(stripFences("[1,2]"), "[1,2]");
   });
 });

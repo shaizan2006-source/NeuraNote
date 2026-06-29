@@ -2,6 +2,7 @@
 export const PRICING_AMOUNTS = {
   student: { monthly: 19900, yearly: 159900 },
   pro:     { monthly: 39900, yearly: 299900 },
+  proplus: { monthly: 69900, yearly: 599900 },  // Pro+ with unlimited voice — launch behind VOICE_PROPLUS_ENABLED
   family:  { yearly: 449900 },
 };
 

@@ -1,6 +1,4 @@
-import OpenAI from "openai";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { visionChat } from "@/lib/llm/openai";
 
 const VISION_PROMPT = `You are an expert at reading academic questions from photos taken by students.
 
@@ -23,21 +21,19 @@ Respond ONLY with valid JSON:
 }`;
 
 export async function recognizeQuestion(imageBase64, mimeType = "image/jpeg") {
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "image_url", image_url: { url: `data:${mimeType};base64,${imageBase64}`, detail: "high" } },
-          { type: "text", text: VISION_PROMPT },
-        ],
-      },
-    ],
+  if (!imageBase64) throw new Error("recognizeQuestion: imageBase64 is required");
+
+  const raw = await visionChat(imageBase64, mimeType, VISION_PROMPT, {
     max_tokens: 400,
     response_format: { type: "json_object" },
   });
 
-  const raw = response.choices[0].message.content;
-  return JSON.parse(raw);
+  // Guard: model returned empty content
+  if (!raw) throw new Error("recognizeQuestion: empty response from vision model");
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    throw new Error(`recognizeQuestion: model returned invalid JSON: ${raw.slice(0, 100)}`);
+  }
 }

@@ -709,6 +709,105 @@ const DOMAIN_KEYWORDS = {
       "planning", "controlling", "coordinating",
     ],
   },
+
+  upsc: {
+    high: [
+      // Direct exam references
+      "upsc", "civil services", "ias exam", "ips exam", "ifs exam",
+      "prelims", "mains", "csat", "upsc mains", "upsc prelims",
+      "gs paper", "gs-1", "gs-2", "gs-3", "gs-4", "gs1", "gs2", "gs3", "gs4",
+      "essay paper upsc", "optional paper",
+      // Polity — unambiguous UPSC terms
+      "fundamental rights article", "dpsp", "directive principles",
+      "fundamental duties", "constitutional amendment",
+      "preamble of india", "federal structure", "rajya sabha", "lok sabha",
+      "president of india", "prime minister role", "supreme court india",
+      "high court india", "governor role india", "centre state relations",
+      "seventh schedule", "concurrent list", "state list", "union list",
+      "emergency provisions india", "article 356", "president's rule",
+      "constitutional body india", "statutory body india",
+      "niti aayog", "planning commission", "finance commission india",
+      "election commission india", "cag india", "upsc body", "lokpal",
+      // History — India-specific
+      "harappan civilisation", "indus valley civilisation",
+      "mauryan empire", "ashoka", "gupta empire", "mughal empire",
+      "delhi sultanate", "maratha empire", "vijayanagara",
+      "battle of plassey", "battle of panipat",
+      "1857 revolt", "sepoy mutiny", "freedom struggle",
+      "indian national congress", "gandhi", "nehru", "ambedkar",
+      "partition of india", "quit india movement", "non cooperation",
+      "civil disobedience", "khilafat movement",
+      // Geography — India-specific
+      "western ghats", "eastern ghats", "deccan plateau",
+      "indo-gangetic plain", "himalayan range",
+      "monsoon india", "river system india", "ganga", "brahmaputra",
+      "bay of bengal", "arabian sea", "indian ocean",
+      // Environment — India-specific
+      "wildlife protection act", "forest conservation act", "environment protection act",
+      "national park india", "tiger reserve", "biosphere reserve india",
+      "ramsar site india", "wetland india",
+      // Economy — India-specific
+      "five year plan india", "make in india", "startup india",
+      "goods and services tax", "gst india", "fiscal deficit india",
+      "current account deficit india", "monetary policy india", "rbi policy",
+      // Ethics (GS-IV)
+      "civil servant ethics", "probity", "ethical dilemma upsc",
+      "public administration ethics", "integrity in governance",
+    ],
+    medium: [
+      "governance", "polity", "constitutional", "parliament",
+      "federalism", "democracy india", "election india",
+      "welfare scheme", "government scheme india", "sdg india",
+      "human development index india", "hunger index india",
+      "social justice india", "tribal rights", "scheduled castes",
+      "international relations india", "bilateral relations",
+      "foreign policy india", "g20 india", "brics",
+    ],
+  },
+
+  gate: {
+    high: [
+      // Direct exam references
+      "gate exam", "gate cs", "gate cse", "gate ece", "gate me", "gate ee",
+      "gate previous year", "gate pyq", "gate question",
+      // GATE CS specific
+      "gate computer science", "gate it paper",
+      // TOC — unambiguous GATE terms
+      "pumping lemma", "push down automata", "pda", "context free language",
+      "turing machine", "halting problem", "rice theorem",
+      "regular language", "dfa minimization", "nfa to dfa",
+      "ambiguous grammar", "parse tree", "leftmost derivation",
+      "ll parser", "lr parser", "slr", "clr", "lalr",
+      // Algorithms — GATE specific
+      "master theorem", "recurrence relation", "np complete", "np hard",
+      "reduction in complexity", "polynomial reduction",
+      "amortized analysis", "potential method",
+      "topological sort", "strongly connected component", "scc",
+      "minimum spanning tree", "kruskal algorithm", "prim algorithm",
+      // OS — GATE level
+      "belady anomaly", "thrashing", "working set model",
+      "rate monotonic scheduling", "earliest deadline first",
+      "dining philosopher", "reader writer problem",
+      "monitor synchronization", "test and set", "compare and swap",
+      // Networks — GATE level
+      "distance vector routing", "link state routing",
+      "classless routing", "variable length subnet",
+      "hamming distance code", "crc polynomial",
+      "sliding window protocol", "go back n", "selective repeat",
+    ],
+    medium: [
+      "binary search tree", "avl tree", "b+ tree", "red black tree",
+      "heap sort", "quick sort analysis", "merge sort recurrence",
+      "page replacement algorithm", "disk scheduling algorithm",
+      "round robin scheduling", "shortest job first",
+      "sql query", "relational algebra", "functional dependency",
+      "normal form", "boyce codd", "3nf",
+      "ip addressing", "subnet mask", "cidr notation",
+      "tcp handshake", "congestion control", "flow control",
+      "digital circuit", "boolean algebra", "k map",
+      "flip flop", "sequential circuit", "combinational circuit",
+    ],
+  },
 };
 
 

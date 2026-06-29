@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 import { generateExamStudyPlan, writeSessionStorage } from "@/lib/examUtils";
 
 const URGENCY_COLORS = {
-  "Learn":          { border: "#22c55e", bg: "rgba(34,197,94,0.05)",   text: "#4ade80" },
-  "Practice":       { border: "#f59e0b", bg: "rgba(245,158,11,0.05)",  text: "#fbbf24" },
-  "Revise":         { border: "#ef4444", bg: "rgba(239,68,68,0.05)",   text: "#f87171" },
-  "Final Revision": { border: "#ef4444", bg: "rgba(239,68,68,0.08)",   text: "#f87171" },
+  "Learn":          { border: "var(--success)", bg: "color-mix(in srgb, var(--success) 5%, transparent)", text: "var(--success)" },
+  "Practice":       { border: "var(--warning)", bg: "color-mix(in srgb, var(--warning) 5%, transparent)", text: "var(--warning)" },
+  "Revise":         { border: "var(--error)",   bg: "color-mix(in srgb, var(--error) 5%, transparent)",   text: "var(--error)" },
+  "Final Revision": { border: "var(--error)",   bg: "color-mix(in srgb, var(--error) 8%, transparent)",   text: "var(--error)" },
 };
 
 function getColors(action) {
@@ -52,10 +52,10 @@ export default function StudyPlanModal({ exam, weakTopics, getDaysLeft, onClose 
         style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60 }}
         onClick={onClose}
       >
-        <div style={{ background: "#111", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: 20, maxWidth: 400, width: "90%" }} onClick={(e) => e.stopPropagation()}>
-          <p style={{ margin: 0, fontSize: 13, color: "#e4e4e7", fontWeight: 700 }}>Exam date has passed</p>
-          <p style={{ margin: "6px 0 12px", fontSize: 11, color: "#71717a" }}>No study plan available for a past exam.</p>
-          <button onClick={onClose} style={{ padding: "6px 16px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6, color: "#a1a1aa", fontSize: 11, cursor: "pointer" }}>Close</button>
+        <div style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-hairline)", borderRadius: 12, padding: 20, maxWidth: 400, width: "90%" }} onClick={(e) => e.stopPropagation()}>
+          <p style={{ margin: 0, fontSize: 13, color: "var(--text-primary)", fontWeight: 700 }}>Exam date has passed</p>
+          <p style={{ margin: "6px 0 12px", fontSize: 11, color: "var(--text-tertiary)" }}>No study plan available for a past exam.</p>
+          <button onClick={onClose} style={{ padding: "6px 16px", background: "var(--bg-surface-2)", border: "1px solid var(--border-strong)", borderRadius: 6, color: "var(--text-secondary)", fontSize: 11, cursor: "pointer" }}>Close</button>
         </div>
       </div>
     );
@@ -67,19 +67,19 @@ export default function StudyPlanModal({ exam, weakTopics, getDaysLeft, onClose 
       onClick={onClose}
     >
       <div
-        style={{ background: "#111", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: 20, maxWidth: 440, width: "90%", maxHeight: "80vh", display: "flex", flexDirection: "column", gap: 12 }}
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-hairline)", borderRadius: 12, padding: 20, maxWidth: 440, width: "90%", maxHeight: "80vh", display: "flex", flexDirection: "column", gap: 12 }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#e4e4e7" }}>{exam.name}</p>
-            <p style={{ margin: "2px 0 0", fontSize: 10, color: "#71717a" }}>
+            <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>{exam.name}</p>
+            <p style={{ margin: "2px 0 0", fontSize: 10, color: "var(--text-tertiary)" }}>
               {daysLeft === 0 ? "Exam is today" : `${daysLeft} day${daysLeft !== 1 ? "s" : ""} left`}
               {weakTopics.length > 0 && ` · ${weakTopics.length} weak topic${weakTopics.length !== 1 ? "s" : ""}`}
             </p>
           </div>
-          <button onClick={onClose} style={{ padding: "4px 10px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 4, color: "#a1a1aa", fontSize: 10, cursor: "pointer" }}>
+          <button onClick={onClose} style={{ padding: "4px 10px", background: "var(--bg-surface-2)", border: "1px solid var(--border-hairline)", borderRadius: 4, color: "var(--text-secondary)", fontSize: 10, cursor: "pointer" }}>
             ✕ Close
           </button>
         </div>
@@ -97,10 +97,10 @@ export default function StudyPlanModal({ exam, weakTopics, getDaysLeft, onClose 
                   <p style={{ margin: 0, fontSize: 10, color: colors.text, fontWeight: 700 }}>
                     {item.day === 0 ? "Today" : `Day ${item.day}`}
                   </p>
-                  <p style={{ margin: 0, fontSize: 8, color: "#52525b" }}>{item.date}</p>
+                  <p style={{ margin: 0, fontSize: 8, color: "var(--text-disabled)" }}>{item.date}</p>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ margin: 0, fontSize: 10, color: "#e4e4e7" }}>
+                  <p style={{ margin: 0, fontSize: 10, color: "var(--text-primary)" }}>
                     {item.action}
                     {item.topics.length > 0
                       ? ": " + item.topics.map((t) => t.topic).join(", ")

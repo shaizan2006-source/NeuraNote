@@ -1,28 +1,22 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { verifyAuth } from "@/lib/serverAuth";
 import { handleChat } from "@/lib/chat";
-
-// 🔹 Supabase (server-side)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { message, user_id } = body;
+    const user = await verifyAuth(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (!message || !user_id) {
-      return NextResponse.json(
-        { error: "Missing message or user_id" },
-        { status: 400 }
-      );
+    const body = await req.json();
+    const { message } = body;
+
+    if (!message) {
+      return NextResponse.json({ error: "Missing message" }, { status: 400 });
     }
 
     // 🔹 Generate AI response using core engine
     const aiResponse = await handleChat({
-      user_id,
+      user_id: user.id,
       message,
     });
 

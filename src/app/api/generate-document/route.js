@@ -400,7 +400,7 @@ export async function POST(req) {
     }
     if (filename && docTitle === "Study Notes") docTitle = filename;
 
-    const date = new Date().toLocaleDateString("en-GB", {
+    const date = new Date().toLocaleDateString("en-IN", {
       day: "numeric", month: "long", year: "numeric",
     });
 

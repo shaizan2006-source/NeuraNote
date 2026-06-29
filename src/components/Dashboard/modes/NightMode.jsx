@@ -3,16 +3,16 @@ export default function NightMode({ userName, children }) {
   return (
     <div style={{ flex: 1 }}>
       <div style={{
-        background: "rgba(14,165,233,0.06)",
-        border: "1px solid rgba(14,165,233,0.12)",
+        background: "color-mix(in srgb, var(--accent) 6%, transparent)",
+        border: "1px solid color-mix(in srgb, var(--accent) 12%, transparent)",
         borderRadius: 14,
         padding: "18px 20px",
         marginBottom: 16,
       }}>
-        <p style={{ margin: 0, fontSize: 16, fontWeight: 500, color: "#7DD3FC" }}>
+        <p style={{ margin: 0, fontSize: 16, fontWeight: 500, color: "var(--accent)" }}>
           Late night, {userName}.
         </p>
-        <p style={{ margin: "4px 0 0", fontSize: 13, color: "#6B7280" }}>
+        <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--text-tertiary)" }}>
           Sleep is study too. Your brain consolidates today&apos;s work while you rest.
         </p>
       </div>

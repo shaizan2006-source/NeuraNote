@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 
 // ─────────────────────────────────────────────
 // WEAK TOPIC THRESHOLD (tunable for experiments)
@@ -266,32 +266,40 @@ async function trackTopicAttempt(supabase, { user_id, topic, subject }) {
 }
 
 async function upsertWeakTopic(supabase, { user_id, topic, subject, count, level }) {
-  const { data: existing } = await supabase
+  // Two-step pattern that is both race-safe and preserves MAX(count) semantics:
+  //
+  // Step 1 — Atomic insert-or-skip via ignoreDuplicates.
+  //   If no row exists, inserts it.
+  //   If a row exists (or a concurrent insert just created it), does nothing.
+  //   The UNIQUE(user_id, topic, subject) constraint makes this atomic at the
+  //   DB level — no duplicate rows can be created regardless of concurrency.
+  const { error: insertError } = await supabase
     .from("weak_topics")
-    .select("*")
-    .eq("topic", topic)
-    .eq("user_id", user_id)
-    .eq("subject", subject)
-    .single();
+    .insert({ user_id, topic, subject, count, level, updated_at: new Date().toISOString() },
+             { ignoreDuplicates: true });
 
-  if (existing) {
-    await supabase
-      .from("weak_topics")
-      .update({
-        count: Math.max(existing.count, count),
-        level,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", existing.id);
-  } else {
-    await supabase.from("weak_topics").insert({
-      topic,
-      subject,
-      count,
-      user_id,
-      level,
-      updated_at: new Date().toISOString(),
-    });
+  if (insertError) {
+    console.error("[upsertWeakTopic] insert failed:", { user_id, topic, subject, error: insertError.message });
+    throw insertError;
+  }
+
+  // Step 2 — Conditional update: only raise count, never lower it.
+  //   .lt("count", count) means "update only if the stored count is less than
+  //   the incoming count." This preserves the original MAX(existing, incoming)
+  //   logic and is benign under race: if two writers arrive simultaneously with
+  //   the same incoming count, both write the same value. If counts differ, the
+  //   higher value always wins (the lower-count update is a no-op).
+  const { error: updateError } = await supabase
+    .from("weak_topics")
+    .update({ count, level, updated_at: new Date().toISOString() })
+    .eq("user_id", user_id)
+    .eq("topic", topic)
+    .eq("subject", subject)
+    .lt("count", count); // MAX semantics: only write if incoming is higher
+
+  if (updateError) {
+    console.error("[upsertWeakTopic] update failed:", { user_id, topic, subject, error: updateError.message });
+    throw updateError;
   }
 }
 

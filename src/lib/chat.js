@@ -10,6 +10,8 @@ const supabase = createClient(
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  maxRetries: 2,
+  timeout: 45_000,
 });
 
 // 🔹 MAIN FUNCTION

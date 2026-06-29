@@ -1,4 +1,8 @@
 -- RPC functions that exist in production
+-- Drop existing versions first to allow return type changes
+DROP FUNCTION IF EXISTS match_documents(vector, integer, uuid);
+DROP FUNCTION IF EXISTS match_documents_multi(vector, integer, uuid[]);
+DROP FUNCTION IF EXISTS increment_memory_weight(uuid, float);
 
 CREATE OR REPLACE FUNCTION match_documents(
   query_embedding vector(1536),
@@ -47,6 +51,9 @@ AS $$
   ORDER BY dc.embedding <=> query_embedding
   LIMIT match_count;
 $$;
+
+-- Add updated_at to user_memory if it doesn't exist
+ALTER TABLE user_memory ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 CREATE OR REPLACE FUNCTION increment_memory_weight(memory_id UUID, delta FLOAT DEFAULT 0.1)
 RETURNS VOID

@@ -1,12 +1,13 @@
 import { supabaseAdmin } from "@/lib/serverAuth";
 import { generateWeeklyRecapForUser } from "@/lib/recaps/generator";
+import { daysAgoIST } from "@/lib/format/date";
+import { cronSecretValid } from "@/lib/security/cronAuth";
 
 export async function GET(req) {
-  const secret = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (secret !== process.env.CRON_SECRET) return new Response(null, { status: 401 });
+  if (!cronSecretValid(req)) return new Response(null, { status: 401 });
 
-  // Active users: streak >= 1 OR session in last 7 days
-  const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString().slice(0, 10);
+  // Active users: streak >= 1 OR session in last 7 IST days
+  const weekAgo = daysAgoIST(7);
   const { data: activeUsers } = await supabaseAdmin
     .from("focus_progress")
     .select("user_id")

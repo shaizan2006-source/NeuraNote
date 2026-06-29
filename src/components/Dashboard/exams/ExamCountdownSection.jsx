@@ -5,10 +5,10 @@ import { useState, useEffect } from "react";
 // Hex colors can't use .replace(")", ...) — map to rgba explicitly
 function borderColor(hex) {
   const map = {
-    "#22C55E": "rgba(34,197,94,0.2)",
-    "#EAB308": "rgba(234,179,8,0.2)",
-    "#EF4444": "rgba(239,68,68,0.2)",
-    "#52525b": "rgba(82,82,91,0.2)",
+    "#34D399": "rgba(52,211,153,0.2)",
+    "#F5B544": "rgba(245,181,68,0.2)",
+    "#F0584F": "rgba(240,88,79,0.2)",
+    "#46464B": "rgba(70,70,75,0.2)",
   };
   return map[hex] || "rgba(255,255,255,0.06)";
 }
@@ -37,8 +37,8 @@ export default function ExamCountdownSection({ exams = [] }) {
         border: "1px solid rgba(255,255,255,0.06)",
         textAlign: "center",
       }}>
-        <p style={{ margin: 0, fontSize: 11, color: "#52525b" }}>No upcoming exams</p>
-        <p style={{ margin: "4px 0 0", fontSize: 9, color: "#3f3f46" }}>Add one with the button below</p>
+        <p style={{ margin: 0, fontSize: 11, color: "#46464B" }}>No upcoming exams</p>
+        <p style={{ margin: "4px 0 0", fontSize: 9, color: "#46464B" }}>Add one with the button below</p>
       </div>
     );
   }
@@ -53,10 +53,10 @@ export default function ExamCountdownSection({ exams = [] }) {
         padding: "12px",
         background: "rgba(255,255,255,0.02)",
         borderRadius: 8,
-        border: "1px solid rgba(239,68,68,0.2)",
+        border: "1px solid rgba(240,88,79,0.2)",
         textAlign: "center",
       }}>
-        <p style={{ margin: 0, fontSize: 11, color: "#EF4444" }}>Invalid exam date</p>
+        <p style={{ margin: 0, fontSize: 11, color: "#F0584F" }}>Invalid exam date</p>
       </div>
     );
   }
@@ -67,11 +67,11 @@ export default function ExamCountdownSection({ exams = [] }) {
   const isToday = daysLeft === 0;
 
   const countdownColor =
-    isPast    ? "#52525b" :
-    isToday   ? "#EF4444" :
-    daysLeft > 14 ? "#22C55E" :
-    daysLeft > 7  ? "#EAB308" :
-                    "#EF4444";
+    isPast    ? "#46464B" :
+    isToday   ? "#F0584F" :
+    daysLeft > 14 ? "#34D399" :
+    daysLeft > 7  ? "#F5B544" :
+                    "#F0584F";
 
   return (
     <div style={{
@@ -85,16 +85,16 @@ export default function ExamCountdownSection({ exams = [] }) {
     }}>
       <div style={{ minWidth: 0, flex: 1 }}>
         <p style={{
-          margin: 0, fontSize: 10, color: "#71717a",
+          margin: 0, fontSize: 10, color: "#6B6B70",
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }}>
           {nextExam.name || "Untitled exam"}
         </p>
 
         {isPast ? (
-          <p style={{ margin: "4px 0 0", fontSize: 10, color: "#52525b" }}>Exam passed</p>
+          <p style={{ margin: "4px 0 0", fontSize: 10, color: "#46464B" }}>Exam passed</p>
         ) : isToday ? (
-          <p style={{ margin: "4px 0 0", fontSize: 14, fontWeight: 900, color: "#EF4444", lineHeight: 1 }}>
+          <p style={{ margin: "4px 0 0", fontSize: 14, fontWeight: 900, color: "#F0584F", lineHeight: 1 }}>
             Today!
           </p>
         ) : (
@@ -106,15 +106,15 @@ export default function ExamCountdownSection({ exams = [] }) {
 
       <div style={{ textAlign: "right", flexShrink: 0 }}>
         {!isPast && !isToday && (
-          <p style={{ margin: 0, fontSize: 9, color: "#71717a" }}>days left</p>
+          <p style={{ margin: 0, fontSize: 9, color: "#6B6B70" }}>days left</p>
         )}
         {daysLeft <= 7 && daysLeft >= 0 && (
-          <p style={{ margin: "2px 0 0", fontSize: 9, color: "#EF4444", fontWeight: 600 }}>
+          <p style={{ margin: "2px 0 0", fontSize: 9, color: "#F0584F", fontWeight: 600 }}>
             {isToday ? "🔥 Exam day!" : "Final sprint!"}
           </p>
         )}
         {activeExams.length > 1 && (
-          <p style={{ margin: "4px 0 0", fontSize: 9, color: "#52525b" }}>
+          <p style={{ margin: "4px 0 0", fontSize: 9, color: "#46464B" }}>
             +{activeExams.length - 1} more
           </p>
         )}

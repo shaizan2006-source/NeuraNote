@@ -3,6 +3,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import AIDustLayer from "@/components/AIDust/AIDustLayer";
 import UtmCapture from "@/components/UtmCapture";
+import PushInit from "@/components/PushInit";
+import InstallPrompt from "@/components/InstallPrompt";
 import "@/styles/variables.css";
 import "@/styles/theme-animation.css";
 
@@ -44,9 +46,18 @@ export const metadata = {
   },
   robots: { index: true, follow: true },
   manifest: "/manifest.json",
-  viewport: { width: "device-width", initialScale: 1, maximumScale: 5 },
-  themeColor: "#8B5CF6",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Ask My Notes" },
+  icons: {
+    apple: "/icons/apple-touch-icon.png",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#08080A",
 };
 
 export default function RootLayout({ children }) {
@@ -56,6 +67,8 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
+          <PushInit />
+          <InstallPrompt />
           <UtmCapture />
           <AIDustLayer />
           {children}

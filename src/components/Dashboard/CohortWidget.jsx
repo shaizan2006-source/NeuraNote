@@ -24,15 +24,15 @@ export default function CohortWidget({ peerPercentile, cohortSize }) {
 
   return (
     <div style={{
-      background: "rgba(34,211,238,0.06)",
-      border: "1px solid rgba(34,211,238,0.12)",
+      background: "color-mix(in srgb, var(--accent) 8%, transparent)",
+      border: "1px solid color-mix(in srgb, var(--accent) 28%, transparent)",
       borderRadius: 10,
       padding: "10px 14px",
       display: "inline-flex",
       flexDirection: "column",
     }}>
-      <span style={{ fontSize: 18, fontWeight: 700, color: "#22D3EE" }}>{display.label}</span>
-      <span style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{display.meta}</span>
+      <span style={{ fontSize: 18, fontWeight: 700, color: "var(--accent)" }}>{display.label}</span>
+      <span style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 2 }}>{display.meta}</span>
     </div>
   );
 }

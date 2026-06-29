@@ -29,6 +29,8 @@ import { validateConcepts } from "@/lib/ingest/validateConcepts";
 import { writeConceptGraph } from "@/lib/ingest/persistGraph";
 import { generateCards } from "@/lib/ingest/generateCards";
 import { persistCards } from "@/lib/ingest/persistCards";
+import { isInternalDev } from "@/lib/internalAccess";
+import { isDevEnv } from "@/lib/devGuard";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -47,6 +49,13 @@ export async function POST(req) {
     const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
     if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const userId = user.id;
+
+    // ── Dev/internal guard ───────────────────────────────────────────────
+    // Backfill is an admin maintenance operation, not a user-facing feature.
+    // Block in production unless the caller is an internal_dev account.
+    if (!isDevEnv() && !isInternalDev(user)) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
 
     // ── Parse body (tolerant — body is optional) ────────────────────────
     let body = {};

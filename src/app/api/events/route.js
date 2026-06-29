@@ -1,10 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { verifyAuth, supabaseAdmin as supabase } from "@/lib/serverAuth";
 
 // Inline validation set — keep server independent of client bundle.
 const VALID_EVENT_TYPES = new Set([
@@ -21,17 +16,9 @@ const VALID_EVENT_TYPES = new Set([
 const MAX_BATCH = 50;
 
 async function resolveUserId(req) {
-  // Bearer-auth path (regular fetch from track.js).
-  const token = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (token) {
-    const { data: { user } } = await supabase.auth.getUser(token);
-    if (user) return user.id;
-  }
-  // Beacon path: cookies aren't always sent. We accept an optional userId in
-  // the body ONLY if it round-trips a JWT in metadata? No — tighter: beacon
-  // calls go unauthenticated and are dropped. The next focused fetch flushes.
-  // (We deliberately do not honour anonymous inserts.)
-  return null;
+  // verifyAuth returns null for unauthenticated requests (beacon path drops gracefully).
+  const user = await verifyAuth(req);
+  return user?.id ?? null;
 }
 
 export async function POST(req) {

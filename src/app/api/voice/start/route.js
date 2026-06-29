@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { canStartCall, startCallSession } from "@/lib/voiceLimits";
+import { checkMonthlyBudget, budgetExhaustedResponse } from "@/lib/aiSpend";
+import { getUserPlan } from "@/lib/planLimits";
+import { isInternalDev } from "@/lib/internalAccess";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -22,6 +25,19 @@ export async function POST(req) {
         upgradeUrl:   check.upgradeUrl,
         limitReached: true,
       }, { status: 403 });
+    }
+
+    // ── Monthly AI budget circuit breaker ────────────────────────────────
+    // Skip for internal dev accounts (they test at unlimited scale).
+    if (!isInternalDev(user)) {
+      const plan        = await getUserPlan(user.id, user);
+      const budgetCheck = await checkMonthlyBudget(user.id, plan);
+      if (!budgetCheck.allowed) {
+        return NextResponse.json(
+          { ...budgetExhaustedResponse(budgetCheck), limitReached: true },
+          { status: 429 }
+        );
+      }
     }
 
     const callId = await startCallSession(user.id);

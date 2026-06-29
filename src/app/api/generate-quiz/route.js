@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
+import { verifyAuth } from "@/lib/serverAuth";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  maxRetries: 2,
+  timeout: 45_000,
 });
 
 const supabase = createClient(
@@ -14,17 +17,14 @@ const supabase = createClient(
 export async function POST(req) {
   try {
     // ========================
-    // 1. Get User ID (SAFE)
+    // 1. Verify user via JWT
     // ========================
-    let body = {};
-    try {
-      body = await req.json();
-    } catch {}
+    const user = await verifyAuth(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const userId = user.id;
 
-    const userId = body.userId;
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    let body = {};
+    try { body = await req.json(); } catch {}
 
     // ========================
     // 2. Fetch Weak Topics

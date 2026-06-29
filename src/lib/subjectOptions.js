@@ -51,4 +51,18 @@ export const SUBJECT_OPTIONS = [
   { key: "anatomy",       label: "Anatomy" },
   { key: "physiology",    label: "Physiology" },
   { key: "pharmacology",  label: "Pharmacology" },
+  // UPSC Civil Services
+  { key: "upsc",          label: "UPSC — General Studies" },
+  { key: "upsc",          label: "UPSC — Polity & Governance" },
+  { key: "upsc",          label: "UPSC — History" },
+  { key: "upsc",          label: "UPSC — Geography" },
+  { key: "upsc",          label: "UPSC — Economy" },
+  { key: "upsc",          label: "UPSC — Environment & Ecology" },
+  { key: "upsc",          label: "UPSC — Ethics (GS-IV)" },
+  // GATE
+  { key: "gate",          label: "GATE — Computer Science (CS/IT)" },
+  { key: "gate",          label: "GATE — Electronics (ECE)" },
+  { key: "gate",          label: "GATE — Electrical (EE)" },
+  { key: "gate",          label: "GATE — Mechanical (ME)" },
+  { key: "gate",          label: "GATE — Engineering Mathematics" },
 ];

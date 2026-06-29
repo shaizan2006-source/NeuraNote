@@ -3,12 +3,15 @@ import { createClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
 import { v4 as uuidv4 } from "uuid";
 import { verifyAuth } from "@/lib/serverAuth";
+import { streamCompletion } from "@/lib/llmFallback";
+import { recordAISpend, estimateCost } from "@/lib/aiSpend";
+import { sseToken, sseConv, SSE_HEADERS } from "@/lib/sseStream";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 const RAG_THRESHOLD = parseFloat(process.env.RAG_CONFIDENCE_THRESHOLD || "0.75");
 
 export async function POST(req) {
@@ -88,15 +91,8 @@ export async function POST(req) {
       { role: "user", content: safeQuestion },
     ];
 
-    // 3. Stream from OpenAI
-    const openaiStream = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: messagesForAI,
-      max_tokens: 600,
-      stream: true,
-    });
-
-    const encoder = new TextEncoder();
+    // 3. Stream (with OpenAI → fallback retry on 429/5xx)
+    const [systemMsg, ...userMessages] = messagesForAI;
     let accumulated = "";
 
     const readable = new ReadableStream({
@@ -106,15 +102,17 @@ export async function POST(req) {
           if (ragSourceNote) {
             const prefix = `${ragSourceNote}\n\n`;
             accumulated += prefix;
-            controller.enqueue(encoder.encode(prefix));
+            controller.enqueue(sseToken(prefix));
           }
 
-          for await (const chunk of openaiStream) {
-            const text = chunk.choices[0]?.delta?.content || "";
-            if (text) {
-              accumulated += text;
-              controller.enqueue(encoder.encode(text));
-            }
+          for await (const text of streamCompletion({
+            systemPrompt: systemMsg.content,
+            messages:     userMessages,
+            model:        "gpt-4o-mini",
+            maxTokens:    600,
+          })) {
+            accumulated += text;
+            controller.enqueue(sseToken(text));
           }
 
           // Persist conversation to Supabase after stream completes
@@ -153,10 +151,18 @@ export async function POST(req) {
             },
           }).then(() => {}).catch(() => {});
 
+          // Record AI spend (fire-and-forget)
+          const promptLen     = userMessages.reduce((n, m) => n + (m.content?.length ?? 0), 0);
+          const estimatedIn   = Math.ceil((systemMsg.content.length + promptLen) / 4);
+          const estimatedOut  = Math.ceil(accumulated.length / 4);
+          recordAISpend(user_id, {
+            costUsd:   estimateCost({ model: "gpt-4o-mini", tokensIn: estimatedIn, tokensOut: estimatedOut }),
+            tokensIn:  estimatedIn,
+            tokensOut: estimatedOut,
+          }).catch(() => {});
+
           // Send conversation metadata to client — parsed by QuickChatDrawer
-          controller.enqueue(encoder.encode(
-            `\n__CONV__${JSON.stringify({ conversation_id: convId, used_rag: usedRag })}`
-          ));
+          controller.enqueue(sseConv({ conversation_id: convId, used_rag: usedRag }));
         } catch (err) {
           console.error("quick-chat stream error:", err);
         } finally {
@@ -165,13 +171,7 @@ export async function POST(req) {
       },
     });
 
-    return new Response(readable, {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache",
-        "X-Accel-Buffering": "no",
-      },
-    });
+    return new Response(readable, { headers: SSE_HEADERS });
   } catch (err) {
     console.error("quick-chat error:", err);
     return NextResponse.json({ error: "Failed" }, { status: 500 });

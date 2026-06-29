@@ -7,7 +7,7 @@ let _openai = null;
 export const openai = new Proxy(
   {},
   { get(_t, prop) {
-      if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
       return _openai[prop];
     }
   }

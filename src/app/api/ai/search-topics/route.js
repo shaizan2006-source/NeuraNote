@@ -1,18 +1,17 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { verifyAuth, supabaseAdmin as supabase } from '@/lib/serverAuth';
 
 export async function GET(request) {
   try {
+    const user = await verifyAuth(request);
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('query') || '';
 
     let dbQuery = supabase
       .from('documents')
       .select('id, name, category, updated_at')
+      .eq('user_id', user.id)  // scope to authenticated user's documents only
       .order('updated_at', { ascending: false })
       .limit(20);
 

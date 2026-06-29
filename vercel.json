@@ -3,29 +3,6 @@
   "devCommand": "npm run dev",
   "framework": "nextjs",
   "outputDirectory": ".next",
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase_url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase_anon_key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
-    "OPENAI_API_KEY": "@openai_api_key",
-    "RAZORPAY_KEY_ID": "@razorpay_key_id",
-    "RAZORPAY_KEY_SECRET": "@razorpay_key_secret",
-    "RAZORPAY_WEBHOOK_SECRET": "@razorpay_webhook_secret",
-    "NEXT_PUBLIC_SENTRY_DSN": "@sentry_dsn",
-    "SENTRY_AUTH_TOKEN": "@sentry_auth_token",
-    "SENTRY_ORG": "@sentry_org",
-    "SENTRY_PROJECT": "@sentry_project",
-    "NEXT_PUBLIC_APP_URL": "@app_url",
-    "NEXT_PUBLIC_SITE_URL": "@app_url",
-    "ADMIN_EMAILS": "@admin_emails",
-    "NEXT_PUBLIC_ADMIN_EMAIL": "@admin_email_public",
-    "RAG_CONFIDENCE_THRESHOLD": "@rag_confidence_threshold",
-    "CRON_SECRET": "@cron_secret",
-    "NEXT_PUBLIC_VAPID_PUBLIC_KEY": "@vapid_public_key",
-    "VAPID_PRIVATE_KEY": "@vapid_private_key",
-    "VAPID_SUBJECT": "@vapid_subject",
-    "WHATSAPP_APP_SECRET": "@whatsapp_app_secret"
-  },
   "headers": [
     {
       "source": "/api/(.*)",
@@ -33,48 +10,6 @@
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" }
       ]
-    }
-  ],
-  "crons": [
-    {
-      "path": "/api/cron/generate-briefings",
-      "schedule": "30 20 * * *"
-    },
-    {
-      "path": "/api/cron/dispatch-notifications",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/cron/evaluate-streaks",
-      "schedule": "0 19 * * *"
-    },
-    {
-      "path": "/api/cron/generate-weekly-recaps",
-      "schedule": "0 6 * * 0"
-    },
-    {
-      "path": "/api/cron/cohort-leaderboard-snapshot",
-      "schedule": "30 14 * * 0"
-    },
-    {
-      "path": "/api/cron/cleanup-photo-doubts",
-      "schedule": "0 1 * * *"
-    },
-    {
-      "path": "/api/cron/fsrs-due-reminder",
-      "schedule": "0 7 * * *"
-    },
-    {
-      "path": "/api/cron/purge-deleted-accounts",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/trial-d3-segment",
-      "schedule": "30 12 * * *"
-    },
-    {
-      "path": "/api/cron/trial-d5-warmup",
-      "schedule": "30 12 * * *"
     }
   ]
 }

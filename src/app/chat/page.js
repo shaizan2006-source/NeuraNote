@@ -42,13 +42,15 @@ useEffect(() => {
 
       setUserId(user.id);
 
-      // 🔹 Fetch chat history
+      // 🔹 Fetch chat history (auth via JWT; server derives the user from the token)
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/chat/history", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
         },
-        body: JSON.stringify({ user_id: user.id }),
+        body: JSON.stringify({}),
       });
 
       const data = await res.json();
@@ -72,9 +74,14 @@ useEffect(() => {
 
   async function fetchHistory() {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/chat/history", {
         method: "POST",
-        body: JSON.stringify({ user_id }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
+        },
+        body: JSON.stringify({}),
       });
 
       const data = await res.json();

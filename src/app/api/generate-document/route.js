@@ -379,9 +379,19 @@ function StudyDoc({ title, date, bodyElements }) {
 // ── Route handler ─────────────────────────────────────────────────────
 export async function POST(req) {
   try {
+    // F-037: was fully unauthenticated — anyone could trigger CPU-heavy PDF rendering +
+    // a storage upload. Require a valid JWT and cap input size.
+    const token = req.headers.get("authorization")?.replace("Bearer ", "");
+    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+    if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const { content, type, filename } = await req.json();
     if (!content || type !== "pdf") {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    }
+    if (typeof content !== "string" || content.length > 100_000) {
+      return NextResponse.json({ error: "Content too large" }, { status: 413 });
     }
 
     // Clean and deduplicate markdown

@@ -105,8 +105,9 @@ export async function POST(req) {
 
   } catch (error) {
     console.error("UPLOAD ERROR:", error);
+    // F-030: don't leak internal error.message to the client.
     return NextResponse.json(
-      { error: error.message },
+      { error: "Upload failed. Please try again with a valid PDF." },
       { status: 500 }
     );
   }

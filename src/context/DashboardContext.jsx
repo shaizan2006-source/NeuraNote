@@ -755,7 +755,11 @@ export function DashboardProvider({ children }) {
 
   const fetchSavedPDFs = async () => {
     try {
-      const res = await fetch("/api/get-pdfs");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) { setSavedPDFs([]); return; }
+      const res = await fetch("/api/get-pdfs", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
       const data = await res.json();
       setSavedPDFs(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -895,8 +899,11 @@ export function DashboardProvider({ children }) {
       if (!session?.user) { alert("User not logged in"); return; }
       const res = await fetch("/api/generate-quiz", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: session.user.id }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({}),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to generate quiz");
@@ -919,8 +926,11 @@ export function DashboardProvider({ children }) {
       if (!session?.user) { alert("User not logged in"); return; }
       const res = await fetch("/api/generate-quiz", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: session.user.id }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({}),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to generate quiz");

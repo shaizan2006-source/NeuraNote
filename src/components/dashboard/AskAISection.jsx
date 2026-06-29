@@ -9,6 +9,12 @@ import StructuredAnswer from "@/components/answer/StructuredAnswer";
 import DynamicGreeting from "@/components/dashboard/DynamicGreeting";
 import { saveChat, loadChat, clearChat } from "@/lib/chatStorage";
 import ModeSwitcher from "@/components/AskAI/ModeSwitcher";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
 
 function hashQuestion(text) {
   let h = 0;
@@ -1004,9 +1010,13 @@ export default function AskAISection({ fullPage = false, conversationId = null }
     if (!text || isExporting) return;
     setIsExporting(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/generate-document", {
         method:  "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
+        },
         body:    JSON.stringify({ content: text, type: "pdf", filename: `notes-${Date.now()}` }),
       });
       const data = await res.json();

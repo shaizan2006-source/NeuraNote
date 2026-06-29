@@ -14,17 +14,15 @@ const supabase = createClient(
 export async function POST(req) {
   try {
     // ========================
-    // 1. Get User ID (SAFE)
+    // 1. Get User ID (from the verified JWT — NEVER the client body)
     // ========================
-    let body = {};
-    try {
-      body = await req.json();
-    } catch {}
-
-    const userId = body.userId;
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // F-036: previously userId came straight from body.userId with no auth, so any caller
+    // could trigger OpenAI quiz generation (cost) and read/write any user's data (IDOR).
+    const token = req.headers.get("authorization")?.replace("Bearer ", "");
+    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+    if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const userId = user.id;
 
     // ========================
     // 2. Fetch Weak Topics

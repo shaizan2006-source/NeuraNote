@@ -2,13 +2,17 @@ import { NextResponse } from "next/server";
 import { createHash } from "crypto";
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
-import { canAskQuestion, recordQAUsage } from "@/lib/planLimits";
+import { canAskQuestion, recordQAUsage, getUserPlan } from "@/lib/planLimits";
+import { checkMonthlyBudget, recordAISpend, budgetExhaustedResponse, estimateCost } from "@/lib/aiSpend";
+import { isInternalDev } from "@/lib/internalAccess";
+import { streamCompletion, completeWithFallback } from "@/lib/llmFallback";
+import { sseMeta, sseToken, sseConv, SSE_HEADERS } from "@/lib/sseStream";
 import { classifyQuery } from "@/lib/queryClassifier";
 import { classifyWithLLM } from "@/lib/llmClassifier";
 import { assemblePrompt } from "@/lib/promptAssembler";
 import { COACH_SYSTEM_PROMPT } from "@/lib/prompts/coach";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -99,8 +103,12 @@ export async function POST(req) {
     const safeModel = model === "gpt-4o" ? "gpt-4o" : "gpt-4o-mini";
 
     // ── Validate ─────────────────────────────────────────────
-    if (!question || question.trim() === "") {
+    if (typeof question !== "string" || question.trim() === "") {
       return NextResponse.json({ error: "Question is required" }, { status: 400 });
+    }
+    // F-032: cap input length before classify/embeddings/completion (cost/latency guard).
+    if (question.length > 8000) {
+      return NextResponse.json({ error: "Question is too long (max 8000 characters)." }, { status: 413 });
     }
 
     // ── Auth + free tier Q&A limit (dev accounts bypass automatically) ──
@@ -111,6 +119,12 @@ export async function POST(req) {
       const { data: { user } } = await supabase.auth.getUser(token);
       userId   = user?.id || null;
       authUser = user || null;
+    }
+    // F-029: require authentication — a missing/expired token left userId null, which
+    // skipped BOTH the rate-limit and budget cap → unauthenticated callers got unlimited
+    // OpenAI usage (cost-abuse). All /api/ask callers are authenticated.
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     // Coach mode bypasses the Q&A rate-limit (conversational turns, not factual answers)
     if (userId && mode !== "coach") {
@@ -124,6 +138,18 @@ export async function POST(req) {
       recordQAUsage(userId).catch(() => {});
     }
 
+    // ── Monthly AI budget circuit breaker ────────────────────────────────
+    if (userId && !isInternalDev(authUser)) {
+      const plan        = await getUserPlan(userId, authUser);
+      const budgetCheck = await checkMonthlyBudget(userId, plan);
+      if (!budgetCheck.allowed) {
+        return NextResponse.json(
+          { ...budgetExhaustedResponse(budgetCheck), limitReached: true },
+          { status: 429 }
+        );
+      }
+    }
+
     // ── Coach mode: Socratic guidance, no RAG pipeline ────────
     if (mode === "coach") {
       const coachPrior = Array.isArray(priorMessages)
@@ -132,38 +158,25 @@ export async function POST(req) {
             .slice(-8)
         : [];
 
-      const coachMessages = [
-        { role: "system", content: COACH_SYSTEM_PROMPT },
-        ...coachPrior,
-        { role: "user", content: question },
-      ];
-
-      const coachStream = await openai.chat.completions.create({
-        model:       safeModel,
-        temperature: 0.5,
-        max_tokens:  700,
-        stream:      true,
-        messages:    coachMessages,
-      });
-
       const coachReadableStream = new ReadableStream({
         async start(controller) {
-          const encoder = new TextEncoder();
           try {
-            const meta = JSON.stringify({
+            controller.enqueue(sseMeta({
               sources:        [],
               usedContext:    false,
               classification: { domain: "coach", marks: 0, questionType: "theory", language: "en" },
-            }) + "\n";
-            controller.enqueue(encoder.encode(`__META__${meta}`));
+            }));
 
             let fullAnswer = "";
-            for await (const chunk of coachStream) {
-              const text = chunk.choices[0]?.delta?.content || "";
-              if (text) {
-                fullAnswer += text;
-                controller.enqueue(encoder.encode(text));
-              }
+            for await (const text of streamCompletion({
+              systemPrompt: COACH_SYSTEM_PROMPT,
+              messages:     [...coachPrior, { role: "user", content: question }],
+              model:        safeModel,
+              maxTokens:    700,
+              temperature:  0.5,
+            })) {
+              fullAnswer += text;
+              controller.enqueue(sseToken(text));
             }
 
             const ts = new Date().toISOString();
@@ -207,9 +220,7 @@ export async function POST(req) {
                   .select("id")
                   .single();
                 if (newConv?.id) {
-                  controller.enqueue(
-                    encoder.encode(`\n__CONV__${JSON.stringify({ conversation_id: newConv.id })}`)
-                  );
+                  controller.enqueue(sseConv({ conversation_id: newConv.id }));
                 }
               } catch (err) {
                 console.error("coach new conversation create error:", err);
@@ -224,16 +235,7 @@ export async function POST(req) {
         },
       });
 
-      return new Response(coachReadableStream, {
-        headers: {
-          "Content-Type":           "text/plain; charset=utf-8",
-          "X-Content-Type-Options": "nosniff",
-          "Cache-Control":          "no-cache",
-          "X-Sources":              "[]",
-          "X-Used-Context":         "false",
-          "X-From-Cache":           "false",
-        },
-      });
+      return new Response(coachReadableStream, { headers: SSE_HEADERS });
     }
 
     // ── Classify query ────────────────────────────────────────
@@ -324,53 +326,37 @@ export async function POST(req) {
     if (!usedContext && !exportIntent) {
       const cached = await getCachedAnswer(cacheKey);
       if (cached) {
-        const metaChunk = JSON.stringify({
-          sources: [],
-          usedContext: false,
-          fromCache: true,
-          classification: cached.classification ?? {
-            domain:       classification.domain,
-            marks:        classification.marks,
-            questionType: classification.questionType,
-            language:     classification.language,
-          },
-        }) + "\n";
-
-        const encoder = new TextEncoder();
         const cachedStream = new ReadableStream({
           start(controller) {
-            controller.enqueue(encoder.encode(`__META__${metaChunk}`));
-            controller.enqueue(encoder.encode(cached.answer));
+            controller.enqueue(sseMeta({
+              sources:        [],
+              usedContext:    false,
+              fromCache:      true,
+              classification: cached.classification ?? {
+                domain:       classification.domain,
+                marks:        classification.marks,
+                questionType: classification.questionType,
+                language:     classification.language,
+              },
+            }));
+            controller.enqueue(sseToken(cached.answer));
             controller.close();
           },
         });
 
-        return new Response(cachedStream, {
-          headers: {
-            "Content-Type":           "text/plain; charset=utf-8",
-            "X-Content-Type-Options": "nosniff",
-            "Cache-Control":          "no-cache",
-            "X-Sources":              "[]",
-            "X-Used-Context":         "false",
-            "X-From-Cache":           "true",
-          },
-        });
+        return new Response(cachedStream, { headers: SSE_HEADERS });
       }
     }
 
     // ── Export intent — non-streaming path ────────────────────
     if (exportIntent) {
-      const completion = await openai.chat.completions.create({
+      const answer = await completeWithFallback({
+        systemPrompt,
+        messages:    [{ role: "user", content: userPrompt }],
         model:       safeModel,
+        maxTokens,
         temperature,
-        max_tokens:  maxTokens,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user",   content: userPrompt   },
-        ],
       });
-
-      const answer = completion.choices[0].message.content;
 
       try {
         const baseUrl = req.headers.get("origin");
@@ -396,24 +382,9 @@ export async function POST(req) {
           .slice(-8)
       : [];
 
-    const openAIMessages = [
-      { role: "system", content: systemPrompt },
-      ...sanitisedPrior,
-      { role: "user",   content: userPrompt   },
-    ];
-
-    // ── Streaming response ────────────────────────────────────
-    const stream = await openai.chat.completions.create({
-      model:       safeModel,
-      temperature,
-      max_tokens:  maxTokens,
-      stream:      true,
-      messages:    openAIMessages,
-    });
-
+    // ── Streaming response (OpenAI → Anthropic fallback) ─────────────────
     const readableStream = new ReadableStream({
       async start(controller) {
-        const encoder = new TextEncoder();
         try {
           const classificationMeta = {
             domain:       classification.domain,
@@ -423,20 +394,19 @@ export async function POST(req) {
           };
 
           // Send metadata first so the frontend can read domain/marks/etc.
-          const meta = JSON.stringify({
-            sources,
-            usedContext,
-            classification: classificationMeta,
-          }) + "\n";
-          controller.enqueue(encoder.encode(`__META__${meta}`));
+          controller.enqueue(sseMeta({ sources, usedContext, classification: classificationMeta }));
 
           let fullAnswer = "";
-          for await (const chunk of stream) {
-            const text = chunk.choices[0]?.delta?.content || "";
-            if (text) {
-              fullAnswer += text;
-              controller.enqueue(encoder.encode(text));
-            }
+          // streamCompletion handles OpenAI retry on 429/5xx transparently.
+          for await (const text of streamCompletion({
+            systemPrompt: systemPrompt,
+            messages:     sanitisedPrior.concat([{ role: "user", content: userPrompt }]),
+            model:        safeModel,
+            maxTokens,
+            temperature,
+          })) {
+            fullAnswer += text;
+            controller.enqueue(sseToken(text));
           }
 
           const ts = new Date().toISOString();
@@ -482,10 +452,7 @@ export async function POST(req) {
                 .select("id")
                 .single();
               if (newConv?.id) {
-                // Signal the client with the new conversation ID
-                controller.enqueue(
-                  encoder.encode(`\n__CONV__${JSON.stringify({ conversation_id: newConv.id })}`)
-                );
+                controller.enqueue(sseConv({ conversation_id: newConv.id }));
               }
             } catch (err) {
               console.error("new conversation create error:", err);
@@ -493,6 +460,20 @@ export async function POST(req) {
           }
 
           controller.close();
+
+          // ── Record AI spend (fire-and-forget) ────────────────────────
+          // Estimate tokens from char count (rough: 1 token ≈ 4 chars).
+          if (userId) {
+            const estimatedTokensIn  = Math.ceil(userPrompt.length  / 4);
+            const estimatedTokensOut = Math.ceil(fullAnswer.length   / 4);
+            const costUsd = estimateCost({
+              model:     safeModel,
+              tokensIn:  estimatedTokensIn,
+              tokensOut: estimatedTokensOut,
+            });
+            recordAISpend(userId, { costUsd, tokensIn: estimatedTokensIn, tokensOut: estimatedTokensOut })
+              .catch(() => {});
+          }
 
           // Store in cache (fire-and-forget, after stream ends)
           if (!usedContext && fullAnswer.length > 50) {
@@ -505,15 +486,7 @@ export async function POST(req) {
       },
     });
 
-    return new Response(readableStream, {
-      headers: {
-        "Content-Type":           "text/plain; charset=utf-8",
-        "X-Content-Type-Options": "nosniff",
-        "Cache-Control":          "no-cache",
-        "X-Sources":              JSON.stringify(sources),
-        "X-Used-Context":         String(usedContext),
-      },
-    });
+    return new Response(readableStream, { headers: SSE_HEADERS });
 
   } catch (err) {
     console.error("API ERROR:", err);

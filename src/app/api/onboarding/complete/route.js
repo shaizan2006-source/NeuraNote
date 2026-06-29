@@ -5,21 +5,47 @@ export async function POST(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  const body = await req.json().catch(() => null); if (!body) return Response.json({ error: "Invalid JSON" }, { status: 400 });
-  const { exam_type, class_level, exam_date, study_window, region, city } = body;
+  const body = await req.json().catch(() => null);
+  if (!body) return Response.json({ error: "Invalid JSON" }, { status: 400 });
 
-  if (!exam_type) return Response.json({ error: "exam_type required" }, { status: 400 });
+  const {
+    exam_type, class_level, exam_date, study_window, region, city,
+    phone_number, parent_phone_number, is_repeat_aspirant,
+  } = body;
 
-  const exam_year = exam_type.match(/(\d{4})$/)?.[1] ? parseInt(exam_type.match(/(\d{4})$/)[1]) : null;
+  // F-031: type-guard exam_type — a non-string (number/array) would crash exam_type.match() below.
+  if (!exam_type || typeof exam_type !== "string") return Response.json({ error: "exam_type required" }, { status: 400 });
 
-  // Stub cohort_id: join the exam+year+region+class bucket
+  // S7 fix: server-side phone validation — client-side regex is bypassable
+  const INDIAN_PHONE_RE = /^\+91[6-9]\d{9}$/;
+  if (phone_number && !INDIAN_PHONE_RE.test(phone_number)) {
+    return Response.json({ error: "invalid_phone_number" }, { status: 400 });
+  }
+  if (parent_phone_number && !INDIAN_PHONE_RE.test(parent_phone_number)) {
+    return Response.json({ error: "invalid_parent_phone_number" }, { status: 400 });
+  }
+
+  const exam_year = exam_type.match(/(\d{4})$/)?.[1]
+    ? parseInt(exam_type.match(/(\d{4})$/)[1])
+    : null;
+
   const cohort_id = [exam_type, exam_year, region, class_level]
     .filter(Boolean)
     .join("_")
     .toLowerCase()
     .replace(/\s+/g, "_");
 
-  // Upsert profile
+  // Calculate exam proximity in months at signup (snapshot — never recalculated)
+  let exam_proximity_months_at_signup = null;
+  if (exam_date) {
+    const msPerMonth = 30.44 * 24 * 60 * 60 * 1000;
+    const diff = new Date(exam_date).getTime() - Date.now();
+    if (diff > 0) {
+      exam_proximity_months_at_signup = Math.round(diff / msPerMonth);
+    }
+  }
+
+  // Upsert profile — includes new Phase 1 fields
   await supabaseAdmin.from("profiles").upsert({
     id: user.id,
     exam_type,
@@ -30,10 +56,14 @@ export async function POST(req) {
     region: region || null,
     city: city || null,
     cohort_id,
+    phone_number: phone_number || null,
+    parent_phone_number: parent_phone_number || null,
+    is_repeat_aspirant: is_repeat_aspirant ?? false,
+    exam_proximity_months_at_signup,
     updated_at: new Date().toISOString(),
   }, { onConflict: "id" });
 
-  // Upsert cohort row (stub)
+  // Upsert cohort row
   await supabaseAdmin.from("cohorts").upsert({
     id: cohort_id,
     exam_type,
@@ -43,26 +73,20 @@ export async function POST(req) {
     updated_at: new Date().toISOString(),
   }, { onConflict: "id" }).select().maybeSingle();
 
-  // Assign to cohort with anonymous handle (full logic)
-  const cohortResult = await assignCohort(user.id, { exam_type, exam_year, region, class_level })
+  await assignCohort(user.id, { exam_type, exam_year, region, class_level })
     .catch(() => null);
 
-  // Activate 7-day Pro trial for new users (idempotent — skip if already on a plan)
-  const { data: existing } = await supabaseAdmin
-    .from("user_plans")
-    .select("id, plan, payment_id")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (!existing) {
-    const trialEndsAt = new Date(Date.now() + 7 * 86_400_000).toISOString();
-    await supabaseAdmin.from("user_plans").insert({
-      user_id: user.id,
-      plan: "pro",
-      trial_ends_at: trialEndsAt,
-      billing_cycle: "monthly",
-    });
-  }
+  // Activate 7-day Pro trial — ignoreDuplicates prevents double-activation on network retry
+  const now = new Date();
+  const trialEndsAt = new Date(now.getTime() + 7 * 86_400_000).toISOString();
+  await supabaseAdmin.from("user_plans").insert({
+    user_id: user.id,
+    plan: "pro",
+    is_trial: true,
+    trial_started_at: now.toISOString(),
+    trial_ends_at: trialEndsAt,
+    billing_cycle: "monthly",
+  }, { ignoreDuplicates: true });
 
   return Response.json({ cohort_id, redirect_to: "/" });
 }

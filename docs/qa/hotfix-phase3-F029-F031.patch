@@ -1,0 +1,88 @@
+diff --git a/src/app/api/ask/route.js b/src/app/api/ask/route.js
+index e451cc0..dfcbf79 100644
+--- a/src/app/api/ask/route.js
++++ b/src/app/api/ask/route.js
+@@ -99,9 +99,13 @@ export async function POST(req) {
+     const safeModel = model === "gpt-4o" ? "gpt-4o" : "gpt-4o-mini";
+ 
+     // ── Validate ─────────────────────────────────────────────
+-    if (!question || question.trim() === "") {
++    if (typeof question !== "string" || question.trim() === "") {
+       return NextResponse.json({ error: "Question is required" }, { status: 400 });
+     }
++    // F-032: cap input length before classify/embeddings/completion (cost/latency guard).
++    if (question.length > 8000) {
++      return NextResponse.json({ error: "Question is too long (max 8000 characters)." }, { status: 413 });
++    }
+ 
+     // ── Auth + free tier Q&A limit (dev accounts bypass automatically) ──
+     const token = req.headers.get("authorization")?.replace("Bearer ", "");
+@@ -112,6 +116,12 @@ export async function POST(req) {
+       userId   = user?.id || null;
+       authUser = user || null;
+     }
++    // F-029: require authentication. A missing/expired token previously left userId null,
++    // which skipped BOTH the Q&A rate-limit AND the budget cap → unauthenticated callers
++    // got unlimited OpenAI usage (cost-abuse). All /api/ask callers are authenticated.
++    if (!userId) {
++      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
++    }
+     // Coach mode bypasses the Q&A rate-limit (conversational turns, not factual answers)
+     if (userId && mode !== "coach") {
+       const qaCheck = await canAskQuestion(userId, authUser);
+diff --git a/src/app/api/process-pdf/route.js b/src/app/api/process-pdf/route.js
+index 68116e5..653cf0b 100644
+--- a/src/app/api/process-pdf/route.js
++++ b/src/app/api/process-pdf/route.js
+@@ -343,6 +343,6 @@ export async function POST(req) {
+ 
+     return NextResponse.json({
+       error: "PDF processing failed",
+-    });
++    }, { status: 500 });   // F-031: error must not return HTTP 200
+   }
+ }
+\ No newline at end of file
+diff --git a/src/app/api/upload/route.js b/src/app/api/upload/route.js
+index 7a107a9..f149388 100644
+--- a/src/app/api/upload/route.js
++++ b/src/app/api/upload/route.js
+@@ -105,8 +105,9 @@ export async function POST(req) {
+ 
+   } catch (error) {
+     console.error("UPLOAD ERROR:", error);
++    // F-030: don't leak internal error.message to the client.
+     return NextResponse.json(
+-      { error: error.message },
++      { error: "Upload failed. Please try again with a valid PDF." },
+       { status: 500 }
+     );
+   }
+diff --git a/src/lib/askWithDownload.js b/src/lib/askWithDownload.js
+index 6575fc4..74ae906 100644
+--- a/src/lib/askWithDownload.js
++++ b/src/lib/askWithDownload.js
+@@ -14,10 +14,22 @@
+  *   // result.exportError — set if generation failed but answer is still available
+  */
+ 
++import { createClient } from "@supabase/supabase-js";
++
++const supabase = createClient(
++  process.env.NEXT_PUBLIC_SUPABASE_URL,
++  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
++);
++
+ export async function askQuestion({ question, documentId }) {
++  // F-029: /api/ask now requires auth — attach the current session token.
++  const { data: { session } } = await supabase.auth.getSession();
+   const res = await fetch("/api/ask", {
+     method: "POST",
+-    headers: { "Content-Type": "application/json" },
++    headers: {
++      "Content-Type": "application/json",
++      ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
++    },
+     body: JSON.stringify({ question, documentId }),
+   });
+ 

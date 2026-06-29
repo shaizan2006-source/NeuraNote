@@ -28,6 +28,7 @@ CREATE INDEX IF NOT EXISTS pyqs_chapter_idx ON pyqs (chapter);
 CREATE INDEX IF NOT EXISTS pyqs_concepts_idx ON pyqs USING GIN (concepts);
 
 ALTER TABLE pyqs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "pyqs_public_read" ON pyqs;
 CREATE POLICY "pyqs_public_read" ON pyqs FOR SELECT USING (true);
 
 -- PYQ attempts
@@ -44,6 +45,7 @@ ALTER TABLE pyq_attempts ADD COLUMN IF NOT EXISTS time_taken_seconds INT;
 CREATE INDEX IF NOT EXISTS pyq_attempts_user_idx ON pyq_attempts (user_id, attempted_at DESC);
 
 ALTER TABLE pyq_attempts ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "pyq_attempts_owner_all" ON pyq_attempts;
 CREATE POLICY "pyq_attempts_owner_all" ON pyq_attempts
   FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
@@ -69,6 +71,7 @@ ALTER TABLE mock_tests ADD COLUMN IF NOT EXISTS duration_seconds INT;
 CREATE INDEX IF NOT EXISTS mock_tests_user_idx ON mock_tests (user_id, completed_at DESC NULLS LAST);
 
 ALTER TABLE mock_tests ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "mock_tests_owner_all" ON mock_tests;
 CREATE POLICY "mock_tests_owner_all" ON mock_tests
   FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 

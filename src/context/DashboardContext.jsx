@@ -334,9 +334,10 @@ export function DashboardProvider({ children }) {
   const addExam = async () => {
     if (!examName || !examDate) { alert("Please enter subject and date"); return; }
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/exam", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token ?? ""}` },
         body: JSON.stringify({ name: examName, exam_date: examDate }),
       });
       if (!res.ok) throw new Error("Failed to save exam");
@@ -612,7 +613,9 @@ export function DashboardProvider({ children }) {
 
   const fetchExam = async () => {
     try {
-      const res = await fetch("/api/exam");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      const res = await fetch("/api/exam", { headers: { Authorization: `Bearer ${session.access_token}` } });
       const data = await res.json();
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -621,9 +624,7 @@ export function DashboardProvider({ children }) {
       const trueActive = rawActive.filter((e) => new Date(e.exam_date + "T00:00:00") >= today);
       const expiredFromActive = rawActive.filter((e) => new Date(e.exam_date + "T00:00:00") < today);
       const trueHistory = [...rawHistory, ...expiredFromActive].sort((a, b) => a.name.localeCompare(b.name));
-      expiredFromActive.forEach((e) => {
-        fetch("/api/exam", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: e.id, status: "completed" }) }).catch(console.error);
-      });
+      // Server GET auto-completes expired exams (scoped to the user) — no client PATCH needed.
       setExams(trueActive);
       setActiveExams(trueActive);
       setHistoryExams(trueHistory);

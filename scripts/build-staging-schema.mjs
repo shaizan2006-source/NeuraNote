@@ -88,6 +88,9 @@ const APPLY_ORDER = [
   // 6f. F-039: HNSW ANN index on document_chunks.embedding (RAG path was exact-KNN seq-scan).
   "supabase/migrations/20260629000003_document_chunks_vector_index.sql",
 
+  // 6g. Ship-readiness: cards.document_id + exams.status/focus_progress columns (git parity).
+  "supabase/migrations/20260630000001_ship_readiness.sql",
+
   // 7. Manual patches: objects the app uses that live ONLY in prod, not in git
   //    (conversations.messages, documents/recaps buckets, get_active_briefing_users,
   //     anonymise_profile's missing columns). See STAGING_SETUP.md §"Manual patches".

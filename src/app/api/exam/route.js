@@ -6,23 +6,36 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// service_role bypasses RLS, so every handler MUST derive the user from the JWT and
+// scope by user_id — otherwise it leaks/edits every user's exams (was an S0 leak).
+async function getUser(req) {
+  const token = req.headers.get("authorization")?.replace("Bearer ", "");
+  if (!token) return null;
+  const { data } = await supabase.auth.getUser(token);
+  return data?.user || null;
+}
+
 const VALID_STATUSES = new Set(["active", "completed"]);
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 // ── GET: fetch all exams, auto-mark expired ones ─────────
-export async function GET() {
+export async function GET(req) {
   try {
+    const user = await getUser(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const today = new Date().toISOString().split("T")[0];
 
     await supabase
       .from("exams")
       .update({ status: "completed" })
+      .eq("user_id", user.id)
       .lt("exam_date", today)
       .eq("status", "active");
 
     const { data, error } = await supabase
       .from("exams")
       .select("*")
+      .eq("user_id", user.id)
       .order("exam_date", { ascending: true });
 
     if (error) throw error;
@@ -41,6 +54,8 @@ export async function GET() {
 // ── POST: create new exam ────────────────────────────────
 export async function POST(req) {
   try {
+    const user = await getUser(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const body = await req.json().catch(() => null);
     if (!body) {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
@@ -68,7 +83,7 @@ export async function POST(req) {
 
     const { data, error } = await supabase
       .from("exams")
-      .insert([{ name: cleanName, exam_date, status, subject: cleanSubject }])
+      .insert([{ user_id: user.id, name: cleanName, exam_date, status, subject: cleanSubject }])
       .select()
       .single();
 
@@ -85,6 +100,8 @@ export async function POST(req) {
 // ── PATCH: update exam fields (status and/or subject) ────
 export async function PATCH(req) {
   try {
+    const user = await getUser(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const body = await req.json().catch(() => null);
     if (!body) {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
@@ -118,6 +135,7 @@ export async function PATCH(req) {
       .from("exams")
       .update(patch)
       .eq("id", id)
+      .eq("user_id", user.id)
       .select()
       .single();
 

@@ -43,11 +43,11 @@ export default function ExamsPage() {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
       const [examsRes, topicsRes] = await Promise.all([
-        fetch("/api/exam"),
+        token ? fetch("/api/exam", { headers }) : Promise.resolve(null),
         token ? fetch("/api/weak-topics", { headers }) : Promise.resolve(null),
       ]);
 
-      if (examsRes.ok) {
+      if (examsRes?.ok) {
         const { active = [], history = [] } = await examsRes.json();
         setExams([...active, ...history]);
       }

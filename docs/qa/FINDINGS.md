@@ -3,7 +3,18 @@
 Format: ID · Severity · Area · What's wrong · Repro · Expected vs Actual · Fix · Status.
 Severity: S0 blocker · S1 critical · S2 major · S3 minor · S4 polish.
 
-**Counts:** S0 **1** · S1 **9** · S2 **10** · S3 **13** (33 findings).  **Fixed & verified: 30** · **Addressed: F-006** · **0 open code bugs.** The last two S2 process items are now closed out: **F-007** (release hygiene) → runbook in [RELEASE.md](RELEASE.md); **F-028** (cron-secret-in-client) → WIP-only (undeployed), drop-in fix specified in its entry. **Phase 2** regression suite built: `npm run test:regression` + nightly `qa-regression.yml` — see [REGRESSION.md](REGRESSION.md).
+**Counts (Phases 0–3):** S0 **1** · S1 **9** · S2 **10** · S3 **13** (33 findings).  **Fixed & verified: 30** · **Addressed: F-006** · **0 open code bugs.** The last two S2 process items are closed out: **F-007** (release hygiene) → runbook in [RELEASE.md](RELEASE.md); **F-028** (cron-secret-in-client) → WIP-only (undeployed), drop-in fix specified in its entry. **Phase 2** regression suite built: `npm run test:regression` + nightly `qa-regression.yml` — see [REGRESSION.md](REGRESSION.md).
+
+> ## 🆕 Phase 4 — Scale & Capacity Audit (54-agent verified audit; full report: [PHASE_4_SCALE.md](PHASE_4_SCALE.md))
+> **46 confirmed findings, 2 refuted.** Most important: a **second class of LIVE PROD S0 — unauthenticated cross-user data leaks** (worse than the RLS S0; no token required):
+> - **F-034 (S0, LIVE):** `/api/get-pdfs` returns **all users'** PDF names+paths to anyone (no auth). **Fix ready** → `hotfix-phase4-data-leaks.patch`.
+> - **F-035 (S0, LIVE):** `/api/chat/history` reads **anyone's chat content** via body `user_id` (IDOR, no auth). **Fix ready** → same patch.
+> - **F-036/F-037 (S1, LIVE):** `/api/generate-quiz` (spoofable body `userId`), `/api/generate-document` (fully unauth + CPU-heavy). Fixes specified.
+> - **F-038 (S1, LIVE):** free-tier 20/day Q&A cap **never enforces** — `planLimits.countTodayQA` filters on a non-existent `qa_usage.created_at` column → unlimited free Q&A (cost leak). Fix specified.
+> - **F-039 (S1, LIVE):** `document_chunks.embedding` has **no ANN index** → every RAG query is an exact KNN seq-scan. **Migration ready** → `20260629000003_document_chunks_vector_index.sql`.
+> - **F-040 (S1, LIVE):** **no rate limiting anywhere** (no `middleware.js`) — one token can flood every expensive endpoint.
+> - Plus live S2/S3 perf items (verifyAuth round-trip, weak-topics on hot path, etc.) and **WIP-only** findings (6 naive cron fan-outs + the unbuilt AI budget breaker) to fix *before shipping*. Full classification + 10 unverified follow-up gaps (G1 connection model, G2 counter races, G3 Realtime ceiling, …) in the report.
+> **Headline:** the team's WIP already fixes F-034/035/036 with auth — but it's stranded undeployed (F-007). The `hotfix-phase4-data-leaks.patch` closes the two S0 leaks off `origin/main` without waiting on the WIP.
 
 **Phase-3 hardening pass:** F-029 fixed (`/api/ask` now 401s without a valid user; `askWithDownload` sends the token), F-030 (`/api/upload` returns a generic error), F-031 (`/api/ask` non-string/oversized guard; `/api/process-pdf` errors now 500 not 200; WIP `onboarding`/`mock-test` type-guards), F-032 (8000-char input cap), F-033 (array-`exam_type` guard). Prod-deployable changes are in **`docs/qa/hotfix-phase3-F029-F031.patch`** (applies cleanly to `origin/main`, disjoint from the entitlements patch).
 

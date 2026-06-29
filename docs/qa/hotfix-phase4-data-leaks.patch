@@ -1,0 +1,133 @@
+diff --git a/src/app/api/chat/history/route.js b/src/app/api/chat/history/route.js
+index 84a02155..58dda3e5 100644
+--- a/src/app/api/chat/history/route.js
++++ b/src/app/api/chat/history/route.js
+@@ -9,22 +9,23 @@ const supabase = createClient(
+ 
+ export async function POST(req) {
+   try {
+-    const body = await req.json();
+-    const { user_id } = body;
+-
+-    if (!user_id) {
+-      return NextResponse.json(
+-        { error: "Missing user_id" },
+-        { status: 400 }
+-      );
+-    }
+-
+-    // 🔹 Fetch chat history
++    // P4-S0: derive the user from the verified JWT — NEVER from the request body.
++    // Previously user_id came straight from the body with no auth, so any caller could
++    // read any user's full chat history (IDOR). service_role bypasses RLS, so the route
++    // itself must enforce ownership.
++    const token = req.headers.get("authorization")?.replace("Bearer ", "");
++    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
++    const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
++    if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
++    const user_id = user.id;
++
++    // 🔹 Fetch chat history — cap to the most recent 200 (unbounded select grew with usage)
+     const { data, error } = await supabase
+       .from("chat_messages")
+       .select("*")
+       .eq("user_id", user_id)
+-      .order("created_at", { ascending: true });
++      .order("created_at", { ascending: false })
++      .limit(200);
+ 
+     if (error) {
+       throw error;
+@@ -32,7 +33,7 @@ export async function POST(req) {
+ 
+     return NextResponse.json({
+       success: true,
+-      messages: data,
++      messages: (data || []).reverse(), // back to oldest-first for display
+     });
+ 
+   } catch (error) {
+diff --git a/src/app/api/get-pdfs/route.js b/src/app/api/get-pdfs/route.js
+index 2ad81e01..52a8cbdb 100644
+--- a/src/app/api/get-pdfs/route.js
++++ b/src/app/api/get-pdfs/route.js
+@@ -6,12 +6,22 @@ const supabase = createClient(
+   process.env.SUPABASE_SERVICE_ROLE_KEY
+ );
+ 
+-export async function GET() {
++export async function GET(req) {
+   try {
++    // P4-S0: was unauthenticated and returned EVERY user's pdfs_metadata (name + storage
++    // path) to any anonymous caller. Require a valid JWT and scope to that user; service_role
++    // bypasses RLS so the route must enforce ownership.
++    const token = req.headers.get("authorization")?.replace("Bearer ", "");
++    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
++    const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
++    if (authErr || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
++
+     const { data, error } = await supabase
+       .from("pdfs_metadata")
+       .select("*")
+-      .order("created_at", { ascending: false });
++      .eq("user_id", user.id)
++      .order("created_at", { ascending: false })
++      .limit(200);
+ 
+     if (error) {
+       console.error('[get-pdfs]', error);
+diff --git a/src/app/chat/page.js b/src/app/chat/page.js
+index 22294c0b..647c7748 100644
+--- a/src/app/chat/page.js
++++ b/src/app/chat/page.js
+@@ -42,13 +42,15 @@ useEffect(() => {
+ 
+       setUserId(user.id);
+ 
+-      // 🔹 Fetch chat history
++      // 🔹 Fetch chat history (auth via JWT; server derives the user from the token)
++      const { data: { session } } = await supabase.auth.getSession();
+       const res = await fetch("/api/chat/history", {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json",
++          Authorization: `Bearer ${session?.access_token ?? ""}`,
+         },
+-        body: JSON.stringify({ user_id: user.id }),
++        body: JSON.stringify({}),
+       });
+ 
+       const data = await res.json();
+@@ -72,9 +74,14 @@ useEffect(() => {
+ 
+   async function fetchHistory() {
+     try {
++      const { data: { session } } = await supabase.auth.getSession();
+       const res = await fetch("/api/chat/history", {
+         method: "POST",
+-        body: JSON.stringify({ user_id }),
++        headers: {
++          "Content-Type": "application/json",
++          Authorization: `Bearer ${session?.access_token ?? ""}`,
++        },
++        body: JSON.stringify({}),
+       });
+ 
+       const data = await res.json();
+diff --git a/src/context/DashboardContext.jsx b/src/context/DashboardContext.jsx
+index 4b4319d1..27765df6 100644
+--- a/src/context/DashboardContext.jsx
++++ b/src/context/DashboardContext.jsx
+@@ -755,7 +755,11 @@ export function DashboardProvider({ children }) {
+ 
+   const fetchSavedPDFs = async () => {
+     try {
+-      const res = await fetch("/api/get-pdfs");
++      const { data: { session } } = await supabase.auth.getSession();
++      if (!session?.access_token) { setSavedPDFs([]); return; }
++      const res = await fetch("/api/get-pdfs", {
++        headers: { Authorization: `Bearer ${session.access_token}` },
++      });
+       const data = await res.json();
+       setSavedPDFs(Array.isArray(data) ? data : []);
+     } catch (err) {

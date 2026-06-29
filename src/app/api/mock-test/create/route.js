@@ -54,14 +54,23 @@ export async function POST(req) {
       .eq("subject", subj.name)
       .limit(subj.count * 3);
 
-    // Shuffle and pick
-    const pool = (data ?? []).sort(() => Math.random() - 0.5).slice(0, subj.count);
-    for (const q of pool) questionSlots.push(q);
+    // Shuffle (Fisher-Yates — uniform) and take this subject's quota (or all available).
+    const pool = [...(data ?? [])];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    for (const q of pool.slice(0, subj.count)) questionSlots.push(q);
   }
 
   if (questionSlots.length === 0) {
     return Response.json({ error: "Not enough questions in database for this exam" }, { status: 422 });
   }
+
+  // total_marks = sum of the actual paper's mark_weights, so the score % stays fair even when
+  // the bank can't yet fill every subject quota, and so it matches the +mark_weight scoring in
+  // /submit (the static config total was inconsistent with the per-question marks).
+  const totalMarks = questionSlots.reduce((sum, q) => sum + (q.mark_weight ?? 4), 0);
 
   // Strip correct answers before sending to client
   const questions = questionSlots.map(({ correct_answer: _, ...rest }) => rest);
@@ -72,7 +81,7 @@ export async function POST(req) {
       user_id: user.id,
       exam_type,
       total_questions: questions.length,
-      total_marks: config.total_marks,
+      total_marks: totalMarks,
       duration_seconds: config.duration_seconds,
       questions: questionSlots,  // stored with answers server-side
       status: "active",

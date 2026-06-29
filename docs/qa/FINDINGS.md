@@ -3,7 +3,7 @@
 Format: ID · Severity · Area · What's wrong · Repro · Expected vs Actual · Fix · Status.
 Severity: S0 blocker · S1 critical · S2 major · S3 minor · S4 polish.
 
-**Counts:** S0 **1** · S1 **9** · S2 **10** · S3 **13** (33 findings).  **Fixed & verified: 30** · **Addressed: F-006** · **Open: 2** — **F-007** (release hygiene) + **F-028** (cron-secret-in-client, needs a server-route refactor), both S2 process/refactor items.
+**Counts:** S0 **1** · S1 **9** · S2 **10** · S3 **13** (33 findings).  **Fixed & verified: 30** · **Addressed: F-006** · **0 open code bugs.** The last two S2 process items are now closed out: **F-007** (release hygiene) → runbook in [RELEASE.md](RELEASE.md); **F-028** (cron-secret-in-client) → WIP-only (undeployed), drop-in fix specified in its entry. **Phase 2** regression suite built: `npm run test:regression` + nightly `qa-regression.yml` — see [REGRESSION.md](REGRESSION.md).
 
 **Phase-3 hardening pass:** F-029 fixed (`/api/ask` now 401s without a valid user; `askWithDownload` sends the token), F-030 (`/api/upload` returns a generic error), F-031 (`/api/ask` non-string/oversized guard; `/api/process-pdf` errors now 500 not 200; WIP `onboarding`/`mock-test` type-guards), F-032 (8000-char input cap), F-033 (array-`exam_type` guard). Prod-deployable changes are in **`docs/qa/hotfix-phase3-F029-F031.patch`** (applies cleanly to `origin/main`, disjoint from the entitlements patch).
 
@@ -28,10 +28,33 @@ A ~50k–100k-char `question` is accepted and sent through classify/embeddings/c
 
 **Phase-3 security audit (mostly clean):** secrets are **server-only** — the only `NEXT_PUBLIC_` values are the safe ones (Supabase URL/anon, Sentry DSN, VAPID public, app URL); no service-role/OpenAI/Razorpay-secret in any client component (one anti-pattern: F-028). **Git history has no real committed keys** (all `sk-proj-`/`rzp_live_` matches are `.env.example` placeholders + docs). **JWT tampering rejected** (valid→200, tampered signature→401 PGRST301, garbage→401). Remaining Phase-3 (not yet run): AI prompt-injection/system-prompt-leak, DB connection-pool/concurrency breakage, chaos (kill mid-payment/AI/upload).
 
-## F-028 · S2 · Secrets / cron secret referenced in client code  ⛔ OPEN
-`src/app/admin/trial-segments/page.js:62` (a `"use client"` component) sends `Authorization: Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET ?? ""}` to trigger a cron from the admin UI. `NEXT_PUBLIC_*` is **inlined into the client bundle**, so if `NEXT_PUBLIC_CRON_SECRET` is ever set, the cron secret leaks to every visitor (forge cron calls → trigger notifications/trial messaging); if unset (current — not in env.example/vercel.json), the admin manual-trigger is silently **broken** (sends empty auth). Either way it's wrong.
-**Fix:** route admin manual-triggers through a server endpoint that is admin-gated (`ADMIN_EMAILS`) and holds `CRON_SECRET` server-side; never expose it via `NEXT_PUBLIC_`. Not auto-fixed (needs a small new server route).
-**Status:** OPEN (S2). (`NEXT_PUBLIC_CRON_SECRET` appears unset today → likely no live leak, but the pattern must go.)
+## F-028 · S2 · Secrets / cron secret referenced in client code  🔶 FIX SPECIFIED (WIP-only)
+`src/app/admin/trial-segments/page.js:62` (a `"use client"` component) sends `Authorization: Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET ?? ""}` to trigger a cron from the admin UI. `NEXT_PUBLIC_*` is **inlined into the client bundle**, so if `NEXT_PUBLIC_CRON_SECRET` is ever set, the cron secret leaks to every visitor (forge cron calls → trigger notifications/trial messaging); if unset (current — not in env.example/vercel.json), the admin manual-trigger is silently **broken** (sends empty auth). Either way it's wrong. (Ironically the component already fetches the admin `session` two lines above, then ignores it.)
+**Not live:** this admin page + the `trial-d3-segment` cron are **untracked WIP** — absent from `origin/main` and `qa/phase0-hardening`. No deployed leak; the fix rides the WIP when it ships.
+**Fix (drop-in, mirrors the existing `/api/admin/metrics` admin gate):**
+1. New `src/app/api/admin/trial-segment/route.js` — admin-gated, holds the secret server-side:
+   ```js
+   import { NextResponse } from "next/server";
+   import { verifyAuth } from "@/lib/serverAuth";
+   const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "shaizan2006@gmail.com").split(",").map(e => e.trim().toLowerCase());
+   export async function GET(req) {
+     const user = await verifyAuth(req);
+     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+     if (!ADMIN_EMAILS.includes(user.email?.toLowerCase())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+     const origin = new URL(req.url).origin;
+     const res = await fetch(`${origin}/api/cron/trial-d3-segment`, {
+       headers: { Authorization: `Bearer ${process.env.CRON_SECRET ?? ""}`, ...(req.headers.get("x-dry-run") === "true" ? { "x-dry-run": "true" } : {}) },
+     });
+     return NextResponse.json(await res.json(), { status: res.status });
+   }
+   ```
+2. In `trial-segments/page.js`, call the admin route with the admin's own JWT (which it already loads) and delete the `NEXT_PUBLIC_CRON_SECRET` reference:
+   ```js
+   const { data: { session } } = await supabase.auth.getSession();
+   const res = await fetch("/api/admin/trial-segment", { headers: { Authorization: `Bearer ${session?.access_token ?? ""}`, "x-dry-run": "true" } });
+   ```
+3. Never name the var `NEXT_PUBLIC_CRON_SECRET`; keep it `CRON_SECRET` (server-only). `cronSecretValid()` already validates it timing-safely.
+**Status:** FIX SPECIFIED — apply to the WIP admin feature before it ships. (I can apply it directly if the WIP is restored; left untouched to avoid disturbing the 178-file stash.)
 
 **Auth note (S3, by design):** Supabase access tokens are stateless JWTs — client "logout" clears local storage but the JWT stays valid until `exp` (~1h); there's no server-side revocation on normal logout (only the deletion flow calls `admin.signOutUser`). Acceptable for most apps; note it for shared-device scenarios.
 
@@ -144,8 +167,8 @@ return data.plan || "free";
 
 ## F-007 · S2 · Migrations / DR  🔶 PARTIALLY ADDRESSED
 **What's wrong:** schema not reproducible from git in one clean pass: dead `20260504120000_add_theme_preference.sql` (ALTERs non-existent `user_profiles` → ERROR); root `supabase/{migrations,voice_migration,quickchat_migration,concept_graph_migration}.sql` conflict with the timestamped set; many `CREATE POLICY`/`ADD CONSTRAINT`/`ALTER PUBLICATION` lack `IF NOT EXISTS` (not re-run-idempotent); plus the drift in F-001/2/3/4.
-**Fix:** committed `20260628000002_reconcile_prod_drift.sql` + curated ordered apply (`build-staging-schema.mjs`) now rebuild a prod-matching schema. **Still recommend:** delete the dead migration, reconcile/remove the root `.sql` files.
-**Status:** staging reproducible; clean committed migration set still recommended.
+**Fix:** committed `20260628000002_reconcile_prod_drift.sql` + curated ordered apply (`build-staging-schema.mjs`) now rebuild a prod-matching schema. Process codified in **[RELEASE.md](RELEASE.md)** (schema-is-code + quarterly DR rebuild-from-git check, one canonical remote, branch→PR→deploy, pre-push checklist). **Still recommend:** delete the dead migration, reconcile/remove the root `.sql` files, and `git remote remove ask-my-notes-main`.
+**Status:** staging reproducible + runbook written; the remaining items (delete dead migration, drop root `.sql`, remove abandoned remote) are team chores tracked in RELEASE.md.
 
 ## F-008 · S2 · Storage / Weekly recaps  ✅ FIXED
 **What's wrong:** prod has **no `recaps` bucket**, but [recaps/generator.js:81-82](../../src/lib/recaps/generator.js#L81) `storage.from("recaps").upload(...)` then `createSignedUrl(...)` **without checking the upload error** → null signed URL → throws. The weekly-recap cron (`generate-weekly-recaps`, Sundays) generates the OpenAI TTS audio first, so cost is incurred then the upload fails.

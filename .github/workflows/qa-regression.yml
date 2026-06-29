@@ -1,0 +1,77 @@
+name: QA Regression (staging)
+
+# Phase-2 regression suite. Exercises the critical paths that unit tests can't reach
+# end-to-end — the money path, mock-test scoring, FSRS scheduling, streaks, and DB
+# concurrency — against a DEPLOYED + SEEDED staging app (never production).
+#
+# Runs nightly and on-demand. It is intentionally NOT wired to pull_request: it needs
+# live staging + Razorpay-test secrets, so it must not gate contributor PRs.
+#
+# Required repo secrets (Settings → Secrets → Actions):
+#   STAGING_APP_URL, STAGING_SUPABASE_URL, STAGING_SUPABASE_ANON_KEY,
+#   STAGING_SUPABASE_SERVICE_ROLE_KEY, STAGING_RAZORPAY_KEY_ID,
+#   STAGING_RAZORPAY_KEY_SECRET, STAGING_RAZORPAY_WEBHOOK_SECRET
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 1 * * *" # 01:30 UTC ≈ 07:00 IST, before peak study hours
+
+concurrency:
+  group: qa-regression
+  cancel-in-progress: true
+
+jobs:
+  regression:
+    name: API regression harnesses
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      # Re-seed the 6 personas so every run starts from a known baseline.
+      - name: Seed staging personas
+        run: node scripts/seed-staging.mjs
+        env:
+          ALLOW_SEED: "1"
+          STAGING_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          STAGING_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+          STAGING_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Run regression harnesses (money / scoring / FSRS / streak / DB)
+        run: npm run test:regression
+        env:
+          APP: ${{ secrets.STAGING_APP_URL }}
+          STAGING_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          STAGING_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+          STAGING_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+          RAZORPAY_KEY_ID: ${{ secrets.STAGING_RAZORPAY_KEY_ID }}
+          RAZORPAY_KEY_SECRET: ${{ secrets.STAGING_RAZORPAY_KEY_SECRET }}
+          RAZORPAY_WEBHOOK_SECRET: ${{ secrets.STAGING_RAZORPAY_WEBHOOK_SECRET }}
+
+  e2e:
+    name: Playwright e2e (auth/routing, mobile + desktop)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run e2e against staging
+        run: npx playwright test tests/e2e/phase1-auth-routing.spec.js
+        env:
+          CI: "true"
+          PLAYWRIGHT_BASE_URL: ${{ secrets.STAGING_APP_URL }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

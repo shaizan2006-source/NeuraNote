@@ -13,6 +13,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:load": "node tests/load/load-test.mjs",
+    "test:regression": "node scripts/run-regression.mjs",
     "test:all": "npm run test:unit && npm run test:e2e"
   },
   "dependencies": {

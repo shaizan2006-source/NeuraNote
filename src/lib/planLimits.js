@@ -36,13 +36,16 @@ export async function getUserPlan(userId, user = null) {
 
   const { data } = await supabase
     .from("user_plans")
-    .select("plan, expires_at")
+    .select("plan, expires_at, is_trial, trial_ends_at")
     .eq("user_id", userId)
     .maybeSingle();
 
   if (!data) return "free";
-  // Expired subscription → downgrade to free
+  // Expired paid subscription → downgrade to free
   if (data.expires_at && new Date(data.expires_at) < new Date()) return "free";
+  // F-005: a lapsed trial must also drop to free — trials set trial_ends_at but never
+  // expires_at, so without this an expired trial kept Pro entitlements forever.
+  if (data.is_trial && data.trial_ends_at && new Date(data.trial_ends_at) < new Date()) return "free";
   return data.plan || "free";
 }
 

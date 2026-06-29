@@ -99,8 +99,12 @@ export async function POST(req) {
     const safeModel = model === "gpt-4o" ? "gpt-4o" : "gpt-4o-mini";
 
     // ── Validate ─────────────────────────────────────────────
-    if (!question || question.trim() === "") {
+    if (typeof question !== "string" || question.trim() === "") {
       return NextResponse.json({ error: "Question is required" }, { status: 400 });
+    }
+    // F-032: cap input length before classify/embeddings/completion (cost/latency guard).
+    if (question.length > 8000) {
+      return NextResponse.json({ error: "Question is too long (max 8000 characters)." }, { status: 413 });
     }
 
     // ── Auth + free tier Q&A limit (dev accounts bypass automatically) ──
@@ -111,6 +115,12 @@ export async function POST(req) {
       const { data: { user } } = await supabase.auth.getUser(token);
       userId   = user?.id || null;
       authUser = user || null;
+    }
+    // F-029: require authentication. A missing/expired token previously left userId null,
+    // which skipped BOTH the Q&A rate-limit AND the budget cap → unauthenticated callers
+    // got unlimited OpenAI usage (cost-abuse). All /api/ask callers are authenticated.
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     // Coach mode bypasses the Q&A rate-limit (conversational turns, not factual answers)
     if (userId && mode !== "coach") {

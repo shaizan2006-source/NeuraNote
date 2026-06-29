@@ -14,10 +14,22 @@
  *   // result.exportError — set if generation failed but answer is still available
  */
 
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
+
 export async function askQuestion({ question, documentId }) {
+  // F-029: /api/ask now requires auth — attach the current session token.
+  const { data: { session } } = await supabase.auth.getSession();
   const res = await fetch("/api/ask", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+    },
     body: JSON.stringify({ question, documentId }),
   });
 

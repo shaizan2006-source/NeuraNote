@@ -1,4 +1,5 @@
 ﻿import { verifyAuth, supabaseAdmin } from "@/lib/serverAuth";
+import { normalizeQuestion, normalizeCorrectKey } from "@/lib/pyqs/normalizeQuestion";
 
 export async function POST(req) {
   const user = await verifyAuth(req);
@@ -33,8 +34,13 @@ export async function POST(req) {
   const examType = test.exam_type;
 
   for (const q of storedQuestions) {
-    const userAnswer = answerMap.get(q.id);
-    const isCorrect = userAnswer && userAnswer === q.correct_answer;
+    const { options, correctKey } = normalizeQuestion(q);
+    const rawUserAnswer = answerMap.get(q.id);
+    // Resolve whatever the client sent (canonical key, full option text, or index) to a key,
+    // then compare keys — fixes the S0 where a full option string was compared to a letter.
+    const userKey = rawUserAnswer != null && rawUserAnswer !== ""
+      ? normalizeCorrectKey(rawUserAnswer, options) : null;
+    const isCorrect = userKey != null && correctKey != null && userKey === correctKey;
     const subject = q.subject ?? "Unknown";
     if (!topicBreakdown[subject]) topicBreakdown[subject] = { correct: 0, total: 0, marks: 0 };
     topicBreakdown[subject].total++;
@@ -45,7 +51,7 @@ export async function POST(req) {
       marksObtained += gain;
       topicBreakdown[subject].correct++;
       topicBreakdown[subject].marks += gain;
-    } else if (userAnswer) {
+    } else if (userKey != null) {
       incorrectCount++;
       // -1 for JEE Main / NEET, 0 for unanswered
       const penalty = examType === "jee_advanced" ? 0 : -1;
@@ -55,7 +61,7 @@ export async function POST(req) {
   }
 
   const totalMarks = test.total_marks ?? 300;
-  const pct = totalMarks > 0 ? Math.round((marksObtained / totalMarks) * 100) : 0;
+  const pct = totalMarks > 0 ? Math.max(0, Math.round((marksObtained / totalMarks) * 100)) : 0;
 
   // Rough rank estimate (JEE Main: ~10L students, NEET: ~23L students)
   const totalStudents = examType === "neet_ug" ? 2300000 : 1000000;

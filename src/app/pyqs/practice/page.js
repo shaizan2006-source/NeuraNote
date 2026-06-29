@@ -1,6 +1,7 @@
 ﻿"use client";
 import { Suspense, useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { normalizeQuestion } from "@/lib/pyqs/normalizeQuestion";
 
 const EXAMS = ["jee_main", "jee_advanced", "neet_ug"];
 const SUBJECTS_MAP = {
@@ -49,8 +50,13 @@ function PYQPracticePageInner() {
       const res = await fetch(`/api/pyqs/search?${params}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const d = await res.json();
-      // Shuffle
-      const arr = (d.results ?? []).sort(() => Math.random() - 0.5).slice(0, count);
+      // Shuffle (Fisher-Yates — uniform, unlike sort(()=>Math.random()-0.5))
+      const pool = [...(d.results ?? [])];
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      const arr = pool.slice(0, count);
       setQuestions(arr);
       setCurrent(0);
       setAnswers({});
@@ -75,9 +81,9 @@ function PYQPracticePageInner() {
 
   function handleSubmit() {
     let correct = 0;
-    questions.forEach((q, i) => {
-      const userLetter = (answers[i] ?? "")[0];
-      if (userLetter && userLetter === q.correct_answer) correct++;
+    questions.forEach((qq, i) => {
+      const { correctKey } = normalizeQuestion(qq);
+      if (answers[i] != null && correctKey != null && answers[i] === correctKey) correct++;
     });
     const total = questions.length;
     setScore({ correct, total, pct: total > 0 ? Math.round((correct / total) * 100) : 0 });
@@ -85,7 +91,9 @@ function PYQPracticePageInner() {
   }
 
   const q = questions[current];
-  const hasOptions = q && Array.isArray(q.options) && q.options.length > 0;
+  const nq = q ? normalizeQuestion(q) : null;
+  const opts = nq?.options ?? [];
+  const hasOptions = opts.length > 0;
   const inp = (s) => ({ background: "var(--bg-inset)", border: "1px solid var(--border-strong)", borderRadius: 6, padding: "6px 10px", color: "var(--text-primary)", fontSize: 13, ...s });
   const focusRing = (e) => { e.target.style.boxShadow = "0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent)"; };
   const blurRing = (e) => { e.target.style.boxShadow = "none"; };
@@ -223,18 +231,19 @@ function PYQPracticePageInner() {
 
           {hasOptions && (
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-              {q.options.map((opt, j) => {
-                const letter = opt[0];
-                const sel = answers[current] === opt;
-                const isCorrect = revealed[current] && letter === q.correct_answer;
+              {opts.map((opt) => {
+                const sel = answers[current] === opt.key;
+                const isCorrect = revealed[current] && opt.key === nq.correctKey;
                 const isWrong = revealed[current] && sel && !isCorrect;
                 return (
-                  <button key={j} onClick={() => handleAnswer(current, opt)} style={{
+                  <button key={opt.key} onClick={() => handleAnswer(current, opt.key)} style={{
                     background: isCorrect ? "color-mix(in srgb, var(--success) 12%, transparent)" : isWrong ? "color-mix(in srgb, var(--error) 12%, transparent)" : sel ? "var(--bg-surface-2)" : "var(--bg-surface)",
                     border: `1px solid ${isCorrect ? "color-mix(in srgb, var(--success) 40%, transparent)" : isWrong ? "color-mix(in srgb, var(--error) 40%, transparent)" : sel ? "var(--border-strong)" : "var(--border-hairline)"}`,
                     borderRadius: 8, padding: "10px 14px", textAlign: "left", color: "var(--text-secondary)", fontSize: 14,
                     cursor: revealed[current] ? "default" : "pointer", width: "100%",
-                  }}>{opt}</button>
+                  }}>
+                    <span style={{ fontWeight: 700, marginRight: 8 }}>{opt.key}.</span>{opt.text}
+                  </button>
                 );
               })}
             </div>

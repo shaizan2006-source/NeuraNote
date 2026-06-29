@@ -1,7 +1,10 @@
 ﻿"use client";
 import { useState } from "react";
+import { normalizeOptions, normalizeCorrectKey } from "@/lib/pyqs/normalizeQuestion";
 
 export default function TryYourselfClient({ options, correctAnswer, solution }) {
+  const opts = normalizeOptions(options);
+  const correctKey = normalizeCorrectKey(correctAnswer, opts);
   const [selected, setSelected] = useState(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -9,19 +12,18 @@ export default function TryYourselfClient({ options, correctAnswer, solution }) 
     <div>
       <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}>Choose an answer</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-        {options.map((opt, i) => {
-          const letter = typeof opt === "string" && opt.length > 1 ? opt[0] : String.fromCharCode(65 + i);
-          const isCorrect = revealed && letter === correctAnswer;
-          const isWrong = revealed && selected === letter && !isCorrect;
-          const isSelected = selected === letter;
+        {opts.map((opt) => {
+          const isCorrect = revealed && opt.key === correctKey;
+          const isWrong = revealed && selected === opt.key && !isCorrect;
+          const isSelected = selected === opt.key;
           return (
-            <button key={i} onClick={() => !revealed && setSelected(letter)} style={{
+            <button key={opt.key} onClick={() => !revealed && setSelected(opt.key)} style={{
               background: isCorrect ? "color-mix(in srgb, var(--success) 12%, transparent)" : isWrong ? "color-mix(in srgb, var(--error) 12%, transparent)" : isSelected ? "var(--bg-surface-2)" : "var(--bg-surface)",
               border: `1px solid ${isCorrect ? "color-mix(in srgb, var(--success) 40%, transparent)" : isWrong ? "color-mix(in srgb, var(--error) 40%, transparent)" : isSelected ? "var(--border-strong)" : "var(--border-hairline)"}`,
               borderRadius: 8, padding: "10px 14px", textAlign: "left", color: "var(--text-secondary)", fontSize: 14,
               cursor: revealed ? "default" : "pointer", width: "100%",
             }}>
-              {opt}
+              <span style={{ fontWeight: 700, marginRight: 8 }}>{opt.key}.</span>{opt.text}
             </button>
           );
         })}

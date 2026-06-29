@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
+import { normalizeOptions } from "@/lib/pyqs/normalizeQuestion";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -105,6 +106,7 @@ export default function MockTestPage() {
   }
 
   const q = test?.questions[current];
+  const opts = q ? normalizeOptions(q.options) : [];
   const timerColor = timeLeft < 300 ? "var(--error)" : timeLeft < 900 ? "var(--warning)" : "var(--success)";
 
   if (view === VIEWS.setup) {
@@ -212,16 +214,18 @@ export default function MockTestPage() {
           </div>
 
           {/* Options */}
-          {Array.isArray(q.options) && q.options.length > 0 && (
+          {opts.length > 0 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-              {q.options.map((opt, j) => {
-                const selected = answers[q.id] === opt;
+              {opts.map((opt) => {
+                const selected = answers[q.id] === opt.key;
                 return (
-                  <button key={j} onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt }))} style={{
+                  <button key={opt.key} onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt.key }))} style={{
                     background: selected ? "var(--bg-surface-2)" : "var(--bg-surface)",
                     border: `1px solid ${selected ? "var(--border-strong)" : "var(--border-hairline)"}`,
                     borderRadius: 8, padding: "10px 14px", textAlign: "left", color: "var(--text-secondary)", fontSize: 14, cursor: "pointer", width: "100%",
-                  }}>{opt}</button>
+                  }}>
+                    <span style={{ fontWeight: 700, marginRight: 8 }}>{opt.key}.</span>{opt.text}
+                  </button>
                 );
               })}
             </div>

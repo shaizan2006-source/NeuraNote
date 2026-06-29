@@ -5,7 +5,7 @@ import { DrawerProvider } from "@/context/DrawerContext";
 import { TrackingProvider } from "@/components/providers/TrackingProvider";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
-import GreetingRow from "@/components/Dashboard/GreetingRow";
+import GreetingRow from "@/components/dashboard/GreetingRow";
 import BentoGrid from "@/components/Dashboard/BentoGrid";
 import QuickChatDrawer from "@/components/QuickChat/QuickChatDrawer";
 import MilestoneToast, { checkMilestones } from "@/components/ui/MilestoneToast";

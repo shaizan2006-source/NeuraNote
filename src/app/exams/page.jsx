@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useExamReminders } from "@/hooks/useExamReminders";
-import ExamCountdownSection from "@/components/dashboard/exams/ExamCountdownSection";
-import WeakTopicsSection from "@/components/dashboard/exams/WeakTopicsSection";
-import AddExamModal from "@/components/dashboard/exams/AddExamModal";
+import ExamCountdownSection from "@/components/Dashboard/exams/ExamCountdownSection";
+import WeakTopicsSection from "@/components/Dashboard/exams/WeakTopicsSection";
+import AddExamModal from "@/components/Dashboard/exams/AddExamModal";
 import ExamsSidebar from "@/components/exams/ExamsSidebar";
 
 const supabase = createClient(

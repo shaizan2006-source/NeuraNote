@@ -24,7 +24,13 @@ export async function GET(req) {
     .order("exam_year", { ascending: false })
     .range((page - 1) * perPage, page * perPage - 1);
 
-  if (error) return Response.json({ error: error.message }, { status: 500 });
+  // Degrade gracefully: if the pyqs table/columns aren't present yet (e.g. the migration
+  // hasn't been applied to this environment), return empty results instead of a 500 so the
+  // page renders an empty state rather than crashing.
+  if (error) {
+    console.error("[pyqs/search]", error.message);
+    return Response.json({ results: [], total: 0, page, has_more: false });
+  }
 
   return Response.json({
     results: data ?? [],

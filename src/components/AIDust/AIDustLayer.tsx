@@ -76,17 +76,22 @@ export default function AIDustLayer({ disabled = false }: AIDustLayerProps) {
 
   const isRouteEnabled = C.ENABLED_ROUTES.some((route) => pathname.startsWith(route));
   const shouldRun = isEnabled && !disabled && isRouteEnabled;
+  // Some routes (e.g. the dashboard) show the constellation continuously rather
+  // than only after the idle timeout.
+  const alwaysOn = C.ALWAYS_ON_ROUTES.some((route) => pathname.startsWith(route));
 
   const isIdle = useIdleDetection({
     timeout: C.IDLE_TIMEOUT,
-    enabled: shouldRun,
+    enabled: shouldRun && !alwaysOn,
   });
+
+  const active = shouldRun && (alwaysOn || isIdle);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    if (!isIdle || !shouldRun) {
+    if (!active) {
       if (animFrameRef.current) {
         cancelAnimationFrame(animFrameRef.current);
         animFrameRef.current = null;
@@ -274,14 +279,14 @@ export default function AIDustLayer({ disabled = false }: AIDustLayerProps) {
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [isIdle, shouldRun]);
+  }, [active]);
 
   if (!isEnabled) return null;
 
   return (
     <canvas
       ref={canvasRef}
-      className={`ai-dust-canvas${isIdle && shouldRun ? ' visible' : ''}`}
+      className={`ai-dust-canvas${active ? ' visible' : ''}`}
       aria-hidden="true"
     />
   );

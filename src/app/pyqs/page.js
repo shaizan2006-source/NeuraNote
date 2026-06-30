@@ -42,8 +42,8 @@ function PYQsPageInner() {
       .finally(() => setLoading(false));
   }, [exam, subject, difficulty, page, reloadKey]);
 
-  const chipBtn = (active, onClick, label) => (
-    <button onClick={onClick}
+  const chipBtn = (active, onClick, label, key) => (
+    <button key={key} onClick={onClick}
       onFocus={e => { e.currentTarget.style.boxShadow = "0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent)"; }}
       onBlur={e => { e.currentTarget.style.boxShadow = "none"; }}
       style={{
@@ -61,9 +61,9 @@ function PYQsPageInner() {
 
         {/* Filters */}
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 20 }}>
-          {EXAMS.map(e => chipBtn(exam === e, () => { setExam(exam === e ? "" : e); setSubject(""); setPage(1); }, e.replace("_", " ").toUpperCase()))}
-          {(SUBJECTS[exam] ?? []).map(s => chipBtn(subject === s, () => { setSubject(subject === s ? "" : s); setPage(1); }, s))}
-          {DIFFICULTIES.map(d => chipBtn(difficulty === d, () => { setDifficulty(difficulty === d ? "" : d); setPage(1); }, d.charAt(0).toUpperCase() + d.slice(1)))}
+          {EXAMS.map(e => chipBtn(exam === e, () => { setExam(exam === e ? "" : e); setSubject(""); setPage(1); }, e.replace("_", " ").toUpperCase(), `exam-${e}`))}
+          {(SUBJECTS[exam] ?? []).map(s => chipBtn(subject === s, () => { setSubject(subject === s ? "" : s); setPage(1); }, s, `subj-${s}`))}
+          {DIFFICULTIES.map(d => chipBtn(difficulty === d, () => { setDifficulty(difficulty === d ? "" : d); setPage(1); }, d.charAt(0).toUpperCase() + d.slice(1), `diff-${d}`))}
         </div>
 
         {loading ? (

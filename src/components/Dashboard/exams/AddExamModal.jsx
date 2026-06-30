@@ -1,8 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createClient } from "@supabase/supabase-js";
 import { SUBJECT_OPTIONS } from "@/lib/subjectOptions";
 import { motion } from "framer-motion";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
 
 const MAX_NAME_LENGTH = 100;
 
@@ -47,9 +53,13 @@ export default function AddExamModal({ onClose, onSubmit }) {
     setError("");
     setLoading(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/exam", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
+        },
         body: JSON.stringify({ name: examName.trim(), exam_date: examDate, subject }),
       });
 

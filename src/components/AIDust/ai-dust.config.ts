@@ -47,7 +47,10 @@ export const AI_DUST_CONFIG = {
     '.ask-ai-container',
     '[data-dust-scope]',
   ],
-  // Allowlist (was DISABLED_ROUTES): the effect is exclusive to the Sage
-  // surface (+ /styleguide for design review).
-  ENABLED_ROUTES: ['/sage', '/styleguide'],
+  // Allowlist (was DISABLED_ROUTES): the Sage surface (+ /styleguide for design
+  // review) and the dashboard.
+  ENABLED_ROUTES: ['/sage', '/styleguide', '/dashboard'],
+  // Routes where the constellation runs CONTINUOUSLY (not idle-gated) — the
+  // dashboard shows it as an always-on ambient background.
+  ALWAYS_ON_ROUTES: ['/dashboard'],
 } as const;

@@ -25,24 +25,32 @@ function DashboardInner() {
   const { streak, progressQuestions, masteryTopics, user, userReady, documents, focusSession } = useDashboard();
   const showSkeleton = useSlowLoad(!userReady);
   const [showUpload, setShowUpload] = useState(false);
-  if (showSkeleton) return <DashboardSkeleton />;
-  const userId = user?.id;
-  const { activePdf } = useActivePDF(userId);
-  const userName = user?.user_metadata?.full_name?.split(" ")[0] || "there";
-  const hasDocuments = documents && documents.length > 0;
-  const studiedToday = (progressQuestions ?? 0) > 0;
-  const inSession = !!focusSession;
-  // Compute the time-of-day mode CLIENT-SIDE after mount. Doing it during render
-  // (determineDashboardMode → new Date().getHours()) makes the server HTML differ from the
-  // client's first render → React hydration mismatch. Start from a stable "standard" mode.
+  const [mounted, setMounted] = useState(false);
+  // Time-of-day mode is computed CLIENT-SIDE after mount; computing it during render
+  // (determineDashboardMode → new Date().getHours()) makes the SSR HTML differ from the
+  // client's first render → hydration mismatch. Stable "standard" until mounted.
   const [timeMode, setTimeMode] = useState("standard");
+
+  const userId       = user?.id;
+  const studiedToday = (progressQuestions ?? 0) > 0;
+  const inSession    = !!focusSession;
+  const { activePdf } = useActivePDF(userId);
+
+  useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
     setTimeMode(determineDashboardMode({ inSession, studiedToday }));
   }, [inSession, studiedToday]);
-
   useEffect(() => {
     checkMilestones({ streak, progressQuestions, masteryTopics: masteryTopics?.length ?? 0 });
   }, [streak, progressQuestions, masteryTopics]);
+
+  // Render the deterministic skeleton until mounted (and while loading): the SSR HTML then
+  // exactly matches the client's first render, eliminating dashboard hydration mismatches.
+  // ALL hooks are above this early return, so hook order stays stable.
+  if (!mounted || showSkeleton) return <DashboardSkeleton />;
+
+  const userName     = user?.user_metadata?.full_name?.split(" ")[0] || "there";
+  const hasDocuments = documents && documents.length > 0;
 
   return (
     <div style={{

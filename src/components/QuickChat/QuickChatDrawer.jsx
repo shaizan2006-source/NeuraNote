@@ -7,6 +7,12 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useDashboard } from "@/context/DashboardContext";
 import { parseSseStream } from "@/lib/sseParser";
 import QuickChatVortex from "./QuickChatVortex";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
 
 const CURSOR_CSS = `
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
@@ -33,11 +39,11 @@ function UserBubble({ text }) {
       <div style={{
         background:     "color-mix(in srgb, var(--accent) 12%, transparent)",
         color:          "var(--accent)",
-        borderRadius:   6,
-        padding:        "5px 8px",
+        borderRadius:   10,
+        padding:        "8px 12px",
         maxWidth:       "80%",
-        fontSize:       9,
-        lineHeight:     1.5,
+        fontSize:       14,
+        lineHeight:     1.6,
         wordBreak:      "break-word",
         overflowWrap:   "anywhere",
         whiteSpace:     "pre-wrap",
@@ -51,12 +57,12 @@ function AIBubble({ text, isStreaming = false }) {
   return (
     <div style={{
       borderLeft:   "2px solid color-mix(in srgb, var(--accent) 30%, transparent)",
-      padding:      "5px 8px",
-      borderRadius: "0 6px 6px 0",
+      padding:      "8px 12px",
+      borderRadius: "0 8px 8px 0",
       background:   "color-mix(in srgb, var(--accent) 3%, transparent)",
-      fontSize:     9,
+      fontSize:     14,
       color:        "var(--text-secondary)",
-      lineHeight:   1.5,
+      lineHeight:   1.6,
       minHeight:    20,
       // overflow containment
       minWidth:     0,
@@ -138,9 +144,14 @@ export default function QuickChatDrawer({ userId }) {
     ]);
 
     try {
+      // /api/quick-chat requires a Bearer token (user_id in the body is ignored as spoofable).
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/quick-chat", {
         method:  "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
         body:    JSON.stringify({
           question:        q,
           user_id:         userId,
@@ -247,17 +258,17 @@ export default function QuickChatDrawer({ userId }) {
               flexShrink:     0,
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>◈ Quick Ask</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>◈ Quick Ask</span>
                 {effectivePdfName ? (
                   <span style={{
-                    fontSize: 9, color: "var(--accent)",
+                    fontSize: 11, color: "var(--accent)",
                     background: "color-mix(in srgb, var(--accent) 8%, transparent)",
                     border: "1px solid color-mix(in srgb, var(--accent) 28%, transparent)",
                     borderRadius: 4, padding: "1px 5px",
                   }}>{effectivePdfName}</span>
                 ) : (
                   <span style={{
-                    fontSize: 9, color: "var(--text-tertiary)",
+                    fontSize: 11, color: "var(--text-tertiary)",
                     background: "var(--bg-surface-2)",
                     border: "1px solid var(--border-strong)",
                     borderRadius: 4, padding: "1px 5px",
@@ -266,7 +277,7 @@ export default function QuickChatDrawer({ userId }) {
               </div>
               <button onClick={closeDrawer} style={{
                 background: "transparent", border: "none",
-                color: "var(--text-tertiary)", cursor: "pointer", fontSize: 14,
+                color: "var(--text-tertiary)", cursor: "pointer", fontSize: 18,
               }}>✕</button>
             </div>
 
@@ -281,7 +292,7 @@ export default function QuickChatDrawer({ userId }) {
               minHeight: 0,          // CRITICAL: allows overflow: auto to work in flex container
             }}>
               {messages.length === 0 && (
-                <p style={{ color: "var(--text-tertiary)", fontSize: 9, textAlign: "center", marginTop: 20 }}>
+                <p style={{ color: "var(--text-tertiary)", fontSize: 13, textAlign: "center", marginTop: 20 }}>
                   Ask anything about your study material
                 </p>
               )}
@@ -317,9 +328,9 @@ export default function QuickChatDrawer({ userId }) {
                     flex:         1,
                     background:   "var(--bg-surface-2)",
                     border:       "1px solid var(--border-strong)",
-                    borderRadius: 5,
-                    padding:      "4px 8px",
-                    fontSize:     9,
+                    borderRadius: 8,
+                    padding:      "8px 12px",
+                    fontSize:     14,
                     color:        "var(--text-primary)",
                     outline:      "none",
                     resize:       "none",
@@ -332,12 +343,12 @@ export default function QuickChatDrawer({ userId }) {
                   onClick={() => sendMessage()}
                   disabled={loading || !input.trim()}
                   style={{
-                    width: 20, height: 20, flexShrink: 0,
+                    width: 34, height: 34, flexShrink: 0,
                     background:   "var(--accent-grad)",
                     border:       "none",
-                    borderRadius: 5,
+                    borderRadius: 8,
                     color:        "var(--bg-base)",
-                    fontSize:     9,
+                    fontSize:     16,
                     cursor:       loading ? "not-allowed" : "pointer",
                     display:      "flex", alignItems: "center", justifyContent: "center",
                     opacity:      loading ? 0.5 : 1,
@@ -366,7 +377,7 @@ export default function QuickChatDrawer({ userId }) {
                   }}
                   style={{
                     background: "transparent", border: "none",
-                    color: "var(--accent)", fontSize: 8,
+                    color: "var(--accent)", fontSize: 12,
                     cursor: "pointer", textAlign: "right",
                     padding: 0, alignSelf: "flex-end",
                   }}

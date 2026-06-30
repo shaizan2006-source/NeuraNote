@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
 import { LogoMark } from "@/components/brand/Logo";
+import PremiumMark from "@/components/brand/PremiumMark";
 
 // lucide-react is NOT in the project — use inline SVG icons
 // Sidebar toggle icon — rounded rect split vertically (panel-left symbol)
@@ -356,11 +357,11 @@ function UpgradePro({ router, collapsed }) {
       border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)",
       borderRadius: 10,
     }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
-        <span style={{ fontSize: 12 }}>👑</span>
-        <span style={{ fontSize: 11, fontWeight: 700, color: "#f4f4f5" }}>Upgrade to Pro</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
+        <PremiumMark size={16} />
+        <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-primary)" }}>Upgrade to Pro</span>
       </div>
-      <p style={{ margin: "0 0 10px", fontSize: 10, color: "#71717a", lineHeight: 1.45 }}>
+      <p style={{ margin: "0 0 10px", fontSize: 11, color: "var(--text-tertiary)", lineHeight: 1.45 }}>
         Unlock unlimited AI, PDFs and advanced features.
       </p>
       <button
@@ -371,7 +372,7 @@ function UpgradePro({ router, collapsed }) {
           background: "var(--accent-grad)",
           border: "none",
           borderRadius: 7,
-          color: "#fff",
+          color: "var(--bg-base)",
           fontSize: 11,
           fontWeight: 600,
           cursor: "pointer",

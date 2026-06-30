@@ -55,23 +55,25 @@ export default function BrainMapPage() {
     }}>
       {/* Header */}
       <div style={{
-        padding: "16px 20px",
+        padding: "12px 16px",
         borderBottom: "1px solid var(--border-hairline)",
         display: "flex",
         alignItems: "center",
-        gap: 16,
+        gap: 12,
+        flexWrap: "wrap",
+        rowGap: 8,
       }}>
-        <a href="/dashboard" style={{ color: "var(--text-tertiary)", textDecoration: "none", fontSize: 14 }}>← Dashboard</a>
-        <h1 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>Your Brain Map</h1>
+        <a href="/dashboard" style={{ color: "var(--text-tertiary)", textDecoration: "none", fontSize: 13, flexShrink: 0 }}>← Dashboard</a>
+        <h1 style={{ fontSize: 16, fontWeight: 600, margin: 0, flexShrink: 0 }}>Brain Map</h1>
         {stats.total > 0 && (
-          <div style={{ display: "flex", gap: 12, marginLeft: "auto", fontSize: 12 }}>
+          <div style={{ display: "flex", gap: 8, marginLeft: "auto", fontSize: 11, flexWrap: "wrap" }}>
             {[
               { label: "Mastered", count: stats.mastered, color: `rgb(${MASTERY_TIERS[0].rgb.join(",")})` },
-              { label: "Strong", count: stats.strong, color: `rgb(${MASTERY_TIERS[1].rgb.join(",")})` },
-              { label: "Shaky", count: stats.shaky, color: `rgb(${MASTERY_TIERS[2].rgb.join(",")})` },
-              { label: "Unknown", count: stats.unknown, color: `rgb(${MASTERY_TIERS[3].rgb.join(",")})` },
+              { label: "Strong",   count: stats.strong,   color: `rgb(${MASTERY_TIERS[1].rgb.join(",")})` },
+              { label: "Shaky",    count: stats.shaky,    color: `rgb(${MASTERY_TIERS[2].rgb.join(",")})` },
+              { label: "Unknown",  count: stats.unknown,  color: `rgb(${MASTERY_TIERS[3].rgb.join(",")})` },
             ].map(({ label, count, color }) => (
-              <span key={label} style={{ color }}>
+              <span key={label} style={{ color, whiteSpace: "nowrap" }}>
                 {count} {label}
               </span>
             ))}

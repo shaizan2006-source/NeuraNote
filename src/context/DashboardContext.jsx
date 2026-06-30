@@ -99,6 +99,7 @@ export function DashboardProvider({ children }) {
   // ── Auth ───────────────────────────────────────────────────────
   const [user, setUser] = useState(null);
   const [userReady, setUserReady] = useState(false);
+  const [dataReady, setDataReady] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -1071,14 +1072,23 @@ export function DashboardProvider({ children }) {
         }).then(() => fetchStreak()).catch(console.error);
       }
 
-      Promise.all([
+      // CRITICAL first-paint data — gates the dashboard reveal so its top-level structure
+      // (empty-state vs grid, time-of-day mode, streak) is correct on first paint instead of
+      // flashing through EmptyState → wrong mode → reflowing cards as each request lands.
+      // Safety timer reveals anyway after 5s so a slow/hung request never traps the skeleton.
+      const revealSafety = setTimeout(() => setDataReady(true), 5000);
+      Promise.allSettled([
         fetchDocuments(),
-        fetchSavedPDFs(),
-        fetchStreak(),
-        fetchExam(),
-        fetchWeakTopics(),
         fetchProgress(),
         fetchFocusProgress(),
+        fetchStreak(),
+      ]).then(() => { clearTimeout(revealSafety); setDataReady(true); });
+
+      // SECONDARY data — fills individual cards in the background; doesn't gate first paint.
+      Promise.allSettled([
+        fetchSavedPDFs(),
+        fetchExam(),
+        fetchWeakTopics(),
         fetchSyllabus(),
         fetchAdaptivePlan(),
         fetchDailyPlan(),
@@ -1181,7 +1191,7 @@ export function DashboardProvider({ children }) {
       uploadStage, setUploadStage,
       uploadProgress, uploadedFileName, uploadedFileSize,
       isDragging, setIsDragging, uploading,
-      user, userReady, email, setEmail, password, setPassword,
+      user, userReady, dataReady, email, setEmail, password, setPassword,
       examName, setExamName, examDate, setExamDate,
       exams, activeExams, historyExams, selectedExam, setSelectedExam,
       isExamExpanded, setIsExamExpanded,

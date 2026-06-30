@@ -12,7 +12,6 @@ import MilestoneToast, { checkMilestones } from "@/components/ui/MilestoneToast"
 import { useEffect, useState } from "react";
 import { useActivePDF } from "@/hooks/useActivePDF";
 import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
-import { useSlowLoad } from "@/hooks/useSlowLoad";
 import EmptyState from "@/components/dashboard/EmptyState";
 import { determineDashboardMode } from "@/lib/dashboardMode";
 import MorningMode from "@/components/dashboard/modes/MorningMode";
@@ -22,8 +21,7 @@ import ActiveMode from "@/components/dashboard/modes/ActiveMode";
 import StandardMode from "@/components/dashboard/modes/StandardMode";
 
 function DashboardInner() {
-  const { streak, progressQuestions, masteryTopics, user, userReady, documents, focusSession } = useDashboard();
-  const showSkeleton = useSlowLoad(!userReady);
+  const { streak, progressQuestions, masteryTopics, user, dataReady, documents, focusSession } = useDashboard();
   const [showUpload, setShowUpload] = useState(false);
   const [mounted, setMounted] = useState(false);
   // Time-of-day mode is computed CLIENT-SIDE after mount; computing it during render
@@ -47,7 +45,7 @@ function DashboardInner() {
   // Render the deterministic skeleton until mounted (and while loading): the SSR HTML then
   // exactly matches the client's first render, eliminating dashboard hydration mismatches.
   // ALL hooks are above this early return, so hook order stays stable.
-  if (!mounted || showSkeleton) return <DashboardSkeleton />;
+  if (!mounted || !dataReady) return <DashboardSkeleton />;
 
   const userName     = user?.user_metadata?.full_name?.split(" ")[0] || "there";
   const hasDocuments = documents && documents.length > 0;

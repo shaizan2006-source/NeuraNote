@@ -268,14 +268,14 @@ export default function MockTestPage() {
             </div>
           </div>
 
-          {/* Rank estimate */}
-          {result.predicted_rank_range && (
+          {/* Percentile among app users for this exam (real; shown once enough peers exist) */}
+          {result.percentile != null && (
             <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border-hairline)", borderRadius: 12, padding: "16px 20px", marginBottom: 20, textAlign: "center" }}>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.06em" }}>Estimated Rank</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.06em" }}>Your Percentile</div>
               <div style={{ fontSize: 22, fontWeight: 700, color: "var(--accent)" }}>
-                {result.predicted_rank_range[0].toLocaleString("en-IN")} – {result.predicted_rank_range[1].toLocaleString("en-IN")}
+                {result.percentile}{result.percentile === 1 ? "st" : result.percentile === 2 ? "nd" : result.percentile === 3 ? "rd" : "th"} percentile
               </div>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 4 }}>Based on historical cutoffs</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 4 }}>vs others who took this mock</div>
             </div>
           )}
 

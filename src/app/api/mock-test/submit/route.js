@@ -63,9 +63,22 @@ export async function POST(req) {
   const totalMarks = test.total_marks ?? 300;
   const pct = totalMarks > 0 ? Math.max(0, Math.round((marksObtained / totalMarks) * 100)) : 0;
 
-  // Rough rank estimate (JEE Main: ~10L students, NEET: ~23L students)
-  const totalStudents = examType === "neet_ug" ? 2300000 : 1000000;
-  const estimatedRank = Math.max(1, Math.round(totalStudents * (1 - pct / 100)));
+  // Real percentile among app users who completed a mock for this exam_type (honest — we have
+  // no official cutoff data, so no fabricated lakhs-scale rank). Null until enough peers exist.
+  const { data: peers } = await supabaseAdmin
+    .from("mock_tests")
+    .select("marks_obtained, total_marks")
+    .eq("exam_type", examType)
+    .eq("status", "completed")
+    .not("marks_obtained", "is", null)
+    .limit(5000);
+  const peerPcts = (peers ?? [])
+    .filter((p) => (p.total_marks ?? 0) > 0)
+    .map((p) => (p.marks_obtained / p.total_marks) * 100);
+  peerPcts.push(pct); // include this attempt in the cohort
+  const percentile = peerPcts.length >= 8
+    ? Math.round((peerPcts.filter((v) => v < pct).length / peerPcts.length) * 100)
+    : null;
 
   await supabaseAdmin
     .from("mock_tests")
@@ -76,7 +89,6 @@ export async function POST(req) {
       score: correctCount,
       marks_obtained: marksObtained,
       topic_breakdown: topicBreakdown,
-      predicted_rank_range: [Math.round(estimatedRank * 0.8), Math.round(estimatedRank * 1.2)],
     })
     .eq("id", test_id);
 
@@ -87,7 +99,7 @@ export async function POST(req) {
     marks_obtained: marksObtained,
     total_marks: totalMarks,
     percentage: pct,
-    predicted_rank_range: [Math.round(estimatedRank * 0.8), Math.round(estimatedRank * 1.2)],
+    percentile, // % of app users (same exam) who scored below this — null until enough peers
     topic_breakdown: topicBreakdown,
   });
 }

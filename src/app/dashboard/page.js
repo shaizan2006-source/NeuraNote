@@ -9,7 +9,7 @@ import GreetingRow from "@/components/Dashboard/GreetingRow";
 import BentoGrid from "@/components/Dashboard/BentoGrid";
 import QuickChatDrawer from "@/components/QuickChat/QuickChatDrawer";
 import MilestoneToast, { checkMilestones } from "@/components/ui/MilestoneToast";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useActivePDF } from "@/hooks/useActivePDF";
 import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
 import { useSlowLoad } from "@/hooks/useSlowLoad";
@@ -32,7 +32,13 @@ function DashboardInner() {
   const hasDocuments = documents && documents.length > 0;
   const studiedToday = (progressQuestions ?? 0) > 0;
   const inSession = !!focusSession;
-  const timeMode = useMemo(() => determineDashboardMode({ inSession, studiedToday }), [inSession, studiedToday]);
+  // Compute the time-of-day mode CLIENT-SIDE after mount. Doing it during render
+  // (determineDashboardMode → new Date().getHours()) makes the server HTML differ from the
+  // client's first render → React hydration mismatch. Start from a stable "standard" mode.
+  const [timeMode, setTimeMode] = useState("standard");
+  useEffect(() => {
+    setTimeMode(determineDashboardMode({ inSession, studiedToday }));
+  }, [inSession, studiedToday]);
 
   useEffect(() => {
     checkMilestones({ streak, progressQuestions, masteryTopics: masteryTopics?.length ?? 0 });
@@ -43,7 +49,7 @@ function DashboardInner() {
       display:    "flex",
       height:     "100vh",
       overflow:   "hidden",
-      background: "linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #0F1119 100%)",
+      background: "var(--bg-base)",
     }}>
       <MilestoneToast />
 

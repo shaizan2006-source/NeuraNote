@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import SageOrbit from "@/components/brand/SageOrbit";
 
 const GREETINGS = [
   "Low-key fact: Asking is the fastest way to understand.",
@@ -61,33 +62,10 @@ export default function DynamicGreeting({ isEmptyChat }) {
             pointerEvents: "none",
           }}
         >
-          {/* Pulse ring */}
-          <motion.div
-            animate={{ scale: [1, 1.08, 1], opacity: [0.35, 0.6, 0.35] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-            style={{
-              width: 56,
-              height: 56,
-              borderRadius: "50%",
-              border: "1.5px solid var(--accent)",
-              marginBottom: 28,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <motion.div
-              animate={{ scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: "50%",
-                background: "var(--accent)",
-                opacity: 0.15,
-              }}
-            />
-          </motion.div>
+          {/* Hero — our logo in 3D with the constellation revolving around it */}
+          <div style={{ marginBottom: 20 }}>
+            <SageOrbit box={280} logo={110} />
+          </div>
 
           {/* Rotating greeting text */}
           <AnimatePresence mode="wait">

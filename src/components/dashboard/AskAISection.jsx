@@ -7,7 +7,6 @@ import { useDashboard } from "@/context/DashboardContext";
 import ThinkingAnimation from "@/components/ThinkingAnimation";
 import StructuredAnswer from "@/components/answer/StructuredAnswer";
 import DynamicGreeting from "@/components/dashboard/DynamicGreeting";
-import SageMark from "@/components/brand/SageMark";
 import DynamicFollowUps from "@/components/answer/DynamicFollowUps";
 import { saveChat, loadChat, clearChat } from "@/lib/chatStorage";
 import ModeSwitcher from "@/components/AskAI/ModeSwitcher";
@@ -1139,11 +1138,6 @@ export default function AskAISection({ fullPage = false, conversationId = null }
         marginBottom:  16,
         paddingRight:  4,
       }}>
-        {fullPage && !hasMessages && (
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <SageMark size={96} />
-          </div>
-        )}
         <DynamicGreeting isEmptyChat={!hasMessages} />
 
         {/* ── Starter questions — shown only on empty chat to reduce first-question friction ── */}

@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import OpenAI from "openai";
-import { computeWeakTopicClusters } from "@/lib/topicClusters";
 import {
   computeFocusScore,
-  computePeerPercentile,
   computeStudyTimeMins,
   computePeakHour,
   computeDailyStudyTime,
@@ -22,7 +19,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 
 async function getUser(req) {
   const token = req.headers.get("authorization")?.replace("Bearer ", "");
@@ -93,8 +89,26 @@ export async function GET(req) {
     : 0;
 
   const focusScore       = computeFocusScore({ streak, totalStudyTimeMins, topicsMastered, totalTopics });
-  const peerPercentile   = computePeerPercentile({ focusScore, streak, topicsMastered, totalTopics });
   const peakStudyHour    = computePeakHour(focusRows, 5.5); // IST = UTC+5:30
+
+  // Real cohort percentile: rank this user's streak among users preparing for the SAME exam.
+  // Returned only when the cohort is large enough to be meaningful (else null -> UI hides it),
+  // so we never show a fabricated number. (At scale, back this with a precomputed snapshot.)
+  let peerPercentile = null;
+  {
+    const { data: profile } = await supabase.from("profiles").select("exam_type").eq("id", user.id).maybeSingle();
+    if (profile?.exam_type) {
+      const { data: cohort } = await supabase.from("profiles").select("id").eq("exam_type", profile.exam_type).limit(5000);
+      const cohortIds = (cohort ?? []).map((p) => p.id);
+      if (cohortIds.length >= 8) {
+        const { data: streaks } = await supabase.from("study_streaks").select("streak_count").in("user_id", cohortIds);
+        const vals = (streaks ?? []).map((s) => s.streak_count ?? 0);
+        if (vals.length >= 8) {
+          peerPercentile = Math.round((vals.filter((v) => v < streak).length / vals.length) * 100);
+        }
+      }
+    }
+  }
   const strongestSubject = computeStrongestSubject(masteryTopics);
 
   const avgSessionDepthMins = focusRows.length > 0
@@ -140,11 +154,9 @@ export async function GET(req) {
   const followupDepth   = computeFollowupDepth(learningEvents);
   const learningTrend   = computeLearningTrend(learningEvents);
 
-  // ── Semantic weak-topic clusters (Phase 2) ────────────────────────
-  // Run only when there are weak topics to cluster; skip for new users.
-  const weakTopicClusters = masteryTopics.some(t => (t.mastery_score || 0) < 50)
-    ? await computeWeakTopicClusters(masteryTopics, openai).catch(() => [])
-    : [];
+  // Removed the per-load blocking OpenAI weak-topic clustering — its result was never consumed
+  // by the Progress UI, so it was pure OpenAI cost + latency on every dashboard load.
+  const weakTopicClusters = [];
 
   const insights        = generateInsights({
     learningTrend,

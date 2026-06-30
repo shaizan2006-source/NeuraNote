@@ -9,7 +9,6 @@ import StructuredAnswer from "@/components/answer/StructuredAnswer";
 import DynamicGreeting from "@/components/dashboard/DynamicGreeting";
 import SageMark from "@/components/brand/SageMark";
 import DynamicFollowUps from "@/components/answer/DynamicFollowUps";
-import ConfidenceBadge from "@/components/answer/ConfidenceBadge";
 import { saveChat, loadChat, clearChat } from "@/lib/chatStorage";
 import ModeSwitcher from "@/components/AskAI/ModeSwitcher";
 import { clientFetch } from "@/lib/clientFetch";
@@ -170,24 +169,8 @@ function AIMessage({ msg, onFeedback, onShare, onRegenerate, onFollowUp }) {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      style={{ display: "flex", gap: 10, alignItems: "flex-start" }}
+      style={{ display: "flex" }}
     >
-      {/* Avatar */}
-      <div style={{
-        width:          28,
-        height:         28,
-        borderRadius:   "50%",
-        flexShrink:     0,
-        background:     "var(--accent-grad)",
-        display:        "flex",
-        alignItems:     "center",
-        justifyContent: "center",
-        fontSize:       12,
-        color:          "var(--bg-base)",
-        marginTop:      2,
-        fontWeight:     700,
-      }}>✦</div>
-
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* Thinking state — before first chunk arrives */}
         {msg.thinking && !msg.text && (
@@ -226,13 +209,6 @@ function AIMessage({ msg, onFeedback, onShare, onRegenerate, onFollowUp }) {
                   onShare={onShare}
                   onRegenerate={onRegenerate}
                 />
-                <div style={{ marginTop: 10 }}>
-                  <ConfidenceBadge
-                    answer={msg.text}
-                    classification={msg.classification}
-                    isStreaming={!msg.done}
-                  />
-                </div>
                 <DynamicFollowUps
                   classification={msg.classification}
                   onSelect={onFollowUp}

@@ -1,16 +1,18 @@
-// Service Worker v2 — Ask My Notes
+// Service Worker — Ask My Notes
 // Bump CACHE_NAME on every deploy to bust stale cache.
 
-const CACHE_NAME = "amn-v2";
+const CACHE_NAME = "amn-v3";
 
-// App shell: cache-first, keep these available offline
-const SHELL = ["/", "/dashboard", "/manifest.json", "/icons/icon-192.png"];
+// Precache ONLY static, immutable assets. Do NOT precache dynamic HTML pages
+// (e.g. /dashboard): serving a cached HTML shell against freshly-loaded JS causes React
+// hydration mismatches. HTML is handled network-first below.
+const SHELL = ["/manifest.json", "/icons/icon-192.png"];
 
 // ─── Install ─────────────────────────────────────────────────────────────────
 self.addEventListener("install", (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL).catch(() => {}))
   );
 });
 
@@ -19,7 +21,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     Promise.all([
       clients.claim(),
-      // Delete caches from old versions
+      // Delete caches from old versions (busts the poisoned amn-v2 HTML cache)
       caches.keys().then((keys) =>
         Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
       ),
@@ -27,16 +29,14 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// ─── Fetch — stale-while-revalidate for pages; skip API routes ───────────────
+// ─── Fetch ─────────────────────────────────────────────────────────────────────
 self.addEventListener("fetch", (event) => {
   const { request } = event;
-
-  // Only handle GET
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
 
-  // Never intercept: API routes, auth callbacks, Supabase, external origins
+  // Never intercept: API routes, auth callbacks, external origins
   if (
     url.pathname.startsWith("/api/") ||
     url.pathname.startsWith("/auth/") ||
@@ -45,21 +45,40 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.open(CACHE_NAME).then(async (cache) => {
-      const cached = await cache.match(request);
+  // HTML navigations → NETWORK-FIRST. The document must always match the freshly-loaded JS;
+  // serving a cached HTML shell against new JS is exactly what caused the hydration failures.
+  // Cache is only an offline fallback.
+  const isNavigation =
+    request.mode === "navigate" ||
+    (request.headers.get("accept") || "").includes("text/html");
 
-      const networkFetch = fetch(request)
+  if (isNavigation) {
+    event.respondWith(
+      fetch(request)
         .then((res) => {
-          // Only cache successful same-origin responses
           if (res.ok && res.type === "basic") {
-            cache.put(request, res.clone());
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(request, copy));
           }
           return res;
         })
-        .catch(() => cached); // Network failed — fall back to cache
+        .catch(() =>
+          caches.match(request).then((cached) => cached || caches.match("/"))
+        )
+    );
+    return;
+  }
 
-      // Return cached immediately if available; network updates cache in background
+  // Static assets (Next content-hashes them → immutable) → stale-while-revalidate is safe.
+  event.respondWith(
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const cached = await cache.match(request);
+      const networkFetch = fetch(request)
+        .then((res) => {
+          if (res.ok && res.type === "basic") cache.put(request, res.clone());
+          return res;
+        })
+        .catch(() => cached);
       return cached || networkFetch;
     })
   );

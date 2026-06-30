@@ -11,7 +11,9 @@ export async function getPermissionState() {
 
 export async function registerServiceWorker() {
   if (typeof window === "undefined" || !("serviceWorker" in navigator)) return null;
-  if (window.location.hostname === "localhost" && process.env.NODE_ENV === "development") return null;
+  // Only ever register the SW in production. In dev (any hostname, incl. the LAN IP) the SW
+  // would cache the app shell and serve stale HTML against fresh JS → hydration failures.
+  if (process.env.NODE_ENV !== "production") return null;
 
   try {
     const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });

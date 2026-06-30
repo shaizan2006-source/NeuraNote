@@ -5,16 +5,16 @@
  *
  * Body: { rating: "again" | "hard" | "good" | "easy" }
  *
- * Mastery update (Phase 0.5 simple rules — FSRS deferred to Phase 1):
- *   again → strength -= 0.2, next_due = now + 1 min, lapses++
- *   hard  → strength += 0,   next_due = now + 1 day
- *   good  → strength += 0.15, next_due = now + (strength * 5 days)
- *   easy  → strength += 0.3,  next_due = now + (strength * 14 days)
+ * Scheduling: full FSRS (ts-fsrs) via scheduleReview(), keyed by the card's concept_id —
+ * computes the real next_due_at + FSRS state/intervals (Again/Hard/Good/Easy → 1/2/3/4).
+ * The /study queue reads mastery_state.next_due_at, so the FSRS due is mirrored there.
  *
- * strength is clamped to [0, 1].
- * confidence grows by 0.1 per review (clamped to 1).
+ * mastery_state also keeps a 0–1 strength/confidence signal (used by Brain Map + Progress):
+ *   again → strength -= 0.2, lapses++ ; hard → +0 ; good → +0.15 ; easy → +0.3 (clamped 0–1);
+ *   confidence += 0.1 per review (clamped to 1).
  *
- * Response: { ok: true, mastery: { strength, next_due_at, exposures, lapses } }
+ * Response: { ok, mastery: { strength, confidence, next_due_at, exposures, lapses,
+ *             interval_days, fsrs_state } }
  */
 
 import { NextResponse } from "next/server";
@@ -76,9 +76,22 @@ export async function POST(req, { params }) {
     const newExposures  = (current.exposures ?? 0) + 1;
     const newLapses     = (current.lapses ?? 0) + (rating === "again" ? 1 : 0);
 
-    // next_due: again → 1 min; others → days proportional to new strength (min 1 day)
+    // Full FSRS scheduling, keyed by the card's concept_id (the unique per-user key on
+    // spaced_repetition_cards). This computes the real next-due date + FSRS state/intervals.
+    const fsrsRating = RATING_TO_FSRS[rating] ?? 3;
+    let fsrs = null;
+    try {
+      fsrs = await scheduleReview(user.id, card.concept_id, fsrsRating);
+    } catch (e) {
+      console.error("[review] FSRS schedule failed, using fallback interval:", e.message);
+    }
+
+    // next_due_at drives the /study queue (GET /api/cards/due reads mastery_state.next_due_at).
+    // Prefer the FSRS due date; fall back to the simple rule only if FSRS is unavailable.
     let nextDueAt;
-    if (rating === "again") {
+    if (fsrs?.due) {
+      nextDueAt = new Date(fsrs.due).toISOString();
+    } else if (rating === "again") {
       nextDueAt = new Date(Date.now() + 60 * 1000).toISOString();
     } else {
       const days = Math.max(1, RATING_DAYS[rating] * newStrength);
@@ -96,23 +109,10 @@ export async function POST(req, { params }) {
         lapses:           newLapses,
         last_reviewed_at: new Date().toISOString(),
         next_due_at:      nextDueAt,
+        ...(fsrs?.state ? { fsrs_state: fsrs.state } : {}),
       }, { onConflict: "user_id,concept_id" });
 
     if (updateErr) throw updateErr;
-
-    // Update SM-2 spaced repetition state (Phase 3).
-    // First, fetch the concept's topic/subject from mastery_topics if available.
-    const { data: masteryTopic } = await supabase
-      .from("mastery_topics")
-      .select("topic, subject")
-      .eq("user_id", user.id)
-      .eq("topic", card.concept_id) // Assume concept_id is the topic name for now
-      .maybeSingle();
-
-    if (masteryTopic) {
-      const fsrsRating = RATING_TO_FSRS[rating] ?? 3;
-      await scheduleReview(user.id, masteryTopic.topic, fsrsRating).catch(() => null);
-    }
 
     return NextResponse.json({
       ok: true,
@@ -122,6 +122,7 @@ export async function POST(req, { params }) {
         next_due_at: nextDueAt,
         exposures:   newExposures,
         lapses:      newLapses,
+        ...(fsrs ? { interval_days: fsrs.interval_days, fsrs_state: fsrs.state } : {}),
       },
     });
   } catch (err) {

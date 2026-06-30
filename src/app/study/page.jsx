@@ -32,6 +32,7 @@ export default function StudyPage() {
   const [flipped,  setFlipped]  = useState(false);
   const [status,   setStatus]   = useState("loading"); // loading | ready | done | error
   const [reviewed, setReviewed] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
   // Auth
   useEffect(() => {
@@ -73,23 +74,32 @@ export default function StudyPage() {
 
   const submitRating = useCallback(async (rating) => {
     const card = queue[idx];
-    if (!card) return;
+    if (!card || submitting) return;   // in-flight lock: no double-submit / skipping ahead
 
-    await fetch(`/api/cards/${card.id}/review`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ rating }),
-    });
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/cards/${card.id}/review`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ rating }),
+      });
+      if (!res.ok) throw new Error(`review failed (${res.status})`);
 
-    setReviewed((n) => n + 1);
-    const next = idx + 1;
-    if (next >= queue.length) {
-      setStatus("done");
-    } else {
-      setIdx(next);
-      setFlipped(false);
+      setReviewed((n) => n + 1);
+      const next = idx + 1;
+      if (next >= queue.length) {
+        setStatus("done");
+      } else {
+        setIdx(next);
+        setFlipped(false);
+      }
+    } catch (err) {
+      // Don't advance on failure — the rating wasn't saved; the card stays so it can be re-rated.
+      console.error("submitRating error — not advancing:", err);
+    } finally {
+      setSubmitting(false);
     }
-  }, [queue, idx, token]);
+  }, [queue, idx, token, submitting]);
 
   // ── Render states ────────────────────────────────────────────────────────
   if (status === "loading") return <Shell><Spinner /></Shell>;

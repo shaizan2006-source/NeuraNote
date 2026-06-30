@@ -112,7 +112,16 @@ export default function MockTestPage() {
   if (view === VIEWS.setup) {
     return (
       <div style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ maxWidth: 460, width: "100%", padding: 32 }}>
+        <style>{`
+          @media (max-width: 640px) {
+            .mt-setup { padding: 20px 16px !important; }
+            .mt-topbar { flex-wrap: wrap !important; gap: 8px !important; padding: 10px 14px !important; }
+            .mt-topbar > div:first-child { font-size: 11px !important; }
+            .mt-content { padding: 14px 14px !important; }
+            .mt-options { gap: 8px !important; }
+          }
+        `}</style>
+        <div className="mt-setup" style={{ maxWidth: 460, width: "100%", padding: 32 }}>
           <button onClick={() => router.back()} style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", marginBottom: 20 }}>← Back</button>
           <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Mock Test</h1>
           <p style={{ color: "var(--text-tertiary)", fontSize: 13, marginBottom: 24 }}>Full syllabus simulation with official paper pattern</p>
@@ -159,7 +168,7 @@ export default function MockTestPage() {
     return (
       <div style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)" }}>
         {/* Top bar */}
-        <div style={{ padding: "12px 20px", borderBottom: "1px solid var(--border-hairline)", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, background: "var(--bg-base)", zIndex: 20 }}>
+        <div className="mt-topbar" style={{ padding: "12px 20px", borderBottom: "1px solid var(--border-hairline)", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, background: "var(--bg-base)", zIndex: 20 }}>
           <div style={{ fontSize: 13, color: "var(--text-tertiary)" }}>{exam.replace(/_/g, " ").toUpperCase()} · {current + 1}/{test.questions.length}</div>
           <div style={{ fontSize: 18, fontWeight: 700, color: timerColor, fontVariantNumeric: "tabular-nums" }}>{fmt(timeLeft)}</div>
           <button onClick={handleSubmit} disabled={submitting} style={{ background: "var(--accent-grad)", color: "var(--bg-base)", border: "none", borderRadius: 6, padding: "7px 14px", fontWeight: 600, fontSize: 12, cursor: "pointer" }}>

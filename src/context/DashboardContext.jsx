@@ -1072,17 +1072,30 @@ export function DashboardProvider({ children }) {
         }).then(() => fetchStreak()).catch(console.error);
       }
 
-      // CRITICAL first-paint data — gates the dashboard reveal so its top-level structure
-      // (empty-state vs grid, time-of-day mode, streak) is correct on first paint instead of
-      // flashing through EmptyState → wrong mode → reflowing cards as each request lands.
-      // Safety timer reveals anyway after 5s so a slow/hung request never traps the skeleton.
+      // CRITICAL first-paint data — one combined round-trip instead of 4 × (auth + network + query).
+      // Gates the dashboard reveal so its structure (empty-state vs grid, time-of-day mode, streak)
+      // is correct on first paint. 5s safety timer reveals anyway if the request hangs.
       const revealSafety = setTimeout(() => setDataReady(true), 5000);
-      Promise.allSettled([
-        fetchDocuments(),
-        fetchProgress(),
-        fetchFocusProgress(),
-        fetchStreak(),
-      ]).then(() => { clearTimeout(revealSafety); setDataReady(true); });
+      fetch("/api/dashboard-init", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      })
+        .then((r) => r.ok ? r.json() : Promise.reject(r.status))
+        .then((d) => {
+          if (Array.isArray(d.documents))    setDocuments(d.documents);
+          if (d.streak != null)              setStreak(d.streak);
+          if (d.lastActiveDate)              setLastActiveDate(d.lastActiveDate);
+          if (d.progress?.questions != null) setProgressQuestions(d.progress.questions);
+          if (d.progress?.score != null)     setProgressScore(d.progress.score);
+          if (Array.isArray(d.focusProgress)) {
+            setFocusProgress(d.focusProgress);
+            setCompletedTasks(d.focusProgress.map((i) => i.task));
+          }
+        })
+        .catch(() => {
+          // If the combined call fails, fall back to individual fetches so the dashboard still loads.
+          Promise.allSettled([fetchDocuments(), fetchProgress(), fetchFocusProgress(), fetchStreak()]);
+        })
+        .finally(() => { clearTimeout(revealSafety); setDataReady(true); });
 
       // SECONDARY data — fills individual cards in the background; doesn't gate first paint.
       Promise.allSettled([

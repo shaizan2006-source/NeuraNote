@@ -127,7 +127,7 @@ function UserMessage({ text, innerRef, onEdit }) {
       style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}
     >
       {/* Bubble */}
-      <div style={{
+      <div className="askai-user-bubble" style={{
         background:   "var(--bg-surface-2)",
         color:        "var(--text-primary)",
         borderRadius: 999,
@@ -1128,7 +1128,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
       </div>
 
       {/* ── Chat messages ─────────────────────────────────── */}
-      <div ref={chatContainerRef} style={{
+      <div ref={chatContainerRef} className="askai-thread" style={{
         flex:          fullPage ? 1 : undefined,
         maxHeight:     fullPage ? undefined : "min(520px, 55vh)",
         overflowY:     "auto",
@@ -1190,6 +1190,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
         is always clipped to the rounded shape. The menu lives OUTSIDE the pill
         so overflow:hidden doesn't clip it.
       */}
+      <div className="askai-input-wrap">
       <div
         ref={menuRef}
         style={{ maxWidth: 580, margin: "0 auto", width: "100%", position: "relative" }}
@@ -1501,6 +1502,8 @@ export default function AskAISection({ fullPage = false, conversationId = null }
           </div>
         </div>
 
+      </div>{/* /askai-input-wrap */}
+
       {/* Coach mode indicator */}
       {chatMode === "coach" && (
         <div
@@ -1536,6 +1539,15 @@ export default function AskAISection({ fullPage = false, conversationId = null }
         @keyframes askmySpin {
           from { transform: rotate(0deg); }
           to   { transform: rotate(360deg); }
+        }
+        @media (max-width: 640px) {
+          /* Sage input area: full-width pill, safe-area bottom inset for notched phones */
+          .askai-input-wrap { padding: 0 10px !important; padding-bottom: env(safe-area-inset-bottom, 0px) !important; }
+          .askai-input-wrap > div { max-width: 100% !important; }
+          /* Message thread: tighter side padding on mobile */
+          .askai-thread { padding-right: 0 !important; }
+          /* User bubble: allow full width on mobile */
+          .askai-user-bubble { max-width: 92% !important; }
         }
       `}</style>
     </div>

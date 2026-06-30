@@ -120,9 +120,16 @@ export default function StudyPage() {
       alignItems: "center",
       justifyContent: "center",
       fontFamily: "Inter, sans-serif",
-      padding:    "24px",
-      gap:        "24px",
+      padding:    "24px 16px",
+      gap:        "20px",
     }}>
+      <style>{`
+        @media (max-width: 640px) {
+          .study-card { padding: 24px 20px !important; min-height: 200px !important; }
+          .study-ratings { flex-wrap: wrap !important; gap: 8px !important; }
+          .study-ratings button { min-width: calc(50% - 4px) !important; flex: none !important; }
+        }
+      `}</style>
       {/* Progress bar */}
       <div style={{ width: "100%", maxWidth: 640 }}>
         <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-tertiary)", fontSize: 13, marginBottom: 8 }}>
@@ -142,6 +149,7 @@ export default function StudyPage() {
 
       {/* Card */}
       <div
+        className="study-card"
         onClick={() => setFlipped((f) => !f)}
         style={{
           width:        "100%",
@@ -202,7 +210,7 @@ export default function StudyPage() {
 
       {/* Rating buttons — only shown after flip */}
       {flipped && (
-        <div style={{ display: "flex", gap: 12, width: "100%", maxWidth: 640 }}>
+        <div className="study-ratings" style={{ display: "flex", gap: 12, width: "100%", maxWidth: 640 }}>
           {RATINGS.map((r) => (
             <button
               key={r.id}

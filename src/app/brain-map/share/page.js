@@ -1,6 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
 
 export default function BrainMapSharePage() {
   const router = useRouter();
@@ -10,17 +16,26 @@ export default function BrainMapSharePage() {
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    const t = localStorage.getItem("sb_access_token") ?? "";
-    setToken(t);
-    if (!t) { setLoading(false); return; }
-
-    fetch("/api/brain-map/snapshot", { headers: { Authorization: `Bearer ${t}` } })
-      .then(r => r.blob())
-      .then(blob => setBlobUrl(URL.createObjectURL(blob)))
-      .catch(() => null)
-      .finally(() => setLoading(false));
-
-    return () => { if (blobUrl) URL.revokeObjectURL(blobUrl); };
+    let active = true;
+    (async () => {
+      // Use the real Supabase session — the old `localStorage["sb_access_token"]` key was
+      // never set anywhere, so the snapshot fetch always 401'd and never loaded.
+      const { data: { session } } = await supabase.auth.getSession();
+      const t = session?.access_token ?? "";
+      if (!active) return;
+      setToken(t);
+      if (!t) { setLoading(false); return; }
+      try {
+        const r = await fetch("/api/brain-map/snapshot", { headers: { Authorization: `Bearer ${t}` } });
+        const blob = await r.blob();
+        if (active) setBlobUrl(URL.createObjectURL(blob));
+      } catch {
+        /* leave blobUrl null -> "Could not load snapshot" */
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => { active = false; };
   }, []);
 
   async function handleDownload() {

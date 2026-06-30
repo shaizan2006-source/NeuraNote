@@ -7,14 +7,18 @@ export async function GET(req) {
   const user = await verifyAuth(req);
   if (!user) return new Response(null, { status: 401 });
 
-  // Fetch brain map stats
-  const { data: nodes } = await supabaseAdmin
-    .from("concept_nodes")
-    .select("label,subject,mastery_score")
+  // Real concept graph (concept_nodes is an orphan): label = concepts.title, mastery from mastery_state.
+  const { data: concepts } = await supabaseAdmin
+    .from("concepts")
+    .select("id, title")
     .eq("user_id", user.id)
     .limit(200);
-
-  const all = nodes ?? [];
+  const { data: mastery } = await supabaseAdmin
+    .from("mastery_state")
+    .select("concept_id, strength")
+    .eq("user_id", user.id);
+  const strengthByConcept = new Map((mastery ?? []).map((m) => [m.concept_id, m.strength ?? 0]));
+  const all = (concepts ?? []).map((c) => ({ label: c.title, mastery_score: strengthByConcept.get(c.id) ?? 0 }));
   const mastered = all.filter(n => (n.mastery_score ?? 0) >= 0.8).length;
   const strong = all.filter(n => (n.mastery_score ?? 0) >= 0.6 && (n.mastery_score ?? 0) < 0.8).length;
   const total = all.length;

@@ -44,7 +44,7 @@ function FadeUp({ children, delay = 0, className = "" }) {
 
 const FEATURES = [
   {
-    icon: "🧠",
+    icon: "",
     title: "Brain Map",
     tagline: "See your knowledge grow",
     desc: "Every concept you study connects automatically. Spot gaps before they become exam mistakes.",
@@ -52,7 +52,7 @@ const FEATURES = [
     glow: "var(--brand-glow)",
   },
   {
-    icon: "🎙️",
+    icon: "",
     title: "Daily Briefing",
     tagline: "90 seconds. Every morning.",
     desc: "AI summarises what to review based on your gaps. Listen while you get ready for the day.",
@@ -60,7 +60,7 @@ const FEATURES = [
     glow: "var(--amber-glow)",
   },
   {
-    icon: "📝",
+    icon: "",
     title: "PYQs + AI Tutor",
     tagline: "1000+ official questions.",
     desc: "JEE Main 2018–2024, NEET 2018–2024, JEE Advanced. Ask anything — AI explains from your notes.",
@@ -486,7 +486,6 @@ export default function Home() {
             borderRadius: 20, padding: "clamp(24px, 5vw, 48px) clamp(16px, 4vw, 32px)",
             boxShadow: "var(--shadow-card), 0 0 48px var(--accent-glow-soft)",
           }}>
-            <div style={{ fontSize: 36, marginBottom: 16 }}>🚀</div>
             <h2 style={{ fontSize: "clamp(20px, 5vw, 28px)", fontWeight: 800, margin: "0 0 12px", letterSpacing: "-0.3px" }}>
               Ready to study smarter?
             </h2>

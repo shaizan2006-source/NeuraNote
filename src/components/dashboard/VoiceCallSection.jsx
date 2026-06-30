@@ -17,7 +17,7 @@ export default function VoiceCallSection() {
       {/* ── Header ───────────────────────────────────────────────── */}
       <div style={{ marginBottom: 20 }}>
         <h3 style={{ color: "var(--text-primary)", margin: 0, fontSize: 18, fontWeight: 700 }}>
-          📞 Voice AI Tutor
+          Voice AI Tutor
         </h3>
         <p style={{ color: "var(--text-muted)", margin: "5px 0 0", fontSize: 13 }}>
           Talk to your personal IIT-level professor — solve any doubt instantly
@@ -52,7 +52,7 @@ export default function VoiceCallSection() {
             e.currentTarget.style.boxShadow = "0 0 28px var(--accent-glow)";
           }}
         >
-          📞 Call AI Tutor
+          Call AI Tutor
         </button>
       </div>
 
@@ -65,13 +65,12 @@ export default function VoiceCallSection() {
         flexWrap:       "wrap",
       }}>
         {[
-          ["🎤", "Speak your doubt"],
-          ["🧠", "AI understands"],
-          ["🎓", "Professor explains"],
-          ["🔁", "Ask follow-ups"],
-        ].map(([icon, label]) => (
+          "Speak your doubt",
+          "AI understands",
+          "Professor explains",
+          "Ask follow-ups",
+        ].map((label) => (
           <div key={label} style={{ textAlign: "center", minWidth: 72 }}>
-            <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
             <div style={{ color: "var(--text-muted)", fontSize: 11 }}>{label}</div>
           </div>
         ))}

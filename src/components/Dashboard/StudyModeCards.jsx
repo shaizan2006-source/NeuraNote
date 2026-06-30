@@ -423,7 +423,7 @@ function ExamsCard() {
               flexShrink: 0,
             }}
           >
-            Final sprint! 🔥
+            Final sprint!
           </motion.div>
         )}
       </div>

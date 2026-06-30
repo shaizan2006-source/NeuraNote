@@ -54,7 +54,6 @@ export default function CohortPage() {
 
       {coldStart ? (
         <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--text-tertiary)" }}>
-          <div style={{ fontSize: 32, marginBottom: 12 }}>🌱</div>
           <p style={{ fontSize: 16, color: "var(--text-secondary)", marginBottom: 8 }}>Cohort building</p>
           <p style={{ fontSize: 14 }}>{memberCount} member{memberCount !== 1 ? "s" : ""} so far. Leaderboard activates at 30.</p>
         </div>
@@ -65,7 +64,7 @@ export default function CohortPage() {
             return (
               <div key={r.handle} ref={isMe ? myRowRef : null} style={style.row(isMe)}>
                 <span style={{ width: 32, fontSize: 13, color: r.rank <= 3 ? "var(--accent)" : "var(--text-tertiary)", fontWeight: r.rank <= 3 ? 700 : 400, textAlign: "right" }}>
-                  {r.rank <= 3 ? ["🥇", "🥈", "🥉"][r.rank - 1] : `#${r.rank}`}
+                  {`#${r.rank}`}
                 </span>
                 <span style={{ flex: 1, fontSize: 14, color: isMe ? "var(--accent-bright)" : "var(--text-secondary)", fontWeight: isMe ? 600 : 400 }}>
                   {r.handle}{isMe ? " (you)" : ""}

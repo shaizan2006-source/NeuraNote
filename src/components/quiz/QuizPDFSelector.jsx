@@ -122,14 +122,14 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
     return (
       <div style={pageStyle}>
         <div style={cardStyle}>
-          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>🧠 Start Quiz</div>
+          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>Start Quiz</div>
           <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
             Generate questions from your active study material:
           </div>
 
           <div style={docRowStyle(true)} onClick={() => onSelectPDF(activePdf.id, activePdf.name)}>
             <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.primary }}>
-              📄 {activePdf.name.length > 36 ? activePdf.name.slice(0, 36) + '…' : activePdf.name}
+              {activePdf.name.length > 36 ? activePdf.name.slice(0, 36) + '…' : activePdf.name}
             </div>
             <span style={{
               fontSize: TYPOGRAPHY.sizes.small,
@@ -168,7 +168,7 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
     return (
       <div style={pageStyle}>
         <div style={cardStyle}>
-          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>🧠 Choose Study Material</div>
+          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>Choose Study Material</div>
           <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
             Select a PDF to generate quiz questions from:
           </div>
@@ -178,7 +178,7 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
               <div key={doc.id} style={docRowStyle(doc.id === activePdf?.id)} onClick={() => onSelectPDF(doc.id, doc.name)}>
                 <div>
                   <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.primary }}>
-                    📄 {doc.name.length > 36 ? doc.name.slice(0, 36) + '…' : doc.name}
+                    {doc.name.length > 36 ? doc.name.slice(0, 36) + '…' : doc.name}
                   </div>
                   <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary }}>
                     {relativeDate(doc.created_at)}
@@ -200,7 +200,7 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
 
           <div style={uploadZoneStyle} onClick={() => !uploading && fileInputRef.current?.click()}>
             <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
-              {uploading ? '⏳ Uploading…' : '+ Upload New PDF'}
+              {uploading ? 'Uploading…' : '+ Upload New PDF'}
             </div>
             <input ref={fileInputRef} type="file" accept=".pdf" style={{ display: 'none' }} onChange={handleFileChange} />
           </div>
@@ -217,15 +217,14 @@ export default function QuizPDFSelector({ activePdf, documents, onSelectPDF, use
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
-        <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>🧠 Start Your First Quiz</div>
+        <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>Start Your First Quiz</div>
         <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
           Upload your study material to generate quiz questions from it.
         </div>
 
         <div style={uploadZoneStyle} onClick={() => !uploading && fileInputRef.current?.click()}>
-          <div style={{ fontSize: '32px', marginBottom: SPACING.sm }}>📁</div>
           <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
-            {uploading ? '⏳ Uploading…' : 'Drop your PDF here or click to browse'}
+            {uploading ? 'Uploading…' : 'Drop your PDF here or click to browse'}
           </div>
           <input ref={fileInputRef} type="file" accept=".pdf" style={{ display: 'none' }} onChange={handleFileChange} />
         </div>

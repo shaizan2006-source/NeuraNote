@@ -108,7 +108,7 @@ export default function FridayQuizPage() {
               </div>
               {submitted && q.explanation && (
                 <p style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 10, lineHeight: 1.6 }}>
-                  💡 {q.explanation}
+                  {q.explanation}
                 </p>
               )}
             </div>

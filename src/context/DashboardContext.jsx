@@ -262,9 +262,9 @@ export function DashboardProvider({ children }) {
   };
 
   const getDifficultyEmoji = (level) => {
-    if (level === "hard") return "🔥";
-    if (level === "medium") return "⚡";
-    return "✅";
+    if (level === "hard") return "";
+    if (level === "medium") return "";
+    return "";
   };
 
   const getActionLabel = (daysLeft) => {
@@ -275,10 +275,10 @@ export function DashboardProvider({ children }) {
   };
 
   const getActionPrefix = (daysLeft) => {
-    if (daysLeft > 7) return "📘 Learn:";
-    if (daysLeft > 3) return "📝 Practice:";
-    if (daysLeft > 1) return "⚡ Revise:";
-    return "🔥 Final Revision:";
+    if (daysLeft > 7) return "Learn:";
+    if (daysLeft > 3) return "Practice:";
+    if (daysLeft > 1) return "Revise:";
+    return "Final Revision:";
   };
 
   const extractTopicFromTask = (taskStr) => {
@@ -315,19 +315,19 @@ export function DashboardProvider({ children }) {
     const exam = getActiveExam();
     if (!exam) return "No upcoming exams";
     const days = getDaysLeft(exam.exam_date);
-    if (days > 7) return `📘 Focus on concepts for ${exam.name}`;
-    if (days > 3) return `📝 Start practicing questions for ${exam.name}`;
-    if (days > 1) return `⚡ Revise weak topics for ${exam.name}`;
-    return `🔥 Final revision for ${exam.name}`;
+    if (days > 7) return `Focus on concepts for ${exam.name}`;
+    if (days > 3) return `Start practicing questions for ${exam.name}`;
+    if (days > 1) return `Revise weak topics for ${exam.name}`;
+    return `Final revision for ${exam.name}`;
   };
 
   const getReminder = () => {
     const exam = getActiveExam();
     if (!exam) return null;
     const days = getDaysLeft(exam.exam_date);
-    if (days === 3) return "⏰ 3 days left! Time to speed up!";
-    if (days === 1) return "🚨 Tomorrow is your exam!";
-    if (days === 0) return "🔥 Exam is TODAY!";
+    if (days === 3) return "3 days left! Time to speed up!";
+    if (days === 1) return "Tomorrow is your exam!";
+    if (days === 0) return "Exam is TODAY!";
     return null;
   };
 
@@ -373,9 +373,9 @@ export function DashboardProvider({ children }) {
     if (!topics.length) return "";
     const weakest = topics[0];
     if (!weakest) return "";
-    if (weakest.mastery_score < 40) return `⚠️ You're struggling with "${weakest.topic}" — revise today`;
-    if (weakest.mastery_score < 70) return `⚡ "${weakest.topic}" needs more practice before your exam`;
-    return `✅ Good progress! Keep revising "${weakest.topic}"`;
+    if (weakest.mastery_score < 40) return `You're struggling with "${weakest.topic}" — revise today`;
+    if (weakest.mastery_score < 70) return `"${weakest.topic}" needs more practice before your exam`;
+    return `Good progress! Keep revising "${weakest.topic}"`;
   };
 
   // ================================================================
@@ -456,12 +456,12 @@ export function DashboardProvider({ children }) {
       else if (item.difficulty === "hard") hard++;
     });
     const msgs = [];
-    if (easy > hard) msgs.push("📈 Your performance is improving — keep it up!");
-    else if (hard > easy) msgs.push("⚠️ You are struggling with difficult topics — revise more.");
-    if (total < 5) msgs.push("⏳ Try completing more tasks to build consistency.");
-    else if (total > 10) msgs.push("🔥 Great consistency! You're building a strong habit.");
-    if (medium > easy && medium > hard) msgs.push("⚡ You are in a balanced learning zone.");
-    if (hard >= 5) msgs.push("🧠 Focus more on weak areas — they need attention.");
+    if (easy > hard) msgs.push("Your performance is improving — keep it up!");
+    else if (hard > easy) msgs.push("You are struggling with difficult topics — revise more.");
+    if (total < 5) msgs.push("Try completing more tasks to build consistency.");
+    else if (total > 10) msgs.push("Great consistency! You're building a strong habit.");
+    if (medium > easy && medium > hard) msgs.push("You are in a balanced learning zone.");
+    if (hard >= 5) msgs.push("Focus more on weak areas — they need attention.");
     setInsights(msgs);
   };
 
@@ -486,9 +486,9 @@ export function DashboardProvider({ children }) {
     score = Math.min(1, score);
     const percentage = Math.round(score * 100);
     let status = "", message = "";
-    if (percentage >= 80) { status = "Ready ✅"; message = "You are well prepared. Do final revision."; }
-    else if (percentage >= 50) { status = "Almost Ready ⚡"; message = "Focus on weak areas to improve."; }
-    else { status = "Not Ready ❌"; message = "You need more practice and revision."; }
+    if (percentage >= 80) { status = "Ready"; message = "You are well prepared. Do final revision."; }
+    else if (percentage >= 50) { status = "Almost Ready"; message = "Focus on weak areas to improve."; }
+    else { status = "Not Ready"; message = "You need more practice and revision."; }
     setReadiness({ score: percentage, status, message });
   };
 

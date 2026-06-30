@@ -4,7 +4,7 @@ export default function RightPanel() {
 
       {/* Daily Plan */}
       <div className="bg-neutral-900 p-4 rounded-2xl">
-        <h2 className="font-semibold mb-2">📅 Today’s Plan</h2>
+        <h2 className="font-semibold mb-2">Today’s Plan</h2>
         <ul className="text-sm text-gray-400 space-y-1">
           <li>Revise Thermodynamics</li>
           <li>Practice 10 MCQs</li>

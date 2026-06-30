@@ -42,7 +42,6 @@ export default function ForgotPasswordPage() {
     return (
       <AuthSplitLayout>
         <div style={{ textAlign: "center" }}>
-          <p style={{ fontSize: 48, margin: "0 0 12px" }}>📬</p>
           <h2 style={styles.title}>Check your inbox</h2>
           <p style={{ color: "var(--text-secondary)", fontSize: 14, lineHeight: 1.6 }}>
             If <strong style={{ color: "var(--text-primary)" }}>{email}</strong> is registered, you&apos;ll receive a password reset link shortly.
@@ -90,7 +89,7 @@ export default function ForgotPasswordPage() {
 
           {error && (
             <div style={styles.errorBox}>
-              <span style={{ marginRight: 6 }}>⚠️</span>{error}
+              {error}
             </div>
           )}
 

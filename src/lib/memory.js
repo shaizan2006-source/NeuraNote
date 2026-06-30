@@ -5,7 +5,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// ✅ ADD MEMORY
+// ADD MEMORY
 export async function addMemory(userId, key, value) {
   if (!userId || !key || !value) {
     console.warn("addMemory skipped: missing fields");
@@ -36,7 +36,7 @@ export async function addMemory(userId, key, value) {
   return data;
 }
 
-// ✅ GET MEMORY
+// GET MEMORY
 export async function getMemory(userId) {
   if (!userId) {
     console.warn("getMemory skipped: no userId");
@@ -57,7 +57,7 @@ export async function getMemory(userId) {
   return data || [];
 }
 
-// ✅ BOOST MEMORY
+// BOOST MEMORY
 export async function boostMemory(userId, key, value) {
   if (!userId || !key || !value) {
     console.warn("boostMemory skipped: missing fields");

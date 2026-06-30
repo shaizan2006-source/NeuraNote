@@ -154,10 +154,10 @@ function FocusPageContent() {
       setSessionState('setup');
       const msg = err.message;
       setGeneratingError(
-        msg === 'pdf_not_found'   ? '❌ Failed to upload PDF: File not found. Please select another.' :
-        msg === 'pdf_parse_failed' ? '❌ Failed to upload PDF: Could not read this PDF. Please try re-uploading it.' :
-        msg === 'pdf_empty'        ? '❌ Failed to upload PDF: This PDF has no readable text. Please upload a different file.' :
-        '❌ Failed to generate tasks. Please try again.'
+        msg === 'pdf_not_found'   ? 'Failed to upload PDF: File not found. Please select another.' :
+        msg === 'pdf_parse_failed' ? 'Failed to upload PDF: Could not read this PDF. Please try re-uploading it.' :
+        msg === 'pdf_empty'        ? 'Failed to upload PDF: This PDF has no readable text. Please upload a different file.' :
+        'Failed to generate tasks. Please try again.'
       );
     }
   };
@@ -262,7 +262,6 @@ function FocusPageContent() {
                 boxShadow: '0 24px 64px rgba(0,0,0,0.55)',
               }}
             >
-              <div style={{ fontSize: 28, marginBottom: SPACING.md }}>⚡</div>
               <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 700, color: COLORS.text.primary, marginBottom: SPACING.sm }}>
                 Resume your session?
               </div>

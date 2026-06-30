@@ -121,14 +121,6 @@ export default function FocusModeLoader({ documentName }) {
             borderRightColor: 'color-mix(in srgb, var(--accent) 35%, transparent)',
             animation: 'fmlSpin 1s linear infinite',
           }} />
-          {/* Icon center */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 28,
-          }}>
-            ⚡
-          </div>
         </div>
 
         {/* Text */}

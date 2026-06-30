@@ -54,7 +54,6 @@ export default function WeakTopicCard({ topic, onPractice, onAskAI }) {
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }}>
           {truncate(topic.topic)}
-          {isHard && <span style={{ marginLeft: 4, fontSize: 9, color: accentColor }}>🔥</span>}
         </p>
 
         {/* Accuracy bar */}

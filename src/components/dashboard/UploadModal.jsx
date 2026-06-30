@@ -91,7 +91,6 @@ export default function UploadModal() {
           flexShrink:     0,
         }}
       >
-        <span style={{ fontSize: 14 }}>📄</span>
         Upload PDF
       </motion.button>
 
@@ -140,7 +139,6 @@ export default function UploadModal() {
               {/* Header */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 18 }}>📄</span>
                   <span style={{ fontWeight: 700, fontSize: 15, color: "var(--text-primary)" }}>Upload PDF Notes</span>
                 </div>
                 <button
@@ -213,7 +211,6 @@ export default function UploadModal() {
 
                 {uploadStage === "idle" && (
                   <>
-                    <div style={{ fontSize: 32, marginBottom: 10 }}>☁️</div>
                     <p style={{ color: "var(--text-secondary)", fontSize: 14, margin: 0 }}>Drag & drop your PDF here</p>
                     <p style={{ color: "var(--text-muted)", fontSize: 12, marginTop: 6 }}>
                       or <span style={{ color: "var(--blue-dark)", fontWeight: 600 }}>click to browse</span>
@@ -226,14 +223,12 @@ export default function UploadModal() {
                 )}
                 {uploadStage === "done" && (
                   <>
-                    <div style={{ fontSize: 32, marginBottom: 8 }}>✅</div>
                     <p style={{ color: "var(--green)", fontSize: 14, fontWeight: 700, margin: 0 }}>Uploaded successfully!</p>
-                    <p style={{ color: "var(--text-tertiary)", fontSize: 12, marginTop: 4 }}>📄 {uploadedFileName} · {uploadedFileSize}</p>
+                    <p style={{ color: "var(--text-tertiary)", fontSize: 12, marginTop: 4 }}>{uploadedFileName} · {uploadedFileSize}</p>
                   </>
                 )}
                 {uploadStage === "error" && (
                   <>
-                    <div style={{ fontSize: 32, marginBottom: 8 }}>❌</div>
                     <p style={{ color: "var(--red)", fontSize: 13, fontWeight: 600, margin: 0 }}>Upload failed. Please try again.</p>
                   </>
                 )}
@@ -264,7 +259,7 @@ export default function UploadModal() {
                         color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer",
                       }}
                     >
-                      💾 Save to Library
+                      Save to Library
                     </button>
                   )}
                   <button

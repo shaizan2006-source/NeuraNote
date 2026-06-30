@@ -280,7 +280,7 @@ export default function ExamsPage() {
                     border: "1px solid color-mix(in srgb, var(--accent) 25%, transparent)", borderRadius: 6,
                   }}>
                     <p style={{ margin: 0, fontSize: 11, color: "var(--accent)", lineHeight: 1.5 }}>
-                      💡 Topics asked 5+ times appear here. Focus on these to improve faster.
+                      Topics asked 5+ times appear here. Focus on these to improve faster.
                     </p>
                   </div>
                 )}

@@ -29,7 +29,6 @@ export default function StreakCard({ streak = 0, lastActiveDate = null }) {
       </p>
 
       <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 30 }}>🔥</span>
         <div>
           <p style={{ margin: 0, fontSize: 32, fontWeight: 900, color: "var(--accent)", lineHeight: 1 }}>{streak}</p>
           <p style={{ margin: "2px 0 0", fontSize: 10, color: "var(--text-secondary)" }}>day{streak !== 1 ? "s" : ""} in a row</p>

@@ -7,16 +7,16 @@ import { motion, AnimatePresence } from "framer-motion";
 // Call checkMilestones(stats) anywhere in the app.
 // stats: { streak, progressQuestions, masteryTopics }
 const MILESTONES = [
-  { id: "first_question",  check: (s) => s.progressQuestions >= 1,    emoji: "🎉", title: "First question!", text: "You asked your first question. Keep going!" },
-  { id: "streak_3",        check: (s) => s.streak >= 3,               emoji: "🔥", title: "3-day streak!",   text: "You've studied 3 days in a row. Nice." },
-  { id: "streak_7",        check: (s) => s.streak >= 7,               emoji: "🏆", title: "7-day streak!",   text: "A full week of studying. Incredible." },
-  { id: "streak_30",       check: (s) => s.streak >= 30,              emoji: "💎", title: "30-day streak!",  text: "Elite level consistency. Exam ready." },
-  { id: "questions_10",    check: (s) => s.progressQuestions >= 10,   emoji: "⚡", title: "10 questions!",   text: "You're building momentum." },
-  { id: "questions_50",    check: (s) => s.progressQuestions >= 50,   emoji: "🚀", title: "50 questions!",   text: "Halfway to mastery habits." },
-  { id: "questions_100",   check: (s) => s.progressQuestions >= 100,  emoji: "💯", title: "100 questions!",  text: "You're in the top tier of learners." },
-  { id: "mastery_1",       check: (s) => s.masteryTopics >= 1,        emoji: "🧠", title: "First topic mastered!", text: "You've mastered your first topic!" },
-  { id: "mastery_5",       check: (s) => s.masteryTopics >= 5,        emoji: "🌟", title: "5 topics mastered!", text: "Building real depth in your subject." },
-  { id: "mastery_10",      check: (s) => s.masteryTopics >= 10,       emoji: "🎓", title: "10 topics mastered!", text: "You're becoming an expert." },
+  { id: "first_question",  check: (s) => s.progressQuestions >= 1,    emoji: "", title: "First question!", text: "You asked your first question. Keep going!" },
+  { id: "streak_3",        check: (s) => s.streak >= 3,               emoji: "", title: "3-day streak!",   text: "You've studied 3 days in a row. Nice." },
+  { id: "streak_7",        check: (s) => s.streak >= 7,               emoji: "", title: "7-day streak!",   text: "A full week of studying. Incredible." },
+  { id: "streak_30",       check: (s) => s.streak >= 30,              emoji: "", title: "30-day streak!",  text: "Elite level consistency. Exam ready." },
+  { id: "questions_10",    check: (s) => s.progressQuestions >= 10,   emoji: "", title: "10 questions!",   text: "You're building momentum." },
+  { id: "questions_50",    check: (s) => s.progressQuestions >= 50,   emoji: "", title: "50 questions!",   text: "Halfway to mastery habits." },
+  { id: "questions_100",   check: (s) => s.progressQuestions >= 100,  emoji: "", title: "100 questions!",  text: "You're in the top tier of learners." },
+  { id: "mastery_1",       check: (s) => s.masteryTopics >= 1,        emoji: "", title: "First topic mastered!", text: "You've mastered your first topic!" },
+  { id: "mastery_5",       check: (s) => s.masteryTopics >= 5,        emoji: "", title: "5 topics mastered!", text: "Building real depth in your subject." },
+  { id: "mastery_10",      check: (s) => s.masteryTopics >= 10,       emoji: "", title: "10 topics mastered!", text: "You're becoming an expert." },
 ];
 
 // ── In-memory store — avoids re-toasting across renders ───────────

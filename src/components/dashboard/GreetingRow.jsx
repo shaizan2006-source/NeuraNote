@@ -5,13 +5,13 @@ import { useDashboard } from "@/context/DashboardContext";
 import { ThemeToggle } from "@/components/Theme/ThemeToggle";
 
 function getGreeting(hour) {
-  if (hour >= 21 || hour < 5)  return { heading: "Studying late? 🌙",   subtext: "Stay consistent. You’re closer than you think." };
-  if (hour >= 5  && hour < 12) return { heading: "Good morning 👋",      subtext: "Ready to study?" };
-  if (hour >= 12 && hour < 17) return { heading: "Good afternoon 👋",    subtext: "Ready to study?" };
-  return                               { heading: "Good evening 👋",      subtext: "Ready to study?" };
+  if (hour >= 21 || hour < 5)  return { heading: "Studying late?",   subtext: "Stay consistent. You’re closer than you think." };
+  if (hour >= 5  && hour < 12) return { heading: "Good morning",      subtext: "Ready to study?" };
+  if (hour >= 12 && hour < 17) return { heading: "Good afternoon",    subtext: "Ready to study?" };
+  return                               { heading: "Good evening",      subtext: "Ready to study?" };
 }
 
-const SSR_DEFAULT = { heading: "Good morning 👋", subtext: "Ready to study?" };
+const SSR_DEFAULT = { heading: "Good morning", subtext: "Ready to study?" };
 
 export default function GreetingRow() {
   const [greeting, setGreeting] = useState(SSR_DEFAULT);

@@ -44,7 +44,6 @@ export default function ProgressQuestionsPanel({ token }) {
       border: "1px solid var(--border-hairline)",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-        <span style={{ fontSize: 18 }}>💬</span>
         <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
           Ask About Your Progress
         </h3>

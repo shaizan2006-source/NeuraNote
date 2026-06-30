@@ -1517,7 +1517,6 @@ export default function AskAISection({ fullPage = false, conversationId = null }
             userSelect: "none",
           }}
         >
-          <span style={{ fontSize: 10 }}>🎯</span>
           <span>Coach Mode — I&apos;ll ask questions to guide you</span>
         </div>
       )}

@@ -104,7 +104,7 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
     return (
       <div style={pageStyle}>
         <div style={cardStyle}>
-          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>📚 Ready to focus?</div>
+          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>Ready to focus?</div>
           <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
             Continue with your active study material:
           </div>
@@ -115,7 +115,7 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
           >
             <div>
               <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.primary }}>
-                📄 {activePdf.name.length > 32 ? activePdf.name.slice(0, 32) + '…' : activePdf.name}
+                {activePdf.name.length > 32 ? activePdf.name.slice(0, 32) + '…' : activePdf.name}
               </div>
             </div>
             <span style={{
@@ -146,7 +146,7 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
             <div key={doc.id} style={docRowStyle(false)} onClick={() => onSelectPDF(doc.id, doc.name)}>
               <div>
                 <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.primary }}>
-                  📄 {doc.name.length > 32 ? doc.name.slice(0, 32) + '…' : doc.name}
+                  {doc.name.length > 32 ? doc.name.slice(0, 32) + '…' : doc.name}
                 </div>
                 <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary }}>
                   {relativeDate(doc.created_at)}
@@ -179,7 +179,7 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
     return (
       <div style={pageStyle}>
         <div style={cardStyle}>
-          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>📚 Choose your study material</div>
+          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>Choose your study material</div>
           <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
             Select a PDF to begin your focus session
           </div>
@@ -189,7 +189,7 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
               <div key={doc.id} style={docRowStyle(false)} onClick={() => onSelectPDF(doc.id, doc.name)}>
                 <div>
                   <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.primary }}>
-                    📄 {doc.name.length > 32 ? doc.name.slice(0, 32) + '…' : doc.name}
+                    {doc.name.length > 32 ? doc.name.slice(0, 32) + '…' : doc.name}
                   </div>
                   <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary }}>
                     {relativeDate(doc.created_at)}
@@ -204,7 +204,7 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
             onClick={() => !uploading && fileInputRef.current?.click()}
           >
             <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
-              {uploading ? '⏳ Uploading…' : '+ Upload New PDF'}
+              {uploading ? 'Uploading…' : '+ Upload New PDF'}
             </div>
             <input
               ref={fileInputRef}
@@ -238,7 +238,7 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
-        <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>📚 Start your first focus session</div>
+        <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>Start your first focus session</div>
         <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
           Upload your study material to begin
         </div>
@@ -247,7 +247,6 @@ export default function FocusSessionSetup({ activePdf, documents, onSelectPDF, e
           style={uploadZoneStyle}
           onClick={() => !uploading && fileInputRef.current?.click()}
         >
-          <div style={{ fontSize: '28px', marginBottom: SPACING.sm }}>📁</div>
           <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
             {uploading ? '⏳ Uploading…' : 'Drop your PDF here or click to browse'}
           </div>

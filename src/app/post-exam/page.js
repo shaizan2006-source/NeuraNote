@@ -3,11 +3,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const NEXT_TARGETS = [
-  { id: "jee_advanced", label: "JEE Advanced", icon: "⚡" },
-  { id: "neet_ug", label: "NEET UG", icon: "🔬" },
-  { id: "boards", label: "Board Exams", icon: "📚" },
-  { id: "gap_year", label: "Gap Year Prep", icon: "🎯" },
-  { id: "break", label: "Take a break", icon: "☀️" },
+  { id: "jee_advanced", label: "JEE Advanced" },
+  { id: "neet_ug", label: "NEET UG" },
+  { id: "boards", label: "Board Exams" },
+  { id: "gap_year", label: "Gap Year Prep" },
+  { id: "break", label: "Take a break" },
 ];
 
 export default function PostExamPage() {
@@ -33,7 +33,6 @@ export default function PostExamPage() {
     return (
       <div style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ maxWidth: 420, textAlign: "center", padding: 32 }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>🎉</div>
           <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 12 }}>New target set!</h1>
           <p style={{ color: "var(--text-secondary)", marginBottom: 28 }}>Your study plan has been refreshed. Let's go.</p>
           <button onClick={() => router.push("/dashboard")} style={{ background: "var(--accent-grad)", color: "var(--bg-base)", border: "none", borderRadius: 8, padding: "12px 28px", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>
@@ -47,7 +46,6 @@ export default function PostExamPage() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ maxWidth: 460, width: "100%", padding: 32 }}>
-        <div style={{ fontSize: 48, textAlign: "center", marginBottom: 8 }}>✅</div>
         <h1 style={{ fontSize: 22, fontWeight: 700, textAlign: "center", marginBottom: 4 }}>Exam complete</h1>
         <p style={{ color: "var(--text-tertiary)", fontSize: 14, textAlign: "center", marginBottom: 28 }}>
           You put in the work. Whatever the result — that matters.
@@ -65,7 +63,6 @@ export default function PostExamPage() {
               borderRadius: 10, padding: "14px 18px", display: "flex", alignItems: "center", gap: 12,
               color: "var(--text-primary)", cursor: "pointer", transition: "all 0.15s",
             }}>
-              <span style={{ fontSize: 22 }}>{t.icon}</span>
               <span style={{ fontSize: 15, fontWeight: 600, color: selected === t.id ? "var(--accent-bright)" : "var(--text-secondary)" }}>{t.label}</span>
             </button>
           ))}

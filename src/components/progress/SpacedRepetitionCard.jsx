@@ -17,7 +17,6 @@ export default function SpacedRepetitionCard({ nextDueTopics }) {
         border: "1px solid var(--border-strong)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <span style={{ fontSize: 18 }}>📚</span>
           <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>All caught up!</h3>
         </div>
         <p style={{ margin: 0, fontSize: 12, color: "var(--text-tertiary)" }}>No topics due for review right now.</p>
@@ -33,7 +32,6 @@ export default function SpacedRepetitionCard({ nextDueTopics }) {
       border: "1px solid var(--border-strong)",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-        <span style={{ fontSize: 18 }}>📚</span>
         <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>Review Queue</h3>
         <span style={{
           marginLeft: "auto",

@@ -11,9 +11,9 @@ const _supabase = createClient(
 );
 
 const PLAN_TABS = [
-  { id: "today",  label: "📅 Today"   },
-  { id: "topics", label: "🔥 Topics"  },
-  { id: "ai",     label: "🤖 AI Plan" },
+  { id: "today",  label: "Today"   },
+  { id: "topics", label: "Topics"  },
+  { id: "ai",     label: "AI Plan" },
 ];
 
 // ── Animated checkable task row ────────────────────────────────────
@@ -67,7 +67,7 @@ function TaskRow({ index, label, timeSlot, accent, checked, onCheck }) {
             borderRadius: 5, padding: "1px 8px",
             fontSize: 10, fontWeight: 600, marginBottom: 4,
           }}>
-            🕐 {timeSlot}
+            {timeSlot}
           </span>
         )}
         <p style={{
@@ -111,14 +111,13 @@ function ListRow({ index, text, accent }) {
   );
 }
 
-function EmptyState({ icon, text, sub }) {
+function EmptyState({ text, sub }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       style={{ textAlign: "center", padding: "32px 16px" }}
     >
-      <p style={{ fontSize: 30, margin: 0 }}>{icon}</p>
       <p style={{ color: "var(--text-muted)", margin: "8px 0 4px", fontWeight: 600, fontSize: 14 }}>{text}</p>
       <p style={{ color: "var(--text-faint)", margin: 0, fontSize: 13, lineHeight: 1.5 }}>{sub}</p>
     </motion.div>
@@ -190,7 +189,7 @@ function AIPlanTab() {
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
         {/* Summary */}
         <div style={{ background: "color-mix(in srgb, var(--accent) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)", borderRadius: 10, padding: "12px 14px", marginBottom: 14 }}>
-          <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.7px", textTransform: "uppercase", color: "var(--accent-bright)", marginBottom: 4 }}>🤖 AI Plan — {form.subject}</p>
+          <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.7px", textTransform: "uppercase", color: "var(--accent-bright)", marginBottom: 4 }}>AI Plan — {form.subject}</p>
           <p style={{ margin: 0, fontSize: 13, color: "var(--text-primary)", lineHeight: 1.5 }}>{aiPlan.summary}</p>
         </div>
 
@@ -218,7 +217,7 @@ function AIPlanTab() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3, flexWrap: "wrap" }}>
                           <span style={{ fontSize: 10, fontWeight: 600, color: "var(--info)", background: "color-mix(in srgb, var(--info) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--info) 20%, transparent)", borderRadius: 4, padding: "1px 6px" }}>
-                            🕐 {s.time}
+                            {s.time}
                           </span>
                           <span style={{ fontSize: 10, fontWeight: 600, borderRadius: 4, padding: "1px 6px", background: badge.bg, color: badge.color }}>
                             {badge.label}
@@ -242,7 +241,7 @@ function AIPlanTab() {
             className="btn-ghost"
             style={{ flex: 1, padding: "9px 0", fontSize: 12, fontWeight: 600 }}
           >
-            {generating ? "Regenerating…" : "✨ Optimize Plan"}
+            {generating ? "Regenerating…" : "Optimize Plan"}
           </button>
           <button
             onClick={() => { setAiPlan(null); setForm(EMPTY_FORM); }}
@@ -382,7 +381,6 @@ export default function StudyPlanSection() {
       {/* ── Header ──────────────────────────────────────────────── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 20 }}>📖</span>
           <span style={{ fontWeight: 700, fontSize: 16, color: "var(--text-primary)" }}>Study Plan</span>
           {!isEmpty && (
             <span className="badge badge-blue">{countLabel}</span>
@@ -390,7 +388,7 @@ export default function StudyPlanSection() {
         </div>
         {selectedExam && (
           <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500 }}>
-            📅 {selectedExam.name}
+            {selectedExam.name}
           </span>
         )}
       </div>
@@ -469,7 +467,7 @@ export default function StudyPlanSection() {
           {/* TODAY */}
           {planTab === "today" && (
             dailyPlan.length === 0
-              ? <EmptyState icon="📅" text="No schedule yet" sub="Set an exam date and upload a PDF to generate your daily schedule." />
+              ? <EmptyState text="No schedule yet" sub="Set an exam date and upload a PDF to generate your daily schedule." />
               : <>
                   {/* Today's Focus card — first unchecked task */}
                   {(() => {
@@ -492,7 +490,7 @@ export default function StudyPlanSection() {
                         }}
                       >
                         <p style={{ margin: "0 0 6px", fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-bright)" }}>
-                          ⚡ Today's Focus
+                          Today's Focus
                         </p>
                         {timeSlot && (
                           <span style={{
@@ -502,7 +500,7 @@ export default function StudyPlanSection() {
                             borderRadius: 5, padding: "1px 8px",
                             fontSize: 10, fontWeight: 600,
                           }}>
-                            🕐 {timeSlot}
+                            {timeSlot}
                           </span>
                         )}
                         <p style={{ margin: 0, color: "var(--text-primary)", fontSize: 14, fontWeight: 600, lineHeight: 1.5 }}>
@@ -547,7 +545,7 @@ export default function StudyPlanSection() {
           {/* TOPICS */}
           {planTab === "topics" && (
             smartPlan.length === 0
-              ? <EmptyState icon="🔥" text="No topics yet" sub="Upload a PDF to get your prioritised topic list." />
+              ? <EmptyState text="No topics yet" sub="Upload a PDF to get your prioritised topic list." />
               : <>
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                     {(showAll ? smartPlan : smartPlan.slice(0, 5)).map((item, i) => (

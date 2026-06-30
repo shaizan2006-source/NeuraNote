@@ -14,12 +14,6 @@ export default function LapsedPage() {
     }}>
       <div style={{ width: "100%", maxWidth: 360, textAlign: "center" }}>
 
-        <div style={{
-          fontSize: 40, marginBottom: 24, lineHeight: 1,
-        }}>
-          📚
-        </div>
-
         <h2 style={{
           fontSize: 22, fontWeight: 600, color: "var(--text-primary)",
           fontFamily: "system-ui, sans-serif",

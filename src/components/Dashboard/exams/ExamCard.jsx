@@ -213,7 +213,7 @@ export default function ExamCard() {
                 borderRadius: 6, color: "var(--error)", fontSize: 10, fontWeight: 600, cursor: "pointer",
               }}
             >
-              ⚡ Fix Weak Areas
+              Fix Weak Areas
             </button>
             <button
               onClick={() => setShowPlanModal(true)}
@@ -224,7 +224,7 @@ export default function ExamCard() {
                 borderRadius: 6, color: "var(--accent)", fontSize: 10, fontWeight: 600, cursor: "pointer",
               }}
             >
-              📅 Study Plan
+              Study Plan
             </button>
           </div>
         )}

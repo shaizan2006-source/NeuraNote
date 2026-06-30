@@ -105,7 +105,6 @@ export default function FocusModeSection() {
         style={{ display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", userSelect: "none" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 20 }}>🎯</span>
           <span style={{ fontWeight: 700, fontSize: 16, color: "var(--text-primary)" }}>Focus Mode</span>
           {isFocusMode && (
             <motion.span
@@ -119,7 +118,7 @@ export default function FocusModeSection() {
                 fontSize: 11, fontWeight: 700,
               }}
             >
-              {isBreak ? "☕ Break" : "🔥 Live"}
+              {isBreak ? "Break" : "Live"}
             </motion.span>
           )}
         </div>
@@ -135,7 +134,7 @@ export default function FocusModeSection() {
       {/* ── Collapsed hint ──────────────────────────────────── */}
       {!isFocusExpanded && (
         <p style={{ margin: "10px 0 0", color: "var(--text-faint)", fontSize: 13 }}>
-          {isFocusMode ? `⏱ ${formatTime(timeLeft)} remaining` : "Start a Pomodoro session to stay focused."}
+          {isFocusMode ? `${formatTime(timeLeft)} remaining` : "Start a Pomodoro session to stay focused."}
         </p>
       )}
 
@@ -226,7 +225,7 @@ export default function FocusModeSection() {
                         : "0 4px 20px var(--brand-glow)",
                     }}
                   >
-                    {selectedMode.isBreak ? "☕ Start Break" : "🚀 Start Focus Session"}
+                    {selectedMode.isBreak ? "Start Break" : "Start Focus Session"}
                   </motion.button>
                 </div>
               )}
@@ -360,7 +359,7 @@ export default function FocusModeSection() {
                         animate={{ opacity: 1, scale: 1 }}
                         style={{ color: "var(--success)", fontWeight: 700, margin: 0, fontSize: 14 }}
                       >
-                        🎉 All tasks completed!
+                        All tasks completed!
                       </motion.p>
                     )}
                   </div>

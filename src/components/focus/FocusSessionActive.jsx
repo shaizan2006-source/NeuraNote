@@ -191,7 +191,6 @@ export default function FocusSessionActive({
         <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: SPACING.xl, padding: SPACING.xxl }}>
           <TopBar title="Time's Up" />
           <div style={{ ...panelStyle, textAlign: 'center', maxWidth: 400 }}>
-            <div style={{ fontSize: '32px', marginBottom: SPACING.md }}>⏰</div>
             <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 700, color: COLORS.text.primary, marginBottom: SPACING.sm }}>
               Time's up!
             </div>
@@ -229,17 +228,17 @@ export default function FocusSessionActive({
 
           <div style={{ display: 'flex', gap: SPACING.md }}>
             <Button
-              label={paused ? '▶ Resume' : '⏸ Pause'}
+              label={paused ? 'Resume' : 'Pause'}
               variant={paused ? 'primary' : 'secondary'}
               onClick={() => setPaused((p) => !p)}
             />
-            <Button label="⏹ Stop" variant="secondary" onClick={handleStop} />
+            <Button label="Stop" variant="secondary" onClick={handleStop} />
           </div>
 
           {/* AI Tip */}
           <div style={{ ...panelStyle, width: '100%', background: 'color-mix(in srgb, var(--accent) 6%, transparent)', border: `1px solid color-mix(in srgb, var(--accent) 15%, transparent)` }}>
             <div style={{ fontSize: TYPOGRAPHY.sizes.label, color: COLORS.accent.cyan, fontWeight: 700, marginBottom: SPACING.sm }}>
-              💡 AI Tip
+              AI Tip
             </div>
             <p style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, margin: 0, lineHeight: 1.7 }}>
               {AI_TIPS[tipIndex]}
@@ -273,7 +272,7 @@ export default function FocusSessionActive({
                 </div>
                 {currentTask.estimatedMinutes && (
                   <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, marginLeft: SPACING.md, flexShrink: 0 }}>
-                    ⏱ {currentTask.estimatedMinutes} min
+                    {currentTask.estimatedMinutes} min
                   </div>
                 )}
               </div>
@@ -359,7 +358,6 @@ export default function FocusSessionActive({
           {/* All done — early completion */}
           {allDone && (
             <div style={{ ...panelStyle, textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', marginBottom: SPACING.md }}>🎉</div>
               <div style={{ fontSize: TYPOGRAPHY.sizes.label, fontWeight: 700, color: COLORS.text.primary, marginBottom: SPACING.sm }}>
                 All tasks complete! Great focus session.
               </div>

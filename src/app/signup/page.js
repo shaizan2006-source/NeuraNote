@@ -220,8 +220,8 @@ export default function SignupPage() {
             <Rule met={/[0-9]/.test(password)}  text="One number" />
           </div>
 
-          {error   && <div style={styles.errorBox}><span style={{ marginRight: 6 }}>⚠️</span>{error}</div>}
-          {success && <div style={styles.successBox}><span style={{ marginRight: 6 }}>✅</span>{success}</div>}
+          {error   && <div style={styles.errorBox}>{error}</div>}
+          {success && <div style={styles.successBox}>{success}</div>}
 
           <button
             type="submit"

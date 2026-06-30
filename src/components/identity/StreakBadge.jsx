@@ -22,7 +22,7 @@ export default function StreakBadge() {
       gap: 2,
     }}>
       <span style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.5px", textTransform: "uppercase" }}>
-        🌱 {data.badge_label}
+        {data.badge_label}
       </span>
       <span style={{ fontSize: 22, fontWeight: 700, color: "var(--accent)" }}>
         Day {data.cumulative_days}

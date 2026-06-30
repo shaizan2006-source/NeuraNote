@@ -27,7 +27,7 @@ export function useExamReminders(exams = []) {
         : `${daysLeft} day${daysLeft !== 1 ? "s" : ""} left until ${name}. Start preparing!`;
 
       try {
-        new Notification(`📚 ${name}`, {
+        new Notification(name, {
           body,
           tag: reminderId,       // deduplicates if browser already shows it
           requireInteraction: false,

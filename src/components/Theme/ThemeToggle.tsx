@@ -67,7 +67,6 @@ export function ThemeToggle() {
             className={`${styles.dropdownItem} ${theme === 'dark' ? styles.active : ''}`}
             onClick={() => handleThemeSelect('dark')}
           >
-            <span className={styles.icon}>🌙</span>
             Dark Mode (Teal)
             {theme === 'dark' && <span className={styles.checkmark}>✓</span>}
           </button>
@@ -77,7 +76,6 @@ export function ThemeToggle() {
             disabled
             title="Coming soon"
           >
-            <span className={styles.icon}>☀️</span>
             Light Mode
             <span className={styles.badge}>Coming soon</span>
           </button>
@@ -86,7 +84,6 @@ export function ThemeToggle() {
             className={`${styles.dropdownItem} ${theme === 'gradient' ? styles.active : ''}`}
             onClick={() => handleThemeSelect('gradient')}
           >
-            <span className={styles.icon}>🎨</span>
             Gradient Mode
             {theme === 'gradient' && <span className={styles.checkmark}>✓</span>}
           </button>

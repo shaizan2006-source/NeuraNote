@@ -2,7 +2,7 @@ export default function Sidebar() {
   return (
     <div className="w-64 border-r border-neutral-800 p-4 flex flex-col">
       
-      <h1 className="text-lg font-semibold mb-6">🧠 Second Brain</h1>
+      <h1 className="text-lg font-semibold mb-6">Second Brain</h1>
 
       {/* Upload Button */}
       <button className="bg-purple-600 hover:bg-purple-700 transition p-2 rounded-lg mb-4">

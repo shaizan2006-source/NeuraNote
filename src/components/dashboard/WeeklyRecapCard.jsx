@@ -61,10 +61,10 @@ export default function WeeklyRecapCard() {
   const { delta } = recap;
 
   const stats = [
-    { emoji: "💬", value: delta.questions, label: "questions asked"   },
-    { emoji: "🧠", value: delta.mastery,   label: "topics mastered"   },
-    { emoji: "🎯", value: delta.focus,     label: "focus sessions"    },
-    { emoji: "🔥", value: recap.streak,    label: "day streak"        },
+    { value: delta.questions, label: "questions asked"   },
+    { value: delta.mastery,   label: "topics mastered"   },
+    { value: delta.focus,     label: "focus sessions"    },
+    { value: recap.streak,    label: "day streak"        },
   ];
 
   return (
@@ -99,7 +99,6 @@ export default function WeeklyRecapCard() {
 
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-          <span style={{ fontSize: 20 }}>📅</span>
           <div>
             <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: "var(--text-primary)" }}>
               Weekly Recap
@@ -126,7 +125,6 @@ export default function WeeklyRecapCard() {
                 border: "1px solid var(--border-default)",
               }}
             >
-              <div style={{ fontSize: 18, marginBottom: 4 }}>{s.emoji}</div>
               <div style={{ fontSize: 22, fontWeight: 800, color: "var(--text-primary)", lineHeight: 1 }}>
                 {s.value}
               </div>
@@ -140,11 +138,11 @@ export default function WeeklyRecapCard() {
         {/* Motivational line */}
         {delta.questions > 0 || delta.mastery > 0 ? (
           <p style={{ margin: "14px 0 0", fontSize: 12, color: "var(--accent)", fontWeight: 600 }}>
-            Great week! Keep the momentum going into next week. 🚀
+            Great week! Keep the momentum going into next week.
           </p>
         ) : (
           <p style={{ margin: "14px 0 0", fontSize: 12, color: "var(--text-muted)", fontWeight: 500 }}>
-            This week was quiet. Come back Monday for a fresh start. 💪
+            This week was quiet. Come back Monday for a fresh start.
           </p>
         )}
       </motion.div>

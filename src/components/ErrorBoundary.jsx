@@ -31,7 +31,7 @@ export default class ErrorBoundary extends Component {
           }}
         >
           <p style={{ fontWeight: 700, marginBottom: 8 }}>
-            ⚠️ {this.props.label || "This section"} failed to load.
+            {this.props.label || "This section"} failed to load.
           </p>
           <p style={{ fontSize: 12, color: "var(--text-secondary)" }}>
             {this.state.error?.message || "An unexpected error occurred."}

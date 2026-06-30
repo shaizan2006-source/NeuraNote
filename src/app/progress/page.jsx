@@ -113,7 +113,6 @@ function ProgressInner() {
             display: "flex", flexDirection: "column", alignItems: "center",
             justifyContent: "center", padding: "64px 24px", gap: 14, textAlign: "center",
           }}>
-            <span style={{ fontSize: 36 }}>⚠️</span>
             <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
               Couldn’t load your progress
             </p>
@@ -137,7 +136,6 @@ function ProgressInner() {
             display: "flex", flexDirection: "column", alignItems: "center",
             justifyContent: "center", padding: "64px 24px", gap: 14, textAlign: "center",
           }}>
-            <span style={{ fontSize: 36 }}>📊</span>
             <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
               Your analytics will appear here
             </p>

@@ -57,7 +57,6 @@ export default function ResetPasswordPage() {
     return (
       <AuthSplitLayout>
         <div style={{ textAlign: "center" }}>
-          <p style={{ fontSize: 48 }}>✅</p>
           <h1 style={styles.title}>Password updated!</h1>
           <p style={styles.subtitle}>Redirecting to dashboard…</p>
         </div>
@@ -69,7 +68,6 @@ export default function ResetPasswordPage() {
     return (
       <AuthSplitLayout>
         <div style={{ textAlign: "center" }}>
-          <p style={{ fontSize: 48 }}>⏳</p>
           <h1 style={styles.title}>Verifying reset link…</h1>
           <p style={styles.subtitle}>
             If this takes too long, your link may have expired.{" "}
@@ -135,7 +133,7 @@ export default function ResetPasswordPage() {
 
           {error && (
             <div style={styles.errorBox}>
-              <span style={{ marginRight: 6 }}>⚠️</span>{error}
+              {error}
             </div>
           )}
 

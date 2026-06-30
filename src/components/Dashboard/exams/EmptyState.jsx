@@ -19,7 +19,6 @@ export default function EmptyState({ variant, onAction }) {
       alignItems: "center",
       gap: 6,
     }}>
-      <span style={{ fontSize: 22 }}>{isNoExam ? "📚" : "🎉"}</span>
       <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>
         {isNoExam ? "No exam selected" : "No weak areas detected"}
       </p>

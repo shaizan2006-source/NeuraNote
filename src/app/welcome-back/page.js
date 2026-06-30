@@ -27,7 +27,6 @@ export default function WelcomeBackPage() {
       padding: 24, color: "var(--text-primary)",
     }}>
       <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 48, marginBottom: 20 }}>👋</div>
         <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Welcome back.</h1>
         <p style={{ fontSize: 15, color: "var(--text-secondary)", marginBottom: 8, lineHeight: 1.6 }}>
           Your Brain Map, your progress, your cohort — all still here. Nothing lost.

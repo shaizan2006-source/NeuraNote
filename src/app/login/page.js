@@ -162,7 +162,7 @@ export default function LoginPage() {
           {/* Error */}
           {error && (
             <div style={styles.errorBox}>
-              <span style={{ marginRight: 6 }}>⚠️</span>{error}
+              {error}
             </div>
           )}
 

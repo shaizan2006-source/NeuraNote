@@ -241,7 +241,6 @@ export default function PricingPage() {
             alignItems:   "center",
             gap:          8,
           }}>
-            <span>✅</span>
             <span>
               Pay once via UPI or card &mdash; no auto-debit mandate, no failed renewals.
               Best for India.
@@ -351,7 +350,7 @@ export default function PricingPage() {
 
       <div style={{ maxWidth: 700, margin: "48px auto 0", textAlign: "center" }}>
         <p style={{ color: "var(--text-tertiary)", fontSize: 13 }}>
-          🔒 Payments by Razorpay &nbsp;·&nbsp; ↩ Cancel anytime &nbsp;·&nbsp; 📧 hello@askmynotes.in
+          Payments by Razorpay &nbsp;·&nbsp; ↩ Cancel anytime &nbsp;·&nbsp; hello@askmynotes.in
         </p>
         <p style={{ marginTop: 12 }}>
           <a href="/dashboard" style={{ color: "var(--accent)", fontSize: 13, textDecoration: "none" }}>← Back to Dashboard</a>

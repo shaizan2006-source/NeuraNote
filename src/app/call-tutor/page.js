@@ -1040,7 +1040,7 @@ export default function CallTutorPage() {
               margin:     "0 0 14px",
               fontSize:   15,
             }}>
-              📋 Session Summary
+              Session Summary
             </p>
             <div style={{
               color:        "var(--text-secondary)",

@@ -37,16 +37,6 @@ function StreakCard({ streak }) {
       }} />
 
       <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 14 }}>
-        <div style={{
-          width: 36, height: 36, borderRadius: 10,
-          background: "var(--accent-grad)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 16,
-          boxShadow: "0 0 14px var(--accent-glow)",
-          flexShrink: 0,
-        }}>
-          🔥
-        </div>
         <span style={{ color: "var(--text-tertiary)", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
           Study Streak
         </span>
@@ -56,7 +46,7 @@ function StreakCard({ streak }) {
         {streak}
       </p>
       <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--text-secondary)", fontWeight: 500 }}>
-        {isActive ? "days in a row 🎯" : "Start your streak today"}
+        {isActive ? "days in a row" : "Start your streak today"}
       </p>
 
       {/* Mini day dots */}
@@ -110,16 +100,6 @@ function ProgressCard({ progressScore, progressQuestions }) {
       }} />
 
       <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 14 }}>
-        <div style={{
-          width: 36, height: 36, borderRadius: 10,
-          background: "var(--accent-grad)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 16,
-          boxShadow: "0 0 14px var(--accent-glow)",
-          flexShrink: 0,
-        }}>
-          📈
-        </div>
         <span style={{ color: "var(--text-tertiary)", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
           Daily Progress
         </span>
@@ -303,16 +283,6 @@ function WeakTopicsCard({ topics }) {
       }} />
 
       <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 14 }}>
-        <div style={{
-          width: 36, height: 36, borderRadius: 10,
-          background: "linear-gradient(135deg, color-mix(in srgb, var(--error) 70%, #000), var(--error))",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 16,
-          boxShadow: "0 0 14px color-mix(in srgb, var(--error) 30%, transparent)",
-          flexShrink: 0,
-        }}>
-          ⚠️
-        </div>
         <span style={{ color: "var(--text-tertiary)", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>
           Weak Topics
         </span>
@@ -379,7 +349,6 @@ export default function UploadSection() {
       {/* ── UPLOAD PDF ── */}
       <div id="section-upload" style={{ background: "linear-gradient(135deg, var(--surface-card) 0%, var(--surface-raised) 100%)", border: "1px solid var(--border-strong)", borderRadius: 16, padding: 20, marginBottom: 20, marginTop: 20, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-          <span style={{ fontSize: 20 }}>📄</span>
           <span style={{ fontWeight: 700, fontSize: 16, color: "var(--text-primary)" }}>Upload PDF Notes</span>
         </div>
         <input
@@ -404,7 +373,6 @@ export default function UploadSection() {
           />
           {uploadStage === "idle" && (
             <>
-              <div style={{ fontSize: 36, marginBottom: 10 }}>☁️</div>
               <p style={{ color: "var(--text-secondary)", fontSize: 14, margin: 0 }}>Drag & drop your PDF here</p>
               <p style={{ color: "var(--text-muted)", fontSize: 12, marginTop: 6 }}>or <span style={{ color: "var(--blue-dark)", fontWeight: 600 }}>click to browse</span></p>
               <p style={{ color: "var(--text-faint)", fontSize: 11, marginTop: 8 }}>Max file size: 20MB</p>
@@ -415,14 +383,12 @@ export default function UploadSection() {
           )}
           {uploadStage === "done" && (
             <div>
-              <div style={{ fontSize: 36, marginBottom: 10 }}>✅</div>
               <p style={{ color: "var(--green)", fontSize: 15, fontWeight: 700, margin: 0 }}>PDF uploaded successfully!</p>
-              <p style={{ color: "var(--text-tertiary)", fontSize: 12, marginTop: 6 }}>📄 {uploadedFileName} · {uploadedFileSize}</p>
+              <p style={{ color: "var(--text-tertiary)", fontSize: 12, marginTop: 6 }}>{uploadedFileName} · {uploadedFileSize}</p>
             </div>
           )}
           {uploadStage === "error" && (
             <div>
-              <div style={{ fontSize: 36, marginBottom: 10 }}>❌</div>
               <p style={{ color: "var(--red)", fontSize: 14, fontWeight: 600, margin: 0 }}>Upload failed. Please try again.</p>
             </div>
           )}
@@ -447,7 +413,7 @@ export default function UploadSection() {
           <div style={{ display: "flex", gap: 8 }}>
             {documentId && file && (
               <button onClick={handleSavePDF} style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: "linear-gradient(135deg, var(--green), var(--green-dark))", color: "var(--text-primary)", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
-                💾 Save PDF to Library
+                Save PDF to Library
               </button>
             )}
             <button

@@ -110,7 +110,7 @@ export default function ExamCountdownSection({ exams = [] }) {
         )}
         {daysLeft <= 7 && daysLeft >= 0 && (
           <p style={{ margin: "2px 0 0", fontSize: 9, color: "#F0584F", fontWeight: 600 }}>
-            {isToday ? "🔥 Exam day!" : "Final sprint!"}
+            {isToday ? "Exam day!" : "Final sprint!"}
           </p>
         )}
         {activeExams.length > 1 && (

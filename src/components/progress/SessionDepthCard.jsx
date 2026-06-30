@@ -52,7 +52,7 @@ export default function SessionDepthCard({
             background: "color-mix(in srgb, var(--accent) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--accent) 28%, transparent)",
             borderRadius: 20, padding: "2px 8px",
           }}>
-            <span style={{ fontSize: 9, color: "var(--accent)", fontWeight: 600 }}>⚡ Deep Work</span>
+            <span style={{ fontSize: 9, color: "var(--accent)", fontWeight: 600 }}>Deep Work</span>
           </div>
         )}
         {depthScore !== null && (

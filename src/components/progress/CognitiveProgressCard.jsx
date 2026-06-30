@@ -79,7 +79,6 @@ export default function CognitiveProgressCard({
           background: "color-mix(in srgb, var(--warning) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--warning) 20%, transparent)",
           borderRadius: 20, padding: "4px 10px", alignSelf: "flex-start",
         }}>
-          <span style={{ fontSize: 10 }}>⚡</span>
           <span style={{ fontSize: 10, color: "var(--warning)", fontWeight: 600 }}>
             Ahead of {peerPercentile}% of students
           </span>

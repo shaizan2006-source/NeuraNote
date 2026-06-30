@@ -446,7 +446,7 @@ function QuizContent() {
           flexDirection: 'column',
           gap: SPACING.lg,
         }}>
-          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>📋 Resume Quiz?</div>
+          <div style={{ fontSize: TYPOGRAPHY.sizes.heading, fontWeight: 600 }}>Resume Quiz?</div>
           <div style={{ fontSize: TYPOGRAPHY.sizes.body, color: COLORS.text.secondary }}>
             You were on question {savedSession.currentIndex + 1} of {savedSession.questions.length}
             {savedSession.selectedDocument?.name ? ` in "${savedSession.selectedDocument.name}"` : ''}.
@@ -492,7 +492,7 @@ function QuizContent() {
             color: COLORS.text.secondary,
             borderBottom: `1px solid ${COLORS.border.lighter}`,
           }}>
-            📄 {isStreaming ? 'Preparing from' : 'From'}:{' '}
+            {isStreaming ? 'Preparing from' : 'From'}:{' '}
             <strong>{selectedDocument.name}</strong>
             {isStreaming && (
               <span style={{ marginLeft: 8, opacity: 0.55 }}>— Your quiz is being prepared…</span>
@@ -620,7 +620,7 @@ function QuizContent() {
                 <>
                   <div>
                     <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: SPACING.sm, display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ opacity: 0.7 }}>📄</span> Source excerpt
+                      Source excerpt
                     </div>
                     <div style={{ padding: SPACING.md, border: `1px solid color-mix(in srgb, var(--accent) 28%, transparent)`, borderRadius: RADIUS.md, background: 'color-mix(in srgb, var(--accent) 8%, transparent)', fontSize: '0.78rem', color: COLORS.text.secondary, lineHeight: 1.75, wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>
                       {currentQ.sourceSnippet
@@ -630,14 +630,14 @@ function QuizContent() {
                   </div>
 
                   <div>
-                    <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>💡 Answer Structure:</div>
+                    <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>Answer Structure:</div>
                     <ul style={{ margin: 0, paddingLeft: SPACING.lg, fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, lineHeight: 1.8 }}>
                       {(currentQ.hints || []).map((h, i) => <li key={i}>{h}</li>)}
                     </ul>
                   </div>
 
                   <div>
-                    <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>🤖 AI Coach:</div>
+                    <div style={{ fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, fontWeight: 700, marginBottom: SPACING.sm }}>AI Coach:</div>
                     <div style={{ padding: SPACING.md, borderRadius: RADIUS.md, background: 'color-mix(in srgb, var(--accent) 8%, transparent)', border: `1px solid color-mix(in srgb, var(--accent) 25%, transparent)`, fontSize: TYPOGRAPHY.sizes.caption, color: COLORS.text.secondary, lineHeight: 1.6 }}>
                       {coachLoading
                         ? 'Thinking…'

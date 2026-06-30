@@ -38,9 +38,6 @@ export default function EmptyState({ onUploadClick }) {
       maxWidth:       640,
       margin:         "0 auto",
     }}>
-      {/* Hero */}
-      <div style={{ fontSize: 52, marginBottom: 20, lineHeight: 1 }}>🧠</div>
-
       <h2 style={{
         fontSize:     26,
         fontWeight:   700,
@@ -91,7 +88,7 @@ export default function EmptyState({ onUploadClick }) {
             }}
           >
             <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: previewQ === i ? 600 : 400 }}>
-              {previewQ === i ? "❓ " : "   "}{item.q}
+              {item.q}
             </div>
             {previewQ === i && (
               <div style={{ fontSize: 12, color: "var(--accent)", marginTop: 4, paddingLeft: 16 }}>
@@ -136,7 +133,7 @@ export default function EmptyState({ onUploadClick }) {
             opacity:      loading ? 0.6 : 1,
           }}
         >
-          {loading ? "Loading sample…" : "✨ Try with a sample PDF →"}
+          {loading ? "Loading sample…" : "Try with a sample PDF →"}
         </button>
       </div>
 

@@ -57,7 +57,7 @@ export default function PhotoDoubtButton({ onResult }) {
           background: "none", border: "none", cursor: "pointer",
           fontSize: 20, color: "var(--text-tertiary)", padding: "6px",
           display: "flex", alignItems: "center",
-        }}>📷</button>
+        }}>Photo</button>
       ) : (
         <div style={{
           position: "fixed", inset: 0, background: "rgba(8,8,10,0.9)",

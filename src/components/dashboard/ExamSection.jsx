@@ -18,7 +18,6 @@ export default function ExamSection() {
   return (
     <div id="section-exam" style={{ background: "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)", border: "1px solid var(--border-strong)", borderRadius: 16, padding: 20, marginTop: 20, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-        <span style={{ fontSize: 22 }}>⏳</span>
         <span style={{ fontWeight: 700, fontSize: 17, color: "var(--text-primary)" }}>Exam Countdown</span>
         {activeExams.length > 0 && (
           <span style={{ background: "var(--amber)", color: "black", borderRadius: 20, padding: "2px 10px", fontSize: 12, fontWeight: 700 }}>{activeExams.length} upcoming</span>
@@ -42,13 +41,13 @@ export default function ExamSection() {
 
       {/* Active exam countdown */}
       {!activeExam ? (
-        <div style={{ textAlign: "center", padding: "20px 0", color: "var(--text-faint)", fontSize: 14 }}>No upcoming exams. Add one above ☝️</div>
+        <div style={{ textAlign: "center", padding: "20px 0", color: "var(--text-faint)", fontSize: 14 }}>No upcoming exams. Add one above.</div>
       ) : (() => {
         const days = getDaysLeft(activeExam.exam_date);
         if (days < 0) return <div style={{ textAlign: "center", padding: "16px 0", color: "var(--text-muted)", fontSize: 14 }}>Your selected exam has passed.</div>;
         const urgencyBg = days <= 3 ? "linear-gradient(135deg, #7f1d1d, #450a0a)" : days <= 5 ? "linear-gradient(135deg, #78350f, #431407)" : "linear-gradient(135deg, #14532d, #052e16)";
         const urgencyColor = days <= 3 ? "#fca5a5" : days <= 5 ? "#fcd34d" : "#86efac";
-        const urgencyMsg = days === 0 ? "🔥 Exam is TODAY!" : days === 1 ? "🚨 Tomorrow! Final revision now." : days <= 3 ? "🔴 Urgent — Revise weak areas" : days <= 5 ? "🟡 Revise important topics" : "🟢 Focus on core concepts";
+        const urgencyMsg = days === 0 ? "Exam is TODAY!" : days === 1 ? "Tomorrow! Final revision now." : days <= 3 ? "Urgent — Revise weak areas" : days <= 5 ? "Revise important topics" : "Focus on core concepts";
         return (
           <div style={{ background: urgencyBg, borderRadius: 12, padding: "16px 18px", marginBottom: 16, border: `1px solid ${urgencyColor}33` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -72,7 +71,7 @@ export default function ExamSection() {
         <div style={{ marginBottom: 12 }}>
           <div onClick={() => setIsExamSelectorOpen((prev) => !prev)}
             style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 10, background: "var(--surface-card)", border: "1px solid var(--border-default)", cursor: "pointer", userSelect: "none" }}>
-            <span style={{ color: "var(--text-secondary)", fontSize: 13, fontWeight: 600 }}>🗂 Select Active Exam ({activeExams.length})</span>
+            <span style={{ color: "var(--text-secondary)", fontSize: 13, fontWeight: 600 }}>Select Active Exam ({activeExams.length})</span>
             <span style={{ color: "var(--text-tertiary)", fontSize: 14, display: "inline-block", transform: isExamSelectorOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s ease" }}>▼</span>
           </div>
           <div style={{ overflow: "hidden", maxHeight: isExamSelectorOpen ? "320px" : "0px", transition: "max-height 0.35s ease" }}>
@@ -107,7 +106,7 @@ export default function ExamSection() {
         <div style={{ marginTop: 8 }}>
           <div onClick={() => setIsHistoryExpanded((prev) => !prev)}
             style={{ display: "flex", justifyContent: "space-between", cursor: "pointer", padding: "8px 0", userSelect: "none" }}>
-            <span style={{ color: "var(--text-muted)", fontSize: 12, fontWeight: 600 }}>📜 PREVIOUS EXAMS ({historyExams.length})</span>
+            <span style={{ color: "var(--text-muted)", fontSize: 12, fontWeight: 600 }}>PREVIOUS EXAMS ({historyExams.length})</span>
             <span style={{ color: "var(--text-muted)", fontSize: 12, display: "inline-block", transform: isHistoryExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s ease" }}>▼</span>
           </div>
           <div style={{ overflow: "hidden", maxHeight: isHistoryExpanded ? "260px" : "0px", transition: "max-height 0.35s ease" }}>

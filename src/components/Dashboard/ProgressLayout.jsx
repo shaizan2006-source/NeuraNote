@@ -147,7 +147,6 @@ export default function ProgressLayout() {
           display: "flex", flexDirection: "column", alignItems: "center",
           justifyContent: "center", padding: "48px 24px", gap: 14, textAlign: "center",
         }}>
-          <span style={{ fontSize: 36 }}>📊</span>
           <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
             Your analytics will appear here
           </p>

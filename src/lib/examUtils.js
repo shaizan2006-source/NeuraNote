@@ -25,7 +25,7 @@ export function generateExamStudyPlan(exam, weakTopics, getDaysLeft) {
     return [{
       day: 0,
       date: "Today",
-      action: "🔥 Final Revision",
+      action: "Final Revision",
       topics: weakTopics.slice(0, 5),
       isRestDay: false,
     }];
@@ -36,9 +36,9 @@ export function generateExamStudyPlan(exam, weakTopics, getDaysLeft) {
 
   const daysLeft = rawDays;
   const action =
-    daysLeft > 7  ? "📘 Learn"
-    : daysLeft > 3 ? "📝 Practice"
-    :                "⚡ Revise";
+    daysLeft > 7  ? "Learn"
+    : daysLeft > 3 ? "Practice"
+    :                "Revise";
 
   // No weak topics — produce generic schedule
   if (weakTopics.length === 0) {

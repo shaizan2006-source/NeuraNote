@@ -49,6 +49,7 @@ export default function SettingsShell({ active, onNav, onSignOut, children }) {
                   key={key}
                   className="st-nav-item"
                   onClick={() => onNav(key)}
+                  aria-label={label}
                   style={{
                     display:        "flex",
                     alignItems:     "center",
@@ -162,6 +163,8 @@ export function GoldButton({ children, onClick, disabled = false, outline = fals
     <button
       onClick={onClick}
       disabled={disabled}
+      onMouseEnter={e => { if (!disabled) e.currentTarget.style.opacity = "0.82"; }}
+      onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
       style={{
         padding:      "10px 22px",
         borderRadius: 10,
@@ -184,7 +187,7 @@ export function GoldButton({ children, onClick, disabled = false, outline = fals
 // ── Inline SVG icons ───────────────────────────────────────────────────────
 function NavIcon({ d, active }) {
   return (
-    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={active ? "var(--accent)" : "var(--text-tertiary)"} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={active ? "var(--accent)" : "var(--text-tertiary)"} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
       <path d={d} />
     </svg>
   );

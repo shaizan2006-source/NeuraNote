@@ -86,6 +86,13 @@ export async function POST(req) {
     return NextResponse.json({ error: "Failed to schedule deletion" }, { status: 500 });
   }
 
+  // Cancel any active paid plan so entitlement can't outlive the account.
+  const { error: planErr } = await supabaseAdmin
+    .from("user_plans")
+    .update({ billing_cycle: "cancelled", updated_at: new Date().toISOString() })
+    .eq("user_id", user.id);
+  if (planErr) console.warn("[user/delete] plan cancel failed (non-fatal):", planErr.message);
+
   // Revoke the session only after DB write succeeds. Non-fatal if it fails.
   const token = (req.headers.get("authorization") || "").slice(7);
   if (token) {

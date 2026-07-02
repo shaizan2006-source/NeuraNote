@@ -19,6 +19,12 @@ export default function AccountSection({ user }) {
   const [saveErr,   setSaveErr]   = useState(null);
   const [pwSent,    setPwSent]    = useState(false);
   const [pwErr,     setPwErr]     = useState(null);
+  const [email,     setEmail]     = useState(user?.email ?? "");
+  const [emailBusy, setEmailBusy] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [emailErr,  setEmailErr]  = useState(null);
+  const [loAllBusy, setLoAllBusy] = useState(false);
+  const [loAllErr,  setLoAllErr]  = useState(null);
   const fileRef = useRef(null);
 
   async function handleAvatarChange(e) {
@@ -31,7 +37,7 @@ export default function AccountSection({ user }) {
     setUploading(true);
     try {
       const ext  = file.name.split(".").pop();
-      const path = `avatars/${user.id}.${ext}`;
+      const path = `${user.id}/avatar.${ext}`;
       const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
       if (upErr) throw upErr;
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
@@ -54,6 +60,36 @@ export default function AccountSection({ user }) {
       setSaveErr(err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleEmailChange() {
+    setEmailBusy(true); setEmailErr(null);
+    try {
+      const { error } = await supabase.auth.updateUser({ email: email.trim() });
+      if (error) throw error;
+      setEmailSent(true);
+    } catch (err) {
+      setEmailErr(err.message);
+    } finally {
+      setEmailBusy(false);
+    }
+  }
+
+  async function handleLogoutAll() {
+    setLoAllBusy(true); setLoAllErr(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/settings/logout-all", {
+        method:  "POST",
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Failed to sign out sessions");
+      await supabase.auth.signOut();
+      window.location.href = "/login";
+    } catch (err) {
+      setLoAllErr(err.message);
+      setLoAllBusy(false);
     }
   }
 
@@ -98,7 +134,22 @@ export default function AccountSection({ user }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <SettingsInput label="Display name"  value={name}     onChange={setName}     placeholder="Your name" />
             <SettingsInput label="Username"       value={username} onChange={setUsername} placeholder="@handle" />
-            <SettingsInput label="Email"          value={user?.email ?? ""} readOnly />
+            <div>
+              <SettingsInput label="Email" value={email} onChange={v => { setEmail(v); setEmailSent(false); setEmailErr(null); }} placeholder="you@example.com" />
+              {emailSent ? (
+                <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--success)" }}>
+                  ✓ Confirmation link sent to {email.trim()} — your email updates after you confirm.
+                </p>
+              ) : email.trim() && email.trim() !== (user?.email ?? "") ? (
+                <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
+                  <GoldButton outline onClick={handleEmailChange} disabled={emailBusy}>
+                    {emailBusy ? "Sending…" : "Update email"}
+                  </GoldButton>
+                  <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>We&apos;ll send a confirmation link first.</span>
+                </div>
+              ) : null}
+              {emailErr && <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--error)" }}>{emailErr}</p>}
+            </div>
           </div>
 
           {saveErr && <p style={{ margin: "12px 0 0", fontSize: 12, color: "var(--error)" }}>{saveErr}</p>}
@@ -121,6 +172,19 @@ export default function AccountSection({ user }) {
                 {pwErr && <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--error)" }}>{pwErr}</p>}
                 <GoldButton outline onClick={handlePasswordReset}>Send reset link</GoldButton>
               </>}
+        </SettingsCard>
+      </SettingsGroup>
+
+      <SettingsGroup label="Sessions">
+        <SettingsCard>
+          <p style={{ margin: "0 0 4px", fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>Log out everywhere</p>
+          <p style={{ margin: "0 0 16px", fontSize: 13, color: "var(--text-tertiary)" }}>
+            Signs you out on every device, including this one. Use this if you left yourself logged in somewhere.
+          </p>
+          {loAllErr && <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--error)" }}>{loAllErr}</p>}
+          <GoldButton outline onClick={handleLogoutAll} disabled={loAllBusy}>
+            {loAllBusy ? "Signing out…" : "Log out of all devices"}
+          </GoldButton>
         </SettingsCard>
       </SettingsGroup>
     </div>

@@ -472,11 +472,9 @@ export default function CallTutorPage() {
     }
   }, [getToken, speak]);
 
-  // Auto-start on page load
-  useEffect(() => {
-    const t = setTimeout(() => startCall(), 800);
-    return () => clearTimeout(t);
-  }, [startCall]);
+  // Calls start on explicit orb tap only. Auto-starting on page load consumed
+  // one of the user's rate-limited daily calls (and fired the mic permission
+  // prompt) on any accidental navigation to this route.
 
   // ── Controls ───────────────────────────────────────────────────────────────
   const toggleMute = useCallback(() => {

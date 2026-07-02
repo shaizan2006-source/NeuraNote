@@ -125,10 +125,10 @@ Legend: **entry** = how users reach it; **exit** = explicit in-app way back
 | `/progress` | sidebar toggle | sidebar ✓ | ❌ | account via GreetingRow fix |
 | `/settings` | Sage menu only (until fix) | ← Dashboard ✓ + Sign out ✓ | n/a | OK |
 | `/support` | settings link | ← Back ✓ | n/a | OK |
-| `/study` | dashboard cards | ❌ **dead end** | ❌ | add back control |
-| `/focus` | dashboard cards | session flows only, no persistent exit | ❌ | add back control |
-| `/exams` | ExamsSidebar/cards | ❌ pushes deeper only (quiz/sage) | ❌ | add back control |
-| `/pyqs` | nav | ❌ index has no back (slug + practice have ✓) | ❌ | add back control |
+| `/study` | dashboard cards | ❌ **dead end** → fixed: ← Dashboard pill | ❌ | fixed 2026-07-03 |
+| `/focus` | dashboard cards | ✓ ContextualSidebar has a permanent Dashboard anchor (sweep false-positive) | ❌ | OK |
+| `/exams` | ExamsSidebar/cards | ✓ ExamsSidebar has a Dashboard item (sweep false-positive) | ❌ | OK |
+| `/pyqs` | nav | ❌ index had no back → fixed: ← Dashboard pill (slug + practice already ✓) | ❌ | fixed 2026-07-03 |
 | `/quiz`, `/quiz/friday` | cards | ✓ | ❌ | OK (back exists) |
 | `/mock-test` | cards | ✓ | ❌ | OK |
 | `/brain-map` (+share) | cards | ✓ | ❌ | OK |

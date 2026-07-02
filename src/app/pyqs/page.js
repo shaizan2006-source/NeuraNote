@@ -1,6 +1,7 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import BackToDashboard from "@/components/shared/BackToDashboard";
 
 const EXAMS = ["jee_main", "jee_advanced", "neet_ug"];
 const SUBJECTS = { jee_main: ["Physics", "Chemistry", "Mathematics"], jee_advanced: ["Physics", "Chemistry", "Mathematics"], neet_ug: ["Physics", "Chemistry", "Biology"] };
@@ -56,6 +57,9 @@ function PYQsPageInner() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)", padding: "20px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ marginBottom: 14 }}>
+          <BackToDashboard />
+        </div>
         <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>PYQ Bank</h1>
         <p style={{ color: "var(--text-tertiary)", fontSize: 13, marginBottom: 20 }}>{total.toLocaleString("en-IN")} questions from official JEE + NEET papers</p>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
+import BackToDashboard from "@/components/shared/BackToDashboard";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -262,6 +263,9 @@ function Shell({ children }) {
       justifyContent: "center",
       fontFamily:     "Inter, sans-serif",
     }}>
+      <div style={{ position: "fixed", top: 18, left: 18, zIndex: 50 }}>
+        <BackToDashboard />
+      </div>
       {children}
     </div>
   );

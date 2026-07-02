@@ -63,13 +63,6 @@ function Avatar({ user, avatarUrl, size = 34, fontSize = 13 }) {
 }
 
 // ── Icon set ──────────────────────────────────────────────────────────
-function IconPlus() {
-  return (
-    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
-      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-    </svg>
-  );
-}
 function IconStar() {
   return (
     <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -203,7 +196,8 @@ function ProfileModal({ user, avatarUrl, onClose, onSaved }) {
       // Upload avatar if a new file was picked
       if (avatarFile) {
         const ext  = avatarFile.name.split(".").pop();
-        const path = `avatars/${user.id}.${ext}`;
+        // Own-folder path — required by the avatars bucket RLS policy
+        const path = `${user.id}/avatar.${ext}`;
         const { error: uploadErr } = await supabase.storage
           .from("avatars")
           .upload(path, avatarFile, { upsert: true, contentType: avatarFile.type });
@@ -479,15 +473,6 @@ function AccountDropdown({ user, avatarUrl, anchorRect, onClose, onOpenProfile }
         </div>
         <span style={{ marginLeft: "auto", color: "#3f3f46", flexShrink: 0 }}><IconChevron /></span>
       </div>
-
-      <Divider />
-
-      {/* Add account */}
-      <DropdownItem
-        icon={<IconPlus />}
-        label="Add another account"
-        onClick={() => { onClose(); router.push("/login"); }}
-      />
 
       <Divider />
 

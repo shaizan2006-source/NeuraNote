@@ -24,6 +24,10 @@ export default function AccountSection({ user }) {
   async function handleAvatarChange(e) {
     const file = e.target.files?.[0];
     if (!file || !user?.id) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setSaveErr("Photo must be under 5 MB.");
+      return;
+    }
     setUploading(true);
     try {
       const ext  = file.name.split(".").pop();

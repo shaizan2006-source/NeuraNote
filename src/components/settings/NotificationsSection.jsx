@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { SettingsCard, SettingsGroup } from "./SettingsShell";
-import { subscribeUser, unsubscribeUser, getPermissionState } from "@/lib/push";
+import { subscribeUser, unsubscribeUser } from "@/lib/push";
 
 function Toggle({ on, onChange }) {
   return (

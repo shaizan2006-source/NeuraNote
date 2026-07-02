@@ -11,6 +11,8 @@ import { classifyQuery } from "@/lib/queryClassifier";
 import { classifyWithLLM } from "@/lib/llmClassifier";
 import { assemblePrompt } from "@/lib/promptAssembler";
 import { COACH_SYSTEM_PROMPT } from "@/lib/prompts/coach";
+import { sessionActive } from "@/lib/incognito";
+import { FLAGS, flagDisabledResponse } from "@/lib/featureFlags";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 2, timeout: 45_000 });
 
@@ -56,6 +58,32 @@ async function storeCachedAnswer(cacheKey, question, classification, answer) {
   }
 }
 
+// ── Incognito persistence ────────────────────────────────────
+// Walled off from conversations/qa_cache/personalization: the ONLY place
+// an incognito Q&A is written is the session's own jsonb array.
+async function appendToIncognitoSession(sessionId, question, answer) {
+  try {
+    const { data: sess } = await supabase
+      .from("incognito_sessions")
+      .select("messages")
+      .eq("id", sessionId)
+      .single();
+    const existing = Array.isArray(sess?.messages) ? sess.messages : [];
+    const ts = new Date().toISOString();
+    await supabase
+      .from("incognito_sessions")
+      .update({
+        messages: [...existing,
+          { role: "user",      content: question, ts },
+          { role: "assistant", content: answer,   ts },
+        ],
+      })
+      .eq("id", sessionId);
+  } catch (err) {
+    console.error("incognito session save error:", err);
+  }
+}
+
 // ── Confusion detection ──────────────────────────────────────
 function detectConfusion(question) {
   const q = question.toLowerCase();
@@ -97,6 +125,7 @@ export async function POST(req) {
       // Continuation — set when user navigated from QuickChat "Open full chat"
       conversationId,            // existing conversation to append Q&A to
       priorMessages,             // [{role:"user"|"assistant", content:string}] history
+      incognitoSessionId,        // active incognito session — Q&A persists ONLY there
     } = body;
 
     // Only allow known model IDs to prevent injection
@@ -126,6 +155,22 @@ export async function POST(req) {
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // ── Incognito session check (before quota so an expired session costs nothing) ──
+    let incognitoSession = null;
+    if (incognitoSessionId) {
+      if (!FLAGS.INCOGNITO) return flagDisabledResponse();
+      const { data: inc } = await supabase
+        .from("incognito_sessions")
+        .select("id, user_id, closed_at, expires_at")
+        .eq("id", incognitoSessionId)
+        .maybeSingle();
+      if (!inc || inc.user_id !== userId || !sessionActive(inc)) {
+        return NextResponse.json({ error: "incognito_session_expired" }, { status: 410 });
+      }
+      incognitoSession = inc;
+    }
+
     // Coach mode bypasses the Q&A rate-limit (conversational turns, not factual answers)
     if (userId && mode !== "coach") {
       const qaCheck = await canAskQuestion(userId, authUser);
@@ -181,7 +226,9 @@ export async function POST(req) {
 
             const ts = new Date().toISOString();
 
-            if (conversationId && fullAnswer) {
+            if (incognitoSession && fullAnswer) {
+              await appendToIncognitoSession(incognitoSession.id, question, fullAnswer);
+            } else if (conversationId && fullAnswer) {
               try {
                 const { data: conv } = await supabase
                   .from("conversations")
@@ -326,6 +373,11 @@ export async function POST(req) {
     if (!usedContext && !exportIntent) {
       const cached = await getCachedAnswer(cacheKey);
       if (cached) {
+        // Cache reads are fine in incognito (no trace), but the Q&A must
+        // still land in the session so a refresh doesn't lose it.
+        if (incognitoSession) {
+          await appendToIncognitoSession(incognitoSession.id, question, cached.answer);
+        }
         const cachedStream = new ReadableStream({
           start(controller) {
             controller.enqueue(sseMeta({
@@ -357,6 +409,10 @@ export async function POST(req) {
         maxTokens,
         temperature,
       });
+
+      if (incognitoSession && answer) {
+        await appendToIncognitoSession(incognitoSession.id, question, answer);
+      }
 
       try {
         const baseUrl = req.headers.get("origin");
@@ -411,7 +467,10 @@ export async function POST(req) {
 
           const ts = new Date().toISOString();
 
-          if (conversationId && fullAnswer) {
+          if (incognitoSession && fullAnswer) {
+            // ── Incognito: session jsonb is the only persistence ────
+            await appendToIncognitoSession(incognitoSession.id, question, fullAnswer);
+          } else if (conversationId && fullAnswer) {
             // ── Append Q&A to existing conversation ────────────────
             try {
               const { data: conv } = await supabase
@@ -475,8 +534,9 @@ export async function POST(req) {
               .catch(() => {});
           }
 
-          // Store in cache (fire-and-forget, after stream ends)
-          if (!usedContext && fullAnswer.length > 50) {
+          // Store in cache (fire-and-forget, after stream ends).
+          // Never from incognito — the shared cache must hold no trace.
+          if (!incognitoSession && !usedContext && fullAnswer.length > 50) {
             storeCachedAnswer(cacheKey, question, classificationMeta, fullAnswer);
           }
         } catch (err) {

@@ -510,14 +510,14 @@ function AccountDropdown({ user, avatarUrl, anchorRect, onClose, onOpenProfile }
       <DropdownItem
         icon={<IconSettings />}
         label="Settings"
-        onClick={() => { onClose(); }}
+        onClick={() => { onClose(); router.push("/settings"); }}
       />
 
       {/* Help */}
       <DropdownItem
         icon={<IconHelp />}
         label="Help"
-        onClick={() => { onClose(); }}
+        onClick={() => { onClose(); router.push("/settings?section=support"); }}
       />
 
       <Divider />

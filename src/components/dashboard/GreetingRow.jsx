@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useDashboard } from "@/context/DashboardContext";
 import { ThemeToggle } from "@/components/Theme/ThemeToggle";
+import UserProfileButton from "@/components/ui/UserProfile";
 
 function getGreeting(hour) {
   if (hour >= 21 || hour < 5)  return { heading: "Studying late?",   subtext: "Stay consistent. You’re closer than you think." };
@@ -16,7 +17,7 @@ const SSR_DEFAULT = { heading: "Good morning", subtext: "Ready to study?" };
 export default function GreetingRow() {
   const [greeting, setGreeting] = useState(SSR_DEFAULT);
   const [hydrated, setHydrated] = useState(false);
-  const { dashboardMode, toggleDashboardMode } = useDashboard();
+  const { dashboardMode, toggleDashboardMode, user } = useDashboard();
 
   useEffect(() => {
     setHydrated(true);
@@ -101,6 +102,9 @@ export default function GreetingRow() {
           </div>
         </button>
       )}
+
+        {/* Account menu — Profile / Settings / Support / Logout, on every dashboard visit */}
+        {hydrated && <UserProfileButton user={user} />}
       </div>
     </div>
   );

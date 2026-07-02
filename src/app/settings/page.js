@@ -56,7 +56,7 @@ function SettingsInner() {
       {section === "account"       && <AccountSection       user={user} />}
       {section === "plan"          && <PlanSection          user={user} />}
       {section === "notifications" && <NotificationsSection />}
-      {section === "support"       && <SupportSection       token={token} />}
+      {section === "support"       && <SupportSection       token={token} user={user} />}
       {section === "privacy"       && <PrivacySection       token={token} onDeleted={handleSignOut} />}
     </SettingsShell>
   );

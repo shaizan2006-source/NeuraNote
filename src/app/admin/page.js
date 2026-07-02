@@ -14,6 +14,8 @@ function getSupabase() {
   );
 }
 
+const OPS_BLUE = "#3B82F6";
+
 const TOOLS = [
   {
     href:  "/admin/metrics",
@@ -29,7 +31,7 @@ const TOOLS = [
     title: "User Management",
     desc:  "Paginated user list with plan, AI spend, last active. Change plan / grant access.",
     badge: "Ops",
-    color: "#3B82F6",
+    color: OPS_BLUE,
   },
   {
     href:  "/admin/trial-segments",
@@ -46,6 +48,14 @@ const TOOLS = [
     desc:  "Ingest and review Previous Year Questions for JEE, NEET, UPSC, GATE.",
     badge: "Content",
     color: "#F59E0B",
+  },
+  {
+    href:  "/admin/tickets",
+    icon:  "🎫",
+    title: "Support Tickets",
+    desc:  "Triage user support requests. Update status: open / in progress / resolved.",
+    badge: "Ops",
+    color: OPS_BLUE,
   },
   {
     href:  "/dev/backfill",

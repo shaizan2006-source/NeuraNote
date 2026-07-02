@@ -82,6 +82,61 @@ export function DashboardProvider({ children }) {
     localStorage.setItem("amn_chat_mode", m);
   }, [chatMode]);
 
+  // ── Incognito chat ────────────────────────────────────────────
+  // Active session {id, expires_at, messages} or null. Q&A in this mode is
+  // persisted ONLY to incognito_sessions — never conversations, qa_cache,
+  // localStorage chat history, or weak-topic tracking.
+  const [incognitoSession, setIncognitoSession] = useState(null);
+
+  const startIncognito = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return null;
+    try {
+      const res = await fetch("/api/incognito", {
+        method:  "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      setIncognitoSession(data);
+      try { localStorage.setItem("amn_incognito_id", data.id); } catch {}
+      return data;
+    } catch { return null; }
+  }, []);
+
+  const closeIncognito = useCallback(async () => {
+    setIncognitoSession(null);
+    try { localStorage.removeItem("amn_incognito_id"); } catch {}
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      fetch("/api/incognito", {
+        method:  "DELETE",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      }).catch(() => {});
+    }
+  }, []);
+
+  // Resume an incognito session across refresh; stale/expired id clears silently.
+  useEffect(() => {
+    let id = null;
+    try { id = localStorage.getItem("amn_incognito_id"); } catch {}
+    if (!id) return;
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      try {
+        const res = await fetch("/api/incognito", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+        if (res.ok) {
+          setIncognitoSession(await res.json());
+        } else {
+          try { localStorage.removeItem("amn_incognito_id"); } catch {}
+        }
+      } catch {}
+    })();
+  }, []);
+
   // ── Active Tab ─────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState("study");
 
@@ -901,7 +956,9 @@ export function DashboardProvider({ children }) {
       Promise.all([
         streakFetch,
         fetch("/api/progress", { method: "POST", headers: askAuthHeader }),
-        askSession?.access_token
+        // Weak-topic tracking reads question CONTENT — walled off in incognito.
+        // Streak/progress are activity counters and stay on.
+        askSession?.access_token && !incognitoSession
           ? fetch("/api/weak-topics", {
               method: "POST",
               headers: { "Content-Type": "application/json", ...askAuthHeader },
@@ -924,10 +981,18 @@ export function DashboardProvider({ children }) {
           mode:            chatMode,
           model:           opts.model || "gpt-4o-mini",
           // Continuation context — only set when coming from QuickChat / a saved conversation
-          conversationId:  opts.conversationId  || undefined,
+          conversationId:  incognitoSession ? undefined : (opts.conversationId || undefined),
           priorMessages:   opts.priorMessages?.length ? opts.priorMessages : undefined,
+          incognitoSessionId: incognitoSession?.id || undefined,
         }),
       });
+
+      if (res.status === 410) {
+        // Incognito session expired server-side — clear and let the user restart.
+        setIncognitoSession(null);
+        try { localStorage.removeItem("amn_incognito_id"); } catch {}
+        throw new Error("Incognito session expired. Toggle incognito to start a fresh one.");
+      }
 
       if (!res.ok) {
         const errData = await res.json();
@@ -1254,6 +1319,7 @@ export function DashboardProvider({ children }) {
       handleUpload, cancelUpload,
       handleAsk, handleInputChange, queue, enqueue,
       chatMode, setChatMode,
+      incognitoSession, startIncognito, closeIncognito,
     }}>
       {children}
     </DashboardContext.Provider>

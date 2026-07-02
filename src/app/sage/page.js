@@ -13,11 +13,29 @@ import { useActivePDF } from "@/hooks/useActivePDF";
 import UserProfileButton from "@/components/ui/UserProfile";
 import { loadSavedChatId } from "@/lib/chatStorage";
 import { LogoMark } from "@/components/brand/Logo";
+import { FLAGS } from "@/lib/featureFlags";
+
+// Incognito glasses — inline SVG per design system (no icon libs)
+function IncognitoIcon({ size = 15 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="7" cy="15.5" r="3.2" />
+      <circle cx="17" cy="15.5" r="3.2" />
+      <path d="M10.2 15h3.6" />
+      <path d="M4 11.5l1.6-5A1.8 1.8 0 0 1 7.3 5h9.4a1.8 1.8 0 0 1 1.7 1.5l1.6 5" />
+    </svg>
+  );
+}
 
 function AskAIInner() {
   const searchParams = useSearchParams();
-  const { streak, progressQuestions, masteryTopics, user, setDocumentId, setQuestion } = useDashboard();
+  const {
+    streak, progressQuestions, masteryTopics, user, setDocumentId, setQuestion,
+    incognitoSession, startIncognito, closeIncognito,
+  } = useDashboard();
   const userId = user?.id;
+  const incognito = FLAGS.INCOGNITO && !!incognitoSession;
 
   useEffect(() => {
     try {
@@ -73,6 +91,7 @@ function AskAIInner() {
   }, [activePdf]);
 
   function handleNewChat() {
+    if (incognito) closeIncognito();
     setActiveConversationId(null);
     const url = new URL(window.location.href);
     url.searchParams.delete("cid");
@@ -80,9 +99,22 @@ function AskAIInner() {
   }
 
   function handleSelectConversation(id) {
+    // Opening a saved conversation always leaves incognito — never ambiguous.
+    if (incognito) closeIncognito();
     setActiveConversationId(id);
     const url = new URL(window.location.href);
     url.searchParams.set("cid", id);
+    window.history.replaceState({}, "", url.toString());
+  }
+
+  async function handleToggleIncognito() {
+    if (incognito) { closeIncognito(); return; }
+    const session = await startIncognito();
+    if (!session) return;
+    // Incognito never attaches to a saved conversation
+    setActiveConversationId(null);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("cid");
     window.history.replaceState({}, "", url.toString());
   }
 
@@ -128,14 +160,60 @@ function AskAIInner() {
             <div>
               <p style={{ margin: 0, fontSize: 14, fontWeight: 600, letterSpacing: "-0.01em", color: "var(--text-primary)" }}>Sage</p>
               <p style={{ margin: 0, fontSize: 11, color: "var(--text-tertiary)" }}>
-                {activePdf
-                  ? <><span style={{ color: "var(--info)" }}>◈ {activePdf.name}</span> · Ask Sage anything</>
-                  : "Your notes that answer back"
+                {incognito
+                  ? "Incognito — this chat won't be saved to your history"
+                  : activePdf
+                    ? <><span style={{ color: "var(--info)" }}>◈ {activePdf.name}</span> · Ask Sage anything</>
+                    : "Your notes that answer back"
                 }
               </p>
             </div>
           </div>
-          <UserProfileButton user={user} />
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {FLAGS.INCOGNITO && (
+              incognito ? (
+                // Persistent badge — always visible while incognito is active
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  padding: "5px 10px 5px 12px", borderRadius: 999,
+                  background: "var(--bg-surface-2)",
+                  border: "1px solid var(--border-strong)",
+                  color: "var(--text-secondary)",
+                }}>
+                  <IncognitoIcon />
+                  <span style={{ fontSize: 12, fontWeight: 600 }}>Incognito</span>
+                  <button
+                    onClick={handleToggleIncognito}
+                    aria-label="Close incognito chat"
+                    style={{
+                      background: "none", border: "none", cursor: "pointer", padding: "0 2px",
+                      color: "var(--text-tertiary)", fontSize: 12, fontWeight: 600, fontFamily: "inherit",
+                    }}
+                  >
+                    End
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleToggleIncognito}
+                  aria-label="Start incognito chat"
+                  title="Incognito chat — not saved to your history, auto-deletes in 7 days"
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    width: 30, height: 30, borderRadius: 8,
+                    background: "none", border: "1px solid var(--border-hairline)",
+                    color: "var(--text-tertiary)", cursor: "pointer",
+                    transition: "color 0.15s, border-color 0.15s",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "var(--border-strong)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "var(--border-hairline)"; }}
+                >
+                  <IncognitoIcon />
+                </button>
+              )
+            )}
+            <UserProfileButton user={user} />
+          </div>
         </div>
 
         {/* Chat area */}
@@ -144,7 +222,7 @@ function AskAIInner() {
           display: "flex", flexDirection: "column",
         }}>
           <ErrorBoundary label="Sage">
-            <AskAISection fullPage conversationId={activeConversationId} />
+            <AskAISection fullPage conversationId={incognito ? null : activeConversationId} />
           </ErrorBoundary>
         </div>
       </div>

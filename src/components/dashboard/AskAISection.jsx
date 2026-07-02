@@ -573,6 +573,7 @@ export default function AskAISection({ fullPage = false, conversationId = null }
     isDragging, setIsDragging,
     handleUpload,
     chatMode,
+    incognitoSession,
   } = useDashboard();
 
   const [isFocused,   setIsFocused]   = useState(false);
@@ -775,6 +776,33 @@ export default function AskAISection({ fullPage = false, conversationId = null }
       .catch(() => {});
   }, [conversationId]);
 
+  // ── Incognito hydration / teardown ─────────────────────────────
+  // Active session → hydrate its messages (survives refresh via the server
+  // row, never via localStorage). Session closed → wipe the visible thread
+  // so ephemeral content can't linger into normal mode.
+  const wasIncognitoRef = useRef(false);
+  useEffect(() => {
+    if (incognitoSession) {
+      wasIncognitoRef.current = true;
+      const msgs = Array.isArray(incognitoSession.messages) ? incognitoSession.messages : [];
+      const hydrated = msgs.map((m, i) => ({
+        id:       i + 1,
+        role:     m.role === "assistant" ? "ai" : m.role,
+        text:     m.content,
+        thinking: false,
+        done:     m.role !== "user",
+        sources:  [],
+      }));
+      setMessages(hydrated);
+      nextIdRef.current = hydrated.length + 1;
+    } else if (wasIncognitoRef.current) {
+      wasIncognitoRef.current = false;
+      setMessages([]);
+      nextIdRef.current = 0;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [incognitoSession?.id]);
+
   // ── Persist settled messages to localStorage ──────────────────────
   // Fires after every messages update; skips mid-stream state (any
   // message still thinking/incomplete) to avoid saving partial content.
@@ -968,20 +996,20 @@ export default function AskAISection({ fullPage = false, conversationId = null }
       // If we loaded this session from a saved conversation (e.g. from QuickChat via
       // "Open full chat"), pass the prior messages as context so the AI has the full
       // thread and the response is saved back to the same conversation.
-      const continuationOpts = continuationIdRef.current
-        ? {
-            conversationId: continuationIdRef.current,
-            // Send the last 8 messages (already in {role, text} shape); normalise to
-            // the {role, content} shape that the API expects.
-            priorMessages: messages
-              .slice(-8)
-              .map(m => ({
-                role:    m.role === "user" ? "user" : "assistant",
-                content: m.text || "",
-              }))
-              .filter(m => m.content),
-          }
-        : {};
+      const priorMessages = messages
+        .slice(-8)
+        .map(m => ({
+          role:    m.role === "user" ? "user" : "assistant",
+          content: m.text || "",
+        }))
+        .filter(m => m.content);
+      // Incognito: send prior thread turns as context but never a conversation id
+      // (the server persists to the incognito session only).
+      const continuationOpts = incognitoSession
+        ? { priorMessages }
+        : continuationIdRef.current
+          ? { conversationId: continuationIdRef.current, priorMessages }
+          : {};
       enqueue(q, continuationOpts);
     }
   };

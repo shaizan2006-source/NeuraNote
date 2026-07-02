@@ -5,6 +5,9 @@ export const FLAGS = {
   SUPPORT:       (process.env.NEXT_PUBLIC_FEATURE_SUPPORT       ?? "1") !== "0",
   INCOGNITO:     (process.env.NEXT_PUBLIC_FEATURE_INCOGNITO     ?? "1") !== "0",
   DOUBT_SIDEBAR: (process.env.NEXT_PUBLIC_FEATURE_DOUBT_SIDEBAR ?? "1") !== "0",
+  // SageLine voice rebuild. Default OFF: old /call-tutor stays live until
+  // founder cutover once latency/cost numbers are verified in production.
+  SAGELINE_V2:   (process.env.NEXT_PUBLIC_FEATURE_SAGELINE_V2   ?? "0") !== "0",
 };
 
 export function flagDisabledResponse() {

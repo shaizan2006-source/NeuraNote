@@ -9,6 +9,8 @@ import StructuredAnswer from "@/components/answer/StructuredAnswer";
 import DynamicGreeting from "@/components/dashboard/DynamicGreeting";
 import DynamicFollowUps from "@/components/answer/DynamicFollowUps";
 import { saveChat, loadChat, clearChat } from "@/lib/chatStorage";
+import { FLAGS } from "@/lib/featureFlags";
+import DoubtSidebar from "@/components/doubt/DoubtSidebar";
 import ModeSwitcher from "@/components/AskAI/ModeSwitcher";
 import { clientFetch } from "@/lib/clientFetch";
 
@@ -162,7 +164,17 @@ function UserMessage({ text, innerRef, onEdit }) {
   );
 }
 
-function AIMessage({ msg, onFeedback, onShare, onRegenerate, onFollowUp }) {
+function DoubtIcon({ size = 13 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  );
+}
+
+function AIMessage({ msg, onFeedback, onShare, onRegenerate, onFollowUp, onDoubt }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
@@ -208,6 +220,22 @@ function AIMessage({ msg, onFeedback, onShare, onRegenerate, onFollowUp }) {
                   onShare={onShare}
                   onRegenerate={onRegenerate}
                 />
+                {onDoubt && (
+                  <button
+                    onClick={onDoubt}
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 6,
+                      marginTop: 6, padding: "5px 12px", borderRadius: 8,
+                      background: "none", border: "1px solid var(--border-hairline)",
+                      color: "var(--text-tertiary)", fontSize: 12, cursor: "pointer",
+                      fontFamily: "inherit", transition: "color 0.15s, border-color 0.15s",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "var(--border-strong)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "var(--border-hairline)"; }}
+                  >
+                    <DoubtIcon /> I have a doubt
+                  </button>
+                )}
                 <DynamicFollowUps
                   classification={msg.classification}
                   onSelect={onFollowUp}
@@ -581,6 +609,10 @@ export default function AskAISection({ fullPage = false, conversationId = null }
   const [isExporting, setIsExporting] = useState(false);
   const [messages,    setMessages]    = useState([]);
   const [classification, setClassification] = useState(null);
+  // Doubt sidebar target — {question, answer} of the specific AI message it
+  // was opened from. Opening on a different answer replaces the target: a
+  // completely fresh thread, zero carryover (enforced server-side by rows).
+  const [doubtTarget, setDoubtTarget] = useState(null);
 
   // Staged files — files the user attached but hasn't sent yet
   const [stagedFiles, setStagedFiles] = useState([]);
@@ -775,6 +807,10 @@ export default function AskAISection({ fullPage = false, conversationId = null }
       })
       .catch(() => {});
   }, [conversationId]);
+
+  // Close any open doubt panel when the conversation or mode changes —
+  // a doubt panel is scoped to one answer in one conversation.
+  useEffect(() => { setDoubtTarget(null); }, [conversationId, incognitoSession?.id]);
 
   // ── Incognito hydration / teardown ─────────────────────────────
   // Active session → hydrate its messages (survives refresh via the server
@@ -1192,6 +1228,18 @@ export default function AskAISection({ fullPage = false, conversationId = null }
                 onShare={handleShare}
                 onRegenerate={handleRegenerate}
                 onFollowUp={(q) => submitQuestion(q)}
+                onDoubt={
+                  FLAGS.DOUBT_SIDEBAR && !incognitoSession && conversationId && msg.done && !msg.thinking
+                    ? () => {
+                        const questionText =
+                          msg.questionText ||
+                          messages.slice(0, i).reverse().find(m => m.role === "user")?.text;
+                        if (questionText && msg.text) {
+                          setDoubtTarget({ question: questionText, answer: msg.text });
+                        }
+                      }
+                    : undefined
+                }
               />;
         })}
         {/* Scroll-to-bottom sentinel — zero-height, used as scrollIntoView target */}
@@ -1210,6 +1258,15 @@ export default function AskAISection({ fullPage = false, conversationId = null }
           />
         )}
       </AnimatePresence>
+
+      {/* ── Doubt sidebar — one isolated thread per specific answer ── */}
+      {FLAGS.DOUBT_SIDEBAR && (
+        <DoubtSidebar
+          target={doubtTarget}
+          conversationId={conversationId}
+          onClose={() => setDoubtTarget(null)}
+        />
+      )}
 
       {/* ── Input area ─────────────────────────────────────── */}
       {/*

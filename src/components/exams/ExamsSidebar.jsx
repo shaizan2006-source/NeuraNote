@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { FLAGS } from "@/lib/featureFlags";
 
 const NAV_ITEMS = [
   {
@@ -58,8 +59,8 @@ const NAV_ITEMS = [
     activeColor: "#D4AF6E",
   },
   {
-    href: "/call-tutor",
-    label: "Call Tutor",
+    href: FLAGS.SAGELINE_V2 ? "/sageline" : "/call-tutor",
+    label: FLAGS.SAGELINE_V2 ? "SageLine" : "Call Tutor",
     icon: (
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M8 2a3 3 0 100 6 3 3 0 000-6z" stroke="currentColor" strokeWidth="1.3" />

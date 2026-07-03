@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { FLAGS } from "@/lib/featureFlags";
 
 export default function VoiceCallSection() {
   const router = useRouter();
+  const voiceRoute = FLAGS.SAGELINE_V2 ? "/sageline" : "/call-tutor";
 
   return (
     <div id="section-voice" style={{
@@ -17,17 +19,19 @@ export default function VoiceCallSection() {
       {/* ── Header ───────────────────────────────────────────────── */}
       <div style={{ marginBottom: 20 }}>
         <h3 style={{ color: "var(--text-primary)", margin: 0, fontSize: 18, fontWeight: 700 }}>
-          Voice AI Tutor
+          {FLAGS.SAGELINE_V2 ? "SageLine" : "Voice AI Tutor"}
         </h3>
         <p style={{ color: "var(--text-muted)", margin: "5px 0 0", fontSize: 13 }}>
-          Talk to your personal IIT-level professor — solve any doubt instantly
+          {FLAGS.SAGELINE_V2
+            ? "SageLine picks up the phone and actually teaches you"
+            : "Talk to your personal IIT-level professor — solve any doubt instantly"}
         </p>
       </div>
 
       {/* ── CTA ──────────────────────────────────────────────────── */}
       <div style={{ display: "flex", justifyContent: "center" }}>
         <button
-          onClick={() => router.push("/call-tutor")}
+          onClick={() => router.push(voiceRoute)}
           style={{
             padding:      "14px 40px",
             borderRadius: 50,

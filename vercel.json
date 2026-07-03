@@ -15,7 +15,7 @@
   "crons": [
     {
       "path": "/api/cron/purge-incognito",
-      "schedule": "0 * * * *"
+      "schedule": "0 3 * * *"
     }
   ]
 }

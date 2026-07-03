@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useDashboard } from "@/context/DashboardContext";
+import { FLAGS } from "@/lib/featureFlags";
 
 // ── Shared constants ───────────────────────────────────────────────
 const CARD = {
@@ -239,16 +240,19 @@ function QuizCard() {
   );
 }
 
-// ── Call Tutor Card ────────────────────────────────────────────────
+// ── Call Tutor Card (SageLine when the V2 flag is on) ─────────────
 function CallTutorCard() {
   const router = useRouter();
+  const voiceRoute = FLAGS.SAGELINE_V2 ? "/sageline" : "/call-tutor";
+  const voiceLabel = FLAGS.SAGELINE_V2 ? "SageLine" : "Call Tutor";
+  const voiceSub   = FLAGS.SAGELINE_V2 ? "Picks up and teaches" : "Speak to learn";
 
   return (
     <motion.div
       {...entry(0.24)}
       whileHover={{ scale: 1.04, y: -4, boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 0 40px rgba(0,0,0,0.55)" }}
       whileTap={{ scale: 0.97 }}
-      onClick={() => router.push("/call-tutor")}
+      onClick={() => router.push(voiceRoute)}
       style={CARD}
     >
       {/* Header */}
@@ -266,8 +270,8 @@ function CallTutorCard() {
           </svg>
         </div>
         <div>
-          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "var(--text-primary)" }}>Call Tutor</p>
-          <p style={{ margin: "1px 0 0", fontSize: 9, color: "var(--text-tertiary)" }}>Speak to learn</p>
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "var(--text-primary)" }}>{voiceLabel}</p>
+          <p style={{ margin: "1px 0 0", fontSize: 9, color: "var(--text-tertiary)" }}>{voiceSub}</p>
         </div>
       </div>
 
@@ -322,7 +326,7 @@ function CallTutorCard() {
 
       {/* CTA */}
       <button
-        onClick={e => { e.stopPropagation(); router.push("/call-tutor"); }}
+        onClick={e => { e.stopPropagation(); router.push(voiceRoute); }}
         style={{
           width: "100%", padding: "7px", background: "var(--accent-grad)",
           border: "1px solid var(--accent-dim)", borderRadius: 9,

@@ -75,3 +75,4 @@ src/next-app/.next/
 /tests/baseline/
 /test-results/
 /playwright-report/
+.env*

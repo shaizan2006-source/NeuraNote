@@ -6,19 +6,19 @@ import { TrackingProvider } from "@/components/providers/TrackingProvider";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import GreetingRow from "@/components/dashboard/GreetingRow";
-import BentoGrid from "@/components/Dashboard/BentoGrid";
+import BentoGrid from "@/components/dashboard/BentoGrid";
 import QuickChatDrawer from "@/components/QuickChat/QuickChatDrawer";
 import MilestoneToast, { checkMilestones } from "@/components/ui/MilestoneToast";
 import { useEffect, useState } from "react";
 import { useActivePDF } from "@/hooks/useActivePDF";
 import DashboardSkeleton from "@/components/shared/DashboardSkeleton";
-import EmptyState from "@/components/Dashboard/EmptyState";
+import EmptyState from "@/components/dashboard/EmptyState";
 import { determineDashboardMode } from "@/lib/dashboardMode";
-import MorningMode from "@/components/Dashboard/modes/MorningMode";
-import SlumpMode from "@/components/Dashboard/modes/SlumpMode";
-import NightMode from "@/components/Dashboard/modes/NightMode";
-import ActiveMode from "@/components/Dashboard/modes/ActiveMode";
-import StandardMode from "@/components/Dashboard/modes/StandardMode";
+import MorningMode from "@/components/dashboard/modes/MorningMode";
+import SlumpMode from "@/components/dashboard/modes/SlumpMode";
+import NightMode from "@/components/dashboard/modes/NightMode";
+import ActiveMode from "@/components/dashboard/modes/ActiveMode";
+import StandardMode from "@/components/dashboard/modes/StandardMode";
 
 function DashboardInner() {
   const { streak, progressQuestions, masteryTopics, user, dataReady, documents, focusSession } = useDashboard();

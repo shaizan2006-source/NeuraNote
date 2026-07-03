@@ -14,7 +14,7 @@ import InsightsPanel             from "@/components/progress/InsightsPanel";
 import StudyPlanCard             from "@/components/progress/StudyPlanCard";
 import ExamCountdownCard         from "@/components/progress/ExamCountdownCard";
 import DashboardSidebar          from "@/components/dashboard/DashboardSidebar";
-import CohortWidget              from "@/components/Dashboard/CohortWidget";
+import CohortWidget              from "@/components/dashboard/CohortWidget";
 
 // Analytics
 import { useFocusScore }    from "@/hooks/useFocusScore";

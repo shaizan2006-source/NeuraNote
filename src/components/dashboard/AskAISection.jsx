@@ -13,6 +13,12 @@ import { FLAGS } from "@/lib/featureFlags";
 import DoubtSidebar from "@/components/doubt/DoubtSidebar";
 import ModeSwitcher from "@/components/AskAI/ModeSwitcher";
 import { clientFetch } from "@/lib/clientFetch";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
 
 function hashQuestion(text) {
   let h = 0;
@@ -1116,9 +1122,13 @@ export default function AskAISection({ fullPage = false, conversationId = null }
     if (!text || isExporting) return;
     setIsExporting(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/generate-document", {
         method:  "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
+        },
         body:    JSON.stringify({ content: text, type: "pdf", filename: `notes-${Date.now()}` }),
       });
       const data = await res.json();

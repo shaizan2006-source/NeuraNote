@@ -17,7 +17,7 @@ const supabase = createClient(
 export async function POST(req) {
   try {
     // ========================
-    // 1. Verify user via JWT
+    // 1. Verify user via JWT (F-036: never trust body.userId — IDOR + cost-abuse)
     // ========================
     const user = await verifyAuth(req);
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

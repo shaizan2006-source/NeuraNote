@@ -6,12 +6,13 @@ export async function POST(req) {
     const user = await verifyAuth(req);
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    // 🔹 Fetch chat history — scoped to authenticated user only
+    // 🔹 Fetch chat history — cap to the most recent 200 (unbounded select grew with usage)
     const { data, error } = await supabase
       .from("chat_messages")
       .select("*")
       .eq("user_id", user.id)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: false })
+      .limit(200);
 
     if (error) {
       throw error;
@@ -19,7 +20,7 @@ export async function POST(req) {
 
     return NextResponse.json({
       success: true,
-      messages: data,
+      messages: (data || []).reverse(), // back to oldest-first for display
     });
 
   } catch (error) {

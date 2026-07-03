@@ -354,6 +354,6 @@ export async function POST(req) {
 
     return NextResponse.json({
       error: "PDF processing failed",
-    });
+    }, { status: 500 });   // F-031: error must not return HTTP 200
   }
 }

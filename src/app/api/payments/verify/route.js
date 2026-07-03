@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import Razorpay from "razorpay";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -31,24 +32,32 @@ export async function POST(req) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
-    // F-012 fix: derive the granted tier from the SERVER-STORED order, never from the
-    // client. The signature only covers order|payment, so trusting a client `plan` let
-    // a user pay for a cheap order and claim an expensive tier. Bind plan to the order.
-    const { data: orderRow } = await supabase
-      .from("payment_orders")
-      .select("tier, cycle, user_id")
-      .eq("order_id", razorpay_order_id)
-      .maybeSingle();
-
-    if (!orderRow || orderRow.user_id !== user.id) {
-      return NextResponse.json({ error: "Order not found for this user" }, { status: 400 });
+    // F-012: derive the tier from the SERVER-SET Razorpay order notes, never from the
+    // client. The signature only covers order|payment, so trusting a client `plan` let a
+    // user pay for a cheap order and claim an expensive tier. Read live from Razorpay
+    // (not our payment_orders table — that DB write is non-fatal at order-creation time,
+    // so it can be missing even for a legitimately paid order). Also confirm ownership.
+    const rzp = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
+    let order;
+    try {
+      order = await rzp.orders.fetch(razorpay_order_id);
+    } catch {
+      return NextResponse.json({ error: "Order not found" }, { status: 400 });
     }
+    if (order?.notes?.userId !== user.id) {
+      return NextResponse.json({ error: "Order does not belong to this user" }, { status: 403 });
+    }
+    const plan = order?.notes?.plan;
+    if (!plan || !PLAN_DURATION[plan]) {
+      return NextResponse.json({ error: "Unknown plan on order" }, { status: 400 });
+    }
+    const cycle = order?.notes?.cycle || "monthly";
 
-    const plan = orderRow.tier;
-    const cycle = orderRow.cycle || "monthly";
+    // Activate subscription
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + (cycle === "yearly" ? 365 : (PLAN_DURATION[plan] || 30)));
 
+    // F-013: never report success if the entitlement write fails (money taken, no access).
     const { error: grantErr } = await supabase.from("user_plans").upsert({
       user_id:    user.id,
       plan,
@@ -58,8 +67,6 @@ export async function POST(req) {
       updated_at: new Date().toISOString(),
     }, { onConflict: "user_id" });
 
-    // Never report success if the entitlement write failed — otherwise the user is
-    // told their payment worked while no access is granted ("money taken, no access").
     if (grantErr) {
       console.error("verify: entitlement upsert failed", grantErr);
       return NextResponse.json({ error: "Payment captured but activation failed — please contact support" }, { status: 500 });

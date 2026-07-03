@@ -69,20 +69,33 @@ export async function countUserPDFs(userId) {
 
 /** Count Q&A requests made today by this user. */
 export async function countTodayQA(userId) {
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-
-  const { count } = await supabase
+  // F-038: qa_usage is keyed (user_id, date) with a `count` column and has NO created_at.
+  // The old `.gte("created_at", …)` filtered a non-existent column → query error → count 0
+  // → the free 20/day cap NEVER enforced (unlimited free Q&A = OpenAI cost leak).
+  const today = new Date().toISOString().slice(0, 10); // matches qa_usage.date (DATE, default CURRENT_DATE)
+  const { data } = await supabase
     .from("qa_usage")
-    .select("id", { count: "exact", head: true })
+    .select("count")
     .eq("user_id", userId)
-    .gte("created_at", todayStart.toISOString());
-  return count || 0;
+    .eq("date", today)
+    .maybeSingle();
+  return data?.count || 0;
 }
 
-/** Record one Q&A usage event. */
+/** Record one Q&A usage event — increments today's per-user counter (one row per user/day). */
 export async function recordQAUsage(userId) {
-  const { error } = await supabase.from("qa_usage").insert({ user_id: userId });
+  // Was `.insert({ user_id })`: ignored the `count`/`date` design and collided on the
+  // UNIQUE(user_id, date) constraint after the first call of the day.
+  const today = new Date().toISOString().slice(0, 10);
+  const { data } = await supabase
+    .from("qa_usage")
+    .select("count")
+    .eq("user_id", userId)
+    .eq("date", today)
+    .maybeSingle();
+  const { error } = await supabase
+    .from("qa_usage")
+    .upsert({ user_id: userId, date: today, count: (data?.count || 0) + 1 }, { onConflict: "user_id,date" });
   if (error) console.error("recordQAUsage failed:", error.message);
 }
 
